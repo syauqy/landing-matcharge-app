@@ -46,18 +46,18 @@ body {
 }
 
 .onboarding-slider .slick-dots {
-  bottom: -25px;
+  bottom: -50px;
 }
 
 .onboarding-slider .slick-dots li button:before {
   font-size: 10px;
-  color: #3b82f6;
+  color: #f6cfa8;
   opacity: 0.5;
 }
 
 .onboarding-slider .slick-dots li.slick-active button:before {
   opacity: 1;
-  color: #2563eb;
+  color: #d1b08e;
 }
 
 .onboarding-slider div {

@@ -340,7 +340,7 @@ export default function ProfileSetupPage() {
 
   if (loadingWeton) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-batik">
+      <div className="min-h-screen flex items-center justify-center bg-batik p-4">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">
             Preparing Your Weton Reading...
