@@ -1,6 +1,8 @@
 // components/Layout.jsx
 import React from "react";
+import { Inter } from "next/font/google";
 
+const inter = Inter({ subsets: ["latin"] });
 /**
  * A simple layout wrapper that constrains the width to simulate a mobile view,
  * centered on the screen.
@@ -9,7 +11,9 @@ const Layout = ({ children }) => {
   return (
     // Outer container: full viewport height, centers the content vertically and horizontally
     // On larger screens, the gray background shows outside the mobile view area.
-    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100">
+    <div
+      className={`min-h-screen flex flex-col items-center justify-start bg-gray-100 ${inter.className}`}
+    >
       {/* Mobile view container */}
       {/* - w-full: Takes full width available from parent */}
       {/* - max-w-md: Limits maximum width (512px by default in Tailwind) - adjust as needed (sm: 384px, lg: 640px) */}

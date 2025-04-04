@@ -57,7 +57,7 @@ export function getWeton(birthDate) {
     const pasaran = pasaranNames[pasaranIndex];
 
     const dayIndex = date.getUTCDay();
-    const dayNames = [
+    const namaHari = [
       "Minggu",
       "Senin",
       "Selasa",
@@ -66,9 +66,20 @@ export function getWeton(birthDate) {
       "Jumat",
       "Sabtu",
     ];
-    const day = dayNames[dayIndex];
 
-    const dayNept = neptuDina[day];
+    const nameDay = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const hari = namaHari[dayIndex];
+    const day = nameDay[dayIndex];
+
+    const dayNept = neptuDina[hari];
     const pasaranNept = neptuPasaran[pasaran];
 
     if (dayNept === undefined || pasaranNept === undefined) {
@@ -79,12 +90,14 @@ export function getWeton(birthDate) {
     const totalNeptu = dayNept + pasaranNept;
 
     return {
+      namaHari: hari,
       dayName: day,
       pasaranName: pasaran,
       dayNeptu: dayNept,
       pasaranNeptu: pasaranNept,
       totalNeptu: totalNeptu,
-      weton: `${day} ${pasaran}`,
+      weton: `${hari} ${pasaran}`,
+      weton_en: `${day} ${pasaran}`,
     };
   } catch (error) {
     console.error("Error in getWeton function:", error);

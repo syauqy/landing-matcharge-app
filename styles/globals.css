@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+@theme {
+  --breakpoint-3xl: 120rem;
+  --color-ivory: #fffff0;
+  --color-pearl: #fcfcf7;
+  --color-batik: #fdf5ea;
+  --color-offwhite: #faf9f6;
+  --color-eggwhite: #fdfdfd;
+  --color-batik-black: #100d07;
+  --color-batik-gray: #fffff0;
+  --color-batik-border: #e0c3a3;
+  --color-batik-border-light: #f6cfa8;
+  --color-batik-border-hover: #d1b08e;
+  --color-batik-white: #fffdfc;
+}
+
 /* :root {
   --background: #ffffff;
   --foreground: #171717;

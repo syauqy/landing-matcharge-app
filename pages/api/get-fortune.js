@@ -4,7 +4,8 @@ import {
   HarmCategory,
   HarmBlockThreshold,
 } from "@google/generative-ai";
-import { getWeton } from "@/utils"; // Ensure this path is correct
+import { getWeton } from "@/utils";
+import { basicReadingPrompt } from "@/utils/prompts"; // Ensure this path is correct
 
 // Initialize Supabase (using public anon key is safe here; user auth verified via token)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -21,10 +22,7 @@ if (!process.env.GEMINI_API_KEY) {
   console.error("CRITICAL: Gemini API Key env var missing!");
 }
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-// Define Reading Limit
 const READING_LIMIT = 2; // Set your desired free reading limit
-
 // Optional: Configure Gemini Safety Settings
 const safetySettings = [
   {
@@ -101,7 +99,7 @@ export default async function handler(req, res) {
     // 3. Fetch User Profile & Check Reading Count/Birth Date
     const { data: profile, error: profileError } = await supabaseUserClient
       .from("profiles")
-      .select("birth_date, readings_count")
+      .select("birth_date")
       .eq("id", user.id)
       .single(); // Expect one row or null
 
@@ -114,8 +112,6 @@ export default async function handler(req, res) {
         .json({ error: "Database error while fetching profile." });
     }
 
-    console.log(user.id, profile, profileError);
-
     // Check if profile exists and birth date is set
     if (!profile || !profile.birth_date) {
       return res.status(400).json({
@@ -124,12 +120,12 @@ export default async function handler(req, res) {
       });
     }
 
-    // Check if user has exceeded the reading limit
-    if (profile.readings_count >= READING_LIMIT) {
-      return res.status(429).json({
-        error: `Free reading limit (${READING_LIMIT}) reached. Please upgrade for more readings.`,
-      });
-    }
+    // // Check if user has exceeded the reading limit
+    // if (profile.readings_count >= READING_LIMIT) {
+    //   return res.status(429).json({
+    //     error: `Free reading limit (${READING_LIMIT}) reached. Please upgrade for more readings.`,
+    //   });
+    // }
 
     // 4. Calculate Weton Details using the utility function
     const wetonDetails = getWeton(profile.birth_date);
@@ -157,51 +153,52 @@ export default async function handler(req, res) {
       // },
     });
 
+    const prompt = basicReadingPrompt(profile, wetonDetails);
+
     // --- Construct the Prompt (Using template literal for multi-line string) ---
-    const prompt = `
-You are the Weton and Primbon Master, an expert digital assistant specializing in Javanese Weton analysis, grounded in traditional Primbon knowledge but communicating clearly. Your personality is wise, respectful, positive, and culturally sensitive.
+    //     const prompt = `
+    // You are the Weton and Primbon Master, an expert digital assistant specializing in Javanese Weton analysis, grounded in traditional Primbon knowledge but communicating clearly. Your personality is wise, respectful, positive, and culturally sensitive.
 
-**User's Weton Data:**
-* **Gender:** ${profile.gender}
-* **Weton:** ${wetonDetails.weton}
-* **Day (Dina):** ${wetonDetails.dayName} (Neptu: ${wetonDetails.dayNeptu})
-* **Market Day (Pasaran):** ${wetonDetails.pasaranName} (Neptu: ${
-      wetonDetails.pasaranNeptu
-    })
-* **Total Neptu:** ${wetonDetails.totalNeptu}
+    // **User's Weton Data:**
+    // * **Gender:** ${profile.gender}
+    // * **Weton:** ${wetonDetails.weton}
+    // * **Day (Dina):** ${wetonDetails.dayName} (Neptu: ${wetonDetails.dayNeptu})
+    // * **Market Day (Pasaran):** ${wetonDetails.pasaranName} (Neptu: ${
+    //       wetonDetails.pasaranNeptu
+    //     })
+    // * **Total Neptu:** ${wetonDetails.totalNeptu}
 
-**Your Task:**
-Based *only* on the Weton data provided above, generate an insightful analysis and fortune readings covering these aspects
-1. Watak (character, personality, personal traits): Describe the general nature, core strengths, and potential challenges associated with this specific Weton combination and its total Neptu value. Keep it balanced.
+    // **Your Task:**
+    // Based *only* on the Weton data provided above, generate an insightful analysis and fortune readings covering these aspects
+    // 1. Watak (character, personality, personal traits): Describe the general nature, core strengths, and potential challenges associated with this specific Weton combination and its total Neptu value. Keep it balanced.
 
-2. Jodoh (love, relationships, and romantic life): Discuss general romantic inclinations. Briefly mention Neptu values (e.g., "The total Neptu of X and Y") or specific Weton names considered traditionally harmonious or potentially needing more adjustment, with a brief reasoning based on compatibility concepts (like Neptu division or specific traditional pairings). Avoid absolutes.
+    // 2. Jodoh (love, relationships, and romantic life): Discuss general romantic inclinations. Briefly mention Neptu values (e.g., "The total Neptu of X and Y") or specific Weton names considered traditionally harmonious or potentially needing more adjustment, with a brief reasoning based on compatibility concepts (like Neptu division or specific traditional pairings). Avoid absolutes.
 
-3. Rezeki (Career & Financial Fortune): outline general potential regarding finances, suitable career paths, work styles, or areas where fortune might flow more easily for this Weton. Indicate the general pattern of fortune (e.g., consistent, fluctuating) if traditionally associated with the Neptu.
+    // 3. Rezeki (Career & Financial Fortune): outline general potential regarding finances, suitable career paths, work styles, or areas where fortune might flow more easily for this Weton. Indicate the general pattern of fortune (e.g., consistent, fluctuating) if traditionally associated with the Neptu.
 
-4. Pergaulan (Interactions): describe the possible interaction traits of this individual
+    // 4. Pergaulan (Interactions): describe the possible interaction traits of this individual
 
-5. Pemikiran (Cognition): describe how the individual makes a decision, thinks, processes reality, and relates to others.
+    // 5. Pemikiran (Cognition): describe how the individual makes a decision, thinks, processes reality, and relates to others.
 
-6. Perjalanan Hidup (General Life Outlook): Provide a brief, encouraging perspective on the individual's life path. Highlight key themes or positive potential inherent in the Weton, possibly suggesting areas for personal growth or awareness.
+    // 6. Perjalanan Hidup (General Life Outlook): Provide a brief, encouraging perspective on the individual's life path. Highlight key themes or positive potential inherent in the Weton, possibly suggesting areas for personal growth or awareness.
 
-7. Main element
+    // 7. Main element
 
-8. Main lucky color
+    // 8. Main lucky color
 
-9. Main lucky animal
+    // 9. Main lucky animal
 
-10. Return all the answers only in JSONB object literal format without any additional markdown formatting character like codeblocks and syntax highlighting. Using snake_case style for the key name.
+    // 10. Return all the answers only in JSONB object literal format without any additional markdown formatting character like codeblocks and syntax highlighting. Using snake_case style for the key name.
 
-11. Don't return and exclude the ${"```json"} text on the beginning and ${"```"} text at the end from the answer.
+    // 11. Don't return and exclude the ${"```json"} text on the beginning and ${"```"} text at the end from the answer.
 
+    // **Mandatory Instructions:**
+    // - Maintain a **respectful, positive, and encouraging** tone. Avoid negative fortune-telling or deterministic statements. Answering in English is fine.
 
-**Mandatory Instructions:**
-- Maintain a **respectful, positive, and encouraging** tone. Avoid negative fortune-telling or deterministic statements. Answering in English is fine.
+    // - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
 
-- Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
-
-**Begin the analysis**
-`; // <<< End of the prompt template literal
+    // **Begin the analysis**
+    // `; // <<< End of the prompt template literal
 
     // --- Make the API Call ---
     console.log(
@@ -247,7 +244,7 @@ Based *only* on the Weton data provided above, generate an insightful analysis a
     // 6. Send Successful Response Back to Client
     // The client-side code is responsible for calling the RPC to increment the count.
     return res.status(200).json({
-      wetonDetails: wetonDetails, // Include the calculated Weton details
+      // wetonDetails: wetonDetails, // Include the calculated Weton details
       analysis: analysisText, // Include the AI-generated analysis
       wetonAnalysis: geminiResponse,
     });
