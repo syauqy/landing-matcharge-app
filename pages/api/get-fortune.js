@@ -143,7 +143,8 @@ export default async function handler(req, res) {
 
     // --- Define the AI Model ---
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash", // Or "gemini-pro" / "gemini-1.5-pro"
+      // model: "gemini-1.5-flash", // Or "gemini-pro" / "gemini-1.5-pro"
+      model: "gemini-1.5-flash",
       safetySettings, // Apply defined safety settings
       // generationConfig: { // Optional: Further configuration
       //   temperature: 0.7,

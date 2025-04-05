@@ -189,7 +189,7 @@ export default function DashboardPage() {
         {readings.map((reading) => (
           <li key={reading.id} className="bg-white p-4 rounded-lg shadow-md">
             <Link href={`/readings/basic/${reading.id}`}>
-              <h3 className="font-medium">{reading.weton_details.weton}</h3>
+              {/* <h3 className="font-medium">{reading.weton_details.weton}</h3> */}
               <p className="text-sm text-gray-600">
                 {new Date(reading.created_at).toLocaleDateString()}
               </p>

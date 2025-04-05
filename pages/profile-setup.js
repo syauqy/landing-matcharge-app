@@ -176,7 +176,7 @@ export default function ProfileSetupPage() {
         reading: fortuneData.analysis,
         created_at: new Date().toISOString(),
         reading_type: "free",
-        title: "Basic",
+        title: "About You",
         reading_category: "general_readings",
       };
 
@@ -248,6 +248,7 @@ export default function ProfileSetupPage() {
       email: user?.email,
       subscription: "free",
       weton: wetonDetails,
+      dina_pasaran: wetonDetails.weton,
     };
 
     try {

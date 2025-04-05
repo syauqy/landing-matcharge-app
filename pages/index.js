@@ -2,11 +2,18 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import Slider from "react-slick";
 import { useRouter } from "next/router";
-import { useAuth } from "@/context/AuthContext"; // Import useAuth
+import { useAuth } from "@/context/AuthContext";
 
 // Import Slick CSS
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import {
+  SelfDiscovery,
+  Insight,
+  Love,
+  New,
+  Door,
+} from "@/components/illustrations";
 
 // Onboarding data
 const onboardingData = [
@@ -15,28 +22,28 @@ const onboardingData = [
     title: "Discover Your Inner Self",
     description:
       "Unlock a unique path to self-discovery using an ancient Javanese system for understanding your personality and potential.",
-    imageUrl: "/globe.svg", // Consider a more universal symbol of self-discovery
+    imageUrl: <SelfDiscovery />, // Consider a more universal symbol of self-discovery
   },
   {
     id: 2,
     title: "Beyond the Zodiac",
     description:
       "Go beyond traditional astrology. Wetonscope offers a fresh perspective on your personal traits, strengths, and life's journey.",
-    imageUrl: "/window.svg", // Consider an icon representing a new perspective or insight
+    imageUrl: <Insight />, // Consider an icon representing a new perspective or insight
   },
   {
     id: 3,
     title: "Love and Life",
     description:
       "Explore your compatibility with others and gain insights into your relationships, career, and life path using the wisdom of Weton.",
-    imageUrl: "/file.svg", // Consider an icon representing relationships or life paths
+    imageUrl: <Love />, // Consider an icon representing relationships or life paths
   },
   {
     id: 4,
     title: "Start Your Weton Journey",
     description:
       "Embark on a unique journey of self-discovery. Get your free Weton reading today and unlock the secrets within.",
-    imageUrl: "/vercel.svg", // Consider an icon representing a journey or path
+    imageUrl: <Door />, // Consider an icon representing a journey or path
   },
 ];
 
@@ -47,7 +54,7 @@ export default function HomePage() {
   useEffect(() => {
     if (!authLoading && user) {
       // If not loading and user is logged in, redirect to dashboard
-      // router.push("/dashboard");
+      router.push("/dashboard");
     }
   }, [user, authLoading, router]);
 
@@ -79,13 +86,14 @@ export default function HomePage() {
           {onboardingData.map((slide) => (
             <div key={slide.id} className="text-center py-6 h-[100%]">
               <div className="mb-10 flex justify-center">
-                <Image
+                {slide.imageUrl}
+                {/* <Image
                   src={slide.imageUrl}
                   alt={slide.title}
                   width={180}
                   height={180}
                   className="mx-auto"
-                />
+                /> */}
               </div>
               <h2 className="text-2xl font-bold mb-3">{slide.title}</h2>
               <p className="text-gray-700 mb-6 text-sm">{slide.description}</p>

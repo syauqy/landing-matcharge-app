@@ -1,0 +1,41 @@
+<svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="background-color: #f8f4e8;">
+  <rect width="100%" height="100%" fill="#f8f4e8" />
+
+  <defs>
+    <pattern id="batikPattern" patternUnits="userSpaceOnUse" width="10" height="10">
+      <circle cx="2" cy="2" r="1" fill="black"/>
+      <circle cx="7" cy="7" r="1" fill="black"/>
+    </pattern>
+     <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <path d="M 30 100 
+           Q 80 50, 150 100 
+           T 270 100" 
+        fill="url(#batikPattern)" 
+        stroke="#d2a679" /* Tan/Orange outline */
+        stroke-width="15" 
+        stroke-linecap="round" /* Smoother line ends */
+        stroke-linejoin="round" /* Smoother corners */
+        style="filter: url(#glow);" /* Optional subtle glow */
+        />
+
+  <circle cx="40" cy="130" r="8" fill="black" stroke="#ff8c00" stroke-width="2"/>
+   <circle cx="260" cy="70" r="10" fill="black" stroke="#ff8c00" stroke-width="2"/>
+
+   <path d="M 140 120 C 145 135, 155 135, 160 120" 
+          fill="none" 
+          stroke="black" 
+          stroke-width="2"/>
+     <path d="M 145 125 C 148 135, 152 135, 155 125" 
+          fill="none" 
+          stroke="#d2a679" 
+          stroke-width="1.5"/>
+
+</svg>
