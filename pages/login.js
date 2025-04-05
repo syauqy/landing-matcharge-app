@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Image from "next/image";
+import { Toaster, toast } from "sonner";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
   const router = useRouter();
 
   const [emailSent, setEmailSent] = useState(false);
@@ -16,12 +14,10 @@ export default function Login() {
 
   const handleMagicLinkLogin = async (e) => {
     e.preventDefault();
-    setError("");
-    setMessage("");
     setLoading(true);
 
     if (!email || !email.includes("@")) {
-      setError("Please enter a valid email address");
+      toast.error("Please enter a valid email address");
       setLoading(false);
       return;
     }
@@ -34,24 +30,20 @@ export default function Login() {
     });
 
     if (signInError) {
-      setError(signInError.message);
+      toast.error(signInError.message);
     } else {
       setSentToEmail(email);
       setEmailSent(true);
-      setMessage("Check your email for the login link!");
+      toast.success("Check your email for the login link!");
     }
     setLoading(false);
   };
 
   const handleChangeEmail = () => {
     setEmailSent(false);
-    setError("");
-    setMessage("");
   };
 
   const handleGoogleLogin = async () => {
-    setError("");
-    setMessage("");
     setLoading(true);
 
     const { error } = await supabase.auth.signInWithOAuth({
@@ -62,7 +54,7 @@ export default function Login() {
     });
 
     if (error) {
-      setError(error.message);
+      toast.error(error.message);
       setLoading(false);
     }
     // No need to set loading to false on success as we're redirecting to Google
@@ -73,13 +65,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="h-[100svh] flex flex-col bg-batik">
+      <Toaster richColors />
       {/* Navigation Bar */}
-      <div className="bg-white shadow-sm w-full">
+      <div className="bg-batik shadow-sm w-full">
         <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between relative">
           <button
             onClick={goBack}
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors absolute left-2"
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors absolute left-2 cursor-pointer"
             aria-label="Go back"
           >
             <svg
@@ -96,28 +89,23 @@ export default function Login() {
               />
             </svg>
           </button>
-          <h1 className="text-lg font-medium mx-auto">Login</h1>
+          <h1 className="text-lg font-semibold mx-auto">Login</h1>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-grow flex items-center justify-center p-4">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <div className="bg-offwhite p-8 rounded-lg shadow-md w-full max-w-md">
           <h1 className="text-2xl font-bold mb-6 text-center">
-            Get your Weton Readings
+            Get Your Reading
           </h1>
-
-          {error && <p className="mb-4 text-red-600 text-center">{error}</p>}
-          {message && (
-            <p className="mb-4 text-green-600 text-center">{message}</p>
-          )}
 
           <div className="space-y-6">
             {/* Google Login Button */}
             <button
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 py-2.5 px-3 rounded shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out"
+              className="w-full flex items-center justify-center gap-3 bg-offwhite text-batik-black border border-batik-border py-2.5 px-3 rounded-2xl shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out"
             >
               <svg
                 width="20"
@@ -147,10 +135,10 @@ export default function Login() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
+                <div className="w-full border-t-2 border-batik-border-light"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or</span>
+                <span className="px-2 bg-white text-slate-700">Or</span>
               </div>
             </div>
 
@@ -159,7 +147,10 @@ export default function Login() {
               /* Email Input Form */
               <form onSubmit={handleMagicLinkLogin} className="space-y-4">
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="email">
+                  <label
+                    className="block text-gray-700 mb-2 text-sm"
+                    htmlFor="email"
+                  >
                     Continue with Email
                   </label>
                   <input
@@ -167,7 +158,7 @@ export default function Login() {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+                    className="w-full mt-0 block border-0 border-b-2 border-batik-border-light px-0.5 py-2 text-lg focus:border-black"
                     required
                     placeholder="your@email.com"
                   />
@@ -176,7 +167,7 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:bg-blue-300 transition duration-150 ease-in-out"
+                  className="w-full bg-batik-border text-white font-semibold py-2 px-4 rounded-2xl hover:bg-batik-border-hover transition duration-150 ease-in-out cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-400"
                 >
                   {loading ? "Sending..." : "Get login link"}
                 </button>
@@ -187,23 +178,23 @@ export default function Login() {
             ) : (
               /* Success Message and Change Email Option */
               <div className="space-y-4 text-center">
-                <div className="bg-blue-50 p-4 rounded border border-blue-100">
+                <div className="bg-offwhite p-4 rounded border border-batik-border">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    className="w-8 h-8 text-blue-500 mx-auto mb-2"
+                    className="w-8 h-8 text-batik-text mx-auto mb-2"
                   >
                     <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
                     <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
                   </svg>
-                  <h3 className="font-medium text-blue-700 mb-1">
+                  <h3 className="font-medium text-batik-text mb-1">
                     Check your inbox
                   </h3>
-                  <p className="text-sm text-blue-600">
+                  <p className="text-sm text-batik-text">
                     We&apos;ve sent a login link to:
                   </p>
-                  <p className="font-medium text-blue-800 mt-1">
+                  <p className="font-semibold text-batik-text mt-1">
                     {sentToEmail}
                   </p>
                 </div>
@@ -215,7 +206,7 @@ export default function Login() {
 
                 <button
                   onClick={handleChangeEmail}
-                  className="text-blue-600 hover:underline text-sm font-medium"
+                  className="text-batik-text hover:underline text-sm font-medium"
                 >
                   Use a different email address
                 </button>
@@ -227,14 +218,20 @@ export default function Login() {
 
       {/* Privacy Policy & Terms of Service Footer */}
       <footer className="w-full py-4 px-4 bg-transparent">
-        <div className="max-w-md mx-auto text-center text-xs text-gray-500">
+        <div className="max-w-md mx-auto text-center text-xs text-slate-600">
           <p>
             By continuing, you agree to our{" "}
-            <Link href="/terms" className="text-blue-600 hover:underline">
+            <Link
+              href="/terms"
+              className="text-batik-text hover:underline font-medium"
+            >
               Terms of Service
             </Link>{" "}
             and{" "}
-            <Link href="/privacy" className="text-blue-600 hover:underline">
+            <Link
+              href="/privacy"
+              className="text-batik-text hover:underline font-medium"
+            >
               Privacy Policy
             </Link>
           </p>
