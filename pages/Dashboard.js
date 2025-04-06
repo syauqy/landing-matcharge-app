@@ -1,9 +1,11 @@
 // pages/dashboard.jsx
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient"; // Adjust path
-import { useAuth } from "@/context/AuthContext"; // Adjust path
+import { supabase } from "@/utils/supabaseClient";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { HomeIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { CrystalBall } from "@/components/icons";
 
 export default function DashboardPage() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -13,21 +15,20 @@ export default function DashboardPage() {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
   const [requestingReading, setRequestingReading] = useState(false);
-  const [fortuneResult, setFortuneResult] = useState(null); // Stores { wetonDetails, analysis }
-  const [currentReadings, setCurrentReadings] = useState(0); // To display count
+  const [fortuneResult, setFortuneResult] = useState(null);
+  const [currentReadings, setCurrentReadings] = useState(0);
 
-  const READING_LIMIT = 2; // Keep limit consistent with API
+  const READING_LIMIT = 2;
 
-  // Effect to redirect if not logged in
   useEffect(() => {
     if (!authLoading && !user) {
       router.push("/login");
     }
   }, [user, authLoading, router]);
 
-  // Function to check if the user has a profile
   const checkProfile = async () => {
     if (!user) return;
+
     try {
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
@@ -36,7 +37,6 @@ export default function DashboardPage() {
         .single();
 
       if (profileError) {
-        // Profile doesn't exist or error occurred, redirect to profile setup
         router.push("/profile-setup");
       }
     } catch (err) {
@@ -45,7 +45,6 @@ export default function DashboardPage() {
     }
   };
 
-  //fetch readings
   const fetchReadings = async () => {
     if (!user) return;
     setLoading(true);
@@ -59,7 +58,6 @@ export default function DashboardPage() {
 
       if (error) throw error;
       setReadings(data);
-      // Update current readings count
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("readings_count")
@@ -76,35 +74,13 @@ export default function DashboardPage() {
     }
   };
 
-  const fetchCurrentReadingsCount = async () => {
-    if (!user) return;
-    try {
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("readings_count")
-        .eq("id", user.id)
-        .single();
-
-      if (profileError) throw profileError;
-      setCurrentReadings(profile.readings_count);
-    } catch (err) {
-      console.error("Error fetching current readings count:", err);
-      setError("Failed to load current readings count.");
-    }
-  };
-
-  // Effect to check profile and fetch readings
   useEffect(() => {
     if (!authLoading && user) {
       checkProfile();
-      fetchReadings();
-      fetchCurrentReadingsCount();
     }
   }, [user, authLoading]);
 
-  // New function to handle fortune calculation
   const requestNewReading = async () => {
-    // Check if the user has reached the reading limit
     if (currentReadings >= READING_LIMIT) {
       setError(`Free reading limit (${READING_LIMIT}) reached.`);
       return;
@@ -138,9 +114,7 @@ export default function DashboardPage() {
       const fortuneData = await response.json();
       setFortuneResult(fortuneData);
       setMessage("New reading generated successfully!");
-      // Update current readings count
       setCurrentReadings((prev) => prev + 1);
-      // Refresh the readings list
       const { data, error } = await supabase
         .from("readings")
         .select("*")
@@ -157,13 +131,11 @@ export default function DashboardPage() {
     }
   };
 
-  // Existing logout handler...
   const handleLogout = async () => {
     await logout();
     router.push("/login");
   };
 
-  // Loading states...
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -179,7 +151,6 @@ export default function DashboardPage() {
     );
   }
 
-  // Determine if fortune calculation should be enabled
   const canCalculate = currentReadings < READING_LIMIT;
   const limitReached = currentReadings >= READING_LIMIT;
 
@@ -189,7 +160,6 @@ export default function DashboardPage() {
         {readings.map((reading) => (
           <li key={reading.id} className="bg-white p-4 rounded-lg shadow-md">
             <Link href={`/readings/basic/${reading.id}`}>
-              {/* <h3 className="font-medium">{reading.weton_details.weton}</h3> */}
               <p className="text-sm text-gray-600">
                 {new Date(reading.created_at).toLocaleDateString()}
               </p>
@@ -203,7 +173,6 @@ export default function DashboardPage() {
   const renderFortuneResult = () => {
     return (
       <div className="mt-4 space-y-4">
-        {/* Weton Details Card */}
         <div className="bg-indigo-50 p-3 rounded border border-indigo-200">
           <h3 className="text-sm font-semibold text-indigo-800 mb-1">
             Your Weton Details
@@ -227,18 +196,15 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* AI Analysis Card */}
         <div className="bg-gray-50 p-3 rounded border border-gray-200">
           <h3 className="text-sm font-semibold text-gray-800 mb-2">
             AI Fortune Analysis
           </h3>
-          {/* Format the AI analysis text */}
           <div className="prose prose-sm text-gray-700 max-w-none">
             {fortuneResult.analysis.split("\n").map((paragraph, index) => (
-              // Render paragraphs, handle potential list formatting from AI
               <p key={index} className="mb-2">
                 {paragraph.replace(/^\d+\.\s*/, "")}
-              </p> // Basic paragraph splitting, remove leading numbers if AI adds them
+              </p>
             ))}
           </div>
         </div>
@@ -252,7 +218,6 @@ export default function DashboardPage() {
         <p className="text-sm text-gray-600">
           Calculating your fortune, please wait...
         </p>
-        {/* Optional: add a spinner */}
       </div>
     );
   };
@@ -270,73 +235,105 @@ export default function DashboardPage() {
   };
 
   return (
-    // Existing Layout Wrapper (from _app.js) handles the mobile view
-    <div className="p-4 sm:p-6">
-      {" "}
-      {/* Add padding inside the main content area */}
-      <header className="flex flex-col sm:flex-row justify-between items-center mb-6 pb-4 border-b">
-        <h1 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-0">
-          Weton AI Dashboard
-        </h1>
-        <div className="text-center sm:text-right text-xs sm:text-sm">
-          <span className="block sm:inline mr-0 sm:mr-4 mb-1 sm:mb-0 text-gray-600">
-            {user.email}
-          </span>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-xs"
-          >
-            Logout
-          </button>
+    <div className="h-[100svh] flex flex-col bg-batik">
+      <nav className="bg-batik w-full px-4 py-2 fixed top-0 left-0 z-10 border-b border-batik-border">
+        <div className="flex items-center">
+          <h1 className="text-xl sm:text-2xl font-bold text-center w-full text-batik-black">
+            Wetonscope
+          </h1>
+          {/* <div className="text-center sm:text-right text-xs sm:text-sm">
+            <span className="block sm:inline mr-0 sm:mr-4 mb-1 sm:mb-0 text-gray-600">
+              {user.email}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-xs"
+            >
+              Logout
+            </button>
+          </div> */}
         </div>
-      </header>
-      {/* Weton Fortune Section - Updated */}
-      <div className="bg-white p-4 sm:p-6 rounded shadow-md">
-        <h2 className="text-lg sm:text-xl font-semibold mb-2 border-b pb-2">
-          Weton Fortune
-        </h2>
-        <p className="text-xs text-gray-500 mb-4">
-          Readings used: {currentReadings} / {READING_LIMIT}
-        </p>
-        {error && renderErrorState()}
-        {message && renderSuccessState()}
-        {loading ? (
-          <p>Loading readings...</p>
-        ) : readings.length === 0 ? (
-          <p>No readings found.</p>
-        ) : (
-          renderReadings()
-        )}
-        {/* Button to trigger calculation */}
-        {!fortuneResult && (
-          <button
-            onClick={requestNewReading}
-            disabled={!canCalculate || requestingReading}
-            className={`w-full px-4 py-2 rounded text-white font-semibold text-sm transition duration-150 ease-in-out ${
-              canCalculate
-                ? "bg-indigo-600 hover:bg-indigo-700"
-                : "bg-gray-400 cursor-not-allowed"
-            } ${requestingReading ? "opacity-50 cursor-wait" : ""}`}
-          >
-            {requestingReading
-              ? "Generating new reading..."
-              : "Get New Reading"}
-          </button>
-        )}
-
-        {/* Status/Error Messages */}
-        {!requestingReading && !canCalculate && limitReached && (
-          <p className="mt-3 text-xs text-red-700 bg-red-100 p-2 rounded">
-            You have reached your free reading limit.
+      </nav>
+      <div className="p-4 sm:p-6 flex-grow mt-12">
+        <div className="flex flex-col">
+          <div>Daily Reading</div>
+          <div>Daily</div>
+        </div>
+        <div>
+          <div>Latest Readings</div>
+          <div>Latest</div>
+        </div>
+        {/* <div className="bg-white p-4 sm:p-6 rounded shadow-md">
+          <h2 className="text-lg sm:text-xl font-semibold mb-2 border-b pb-2">
+            Weton Fortune
+          </h2>
+          <p className="text-xs text-gray-500 mb-4">
+            Readings used: {currentReadings} / {READING_LIMIT}
           </p>
-        )}
-
-        {/* Loading State */}
-        {requestingReading && renderLoadingState()}
-
-        {/* Display Fortune Result */}
-        {fortuneResult && !requestingReading && renderFortuneResult()}
+          {error && renderErrorState()}
+          {message && renderSuccessState()}
+          {loading ? (
+            <p>Loading readings...</p>
+          ) : readings.length === 0 ? (
+            <p>No readings found.</p>
+          ) : (
+            renderReadings()
+          )}
+          {!fortuneResult && (
+            <button
+              onClick={requestNewReading}
+              disabled={!canCalculate || requestingReading}
+              className={`w-full px-4 py-2 rounded text-white font-semibold text-sm transition duration-150 ease-in-out ${
+                canCalculate
+                  ? "bg-indigo-600 hover:bg-indigo-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              } ${requestingReading ? "opacity-50 cursor-wait" : ""}`}
+            >
+              {requestingReading
+                ? "Generating new reading..."
+                : "Get New Reading"}
+            </button>
+          )}
+          {!requestingReading && !canCalculate && limitReached && (
+            <p className="mt-3 text-xs text-red-700 bg-red-100 p-2 rounded">
+              You have reached your free reading limit.
+            </p>
+          )}
+          {requestingReading && renderLoadingState()}
+          {fortuneResult && !requestingReading && renderFortuneResult()}
+        </div> */}
       </div>
+      <nav className="bg-batik w-full px-4 py-1.5 fixed bottom-0 left-0 inset-shadow-2xs border-t border-batik-border">
+        <ul className="flex justify-around">
+          <li>
+            <Link
+              href="/dashboard"
+              className="text-batik-text flex flex-col items-center"
+            >
+              <HomeIcon className="h-6 w-6" />
+              <span className="mt-0.5 text-xs font-medium">Home</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/readings"
+              className="text-batik-text flex flex-col items-center"
+            >
+              <CrystalBall className="h-6 w-6" />
+              <span className="mt-0.5 text-xs font-medium">Readings</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/profile"
+              className="text-batik-text flex flex-col items-center"
+            >
+              <UserCircleIcon className="h-6 w-6" />
+              <span className="mt-0.5 text-xs font-medium">Profile</span>
+            </Link>
+          </li>
+        </ul>
+      </nav>
     </div>
   );
 }
