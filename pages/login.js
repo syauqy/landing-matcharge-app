@@ -65,7 +65,7 @@ export default function Login() {
   };
 
   return (
-    <div className="h-[100svh] flex flex-col bg-batik">
+    <div className="h-[100svh] flex flex-col bg-batik py-8">
       <Toaster richColors />
       {/* Navigation Bar */}
       <div className="bg-batik shadow-sm w-full">
@@ -158,7 +158,7 @@ export default function Login() {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full mt-0 block border-0 border-b-2 border-batik-border-light px-0.5 py-2 text-lg focus:border-black"
+                    className="w-full mt-0 block border-0 border-b-2 border-batik-border-light px-0.5 py-2 text-lg focus:border-indigo-600 focus:outline-hidden "
                     required
                     placeholder="your@email.com"
                   />

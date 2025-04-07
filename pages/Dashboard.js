@@ -4,8 +4,8 @@ import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { HomeIcon, UserCircleIcon } from "@heroicons/react/24/outline";
-import { CrystalBall } from "@/components/icons";
+import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
+import { Menubar } from "@/components/layouts/menubar";
 
 export default function DashboardPage() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -17,6 +17,7 @@ export default function DashboardPage() {
   const [requestingReading, setRequestingReading] = useState(false);
   const [fortuneResult, setFortuneResult] = useState(null);
   const [currentReadings, setCurrentReadings] = useState(0);
+  const [latestReadings, setLatestReadings] = useState([]);
 
   const READING_LIMIT = 2;
 
@@ -74,9 +75,28 @@ export default function DashboardPage() {
     }
   };
 
+  const fetchLatestReadings = async () => {
+    if (!user) return;
+    try {
+      const { data, error } = await supabase
+        .from("readings")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+      setLatestReadings(data);
+    } catch (err) {
+      console.error("Error fetching latest readings:", err);
+      setError("Failed to load latest readings.");
+    }
+  };
+
   useEffect(() => {
     if (!authLoading && user) {
       checkProfile();
+      fetchLatestReadings();
     }
   }, [user, authLoading]);
 
@@ -98,13 +118,16 @@ export default function DashboardPage() {
         throw new Error("No active session");
       }
 
-      const response = await fetch("/api/get-fortune", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://weton-ai-next.vercel.app/api/get-fortune",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -123,6 +146,7 @@ export default function DashboardPage() {
 
       if (error) throw error;
       setReadings(data);
+      fetchLatestReadings();
     } catch (err) {
       console.error("Error requesting new reading:", err);
       setError(err.message);
@@ -163,6 +187,24 @@ export default function DashboardPage() {
               <p className="text-sm text-gray-600">
                 {new Date(reading.created_at).toLocaleDateString()}
               </p>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  const renderLatestReadings = () => {
+    console.log(latestReadings);
+    return (
+      <ul className="space-y-4">
+        {latestReadings.map((r) => (
+          <li
+            key={r.id}
+            className="bg-white p-4 rounded-lg shadow-sm border-batik-border h-20 w-fit"
+          >
+            <Link href={`/readings/${r?.reading_category}/${r.slug}`}>
+              <p className="text-sm text-gray-600 font-semibold">{r.title}</p>
             </Link>
           </li>
         ))}
@@ -212,128 +254,46 @@ export default function DashboardPage() {
     );
   };
 
-  const renderLoadingState = () => {
-    return (
-      <div className="mt-4 text-center">
-        <p className="text-sm text-gray-600">
-          Calculating your fortune, please wait...
-        </p>
-      </div>
-    );
-  };
+  // const renderLoadingState = () => {
+  //   return (
+  //     <div className="mt-4 text-center">
+  //       <p className="text-sm text-gray-600">
+  //         Calculating your fortune, please wait...
+  //       </p>
+  //     </div>
+  //   );
+  // };
 
-  const renderErrorState = () => {
-    return (
-      <p className="mt-3 text-xs text-red-700 bg-red-100 p-2 rounded">
-        {error}
-      </p>
-    );
-  };
+  // const renderErrorState = () => {
+  //   return (
+  //     <p className="mt-3 text-xs text-red-700 bg-red-100 p-2 rounded">
+  //       {error}
+  //     </p>
+  //   );
+  // };
 
-  const renderSuccessState = () => {
-    return <p className="text-green-600 mb-4">{message}</p>;
-  };
+  // const renderSuccessState = () => {
+  //   return <p className="text-green-600 mb-4">{message}</p>;
+  // };
 
   return (
     <div className="h-[100svh] flex flex-col bg-batik">
-      <nav className="bg-batik w-full px-4 py-2 fixed top-0 left-0 z-10 border-b border-batik-border">
-        <div className="flex items-center">
-          <h1 className="text-xl sm:text-2xl font-bold text-center w-full text-batik-black">
-            Wetonscope
-          </h1>
-          {/* <div className="text-center sm:text-right text-xs sm:text-sm">
-            <span className="block sm:inline mr-0 sm:mr-4 mb-1 sm:mb-0 text-gray-600">
-              {user.email}
-            </span>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-xs"
-            >
-              Logout
-            </button>
-          </div> */}
+      <DashboardNavbar user={user} handleLogout={handleLogout} />
+      <div className="py-4 sm:py-6 flex-grow my-12">
+        <div className="flex flex-col gap-2">
+          <div className="px-4 text-lg font-medium text-batik-black">
+            Daily reading
+          </div>
+          <div className="px-4">{renderReadings()}</div>
         </div>
-      </nav>
-      <div className="p-4 sm:p-6 flex-grow mt-12">
-        <div className="flex flex-col">
-          <div>Daily Reading</div>
-          <div>Daily</div>
+        <div className="mt-4 flex flex-col gap-2">
+          <div className="px-4 text-lg font-medium text-batik-black">
+            Latest readings
+          </div>
+          <div className="px-4">{renderLatestReadings()}</div>
         </div>
-        <div>
-          <div>Latest Readings</div>
-          <div>Latest</div>
-        </div>
-        {/* <div className="bg-white p-4 sm:p-6 rounded shadow-md">
-          <h2 className="text-lg sm:text-xl font-semibold mb-2 border-b pb-2">
-            Weton Fortune
-          </h2>
-          <p className="text-xs text-gray-500 mb-4">
-            Readings used: {currentReadings} / {READING_LIMIT}
-          </p>
-          {error && renderErrorState()}
-          {message && renderSuccessState()}
-          {loading ? (
-            <p>Loading readings...</p>
-          ) : readings.length === 0 ? (
-            <p>No readings found.</p>
-          ) : (
-            renderReadings()
-          )}
-          {!fortuneResult && (
-            <button
-              onClick={requestNewReading}
-              disabled={!canCalculate || requestingReading}
-              className={`w-full px-4 py-2 rounded text-white font-semibold text-sm transition duration-150 ease-in-out ${
-                canCalculate
-                  ? "bg-indigo-600 hover:bg-indigo-700"
-                  : "bg-gray-400 cursor-not-allowed"
-              } ${requestingReading ? "opacity-50 cursor-wait" : ""}`}
-            >
-              {requestingReading
-                ? "Generating new reading..."
-                : "Get New Reading"}
-            </button>
-          )}
-          {!requestingReading && !canCalculate && limitReached && (
-            <p className="mt-3 text-xs text-red-700 bg-red-100 p-2 rounded">
-              You have reached your free reading limit.
-            </p>
-          )}
-          {requestingReading && renderLoadingState()}
-          {fortuneResult && !requestingReading && renderFortuneResult()}
-        </div> */}
+        <Menubar />
       </div>
-      <nav className="bg-batik w-full px-4 py-1.5 fixed bottom-0 left-0 inset-shadow-2xs border-t border-batik-border">
-        <ul className="flex justify-around">
-          <li>
-            <Link
-              href="/dashboard"
-              className="text-batik-text flex flex-col items-center"
-            >
-              <HomeIcon className="h-6 w-6" />
-              <span className="mt-0.5 text-xs font-medium">Home</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/readings"
-              className="text-batik-text flex flex-col items-center"
-            >
-              <CrystalBall className="h-6 w-6" />
-              <span className="mt-0.5 text-xs font-medium">Readings</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/profile"
-              className="text-batik-text flex flex-col items-center"
-            >
-              <UserCircleIcon className="h-6 w-6" />
-              <span className="mt-0.5 text-xs font-medium">Profile</span>
-            </Link>
-          </li>
-        </ul>
-      </nav>
     </div>
   );
 }

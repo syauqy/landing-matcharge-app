@@ -48,7 +48,7 @@ body {
 }
 
 .onboarding-slider .slick-dots {
-  bottom: -50px;
+  bottom: -10px;
 }
 
 .onboarding-slider .slick-dots li button:before {

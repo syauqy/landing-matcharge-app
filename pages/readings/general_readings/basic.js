@@ -66,24 +66,25 @@ export default function BasicReadingPage() {
       {/* Navbar */}
       <nav className="bg-batik shadow-sm w-full sticky top-0 z-10">
         <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between relative">
-          <Link href="/dashboard">
-            <button className="text-batik-black hover:text-batik-black-hover">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                />
-              </svg>
-            </button>
-          </Link>
+          <button
+            onClick={() => router.back()}
+            className="text-batik-black hover:text-batik-black-hover"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+              />
+            </svg>
+          </button>
           <h1 className="text-lg font-semibold text-batik-black capitalize">
             {title}
           </h1>

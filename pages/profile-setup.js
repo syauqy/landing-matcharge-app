@@ -145,13 +145,16 @@ export default function ProfileSetupPage() {
         return;
       }
 
-      const response = await fetch("/api/get-fortune", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://weton-ai-next.vercel.app/api/get-fortune",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         console.error("Error getting weton analysis:", await response.text());
@@ -178,6 +181,7 @@ export default function ProfileSetupPage() {
         reading_type: "free",
         title: "About You",
         reading_category: "general_readings",
+        slug: "basic",
       };
 
       console.log("dapeting analysis", readingData);
@@ -195,7 +199,7 @@ export default function ProfileSetupPage() {
         toast.error("Failed to save reading data.");
       } else {
         // Redirect only after successful saving
-        router.push("/readings/basic");
+        router.push("/readings/general-readings/basic");
       }
     } catch (err) {
       console.error("Error in weton analysis process:", err);

@@ -1,0 +1,9 @@
+{
+  "appId": "com.geekchimp.weton",
+  "appName": "Wetonscope",
+  "webDir": "out",
+  "server": {
+    "url": "http://10.10.1.55:3000",
+    "cleartext": true
+  }
+}

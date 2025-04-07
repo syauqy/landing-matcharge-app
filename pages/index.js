@@ -100,17 +100,17 @@ export default function HomePage() {
             </div>
           ))}
         </Slider>
+        {authLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <button
+            onClick={goToLogin}
+            className="w-full bg-batik-border text-white py-3 px-8 rounded-2xl hover:bg-batik-border-hover transition duration-300 font-semibold shadow-md"
+          >
+            Get your weton reading
+          </button>
+        )}
       </div>
-      {authLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <button
-          onClick={goToLogin}
-          className="w-full bg-batik-border text-white py-3 px-8 rounded-2xl hover:bg-batik-border-hover transition duration-300 font-semibold shadow-md"
-        >
-          Get your free reading
-        </button>
-      )}
     </div>
   );
 }
