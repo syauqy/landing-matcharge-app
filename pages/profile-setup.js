@@ -102,7 +102,7 @@ export default function ProfileSetupPage() {
         throw new Error("No active session");
       }
 
-      const response = await fetch("/api/check-username", {
+      const response = await fetch("https://weton-ai-next.vercel.app/api/check-username", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
