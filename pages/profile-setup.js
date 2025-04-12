@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { getWeton } from "@/utils";
 import { Toaster, toast } from "sonner";
+import { Capacitor } from "@capacitor/core";
 
 export default function ProfileSetupPage() {
   const { user, loading: authLoading } = useAuth();
@@ -102,25 +103,33 @@ export default function ProfileSetupPage() {
         throw new Error("No active session");
       }
 
-      const response = await fetch("https://weton-ai-next.vercel.app/api/check-username", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({
-          username: value.toLowerCase(),
-        }),
-      });
+      const { data, error } = await supabase
+      .from("profiles")
+      .select("id, username")
+      .eq("username", username.toLowerCase());
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Error: ${response.status}`);
-      }
+      // const response = await fetch("https://weton-ai-next.vercel.app/api/check-username", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${session.access_token}`,
+      //   },
+      //   body: JSON.stringify({
+      //     username: value.toLowerCase(),
+      //   }),
+      // });
 
-      const { available } = await response.json();
+      // console.log(data, error)
 
-      if (available) {
+
+      // if (!response.ok) {
+      //   const errorData = await response.json();
+      //   throw new Error(errorData.error || `Error: ${response.status}`);
+      // }
+
+      // const { available } = await response.json();
+
+      if (data && data.length == 0) {
         setUsernameAvailable(true);
       } else {
         setUsernameAvailable(false);
@@ -145,8 +154,8 @@ export default function ProfileSetupPage() {
         return;
       }
 
-      const response = await fetch(
-        "https://weton-ai-next.vercel.app/api/get-fortune",
+      const response = await fetch(Capacitor.isNative ? 
+        "https://weton-ai-next.vercel.app/api/get-fortune" : '/api/get-fortune',
         {
           method: "POST",
           headers: {

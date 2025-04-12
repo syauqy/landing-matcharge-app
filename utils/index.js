@@ -90,12 +90,12 @@ export function getWeton(birthDate) {
     const totalNeptu = dayNept + pasaranNept;
 
     return {
-      namaHari: hari,
-      dayName: day,
-      pasaranName: pasaran,
-      dayNeptu: dayNept,
-      pasaranNeptu: pasaranNept,
-      totalNeptu: totalNeptu,
+      dina: hari,
+      dina_en: day,
+      pasaran: pasaran,
+      neptu_dina: dayNept,
+      neptu_pasaran: pasaranNept,
+      total_neptu: totalNeptu,
       weton: `${hari} ${pasaran}`,
       weton_en: `${day} ${pasaran}`,
     };
