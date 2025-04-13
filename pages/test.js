@@ -3,10 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { google } from "@ai-sdk/google";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateObject } from "ai";
-import { z } from "zod";
+import { getWuku } from "@/utils";
 
 export default function TestPage() {
   const { user, loading: authLoading } = useAuth();
@@ -14,6 +11,8 @@ export default function TestPage() {
   const [results, setResults] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [birthDate, setBirthDate] = useState("");
+  const [wuku, setWuku] = useState({});
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -70,6 +69,11 @@ export default function TestPage() {
     }
   };
 
+  const handleTestWuku = () => {
+    const wuku_data = getWuku(birthDate);
+    setWuku(wuku_data);
+  };
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -113,7 +117,7 @@ export default function TestPage() {
     }
   };
 
-  console.log(results);
+  console.log(wuku, birthDate);
 
   return (
     <div className="min-h-screen p-4">
@@ -138,6 +142,28 @@ export default function TestPage() {
       {loading && (
         <div className="text-gray-500 mb-4">Testing models, please wait...</div>
       )}
+
+      <div className="h-[%30]">
+        <label
+          className="block text-gray-700 mb-2 font-semibold"
+          htmlFor="birthDate"
+        >
+          Birth Date <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="date"
+          id="birthDate"
+          value={birthDate}
+          onChange={(e) => setBirthDate(e.target.value)}
+          className="w-full px-3 py-2 block border-0 border-b-2 border-batik-border-light text-lg"
+          required
+        />
+        <button onClick={handleTestWuku}>Get Wuku</button>
+        <p className="text-xs text-gray-500 mt-2">
+          Required for Weton calculation
+        </p>
+        <p>Your Wuku: {wuku.wuku}</p>
+      </div>
 
       {/* Optionally display AI SDK result if you store it in state */}
       {results.analysis && (
