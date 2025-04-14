@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { getWuku } from "@/utils";
+import { getWuku, getWeton } from "@/utils";
 
 export default function TestPage() {
   const { user, loading: authLoading } = useAuth();
@@ -13,6 +13,7 @@ export default function TestPage() {
   const [error, setError] = useState(null);
   const [birthDate, setBirthDate] = useState("");
   const [wuku, setWuku] = useState({});
+  const [weton, setWeton] = useState({});
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -69,8 +70,10 @@ export default function TestPage() {
     }
   };
 
-  const handleTestWuku = () => {
+  const handleTest = () => {
     const wuku_data = getWuku(birthDate);
+    const weton_data = getWeton(birthDate);
+    setWeton(weton_data);
     setWuku(wuku_data);
   };
 
@@ -117,7 +120,7 @@ export default function TestPage() {
     }
   };
 
-  console.log(wuku, birthDate);
+  console.log(wuku, weton, birthDate);
 
   return (
     <div className="min-h-screen p-4">
@@ -158,11 +161,12 @@ export default function TestPage() {
           className="w-full px-3 py-2 block border-0 border-b-2 border-batik-border-light text-lg"
           required
         />
-        <button onClick={handleTestWuku}>Get Wuku</button>
+        <button onClick={handleTest}>Get Weton and Wuku</button>
         <p className="text-xs text-gray-500 mt-2">
           Required for Weton calculation
         </p>
-        <p>Your Wuku: {wuku.wuku}</p>
+        <p>Your Wuku: {JSON.stringify(wuku, null, 2)}</p>
+        <p>Your Weton: {JSON.stringify(weton, null, 2)}</p>
       </div>
 
       {/* Optionally display AI SDK result if you store it in state */}
