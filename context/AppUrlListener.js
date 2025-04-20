@@ -7,7 +7,9 @@ export function AppUrlListener() {
   const router = Router;
   useEffect(() => {
     App.addListener("appUrlOpen", (event) => {
-      const slug = event.url.split(".app").pop();
+      const slug = event.url.split("wetonai.vercel.app").pop();
+
+      console.log("App URL Opened:", slug);
       if (slug) router.push(slug);
     });
   }, []);
