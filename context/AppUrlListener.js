@@ -8,14 +8,28 @@ export function AppUrlListener() {
 
   useEffect(() => {
     App.addListener("appUrlOpen", (event) => {
-      console.log("App opened with URL:", url); // Log the full URL object or string
-      console.log("URL fragment:", url?.hash || window.location.hash); // Specifically log the fragment
-      // Check if the URL string contains a '#' symbol
+      console.log("AppUrlListener: Received event:", event);
+      console.log("AppUrlListener: Full URL from event:", event.url);
+
+      // --- Add this log ---
+      // Check what the web view's window object thinks the hash is right now
+      console.log(
+        "AppUrlListener: Current window.location.hash:",
+        window.location.hash
+      );
+      // --- End of added log ---
+
       const hasHash = event.url.includes("#");
-      console.log("AppUrlListener: Does URL contain fragment (#)?", hasHash);
+      console.log(
+        "AppUrlListener: Does event.url contain fragment (#)?",
+        hasHash
+      );
+
       if (hasHash) {
-        // Log the part after the # if it exists
-        console.log("AppUrlListener: Fragment:", event.url.split("#")[1]);
+        console.log(
+          "AppUrlListener: Fragment from event.url:",
+          event.url.split("#")[1]
+        );
       }
 
       // const slug = event.url.split("wetonai.vercel.app").pop();
