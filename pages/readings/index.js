@@ -126,8 +126,9 @@ export default function ReadingsPage() {
 
           {/* --- Sections --- */}
           <div className="space-y-6">
-            {SectionData.map((section) => (
+            {SectionData.map((section, i) => (
               <ReadingSection
+                key={i}
                 title={section.title}
                 subtitle={section.subtitle}
                 cards={section.cards}

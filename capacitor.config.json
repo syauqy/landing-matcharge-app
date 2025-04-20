@@ -3,7 +3,7 @@
   "appName": "Wetonscope",
   "webDir": "out",
   "server": {
-    "url": "https://weton-ai-next.vercel.app",
+    "url": "http://192.168.1.3:3000",
     "cleartext": true
   }
 }
