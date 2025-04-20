@@ -9,27 +9,50 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const setData = async () => {
-      // Destructure directly
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-      if (error) throw error;
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    };
+    // const setData = async () => {
+    //   // Destructure directly
+    //   const {
+    //     data: { session },
+    //     error,
+    //   } = await supabase.auth.getSession();
+    //   if (error) throw error;
+    //   setSession(session);
+    //   setUser(session?.user ?? null);
+    //   setLoading(false);
+    // };
 
+    // const { data: listener } = supabase.auth.onAuthStateChange(
+    //   (_event, session) => {
+    //     setSession(session);
+    //     setUser(session?.user ?? null);
+    //     // No need to set loading false here
+    //   }
+    // );
+
+    // setData();
+
+    setLoading(true); // Ensure loading is true initially
+
+    // Get initial session *just in case* one exists (e.g., user re-opens app)
+    // We won't set loading false here anymore.
+    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+      console.log("AuthProvider initial getSession:", initialSession);
+      // If a session already exists, onAuthStateChange below will also fire
+      // with this session shortly, handling the state update and loading flag.
+      // If no session exists yet, we wait for onAuthStateChange.
+    });
+
+    // Setup the listener. This listener also fires immediately
+    // with the initial auth state, AND processes URL fragments.
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
+        console.log("AuthProvider onAuthStateChange:", _event, session);
         setSession(session);
         setUser(session?.user ?? null);
-        // No need to set loading false here
+        // Set loading to false HERE, after the listener confirms the state
+        setLoading(false);
       }
     );
-
-    setData();
 
     // Cleanup listener on component unmount
     return () => {

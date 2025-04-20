@@ -33,9 +33,6 @@ export default function Home() {
     );
 
     if (needsNativeRedirect) {
-      // Don't check window.location.hash here!
-      // Supabase client should have processed the hash already.
-      // Check if a session exists *now*.
       supabase.auth
         .getSession()
         .then(({ data: { session }, error }) => {
@@ -44,19 +41,13 @@ export default function Home() {
             console.error("Error getting session:", error);
             setIsCheckingRedirect(false); // Stop checking on error
           } else if (session) {
-            // Session is established! We can redirect to the app.
-            // The hash fragment is NOT needed in the custom scheme URL anymore.
             const customSchemeUrl = `wetonscope://auth/callback`;
             console.log(
               `Session found. Redirecting to custom scheme: ${customSchemeUrl}`
             );
             // Use replace to avoid adding this intermediate page to browser history
             window.location.replace(customSchemeUrl);
-            // Redirect likely happens before state update below, but set it just in case
-            // setIsCheckingRedirect(false);
           } else {
-            // No session found. This implies the hash processing failed or wasn't done yet.
-            // This *shouldn't* happen if the backend logs were clean and token was briefly visible.
             console.log("No active session found after redirect check.");
             setIsCheckingRedirect(false);
           }
