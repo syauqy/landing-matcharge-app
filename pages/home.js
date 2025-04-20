@@ -22,6 +22,29 @@ export default function Home() {
   const READING_LIMIT = 2;
 
   useEffect(() => {
+    // Only run this logic once on component mount
+    const hash = window.location.hash;
+    const params = new URLSearchParams(window.location.search);
+
+    // Check 1: Did Supabase return tokens in the URL fragment?
+    const hasAuthTokens =
+      hash.includes("access_token") || hash.includes("error="); // Check for token or error
+
+    // Check 2: Is the signal query parameter present?
+    const needsNativeRedirect = params.get("native_redirect") === "true";
+
+    if (hasAuthTokens && needsNativeRedirect) {
+      const customSchemeUrl = `wetonscope://auth/callback${hash}`;
+      console.log(
+        `Native redirect detected. Redirecting to: ${customSchemeUrl}`
+      );
+      window.location.replace(customSchemeUrl);
+    } else {
+      console.log("Not performing native redirect.");
+    }
+  }, [router]);
+
+  useEffect(() => {
     if (!authLoading && !user) {
       router.push("/");
     }
