@@ -8,6 +8,14 @@ export function AppUrlListener() {
 
   useEffect(() => {
     App.addListener("appUrlOpen", (event) => {
+      // --- Import supabase INSIDE the listener ---
+      const { supabase } = require("@/utils/supabaseClient");
+      // --- Log immediately after import ---
+      console.log(
+        "AppUrlListener: Supabase object imported inside listener:",
+        typeof supabase
+      );
+
       console.log("AppUrlListener: Received event:", event);
       console.log("AppUrlListener: Full URL from event:", event.url);
       console.log(
@@ -29,7 +37,7 @@ export function AppUrlListener() {
         console.log("AppUrlListener: Parsed refresh_token:", !!refreshToken);
 
         if (accessToken && refreshToken) {
-          // --- Add verification log ---
+          // --- Verification log (should now work if import succeeded) ---
           console.log(
             "AppUrlListener: Verifying supabase object before setSession:",
             typeof supabase?.auth?.setSession === "function"
@@ -38,7 +46,6 @@ export function AppUrlListener() {
           );
           // --- End verification log ---
 
-          // Ensure supabase and setSession are valid before calling
           if (supabase?.auth?.setSession) {
             console.log(
               "AppUrlListener: Attempting to set session manually..."
@@ -49,7 +56,6 @@ export function AppUrlListener() {
                 refresh_token: refreshToken,
               })
               .then(({ data, error }) => {
-                // This block might be skipped if the promise rejects immediately
                 if (error) {
                   console.error(
                     "AppUrlListener: Error returned by setSession:",
@@ -58,27 +64,24 @@ export function AppUrlListener() {
                 } else {
                   console.log(
                     "AppUrlListener: Session set manually successfully:",
-                    data.session // Log the session object if successful
+                    data.session
                   );
                 }
               })
               .catch((err) => {
-                // --- Improved error logging ---
                 console.error(
                   "AppUrlListener: CATCH block: Exception during setSession:",
                   err
                 );
-                // Log specific properties if available
                 if (err instanceof Error) {
                   console.error("AppUrlListener: Error name:", err.name);
                   console.error("AppUrlListener: Error message:", err.message);
                   console.error("AppUrlListener: Error stack:", err.stack);
                 }
-                // --- End improved error logging ---
               });
           } else {
             console.error(
-              "AppUrlListener: Cannot call setSession - supabase object or auth method is invalid."
+              "AppUrlListener: Cannot call setSession - supabase object or auth method is invalid (imported inside listener)."
             );
           }
         } else {
