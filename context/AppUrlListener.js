@@ -12,58 +12,80 @@ export function AppUrlListener() {
       console.log("AppUrlListener: Full URL from event:", event.url);
       console.log(
         "AppUrlListener: Current window.location.hash:",
-        window.location.hash // Still useful for confirming it's empty
+        window.location.hash
       );
 
       const url = new URL(event.url);
-      const hash = url.hash; // Get the fragment part (e.g., #access_token=...)
+      const hash = url.hash;
 
       if (hash) {
         console.log("AppUrlListener: Found fragment:", hash);
 
-        // Parse the fragment parameters into an object
-        const params = new URLSearchParams(hash.substring(1)); // Remove the leading '#'
+        const params = new URLSearchParams(hash.substring(1));
         const accessToken = params.get("access_token");
         const refreshToken = params.get("refresh_token");
-        const expiresIn = params.get("expires_in"); // Optional, but good to have
 
-        console.log("AppUrlListener: Parsed access_token:", !!accessToken); // Log if token exists
-        console.log("AppUrlListener: Parsed refresh_token:", !!refreshToken); // Log if token exists
+        console.log("AppUrlListener: Parsed access_token:", !!accessToken);
+        console.log("AppUrlListener: Parsed refresh_token:", !!refreshToken);
 
-        // --- Manually set the session ---
         if (accessToken && refreshToken) {
-          console.log("AppUrlListener: Attempting to set session manually...");
-          supabase.auth
-            .setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            })
-            .then(({ data, error }) => {
-              if (error) {
+          // --- Add verification log ---
+          console.log(
+            "AppUrlListener: Verifying supabase object before setSession:",
+            typeof supabase?.auth?.setSession === "function"
+              ? "supabase.auth.setSession exists"
+              : "supabase.auth.setSession NOT FOUND or invalid"
+          );
+          // --- End verification log ---
+
+          // Ensure supabase and setSession are valid before calling
+          if (supabase?.auth?.setSession) {
+            console.log(
+              "AppUrlListener: Attempting to set session manually..."
+            );
+            supabase.auth
+              .setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+              })
+              .then(({ data, error }) => {
+                // This block might be skipped if the promise rejects immediately
+                if (error) {
+                  console.error(
+                    "AppUrlListener: Error returned by setSession:",
+                    error
+                  );
+                } else {
+                  console.log(
+                    "AppUrlListener: Session set manually successfully:",
+                    data.session // Log the session object if successful
+                  );
+                }
+              })
+              .catch((err) => {
+                // --- Improved error logging ---
                 console.error(
-                  "AppUrlListener: Error setting session manually:",
-                  error
+                  "AppUrlListener: CATCH block: Exception during setSession:",
+                  err
                 );
-              } else {
-                console.log(
-                  "AppUrlListener: Session set manually successfully:",
-                  data.session // Log the session object if successful
-                );
-                // The onAuthStateChange listener in AuthContext should now fire with SIGNED_IN
-              }
-            })
-            .catch((err) => {
-              console.error(
-                "AppUrlListener: Exception during setSession:",
-                err
-              );
-            });
+                // Log specific properties if available
+                if (err instanceof Error) {
+                  console.error("AppUrlListener: Error name:", err.name);
+                  console.error("AppUrlListener: Error message:", err.message);
+                  console.error("AppUrlListener: Error stack:", err.stack);
+                }
+                // --- End improved error logging ---
+              });
+          } else {
+            console.error(
+              "AppUrlListener: Cannot call setSession - supabase object or auth method is invalid."
+            );
+          }
         } else {
           console.warn(
             "AppUrlListener: Could not find access_token or refresh_token in fragment."
           );
         }
-        // --- End of manual session setting ---
       } else {
         console.log("AppUrlListener: No fragment found in URL.");
       }
