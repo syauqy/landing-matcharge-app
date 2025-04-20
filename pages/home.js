@@ -22,27 +22,35 @@ export default function Home() {
   const READING_LIMIT = 2;
 
   useEffect(() => {
-    // Only run this logic once on component mount
+    console.log("HomePage Mounted. Checking hash and params...");
     const hash = window.location.hash;
     const params = new URLSearchParams(window.location.search);
+    console.log("Current Hash:", hash);
+    console.log("Current Search Params:", params.toString());
 
-    // Check 1: Did Supabase return tokens in the URL fragment?
     const hasAuthTokens =
-      hash.includes("access_token") || hash.includes("error="); // Check for token or error
-
-    // Check 2: Is the signal query parameter present?
+      hash.includes("access_token") || hash.includes("error=");
     const needsNativeRedirect = params.get("native_redirect") === "true";
+    console.log("Has Auth Info:", hasAuthTokens);
+    console.log("Needs Native Redirect:", needsNativeRedirect);
 
     if (hasAuthTokens && needsNativeRedirect) {
-      const customSchemeUrl = `wetonscope://auth/callback${hash}`;
-      console.log(
-        `Native redirect detected. Redirecting to: ${customSchemeUrl}`
-      );
-      window.location.replace(customSchemeUrl);
+      if (hash.includes("error=")) {
+        console.error("Error returned from Apple Sign In:", hash);
+      } else {
+        const customSchemeUrl = `wetonscope://auth/callback${hash}`;
+        console.log(`Attempting redirect to custom scheme: ${customSchemeUrl}`);
+        try {
+          window.location.replace(customSchemeUrl);
+        } catch (e) {
+          console.error("Error during window.location.replace:", e);
+        }
+      }
     } else {
-      console.log("Not performing native redirect.");
+      console.log("Conditions for native redirect not met.");
+      // Normal page logic
     }
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     if (!authLoading && !user) {

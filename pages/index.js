@@ -82,7 +82,6 @@ export default function HomePage() {
     setLoading(true);
 
     const isNative = Capacitor.isNativePlatform();
-    // *** Use the new scheme here ***
     let redirectUrl = "https://wetonai.vercel.app/home";
 
     if (isNative) {
