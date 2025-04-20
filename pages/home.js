@@ -21,36 +21,62 @@ export default function Home() {
 
   const READING_LIMIT = 2;
 
+  // Optional: Add loading state for better UX during check
+  const [isCheckingRedirect, setIsCheckingRedirect] = useState(true);
+
   useEffect(() => {
-    console.log("HomePage Mounted. Checking hash and params...");
-    const hash = window.location.hash;
     const params = new URLSearchParams(window.location.search);
-    console.log("Current Hash:", hash);
-    console.log("Current Search Params:", params.toString());
-
-    const hasAuthTokens =
-      hash.includes("access_token") || hash.includes("error=");
     const needsNativeRedirect = params.get("native_redirect") === "true";
-    console.log("Has Auth Info:", hasAuthTokens);
-    console.log("Needs Native Redirect:", needsNativeRedirect);
+    console.log(
+      "HomePage Mounted. Needs Native Redirect:",
+      needsNativeRedirect
+    );
 
-    if (hasAuthTokens && needsNativeRedirect) {
-      if (hash.includes("error=")) {
-        console.error("Error returned from Apple Sign In:", hash);
-      } else {
-        const customSchemeUrl = `wetonscope://auth/callback${hash}`;
-        console.log(`Attempting redirect to custom scheme: ${customSchemeUrl}`);
-        try {
-          window.location.replace(customSchemeUrl);
-        } catch (e) {
-          console.error("Error during window.location.replace:", e);
-        }
-      }
+    if (needsNativeRedirect) {
+      // Don't check window.location.hash here!
+      // Supabase client should have processed the hash already.
+      // Check if a session exists *now*.
+      supabase.auth
+        .getSession()
+        .then(({ data: { session }, error }) => {
+          console.log("Supabase getSession result:", session);
+          if (error) {
+            console.error("Error getting session:", error);
+            setIsCheckingRedirect(false); // Stop checking on error
+          } else if (session) {
+            // Session is established! We can redirect to the app.
+            // The hash fragment is NOT needed in the custom scheme URL anymore.
+            const customSchemeUrl = `wetoscope://auth/callback`;
+            console.log(
+              `Session found. Redirecting to custom scheme: ${customSchemeUrl}`
+            );
+            // Use replace to avoid adding this intermediate page to browser history
+            window.location.replace(customSchemeUrl);
+            // Redirect likely happens before state update below, but set it just in case
+            // setIsCheckingRedirect(false);
+          } else {
+            // No session found. This implies the hash processing failed or wasn't done yet.
+            // This *shouldn't* happen if the backend logs were clean and token was briefly visible.
+            console.log("No active session found after redirect check.");
+            setIsCheckingRedirect(false);
+          }
+        })
+        .catch((err) => {
+          console.error("Error during getSession promise:", err);
+          setIsCheckingRedirect(false);
+        });
     } else {
-      console.log("Conditions for native redirect not met.");
-      // Normal page logic
+      // Normal web page load, not a native callback
+      console.log("Not a native redirect.");
+      setIsCheckingRedirect(false);
     }
+    // Only run this effect once on mount
   }, []);
+
+  // Conditionally render loading indicator only during the native redirect check
+  const params = new URLSearchParams(
+    typeof window !== "undefined" ? window.location.search : ""
+  );
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -204,6 +230,10 @@ export default function Home() {
         <p>Redirecting...</p>
       </div>
     );
+  }
+
+  if (isCheckingRedirect && params.get("native_redirect") === "true") {
+    return <div>Processing login...</div>;
   }
 
   const canCalculate = currentReadings < READING_LIMIT;
