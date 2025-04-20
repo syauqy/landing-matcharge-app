@@ -33,17 +33,10 @@ export const AuthProvider = ({ children }) => {
 
     setLoading(true); // Ensure loading is true initially
 
-    // Get initial session *just in case* one exists (e.g., user re-opens app)
-    // We won't set loading false here anymore.
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       console.log("AuthProvider initial getSession:", initialSession);
-      // If a session already exists, onAuthStateChange below will also fire
-      // with this session shortly, handling the state update and loading flag.
-      // If no session exists yet, we wait for onAuthStateChange.
     });
 
-    // Setup the listener. This listener also fires immediately
-    // with the initial auth state, AND processes URL fragments.
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         console.log("AuthProvider onAuthStateChange:", _event, session);
