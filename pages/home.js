@@ -22,7 +22,7 @@ export default function Home() {
   const READING_LIMIT = 2;
 
   // Optional: Add loading state for better UX during check
-  const [isCheckingRedirect, setIsCheckingRedirect] = useState(true);
+  // const [isCheckingRedirect, setIsCheckingRedirect] = useState(true);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -65,9 +65,11 @@ export default function Home() {
   }, []);
 
   // Conditionally render loading indicator only during the native redirect check
-  const params = new URLSearchParams(
-    typeof window !== "undefined" ? window.location.search : ""
-  );
+  // const params = new URLSearchParams(
+  //   typeof window !== "undefined" ? window.location.search : ""
+  // );
+
+  console.log("loading", authLoading, user);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -223,9 +225,9 @@ export default function Home() {
     );
   }
 
-  if (isCheckingRedirect && params.get("native_redirect") === "true") {
-    return <div>Processing login...</div>;
-  }
+  // if (isCheckingRedirect && params.get("native_redirect") === "true") {
+  //   return <div>Processing login...</div>;
+  // }
 
   const canCalculate = currentReadings < READING_LIMIT;
   const limitReached = currentReadings >= READING_LIMIT;
