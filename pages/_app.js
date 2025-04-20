@@ -8,7 +8,7 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
       <Layout>
-        <AppUrlListener></AppUrlListener>
+        {/* <AppUrlListener></AppUrlListener> */}
         <Component {...pageProps} />
       </Layout>
     </AuthProvider>
