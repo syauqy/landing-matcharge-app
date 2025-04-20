@@ -25,7 +25,7 @@ export default function Login() {
     const { error: signInError } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}/home`,
       },
     });
 
@@ -49,7 +49,7 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        redirectTo: `${window.location.origin}/home`,
       },
     });
 
@@ -58,6 +58,23 @@ export default function Login() {
       setLoading(false);
     }
     // No need to set loading to false on success as we're redirecting to Google
+  };
+
+  const handleAppleLogin = async () => {
+    setLoading(true);
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "apple",
+      options: {
+        redirectTo: `${window.location.origin}/home`,
+      },
+    });
+
+    if (error) {
+      toast.error(error.message);
+      setLoading(false);
+    }
+    // No need to set loading to false on success as we're redirecting to Apple
   };
 
   const goBack = () => {
@@ -133,12 +150,33 @@ export default function Login() {
               <span className="font-medium">Continue with Google</span>
             </button>
 
+            <button
+              onClick={handleAppleLogin}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-3 bg-black text-white py-2.5 px-3 rounded-2xl shadow-sm hover:bg-gray-800 transition duration-150 ease-in-out"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 200 200"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M179.34 152.465C176.381 159.3 172.879 165.592 168.822 171.377C163.291 179.263 158.762 184.721 155.272 187.752C149.862 192.728 144.065 195.276 137.858 195.421C133.402 195.421 128.028 194.153 121.772 191.581C115.496 189.02 109.728 187.752 104.455 187.752C98.9237 187.752 92.9918 189.02 86.6468 191.581C80.2923 194.153 75.1731 195.493 71.2591 195.626C65.3067 195.88 59.3736 193.259 53.4514 187.752C49.6715 184.456 44.9436 178.804 39.2797 170.797C33.2029 162.247 28.2069 152.332 24.293 141.029C20.1013 128.82 18 116.997 18 105.551C18 92.4397 20.8331 81.1314 26.5078 71.6551C30.9676 64.0434 36.9007 58.039 44.3265 53.6311C51.7522 49.2233 59.7757 46.9771 68.4164 46.8333C73.1443 46.8333 79.3443 48.2958 87.049 51.17C94.732 54.0538 99.6652 55.5162 101.828 55.5162C103.445 55.5162 108.925 53.8062 118.216 50.3971C127.001 47.2355 134.416 45.9264 140.49 46.4421C156.951 47.7705 169.317 54.2591 177.541 65.949C162.82 74.8686 155.538 87.3616 155.683 103.388C155.815 115.871 160.344 126.26 169.244 134.508C173.278 138.336 177.782 141.295 182.794 143.396C181.707 146.548 180.56 149.567 179.34 152.465ZM141.589 3.91397C141.589 13.6984 138.015 22.834 130.89 31.2899C122.291 41.3422 111.891 47.1509 100.613 46.2344C100.469 45.0605 100.386 43.8251 100.386 42.5269C100.386 33.1339 104.475 23.0816 111.737 14.8624C115.362 10.7009 119.973 7.24065 125.564 4.48035C131.143 1.76123 136.421 0.257507 141.384 0C141.529 1.30802 141.589 2.61625 141.589 3.91397Z"
+                  fill="white"
+                />
+              </svg>
+
+              <span className="font-medium">Continue with Apple</span>
+            </button>
+
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t-2 border-batik-border-light"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-slate-700">Or</span>
+                <span className="px-2 bg-batik  text-slate-700">Or</span>
               </div>
             </div>
 

@@ -41,7 +41,7 @@ export default function ProfileSetupPage() {
           .single();
 
         if (!error && data && data.birth_date) {
-          router.push("/dashboard");
+          router.push("/home");
         }
       } catch (err) {
         console.error("Error checking profile:", err);
@@ -104,9 +104,9 @@ export default function ProfileSetupPage() {
       }
 
       const { data, error } = await supabase
-      .from("profiles")
-      .select("id, username")
-      .eq("username", username.toLowerCase());
+        .from("profiles")
+        .select("id, username")
+        .eq("username", username.toLowerCase());
 
       // const response = await fetch("https://weton-ai-next.vercel.app/api/check-username", {
       //   method: "POST",
@@ -120,7 +120,6 @@ export default function ProfileSetupPage() {
       // });
 
       // console.log(data, error)
-
 
       // if (!response.ok) {
       //   const errorData = await response.json();
@@ -154,8 +153,10 @@ export default function ProfileSetupPage() {
         return;
       }
 
-      const response = await fetch(Capacitor.isNative ? 
-        "https://weton-ai-next.vercel.app/api/get-fortune" : '/api/get-fortune',
+      const response = await fetch(
+        Capacitor.isNative
+          ? "https://weton-ai-next.vercel.app/api/get-fortune"
+          : "/api/get-fortune",
         {
           method: "POST",
           headers: {

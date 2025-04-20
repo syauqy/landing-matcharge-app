@@ -13,7 +13,7 @@ export function Menubar() {
       <ul className="flex justify-around">
         <li>
           <Link
-            href="/dashboard"
+            href="/home"
             className="text-batik-text flex flex-col items-center"
           >
             <HomeIcon className="h-6 w-6" />
