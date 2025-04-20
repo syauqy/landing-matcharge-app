@@ -46,7 +46,7 @@ export default function Home() {
           } else if (session) {
             // Session is established! We can redirect to the app.
             // The hash fragment is NOT needed in the custom scheme URL anymore.
-            const customSchemeUrl = `wetoscope://auth/callback`;
+            const customSchemeUrl = `wetonscope://auth/callback`;
             console.log(
               `Session found. Redirecting to custom scheme: ${customSchemeUrl}`
             );
