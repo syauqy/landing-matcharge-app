@@ -9,12 +9,14 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    // Recommended settings for Capacitor/React Native
-    storage: typeof window !== "undefined" ? window.localStorage : undefined, // Use localStorage if available
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false, // We are handling it manually now
-  },
-});
+// export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+//   auth: {
+//     // Recommended settings for Capacitor/React Native
+//     storage: typeof window !== "undefined" ? window.localStorage : undefined, // Use localStorage if available
+//     autoRefreshToken: true,
+//     persistSession: true,
+//     detectSessionInUrl: false, // We are handling it manually now
+//   },
+// });
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);

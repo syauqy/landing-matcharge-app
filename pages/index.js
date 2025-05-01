@@ -5,17 +5,13 @@ import { useRouter } from "next/router";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/utils/supabaseClient";
 import { Capacitor } from "@capacitor/core";
+import { Toaster, toast } from "sonner";
+import Link from "next/link";
 
 // Import Slick CSS
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import {
-  SelfDiscovery,
-  Insight,
-  Love,
-  New,
-  Door,
-} from "@/components/illustrations";
+import { SelfDiscovery, Insight, Love, Door } from "@/components/illustrations";
 
 // Onboarding data
 const onboardingData = [
@@ -53,6 +49,9 @@ export default function HomePage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth(); // Get user and loading state
   const [loading, setLoading] = useState(false);
+  const isNative = Capacitor.isNativePlatform();
+
+  console.log("HomePage: isNative:", isNative);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -60,10 +59,47 @@ export default function HomePage() {
       router.push("/home");
     }
   }, [user, authLoading, router]);
+  //   App.addListener("appUrlOpen", (event) => {
+  //     console.log("App opened with URL:", event.url);
 
-  const goToLogin = () => {
-    router.push("/login");
-  };
+  //     if (event.url.includes("#access_token=")) {
+  //       // Supabase helper to parse the fragment and set the session
+  //       supabase.auth
+  //         .getSessionFromUrl({ url: event.url })
+  //         .then(({ data, error }) => {
+  //           if (error) {
+  //             console.error("Error getting session from URL:", error);
+  //             setError("Failed to process login callback.");
+  //           } else if (data.session) {
+  //             console.log(
+  //               "Session successfully established from URL:",
+  //               data.session
+  //             );
+  //             // Session is set automatically by getSessionFromUrl if successful.
+  //             // You might want to trigger a state update or navigation here
+  //             // For example, using a global state manager or router.push('/dashboard')
+  //             router.push("/home");
+  //             alert("Login successful via deep link!"); // Placeholder feedback
+  //           } else {
+  //             console.log(
+  //               "No session found in URL, or session already handled."
+  //             );
+  //           }
+  //         });
+  //     }
+  //   });
+  //   // Clean up listener on component unmount
+  //   return () => {
+  //     // listener.remove();
+  //     // Note: Capacitor listeners might behave differently on cleanup depending on version/platform.
+  //     // Consider managing listeners more globally if needed (_app.js).
+  //     // CapacitorApp.removeAllListeners(); // Use with caution if other listeners exist
+  //   };
+  // }, [router]);
+
+  // const goToLogin = () => {
+  //   router.push("/login");
+  // };
 
   const sliderSettings = {
     dots: true,
@@ -81,34 +117,54 @@ export default function HomePage() {
   const handleAppleLogin = async () => {
     setLoading(true);
 
-    const isNative = Capacitor.isNativePlatform();
-    let redirectUrl = "https://wetonai.vercel.app/home";
+    try {
+      let redirectUrl = isNative
+        ? "https://wetonai.vercel.app/home"
+        : "http://localhost:3000/home";
 
-    // if (isNative) {
-    //   redirectUrl += "?native_redirect=true";
-    // }
+      console.log(`Attempting Apple Sign-In with redirectTo: ${redirectUrl}`);
 
-    // console.log(`Using redirectTo: ${redirectUrl}`);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "apple",
+        // options: {
+        //   redirectTo: redirectUrl,
+        // },
+      });
+
+      if (error) {
+        console.error("Apple Sign-In Error:", error);
+        toast.error(error.message);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error during Apple login:", error);
+      toast.error("An error occurred during login. Please try again.");
+    } finally {
+    }
+    setLoading(false);
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
 
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: "apple",
+      provider: "google",
       options: {
-        redirectTo: redirectUrl,
+        redirectTo: `${window.location.origin}/home`,
       },
     });
 
     if (error) {
-      console.error("Apple Sign-In Error:", error);
       toast.error(error.message);
       setLoading(false);
     }
-
-    setLoading(false);
+    // No need to set loading to false on success as we're redirecting to Google
   };
 
   return (
     <div className="h-[100svh] flex flex-col items-center justify-center bg-batik p-4">
-      <div className="w-full h-[100%] max-w-md px-4  py-8 rounded-lg">
+      <Toaster />
+      <div className="w-full h-[100%] max-w-md px-4 py-8 rounded-lg">
         <h1 className="text-4xl font-bold mb-4 text-center h-[10%] text-batik-black">
           Wetonscope
         </h1>
@@ -131,19 +187,12 @@ export default function HomePage() {
             </div>
           ))}
         </Slider>
-        {authLoading ? (
-          <p>Loading...</p>
-        ) : (
-          // <button
-          //   onClick={goToLogin}
-          //   className="w-full bg-batik-border text-white py-3 px-8 rounded-2xl hover:bg-batik-border-hover transition duration-300 font-semibold shadow-md"
-          // >
-          //   Get your weton reading
-          // </button>
+
+        <div className="space-y-2">
           <button
             onClick={handleAppleLogin}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 bg-black text-white py-2.5 px-3 rounded-2xl shadow-sm hover:bg-gray-800 transition duration-150 ease-in-out"
+            className="w-full flex items-center justify-center gap-3 bg-black disabled:bg-black/25 text-white disabled:text-white/25 py-2.5 px-3 rounded-2xl shadow-sm hover:bg-gray-800 transition duration-150 ease-in-out"
           >
             <svg
               width="20"
@@ -160,8 +209,58 @@ export default function HomePage() {
 
             <span className="font-medium">Continue with Apple</span>
           </button>
-        )}
+          <button
+            onClick={handleGoogleLogin}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 bg-offwhite text-batik-black border border-batik-border py-2.5 px-3 rounded-2xl shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out"
+          >
+            <svg
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 48 48"
+            >
+              <path
+                fill="#EA4335"
+                d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+              />
+              <path
+                fill="#4285F4"
+                d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+              />
+              <path
+                fill="#34A853"
+                d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+              />
+            </svg>
+            <span className="font-medium">Continue with Google</span>
+          </button>
+        </div>
       </div>
+      <footer className="w-full py-4 px-4 bg-transparent">
+        <div className="max-w-md mx-auto text-center text-xs text-slate-600">
+          <p>
+            By continuing, you agree to our{" "}
+            <Link
+              href="/terms"
+              className="text-batik-text hover:underline font-medium"
+            >
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="/privacy"
+              className="text-batik-text hover:underline font-medium"
+            >
+              Privacy Policy
+            </Link>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

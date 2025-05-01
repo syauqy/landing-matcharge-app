@@ -16,6 +16,7 @@
     "@capacitor/app": "^7.0.1",
     "@capacitor/core": "^7.2.0",
     "@capacitor/ios": "^7.2.0",
+    "@capacitor/status-bar": "^7.0.1",
     "@google/generative-ai": "^0.24.0",
     "@heroicons/react": "^2.2.0",
     "@supabase/supabase-js": "^2.49.4",
@@ -36,6 +37,7 @@
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
+    "supabase": "^2.22.6",
     "tailwindcss": "^4"
   }
 }

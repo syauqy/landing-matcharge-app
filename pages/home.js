@@ -12,12 +12,17 @@ export default function Home() {
   const router = useRouter();
   const [readings, setReadings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
   const [requestingReading, setRequestingReading] = useState(false);
   const [fortuneResult, setFortuneResult] = useState(null);
   const [currentReadings, setCurrentReadings] = useState(0);
   const [latestReadings, setLatestReadings] = useState([]);
+
+  console.log(user);
+
+  // console.log(user, authLoading);
 
   const READING_LIMIT = 2;
 
@@ -69,25 +74,85 @@ export default function Home() {
   //   typeof window !== "undefined" ? window.location.search : ""
   // );
 
-  console.log("loading", authLoading, user);
+  // console.log("loading", authLoading, user);
 
+  //user auth
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/");
+    // if (!authLoading && !user) {
+    //   router.push("/");
+    // }
+    // If auth is still loading from AuthContext, wait.
+    if (authLoading) {
+      console.log("Home useEffect: Auth loading, waiting...");
+      setLoadingData(true); // Show data loading indicator
+      return;
     }
+
+    // If auth is done, but there's no user, redirect to login.
+    if (!user) {
+      console.log(
+        "Home useEffect: No user found after auth load, redirecting."
+      );
+      router.push("/");
+      return; // Stop execution
+    }
+
+    // Auth loaded and user exists, proceed to load page data.
+    console.log("Home useEffect: User found, loading page data...");
+    const loadPageData = async () => {
+      setLoadingData(true);
+      setError(null);
+      try {
+        // Check profile first - might redirect
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("id, username, readings_count") // Fetch count if needed
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (profileError) throw profileError; // Let catch block handle
+
+        if (!profile) {
+          console.log(
+            "Home useEffect: Profile not found, redirecting to setup."
+          );
+          router.push("/profile-setup");
+          return; // Stop if redirecting
+        }
+
+        // Set readings count if profile exists
+        if (profile.readings_count !== undefined) {
+          setCurrentReadings(profile.readings_count);
+        }
+
+        // Fetch latest readings only if profile check passed and we are still here
+        await fetchLatestReadings();
+        // await fetchReadings(); // Fetch all if needed
+      } catch (err) {
+        console.error("Error loading initial page data:", err);
+        setError("Failed to load page data. Please try again.");
+        // Potentially redirect on critical errors, or just show message
+      } finally {
+        // Only set loading false if we haven't redirected
+        if (router.pathname === "/home") {
+          setLoadingData(false);
+        }
+      }
+    };
+
+    loadPageData(); // Call the async function
   }, [user, authLoading, router]);
 
   const checkProfile = async () => {
-    if (!user) return;
-
     try {
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .select("*")
+        .select("id, username")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (profileError) {
+      if (profileError || !profile) {
+        console.error("Error fetching profile:", profileError);
         router.push("/profile-setup");
       }
     } catch (err) {
@@ -206,21 +271,30 @@ export default function Home() {
   };
 
   const handleLogout = async () => {
+    console.log("user", user);
     await logout();
-    router.push("/login");
+    // router.push("/");
   };
 
-  if (authLoading) {
+  // if (authLoading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <p>Loading...</p>
+  //     </div>
+  //   );
+  // }
+  // if (!user) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <p>Redirecting...</p>
+  //     </div>
+  //   );
+  // }
+
+  if (loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Redirecting...</p>
+        <p>Loading user data...</p>
       </div>
     );
   }
@@ -331,7 +405,7 @@ export default function Home() {
   // };
 
   return (
-    <div className="h-[100svh] flex flex-col bg-batik">
+    <div className="h-[100svh] flex flex-col bg-batik relative">
       <DashboardNavbar user={user} handleLogout={handleLogout} />
       <div className="py-4 sm:py-6 flex-grow my-12">
         <div className="flex flex-col gap-2">

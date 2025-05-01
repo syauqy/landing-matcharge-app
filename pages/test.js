@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { getWuku, getWeton } from "@/utils";
+import { getWuku, getWeton, getWetonPrimbon } from "@/utils";
 
 export default function TestPage() {
   const { user, loading: authLoading } = useAuth();
@@ -14,10 +14,12 @@ export default function TestPage() {
   const [birthDate, setBirthDate] = useState("");
   const [wuku, setWuku] = useState({});
   const [weton, setWeton] = useState({});
+  const [wetonPrimbon, setWetonPrimbon] = useState({});
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/login");
+      console.log("User not authenticated, redirecting to login");
+      // router.push("/");
     }
   }, [user, authLoading, router]);
 
@@ -73,8 +75,10 @@ export default function TestPage() {
   const handleTest = () => {
     const wuku_data = getWuku(birthDate);
     const weton_data = getWeton(birthDate);
+    // const saptawara = getWetonPrimbon(birthDate);
     setWeton(weton_data);
     setWuku(wuku_data);
+    // setWetonPrimbon(saptawara);
   };
 
   if (authLoading) {
@@ -120,7 +124,8 @@ export default function TestPage() {
     }
   };
 
-  console.log(wuku, weton, birthDate);
+  // console.log(wuku, weton, birthDate);
+  console.log(weton);
 
   return (
     <div className="min-h-screen p-4">
@@ -131,6 +136,13 @@ export default function TestPage() {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 disabled:opacity-50"
       >
         {loading ? "Testing Models..." : "Test Models"}
+      </button>
+      <button
+        onClick={handleTest}
+        disabled={loading}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 disabled:opacity-50"
+      >
+        {loading ? "Calulate Wuku and Weton..." : "Wuku and Weton"}
       </button>
       <button
         onClick={testAISDK}
@@ -146,7 +158,7 @@ export default function TestPage() {
         <div className="text-gray-500 mb-4">Testing models, please wait...</div>
       )}
 
-      <div className="h-[%30]">
+      <div className="h-[%30] space-y-3">
         <label
           className="block text-gray-700 mb-2 font-semibold"
           htmlFor="birthDate"
@@ -167,6 +179,7 @@ export default function TestPage() {
         </p>
         <p>Your Wuku: {JSON.stringify(wuku, null, 2)}</p>
         <p>Your Weton: {JSON.stringify(weton, null, 2)}</p>
+        {/* <p>Your Saptawara: {JSON.stringify(wetonPrimbon, null, 2)}</p> */}
       </div>
 
       {/* Optionally display AI SDK result if you store it in state */}

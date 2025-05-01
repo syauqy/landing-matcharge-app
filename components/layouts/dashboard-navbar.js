@@ -9,7 +9,7 @@ export function DashboardNavbar({ user, handleLogout }) {
         </h1>
         <div className="text-center sm:text-right text-xs sm:text-sm">
           <span className="block sm:inline mr-0 sm:mr-4 mb-1 sm:mb-0 text-gray-600">
-            {user.email}
+            {user?.email}
           </span>
           <button
             onClick={handleLogout}

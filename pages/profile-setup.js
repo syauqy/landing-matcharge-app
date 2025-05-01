@@ -108,26 +108,6 @@ export default function ProfileSetupPage() {
         .select("id, username")
         .eq("username", username.toLowerCase());
 
-      // const response = await fetch("https://weton-ai-next.vercel.app/api/check-username", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${session.access_token}`,
-      //   },
-      //   body: JSON.stringify({
-      //     username: value.toLowerCase(),
-      //   }),
-      // });
-
-      // console.log(data, error)
-
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.error || `Error: ${response.status}`);
-      // }
-
-      // const { available } = await response.json();
-
       if (data && data.length == 0) {
         setUsernameAvailable(true);
       } else {
@@ -472,7 +452,7 @@ export default function ProfileSetupPage() {
                   id="birthDate"
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
-                  className="w-full px-3 py-2 block border-0 border-b-2 border-batik-border-light text-lg"
+                  className="w-full px-3 py-2 block border-0 border-b-2 border-batik-border-light text-lg appearance-none"
                   required
                 />
                 <p className="text-xs text-gray-500 mt-2">
