@@ -3,7 +3,7 @@ import { supabase } from "@/utils/supabaseClient";
 import { createClient } from "@supabase/supabase-js";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { getWeton } from "@/utils";
+import { getWeton, getWuku } from "@/utils";
 import { Toaster, toast } from "sonner";
 import { Capacitor } from "@capacitor/core";
 
@@ -232,6 +232,7 @@ export default function ProfileSetupPage() {
     }
 
     const wetonDetails = getWeton(birthDate);
+    const wukuDetails = getWuku(birthDate);
 
     const profileData = {
       id: user.id,
@@ -243,6 +244,8 @@ export default function ProfileSetupPage() {
       subscription: "free",
       weton: wetonDetails,
       dina_pasaran: wetonDetails.weton,
+      laku: wetonDetails.laku,
+      pancasuda: wetonDetails.pancasuda,
     };
 
     try {
