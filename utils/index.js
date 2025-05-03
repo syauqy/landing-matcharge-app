@@ -2,6 +2,7 @@ import { neptuSaptawara, nameSaptawara } from "@/lib/saptawara";
 import { namePancasuda } from "@/lib/pancasuda";
 import { nameLaku } from "@/lib/laku";
 import { nameRakam } from "@/lib/rakam";
+import { nameWuku } from "@/lib/wuku";
 import {
   neptuDina,
   neptuPasaran,
@@ -371,7 +372,7 @@ export function getWuku(birthDate) {
 
     //wuku calculation
     const wuku_index = (Math.floor((jdn - 6) / 7) + 10) % 30;
-    const wuku = wukuNames[wuku_index];
+    const wuku = nameWuku[wuku_index];
 
     //saptawara for wuku
     const dayIndex = date.getUTCDay();
