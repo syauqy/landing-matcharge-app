@@ -243,9 +243,8 @@ export default function ProfileSetupPage() {
       email: user?.email,
       subscription: "free",
       weton: wetonDetails,
-      dina_pasaran: wetonDetails.weton,
-      laku: wetonDetails.laku,
-      pancasuda: wetonDetails.pancasuda,
+      wuku: wukuDetails,
+      dina_pasaran: wetonDetails?.weton_en,
     };
 
     try {
@@ -299,7 +298,7 @@ export default function ProfileSetupPage() {
         "Profile saved successfully! Preparing your weton reading..."
       );
       setLoadingWeton(true);
-      await requestWetonAnalysis(user.id, birthDate);
+      // await requestWetonAnalysis(user.id, birthDate);
     } catch (err) {
       console.error("Error saving profile:", err);
       toast.error(`Failed to save profile: ${err.message}`);

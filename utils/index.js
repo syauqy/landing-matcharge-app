@@ -310,39 +310,6 @@ export function getWuku(birthDate) {
       throw new Error("Invalid Date Input value");
     }
 
-    const wukuNames = [
-      "Sinta",
-      "Landep",
-      "Wukir",
-      "Kurantil",
-      "Tolu",
-      "Gumbreg",
-      "Warigalit",
-      "Warigagung",
-      "Julungwangi",
-      "Sungsang",
-      "Galungan",
-      "Kuningan",
-      "Langkir",
-      "Mandasiya",
-      "Julungpujut",
-      "Pahang",
-      "Kuruwelut",
-      "Marakeh",
-      "Tambir",
-      "Medangkungan",
-      "Maktal",
-      "Wuye",
-      "Manahil",
-      "Prangbakat",
-      "Bala",
-      "Wugu",
-      "Wayang",
-      "Kulawu",
-      "Dukut",
-      "Watugunung",
-    ];
-
     const namaHari = [
       "Minggu",
       "Senin",
@@ -383,7 +350,6 @@ export function getWuku(birthDate) {
     const pawukon_number = wuku_index * 7 + neptu_saptawara;
 
     return {
-      wuku_bilangan: wuku_index + 1,
       wuku: wuku,
       pawukon: pawukon_number,
     };
