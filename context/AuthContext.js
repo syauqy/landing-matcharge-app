@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   const timeoutRef = useRef(null); // Ref to store timeout ID
 
   useEffect(() => {
-    console.log("AuthProvider Mounted. Initial loading state:", loading);
+    // console.log("AuthProvider Mounted. Initial loading state:", loading);
 
     let authListener = null;
     let initialCheckCompleted = false;
@@ -24,27 +24,27 @@ export const AuthProvider = ({ children }) => {
       /access_token|refresh_token|provider_token|error_description/.test(
         window.location.hash
       );
-    console.log(
-      "AuthProvider checking for OAuth redirect hash:",
-      isOAuthRedirect
-    );
+    // console.log(
+    //   "AuthProvider checking for OAuth redirect hash:",
+    //   isOAuthRedirect
+    // );
 
     // Function to clear any existing timeout
     const clearTimeoutIfSet = () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
-        console.log("AuthProvider OAuth timeout cleared.");
+        // console.log("AuthProvider OAuth timeout cleared.");
       }
     };
 
     const handleAuthStateChange = (_event, session) => {
-      console.log(
-        "AuthProvider onAuthStateChange event:",
-        _event,
-        "session:",
-        !!session
-      );
+      // console.log(
+      //   "AuthProvider onAuthStateChange event:",
+      //   _event,
+      //   "session:",
+      //   !!session
+      // );
 
       // An event occurred, clear any pending timeout
       clearTimeoutIfSet();
@@ -58,21 +58,21 @@ export const AuthProvider = ({ children }) => {
           // Not an OAuth redirect, OR it is but we got a session immediately.
           setLoading(false);
           initialCheckCompleted = true;
-          console.log(
-            "AuthProvider First event (non-OAuth or session found), initial check complete, setLoading(false)"
-          );
+          // console.log(
+          //   "AuthProvider First event (non-OAuth or session found), initial check complete, setLoading(false)"
+          // );
         } else {
           // IS an OAuth redirect, and the first event has NO session. Keep loading.
-          console.log(
-            "AuthProvider First event IS OAuth redirect with NO session, keeping loading=true, waiting for token processing."
-          );
+          // console.log(
+          //   "AuthProvider First event IS OAuth redirect with NO session, keeping loading=true, waiting for token processing."
+          // );
           // Set a timeout ONLY if we are keeping loading=true due to OAuth redirect
           if (!timeoutRef.current) {
             // Avoid setting multiple timeouts
             timeoutRef.current = setTimeout(() => {
-              console.warn(
-                `AuthProvider OAuth redirect timeout (${OAUTH_REDIRECT_TIMEOUT}ms) reached! Forcing loading=false.`
-              );
+              // console.warn(
+              //   `AuthProvider OAuth redirect timeout (${OAUTH_REDIRECT_TIMEOUT}ms) reached! Forcing loading=false.`
+              // );
               // Check if still loading before setting to false, avoids race conditions
               if (loading) {
                 setLoading(false);
@@ -80,18 +80,18 @@ export const AuthProvider = ({ children }) => {
               initialCheckCompleted = true; // Mark check as completed (by timeout)
               timeoutRef.current = null;
             }, OAUTH_REDIRECT_TIMEOUT);
-            console.log("AuthProvider OAuth timeout set.");
+            // console.log("AuthProvider OAuth timeout set.");
           }
         }
       } else {
         // This is a subsequent event. Ensure loading is false.
         if (loading) {
           setLoading(false);
-          console.log(
-            "AuthProvider Subsequent event received, ensuring loading is false."
-          );
+          // console.log(
+          //   "AuthProvider Subsequent event received, ensuring loading is false."
+          // );
         }
-        console.log("AuthProvider Subsequent auth state event received.");
+        // console.log("AuthProvider Subsequent auth state event received.");
       }
     };
 

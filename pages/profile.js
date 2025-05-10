@@ -249,7 +249,7 @@ export default function ProfilePage() {
         </div>
 
         {/* --- Menubar --- */}
-        <Menubar />
+        <Menubar page={"profile"} />
       </div>
     </>
   );

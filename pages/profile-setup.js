@@ -298,6 +298,7 @@ export default function ProfileSetupPage() {
         "Profile saved successfully! Preparing your weton reading..."
       );
       setLoadingWeton(true);
+      router.push("/intro");
       // await requestWetonAnalysis(user.id, birthDate);
     } catch (err) {
       console.error("Error saving profile:", err);

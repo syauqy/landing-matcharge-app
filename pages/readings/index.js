@@ -137,7 +137,7 @@ export default function ReadingsPage() {
           </div>
         </div>
 
-        <Menubar />
+        <Menubar page={"readings"} />
       </div>
     </>
   );

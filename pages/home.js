@@ -293,8 +293,9 @@ export default function Home() {
 
   if (loadingData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading user data...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
+        <span className="loading loading-spinner loading-lg"></span>
+        <p className="mt-4">Loading user data...</p>
       </div>
     );
   }
@@ -310,12 +311,25 @@ export default function Home() {
     return (
       <ul className="space-y-4">
         {readings.map((reading) => (
-          <li key={reading.id} className="bg-white p-4 rounded-lg shadow-md">
-            <Link href={`/readings/basic/${reading.id}`}>
-              <p className="text-sm text-gray-600">
-                {new Date(reading.created_at).toLocaleDateString()}
-              </p>
-            </Link>
+          <li key={reading.id}>
+            <div className="card bg-base-100 shadow-md">
+              {" "}
+              {/* Use theme's base background for cards */}
+              <div className="card-body p-4">
+                {" "}
+                {/* Adjust padding as needed */}
+                <Link
+                  href={`/readings/basic/${reading.id}`}
+                  className="hover:text-primary"
+                >
+                  <p className="text-sm text-base-content/80">
+                    {" "}
+                    {/* Use theme's content color with opacity */}
+                    {new Date(reading.created_at).toLocaleDateString()}
+                  </p>
+                </Link>
+              </div>
+            </div>
           </li>
         ))}
       </ul>
@@ -327,12 +341,21 @@ export default function Home() {
     return (
       <ul className="space-y-4">
         {latestReadings.map((r) => (
-          <li
-            key={r.id}
-            className="bg-white p-4 rounded-lg shadow-sm border-batik-border h-20 w-fit"
-          >
-            <Link href={`/readings/${r?.reading_category}/${r.slug}`}>
-              <p className="text-sm text-gray-600 font-semibold">{r.title}</p>
+          <li key={r.id} className="w-fit">
+            <Link
+              href={`/readings/${r?.reading_category}/${r.slug}`}
+              className="hover:text-primary"
+            >
+              <div className="card bg-base-100 shadow-sm border border-[var(--color-batik-border)] h-20">
+                {" "}
+                {/* Keep custom border, use theme bg */}
+                <div className="card-body p-4 flex items-center justify-center">
+                  <p className="text-sm text-base-content font-semibold">
+                    {r.title}
+                  </p>{" "}
+                  {/* Use theme's content color */}
+                </div>
+              </div>
             </Link>
           </li>
         ))}
@@ -405,7 +428,7 @@ export default function Home() {
   // };
 
   return (
-    <div className="h-[100svh] flex flex-col bg-batik relative">
+    <div className="h-[100svh] flex flex-col bg-base-100 relative">
       <DashboardNavbar user={user} handleLogout={handleLogout} />
       <div className="py-4 sm:py-6 flex-grow my-12">
         <div className="flex flex-col gap-2">
@@ -420,7 +443,7 @@ export default function Home() {
           </div>
           <div className="px-4">{renderLatestReadings()}</div>
         </div>
-        <Menubar />
+        <Menubar page={"home"} />
       </div>
     </div>
   );

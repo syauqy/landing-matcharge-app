@@ -56,7 +56,7 @@ export default function HomePage() {
   useEffect(() => {
     if (!authLoading && user) {
       // If not loading and user is logged in, redirect to dashboard
-      router.push("/home");
+      // router.push("/home");
     }
   }, [user, authLoading, router]);
   //   App.addListener("appUrlOpen", (event) => {
@@ -162,7 +162,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="h-[100svh] flex flex-col items-center justify-center bg-batik p-4">
+    <div className="h-[100svh] flex flex-col items-center justify-center bg-base-100 p-4">
       <Toaster />
       <div className="w-full h-[100%] max-w-md px-4 py-8 rounded-lg">
         <h1 className="text-4xl font-bold mb-4 text-center h-[10%] text-batik-black">
@@ -212,7 +212,7 @@ export default function HomePage() {
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 bg-offwhite text-batik-black border border-batik-border py-2.5 px-3 rounded-2xl shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out"
+            className="w-full flex items-center justify-center gap-3 bg-base-100 text-batik-black border border-batik-border py-2.5 px-3 rounded-2xl shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out"
           >
             <svg
               width="20"

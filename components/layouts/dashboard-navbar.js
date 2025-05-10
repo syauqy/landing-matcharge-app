@@ -2,7 +2,7 @@ import React from "react";
 
 export function DashboardNavbar({ user, handleLogout }) {
   return (
-    <nav className="bg-batik w-full px-4 py-2 fixed top-0 left-0 z-10 border-b border-batik-border">
+    <nav className="bg-base-100 w-full px-4 py-2 fixed top-0 left-0 z-10 border-b border-batik-border">
       <div className="flex items-center">
         <h1 className="text-xl sm:text-2xl font-bold text-center w-full text-batik-black">
           Wetonscope

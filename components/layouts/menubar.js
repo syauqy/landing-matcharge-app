@@ -6,49 +6,41 @@ import {
   HeartIcon,
 } from "@heroicons/react/24/outline";
 import { CrystalBall } from "@/components/icons";
+import clsx from "clsx";
 
-export function Menubar() {
+export function Menubar({ page }) {
   return (
-    <nav className="bg-batik w-full px-4 py-1.5 fixed bottom-0 left-0 inset-shadow-2xs border-t border-batik-border z-50">
-      <ul className="flex justify-around">
-        <li>
-          <Link
-            href="/home"
-            className="text-batik-text flex flex-col items-center"
-          >
-            <HomeIcon className="h-6 w-6" />
-            <span className="mt-0.5 text-xs font-medium">Home</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/love"
-            className="text-batik-text flex flex-col items-center"
-          >
-            <HeartIcon className="h-6 w-6 stroke-[1.5]" />
-            <span className="mt-0.5 text-xs font-medium">Compatibility</span>
-          </Link>
-        </li>
-
-        <li>
-          <Link
-            href="/readings"
-            className="text-batik-text flex flex-col items-center"
-          >
-            <CrystalBall className="h-6 w-6" />
-            <span className="mt-0.5 text-xs font-medium">Readings</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/profile"
-            className="text-batik-text flex flex-col items-center"
-          >
-            <UserCircleIcon className="h-6 w-6" />
-            <span className="mt-0.5 text-xs font-medium">Profile</span>
-          </Link>
-        </li>
-      </ul>
-    </nav>
+    <div class="dock dock-md border-batik-border">
+      <Link
+        href="/home"
+        className={clsx(
+          page === "home" && "dock-active font-bold",
+          "text-batik-text flex flex-col items-center"
+        )}
+      >
+        <HomeIcon className="h-6 w-6" />
+        <span className="dock-label">Home</span>
+      </Link>
+      <Link
+        href="/readings"
+        className={clsx(
+          page === "readings" && "dock-active font-bold",
+          "text-batik-text flex flex-col items-center"
+        )}
+      >
+        <CrystalBall className="h-6 w-6" />
+        <span className="dock-label">Readings</span>
+      </Link>
+      <Link
+        href="/profile"
+        className={clsx(
+          page === "profile" && "dock-active font-bold",
+          "text-batik-text flex flex-col items-center"
+        )}
+      >
+        <UserCircleIcon className="h-6 w-6" />
+        <span className="dock-label">Profile</span>
+      </Link>
+    </div>
   );
 }

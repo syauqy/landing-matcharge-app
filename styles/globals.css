@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@plugin "daisyui" {
+  themes: cupcake --default;
+}
 
 @theme {
   --breakpoint-3xl: 120rem;
@@ -53,7 +56,7 @@ body {
 
 .onboarding-slider .slick-dots li button:before {
   font-size: 10px;
-  color: #f6cfa8;
+  color: #c8c8c8;
   opacity: 0.5;
 }
 
