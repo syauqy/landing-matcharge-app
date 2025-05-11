@@ -56,69 +56,17 @@ export default function BasicReadingPage() {
       }
     };
 
-    const { id: readingId } = router.query;
-
-    const fetchReadingDetails = async () => {
-      if (!readingId) {
-        setError("Reading ID is missing in URL.");
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
-      setError(null);
-      try {
-        // Step 1: Validate the readingId and ensure it belongs to the user.
-        // This confirms that the user is trying to view a profile
-        // in the context of one of their actual readings.
-        const { data: readingEntry, error: readingAccessError } = await supabase
-          .from("readings")
-          .select("id") // Select minimal data, just to confirm existence and ownership
-          .eq("id", readingId)
-          .eq("user_id", user.id)
-          .single();
-
-        if (readingAccessError) throw readingAccessError;
-        if (!readingEntry)
-          throw new Error("Reading not found or you do not have access to it.");
-
-        // Step 2: Fetch the detailed profile from the 'profiles' table.
-        const { data: userProfile, error: profileFetchError } = await supabase
-          .from("profiles")
-          .select("weton, wuku, dina_pasaran") // Fetching the objects and dina_pasaran string
-          .eq("id", user.id) // 'id' in profiles table is the user_id
-          .single(); // Assuming one profile per user
-
-        if (profileFetchError) throw profileFetchError;
-        if (!userProfile) throw new Error("User profile data not found.");
-
-        // Ensure weton and wuku are objects, even if they are null/undefined from DB,
-        // to prevent access errors like userProfile.weton.name if weton is null.
-        // dina_pasaran is expected to be a string.
-        const safeProfileData = {
-          dina_pasaran: userProfile.dina_pasaran || "N/A",
-          weton: userProfile.weton || {},
-          wuku: userProfile.wuku || {},
-        };
-
-        setProfileData(safeProfileData);
-      } catch (err) {
-        console.error("Error fetching reading details or profile:", err);
-        setError(
-          err.message || "Failed to load profile details. Please try again."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // fetchReadingDetails();
     fetchProfileData();
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      console.log(window.history);
+    }
   }, []);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
-    // Adjust the scroll threshold as needed
     setShowTitleInNavbar(scrollPosition > 100);
   };
 
@@ -206,12 +154,12 @@ export default function BasicReadingPage() {
         }`}
       >
         <div className="navbar-start">
-          <Link
-            href="/home"
+          <button
+            onClick={() => router.back()}
             className="p-2 rounded-full text-xl border border-batik-text hover:bg-base-200"
           >
             <ArrowLeft size={20} className="text-batik-text" />
-          </Link>
+          </button>
         </div>
         {showTitleInNavbar && profileData && (
           <div className="navbar-center flex-col">

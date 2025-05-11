@@ -2,73 +2,100 @@ export const CardData = {
   general: [
     {
       id: 1,
-      title: "About You",
-      description: "Brief description...",
-      slug: "about-you",
+      title: "Your Weton",
+      description:
+        "Explore the foundational energies of your Javanese birth day combination.",
+      slug: "weton",
       category: "general_readings",
       type: "free",
     },
     {
       id: 2,
-      title: "Primary Traits",
-      description: "Brief description...",
-      slug: "primary-traits",
+      title: "Your Wuku",
+      description:
+        "Uncover the specific influences of your birth week in the Pawukon cycle.",
+      slug: "wuku",
       category: "general_readings",
       type: "free",
     },
     {
       id: 3,
-      title: "Saptawara",
-      description: "Brief description...",
-      slug: "saptawara",
+      title: "Primary Traits",
+      description:
+        "Identify your most prominent strengths and inherent characteristics.",
+      slug: "primary-traits",
       category: "general_readings",
       type: "free",
     },
     {
       id: 4,
-      title: "Pancawara",
-      description: "Brief description...",
-      slug: "pancawara",
+      title: "Rakam",
+      description:
+        "Uncover the significant life themes or karmic imprints shaping your experiences.",
+      slug: "rakam",
       category: "general_readings",
-      type: "free",
+      type: "pro",
     },
     {
       id: 5,
-      title: "Pancasuda",
-      description: "Brief description...",
-      slug: "pancasuda",
+      title: "Sadwara",
+      description:
+        "Explore the subtle behavioral tendencies influenced by the six-day Pawukon cycle.",
+      slug: "sadwara",
       category: "general_readings",
-      type: "free",
+      type: "pro",
     },
     {
       id: 6,
-      title: "Laku",
-      description: "Brief description...",
-      slug: "laku",
+      title: "Pancasuda",
+      description:
+        "Reveal the core pillar of your inner foundation and its potential.",
+      slug: "pancasuda",
       category: "general_readings",
-      type: "free",
+      type: "pro",
     },
     {
       id: 7,
-      title: "Values",
-      description: "Brief description...",
-      slug: "values",
+      title: "Hastawara",
+      description:
+        "Understand the specific fortunes and challenges guided by the eight-day cycle influence.",
+      slug: "hastawara",
       category: "general_readings",
       type: "pro",
     },
     {
       id: 8,
-      title: "Interaction Style",
-      description: "Brief description...",
-      slug: "interaction-style",
+      title: "Laku",
+      description:
+        "Discover the archetype and behavioral pattern that guides your life's journey.",
+      slug: "laku",
       category: "general_readings",
       type: "pro",
     },
     {
       id: 9,
-      title: "General Life Path",
-      description: "Brief description...",
-      slug: "general-life-path",
+      title: "Values",
+      description:
+        "Pinpoint the core principles that drive your decisions and motivations.",
+      slug: "values",
+      category: "general_readings",
+      type: "pro",
+    },
+    {
+      id: 10,
+      title: "Interaction Style",
+      description:
+        "Learn how you naturally connect and communicate with the world around you.",
+      slug: "interaction-style",
+      category: "general_readings",
+      type: "pro",
+    },
+    {
+      id: 11,
+      title: "Life Path",
+      description:
+        "Get insights into the themes and directions of your life's journey.",
+      slug: "life-path",
       category: "general_readings",
       type: "pro",
     },
@@ -77,7 +104,8 @@ export const CardData = {
     {
       id: 10,
       title: "Your Love",
-      description: "Brief description...",
+      description:
+        "Explore the core of how your Weton shapes your approach to love and partnership.",
       slug: "your-love",
       category: "love_readings",
       type: "free",
@@ -85,48 +113,54 @@ export const CardData = {
     {
       id: 11,
       title: "Love Style",
-      description: "Brief description...",
-      slug: "your-love",
+      description:
+        "Discover your natural way of expressing and receiving affection in relationships.",
+      slug: "love-style",
       category: "love_readings",
       type: "free",
     },
     {
       id: 12,
       title: "Love Attitudes",
-      description: "Brief description...",
-      slug: "your-love",
+      description:
+        "Uncover your underlying beliefs and perspectives when it comes to romance.",
+      slug: "love-attitudes",
       category: "love_readings",
       type: "free",
     },
     {
       id: 13,
       title: "Attachement Style",
-      description: "Brief description...",
-      slug: "your-love",
+      description:
+        "Gain insight into how you form bonds and connect emotionally with partners.",
+      slug: "attachement-style",
       category: "love_readings",
-      type: "free",
+      type: "pro",
     },
     {
       id: 14,
       title: "What You Can Offer",
-      description: "Brief description...",
-      slug: "your-love",
+      description:
+        "Identify the unique strengths and gifts you bring to a loving relationship.",
+      slug: "your-offer",
       category: "love_readings",
       type: "pro",
     },
     {
       id: 15,
       title: "Compatible With",
-      description: "Brief description...",
-      slug: "your-love",
+      description:
+        "Learn about Weton energies that naturally harmonize with your own in love.",
+      slug: "love-compatibility",
       category: "love_readings",
       type: "pro",
     },
     {
       id: 16,
       title: "Uncompatible With",
-      description: "Brief description...",
-      slug: "your-love",
+      description:
+        "Understand potential energetic clashes and challenges with other Wetons in relationships.",
+      slug: "love-uncompatibility",
       category: "love_readings",
       type: "pro",
     },
@@ -135,7 +169,8 @@ export const CardData = {
     {
       id: 17,
       title: "Your Career",
-      description: "Brief description...",
+      description:
+        "Explore professions and work styles that resonate with your Weton's energy.",
       slug: "your-career",
       category: "work_readings",
       type: "pro",
@@ -143,7 +178,8 @@ export const CardData = {
     {
       id: 18,
       title: "Ideal Life",
-      description: "Brief description...",
+      description:
+        "Envision the life that truly fulfills your potential and deepest aspirations.",
       slug: "ideal-life",
       category: "work_readings",
       type: "pro",
@@ -151,7 +187,8 @@ export const CardData = {
     {
       id: 19,
       title: "Key Life Events",
-      description: "Brief description...",
+      description:
+        "Identify potential pivotal moments and themes that may shape your journey.",
       slug: "key-life-events",
       category: "work_readings",
       type: "pro",
@@ -161,7 +198,8 @@ export const CardData = {
     {
       id: 20,
       title: "Your Financial",
-      description: "Brief description...",
+      description:
+        "Understand your natural approach to wealth, and financial opportunities.",
       slug: "your-financial",
       category: "financial_readings",
       type: "pro",
@@ -172,22 +210,26 @@ export const CardData = {
 export const SectionData = [
   {
     title: "General Readings",
-    subtitle: "Understand more about yourself",
+    subtitle:
+      "Unlock the core of your being and discover the unique energies that shape you.",
     cards: CardData.general,
   },
   {
     title: "Love and Relationship",
-    subtitle: "Understand more about your personality in the love world",
+    subtitle:
+      "Navigate the world of love by understanding your unique romantic tendencies and connection styles.",
     cards: CardData.love,
   },
   {
     title: "Work, Career, and Purpose",
-    subtitle: "Help you find a carrer that suits you best",
+    subtitle:
+      "Align your professional path with your innate talents and discover your true calling.",
     cards: CardData.work,
   },
   {
     title: "Financial Fortune",
-    subtitle: "Help you manage your financials",
+    subtitle:
+      "Gain insights into your financial tendencies to better manage and grow your resources.",
     cards: CardData.financial,
   },
 ];

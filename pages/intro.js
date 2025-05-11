@@ -139,12 +139,14 @@ export default function IntroPage() {
                 advisors.
               </p>
               <div className="flex justify-center mt-6">
-                <Link
-                  href="/readings/general_readings/basic"
+                <button
+                  onClick={() =>
+                    router.replace("/readings/general_readings/weton-intro")
+                  }
                   className="btn bg-base-100 text-batik-black border border-batik-border py-2.5 px-5 rounded-2xl shadow-sm"
                 >
                   Explore your Weton details
-                </Link>
+                </button>
               </div>
             </div>
           </section>

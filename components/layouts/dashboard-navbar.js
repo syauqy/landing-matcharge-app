@@ -2,12 +2,15 @@ import React from "react";
 
 export function DashboardNavbar({ user, handleLogout }) {
   return (
-    <nav className="bg-base-100 w-full px-4 py-2 fixed top-0 left-0 z-10 border-b border-batik-border">
-      <div className="flex items-center">
-        <h1 className="text-xl sm:text-2xl font-bold text-center w-full text-batik-black">
+    <nav className="navbar min-h-[50px] bg-base-100 w-full px-5 fixed top-0 left-0 z-10 border-b border-batik-border">
+      <div className="navbar-start"></div>
+      <div className="navbar-center flex items-center">
+        <div className="text-sm text-batik-text font-bold uppercase tracking-widest">
           Wetonscope
-        </h1>
-        <div className="text-center sm:text-right text-xs sm:text-sm">
+        </div>
+      </div>
+      <div className="navbar-end">
+        {/* <div className="text-center sm:text-right text-xs sm:text-sm">
           <span className="block sm:inline mr-0 sm:mr-4 mb-1 sm:mb-0 text-gray-600">
             {user?.email}
           </span>
@@ -17,7 +20,7 @@ export function DashboardNavbar({ user, handleLogout }) {
           >
             Logout
           </button>
-        </div>
+        </div> */}
       </div>
     </nav>
   );
