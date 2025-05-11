@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function BasicReadingPage() {
@@ -10,6 +11,7 @@ export default function BasicReadingPage() {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -18,8 +20,7 @@ export default function BasicReadingPage() {
     }
 
     if (!router.isReady || !user) {
-      // Wait for router to be ready or user to be loaded
-      // setLoading(true) could be set here if not already true by default
+      setLoading(true);
       return;
     }
 
@@ -35,18 +36,14 @@ export default function BasicReadingPage() {
         // Fetch the user's profile data from the 'profiles' table
         const { data: userProfile, error: profileFetchError } = await supabase
           .from("profiles")
-          .select("weton, wuku, dina_pasaran") // Fetching the objects and dina_pasaran string
+          .select("weton, dina_pasaran") // Fetching the objects and dina_pasaran string
           .eq("id", user.id) // 'id' in profiles table is the user_id
           .single(); // Assuming one profile per user
         if (profileFetchError) throw profileFetchError;
         if (!userProfile) throw new Error("User profile data not found.");
-        // Ensure weton and wuku are objects, even if they are null/undefined from DB,
-        // to prevent access errors like userProfile.weton.name if weton is null.
-        // dina_pasaran is expected to be a string.
         const safeProfileData = {
           dina_pasaran: userProfile.dina_pasaran || "N/A",
           weton: userProfile.weton || {},
-          wuku: userProfile.wuku || {},
         };
         setProfileData(safeProfileData);
       } catch (err) {
@@ -117,7 +114,22 @@ export default function BasicReadingPage() {
 
     // fetchReadingDetails();
     fetchProfileData();
-  }, [user]);
+  }, []);
+
+  const handleScroll = () => {
+    const scrollPosition = window.scrollY;
+    // Adjust the scroll threshold as needed
+    setShowTitleInNavbar(scrollPosition > 100);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
     return (
@@ -186,197 +198,212 @@ export default function BasicReadingPage() {
     );
   }
 
-  // --- Card Components ---
-  const ProfileSummaryCard = ({ weton_en, wukuName, total_neptu }) => (
-    <div className="card bg-base-100 shadow-lg">
-      <div className="card-body">
-        <h2 className="card-title text-2xl justify-center mb-4">
-          Profile Summary
-        </h2>
-        <div className="text-center">
-          <p className="text-xl">
-            Your Weton:{" "}
-            <span className="font-semibold text-primary">
-              {weton_en ?? "N/A"}
-            </span>
-          </p>
-          <p className="text-xl mt-1">
-            Your Wuku:{" "}
-            <span className="font-semibold text-secondary">
-              {wukuName ?? "N/A"}
-            </span>
-          </p>
-          <p className="text-md mt-2 text-base-content/80">
-            Total Weton Neptu: {total_neptu ?? "N/A"}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-
-  const SectionItem = ({ term, name, meaning, description }) => (
-    <div className="mb-3">
-      <h4 className="text-md font-semibold">
-        {term}: {name || "N/A"} {meaning && `(${meaning})`}
-      </h4>
-      {description && (
-        <p className="text-sm text-base-content/80 mt-1 whitespace-pre-line">
-          {description}
-        </p>
-      )}
-    </div>
-  );
-
-  const CoreWetonAttributesCard = ({ data }) => (
-    <div className="card bg-base-100 shadow-lg">
-      <div className="card-body">
-        <h3 className="card-title">Weton Fundamentals</h3>
-        <SectionItem
-          term="Day (Dina)"
-          name={`${data?.dina_en} (${data?.dina})`}
-          description={data?.day_character?.description}
-        />
-        <SectionItem
-          term="Market Day (Pasaran)"
-          name={data?.pasaran}
-          description={data?.pasaran_character?.description}
-        />
-        <SectionItem
-          term="Weton Energy (Neptu)"
-          name={`Total Neptu ${data?.total_neptu}`}
-          description={data?.neptu_character?.description}
-        />
-      </div>
-    </div>
-  );
-
-  const GuidingInfluencesCard = ({ data }) => (
-    <div className="card bg-base-100 shadow-lg">
-      <div className="card-body">
-        <h3 className="card-title">Your Guiding Influences</h3>
-        <SectionItem
-          term="Laku (Life's Journey)"
-          name={data?.laku?.name}
-          meaning={data?.laku?.meaning}
-          description={data?.laku?.description}
-        />
-        <SectionItem
-          term="Pancasuda (Inner Foundation)"
-          name={data?.pancasuda?.name}
-          meaning={data?.pancasuda?.meaning}
-          description={data?.pancasuda?.description}
-        />
-        <SectionItem
-          term="Saptawara Cycle (Weekly Influence)"
-          name={data?.saptawara?.name}
-          meaning={data?.saptawara?.meaning}
-          description={data?.saptawara?.description}
-        />
-      </div>
-    </div>
-  );
-
-  const UnderlyingDynamicsCard = ({ data }) => (
-    <div className="card bg-base-100 shadow-lg">
-      <div className="card-body">
-        <h3 className="card-title">Underlying Dynamics</h3>
-        <SectionItem
-          term="Rakam (Destiny's Imprint)"
-          name={data?.rakam?.name}
-          meaning={data?.rakam?.meaning}
-          description={data?.rakam?.description}
-        />
-        <SectionItem
-          term="Sadwara Cycle (Six-Day Influence)"
-          name={data?.sadwara?.name}
-          meaning={data?.sadwara?.meaning}
-          description={data?.sadwara?.description || data?.sadwara?.association}
-        />
-        <SectionItem
-          term="Hastawara Cycle (Eight-Day Influence)"
-          name={data?.hastawara?.name}
-          meaning={data?.hastawara?.meaning}
-          description={data?.hastawara?.description}
-        />
-      </div>
-    </div>
-  );
-
-  const WukuProfileCard = ({ wuku }) => (
-    <div className="card bg-base-100 shadow-lg">
-      <div className="card-body">
-        <h3 className="card-title">Wuku Profile: {wuku?.name || "N/A"}</h3>
-        <p className="text-sm text-base-content/80 mb-3">
-          Wuku Neptu/Bilangan: {wuku?.wuku_bilangan ?? "N/A"}
-        </p>
-        <SectionItem
-          term="Overall Wuku Character"
-          description={wuku?.character}
-        />
-        <h4 className="text-md font-semibold mt-4 mb-2">
-          Symbolic Totems of Your Wuku:
-        </h4>
-        <SectionItem
-          term="Deity (Dewa)"
-          name={wuku?.god}
-          meaning={wuku?.god_meaning}
-        />
-        <SectionItem
-          term="Sacred Tree (Pohon)"
-          name={wuku?.tree}
-          meaning={wuku?.tree_meaning}
-        />
-        <SectionItem
-          term="Spirit Bird (Burung)"
-          name={wuku?.bird}
-          meaning={wuku?.bird_meaning}
-        />
-      </div>
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
-      <div className="navbar bg-base-100 sticky top-0 z-50">
+      <div
+        className={`navbar px-5 bg-base-100 sticky top-0 z-50 transition-all duration-300 ${
+          showTitleInNavbar ? "border-b border-batik-border" : ""
+        }`}
+      >
         <div className="navbar-start">
-          <button
-            onClick={() => router.back()}
-            className="btn btn-ghost btn-circle"
+          <Link
+            href="/home"
+            className="p-2 rounded-full text-xl border border-batik-text hover:bg-base-200"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-              />
-            </svg>
-          </button>
+            <ArrowLeft size={20} className="text-batik-text" />
+          </Link>
         </div>
+        {showTitleInNavbar && profileData && (
+          <div className="navbar-center flex-col">
+            <div className="text-xs text-batik-text font-semibold uppercase">
+              Weton
+            </div>
+            <span className="text-batik-black font-semibold text-sm">
+              {profileData.dina_pasaran}
+            </span>
+          </div>
+        )}
+        <div className="navbar-end"></div>
       </div>
 
-      <main className="p-4 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
+      <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         <h1 className="text-3xl font-semibold text-left mb-4">About You</h1>
-        <p className="text-base-content/80 mb-4">
-          Ever wondered if your birthdate holds a deeper meaning? In Javanese
-          culture, it unlocks a rich tapestry of personality insights and
-          potential life paths.
-        </p>
-        <ProfileSummaryCard
-          weton_en={profileData.dina_pasaran}
-          wukuName={profileData.wuku?.name}
-          total_neptu={profileData.weton?.total_neptu}
-        />
-        <CoreWetonAttributesCard data={profileData.weton} />
-        <GuidingInfluencesCard data={profileData.weton} />
-        <UnderlyingDynamicsCard data={profileData.weton} />
-        <WukuProfileCard wuku={profileData.wuku} />
+        <section className="flex flex-row gap-5 items-center">
+          <div className="text-slate-600">
+            <div className="text-sm text-batik-text font-semibold">Weton</div>
+            <span className="text-batik-black font-semibold">
+              {profileData.dina_pasaran}
+            </span>
+          </div>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold text-left">
+            Weton: Your Soul&apos;s Signature
+          </h2>
+          <p className="text-[10px] text-gray-700 mb-2">
+            Your Weton is like a unique spiritual signature, defined by the
+            specific day and market day of your birth in the Javanese calendar.
+            It reveals the fundamental energies shaping your personality,
+            potential, and the subtle rhythms of your life&apos;s journey.
+          </p>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold  text-batik-text">
+                Day (Dina)
+              </div>
+              <div>
+                <div className="font-semibold">
+                  {profileData.weton?.dina_en} ({profileData.weton?.dina})
+                </div>
+                <div className="text-sm text-gray-700">
+                  {profileData.weton?.day_character?.description}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold text-batik-text">
+                Market Day (Pasaran)
+              </div>
+              <div className="font-semibold">{profileData.weton?.pasaran}</div>
+              <div className="text-sm text-gray-700">
+                {profileData.weton?.pasaran_character?.description}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold text-batik-text">
+                Weton Energy
+              </div>
+              <div className="font-semibold">{profileData.dina_pasaran}</div>
+              <div className="text-sm text-gray-700">
+                {profileData.weton?.neptu_character?.description}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-batik-text/20 pt-4">
+          <h2 className="text-xl font-semibold text-left">
+            Your Inner Compass & Life&apos;s Journey
+          </h2>
+          <p className="text-[10px] text-gray-700 mb-2">
+            These elements describe your fundamental character, how you approach
+            life, and the innate energies that guide your path.
+          </p>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold  text-batik-text">Laku</div>
+              <p className="text-[10px] text-gray-700 italic">
+                Laku describes the overarching &quot;manner&quot; or
+                &quot;way&quot; your life tends to unfold, like a specific
+                archetype or behavioral pattern.
+              </p>
+              <div>
+                <div className="font-semibold">
+                  {profileData.weton?.laku?.name} (
+                  {profileData.weton?.laku?.meaning})
+                </div>
+                <div className="text-sm text-gray-700">
+                  {profileData.weton?.laku?.description}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold  text-batik-text">
+                Pancasuda
+              </div>
+              <p className="text-[10px] text-gray-700 italic">
+                Pancasuda types define your innate &quot;character essence&quot;
+                or life&apos;s guiding archetype, revealing the unique talents
+                and potential path intricately woven into your birth Weton.
+              </p>
+              <div>
+                <div className="font-semibold">
+                  {profileData.weton?.saptawara?.name}
+                </div>
+                <div className="text-xs leading-4 text-gray-700 mb-1 font-medium ">
+                  {profileData.weton?.saptawara?.meaning}
+                </div>
+                <div className="text-sm text-gray-700">
+                  {profileData.weton?.saptawara?.description}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-batik-text/20 pt-4">
+          <h2 className="text-xl font-semibold text-left">
+            Karmic Tides & Cyclical Patterns
+          </h2>
+          <p className="text-[10px] text-gray-700 mb-2">
+            These aspects point to underlying patterns, cyclical influences from
+            different day counts, and potential karmic themes that shape your
+            experiences.
+          </p>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold  text-batik-text">
+                Rakam
+              </div>
+              <p className="text-[10px] text-gray-700 italic">
+                Rakam suggests a significant life theme or a pattern of
+                experiences that may repeat or define distinct periods of your
+                life.
+              </p>
+              <div>
+                <div className="font-semibold">
+                  {profileData.weton?.rakam?.name}
+                </div>
+                <div className="text-xs leading-4 text-gray-700 mb-1 font-medium ">
+                  {profileData.weton?.rakam?.meaning}
+                </div>
+                <div className="text-sm text-gray-700">
+                  {profileData.weton?.rakam?.description}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold  text-batik-text">
+                Sadwara
+              </div>
+              <p className="text-[10px] text-gray-700 italic">
+                Part of a six-day Pawukon cycle (Sadwara), this highlights
+                subtle behavioral tendencies, your approach to responsibility,
+                or social interaction styles.
+              </p>
+              <div>
+                <div className="font-semibold">
+                  {profileData.weton?.sadwara?.name} (
+                  {profileData.weton?.sadwara?.meaning})
+                </div>
+                <div className="text-sm text-gray-700">
+                  {profileData.weton?.sadwara?.description}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold  text-batik-text">
+                Hastawara
+              </div>
+              <p className="text-[10px] text-gray-700 italic">
+                An eight-day Pawukon cycle influence (Hastawara), this can point
+                towards areas of specific luck, potential challenges, or types
+                of activities favored or to be cautious about.
+              </p>
+              <div>
+                <div className="font-semibold">
+                  {profileData.weton?.hastawara?.name}
+                </div>
+                <div className="text-xs leading-4 text-gray-700 mb-1 font-medium ">
+                  {profileData.weton?.hastawara?.meaning}
+                </div>
+                <div className="text-sm text-gray-700">
+                  {profileData.weton?.hastawara?.description}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

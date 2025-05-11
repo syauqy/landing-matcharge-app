@@ -105,10 +105,10 @@ export const AuthProvider = ({ children }) => {
     supabase.auth
       .getSession()
       .then(({ data: { session: initialSession } }) => {
-        console.log(
-          "AuthProvider initial getSession result:",
-          !!initialSession
-        );
+        // console.log(
+        //   "AuthProvider initial getSession result:",
+        //   !!initialSession
+        // );
         // If the listener hasn't completed the initial check yet AND we find a session,
         // update the state AND mark loading as false (session found = check complete).
         if (!initialCheckCompleted && initialSession) {

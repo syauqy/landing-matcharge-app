@@ -5,6 +5,7 @@ import {
   UserCircleIcon,
   HeartIcon,
 } from "@heroicons/react/24/outline";
+import { House, User, Heart, CircleUserRound } from "lucide-react";
 import { CrystalBall } from "@/components/icons";
 import clsx from "clsx";
 
@@ -18,7 +19,7 @@ export function Menubar({ page }) {
           "text-batik-text flex flex-col items-center"
         )}
       >
-        <HomeIcon className="h-6 w-6" />
+        <House className="h-6 w-6" />
         <span className="dock-label">Home</span>
       </Link>
       <Link
@@ -38,7 +39,7 @@ export function Menubar({ page }) {
           "text-batik-text flex flex-col items-center"
         )}
       >
-        <UserCircleIcon className="h-6 w-6" />
+        <CircleUserRound className="h-6 w-6" />
         <span className="dock-label">Profile</span>
       </Link>
     </div>

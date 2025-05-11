@@ -26,56 +26,6 @@ export default function Home() {
 
   const READING_LIMIT = 2;
 
-  // Optional: Add loading state for better UX during check
-  // const [isCheckingRedirect, setIsCheckingRedirect] = useState(true);
-
-  // useEffect(() => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   const needsNativeRedirect = params.get("native_redirect") === "true";
-  //   console.log(
-  //     "HomePage Mounted. Needs Native Redirect:",
-  //     needsNativeRedirect
-  //   );
-
-  //   if (needsNativeRedirect) {
-  //     supabase.auth
-  //       .getSession()
-  //       .then(({ data: { session }, error }) => {
-  //         console.log("Supabase getSession result:", session);
-  //         if (error) {
-  //           console.error("Error getting session:", error);
-  //           setIsCheckingRedirect(false); // Stop checking on error
-  //         } else if (session) {
-  //           const customSchemeUrl = `wetonscope://auth/callback`;
-  //           console.log(
-  //             `Session found. Redirecting to custom scheme: ${customSchemeUrl}`
-  //           );
-  //           // Use replace to avoid adding this intermediate page to browser history
-  //           window.location.replace(customSchemeUrl);
-  //         } else {
-  //           console.log("No active session found after redirect check.");
-  //           setIsCheckingRedirect(false);
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         console.error("Error during getSession promise:", err);
-  //         setIsCheckingRedirect(false);
-  //       });
-  //   } else {
-  //     // Normal web page load, not a native callback
-  //     console.log("Not a native redirect.");
-  //     setIsCheckingRedirect(false);
-  //   }
-  //   // Only run this effect once on mount
-  // }, []);
-
-  // Conditionally render loading indicator only during the native redirect check
-  // const params = new URLSearchParams(
-  //   typeof window !== "undefined" ? window.location.search : ""
-  // );
-
-  // console.log("loading", authLoading, user);
-
   //user auth
   useEffect(() => {
     // if (!authLoading && !user) {
@@ -299,13 +249,6 @@ export default function Home() {
       </div>
     );
   }
-
-  // if (isCheckingRedirect && params.get("native_redirect") === "true") {
-  //   return <div>Processing login...</div>;
-  // }
-
-  const canCalculate = currentReadings < READING_LIMIT;
-  const limitReached = currentReadings >= READING_LIMIT;
 
   const renderReadings = () => {
     return (
