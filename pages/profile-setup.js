@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { getWeton, getWuku } from "@/utils";
 import { Toaster, toast } from "sonner";
 import { Capacitor } from "@capacitor/core";
+import { Navbar } from "@/components/layouts/navbar";
 
 export default function ProfileSetupPage() {
   const { user, loading: authLoading } = useAuth();
@@ -352,17 +353,11 @@ export default function ProfileSetupPage() {
   }
 
   return (
-    <div className="h-[100svh] flex flex-col bg-batik">
+    <div className="h-[100svh] flex flex-col bg-base-100">
       <Toaster position="top-center" richColors />
-      <div className="bg-batik/50 shadow-sm w-full">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-center relative">
-          <h1 className="text-lg font-semibold text-batik-black">
-            Complete Your Profile
-          </h1>
-        </div>
-      </div>
+      <Navbar title="Complete Your Profile" />
 
-      <div className="flex-grow flex items-center justify-center p-4 ">
+      <div className="flex-grow flex items-center justify-center p-5">
         <div className="w-full h-[100%] max-w-md">
           <p className="mb-6 text-center text-gray-700 text-sm h-[30%]">
             Please provide your details to get your personalized Weton readings.

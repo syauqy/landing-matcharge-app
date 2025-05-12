@@ -350,7 +350,15 @@ export function getWuku(birthDate) {
     const pawukon_number = wuku_index * 7 + neptu_saptawara;
 
     return {
-      wuku: wuku,
+      god: wuku.god,
+      god_meaning: wuku.god_meaning,
+      name: wuku.name,
+      character: wuku.character,
+      tree: wuku.tree,
+      tree_meaning: wuku.tree_meaning,
+      bird: wuku.bird,
+      bird_meaning: wuku.bird_meaning,
+      wuku_bilangan: wuku.wuku_bilangan,
       pawukon: pawukon_number,
     };
   } catch (error) {

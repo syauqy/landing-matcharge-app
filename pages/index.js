@@ -162,10 +162,10 @@ export default function HomePage() {
   };
 
   return (
-    <div className="h-[100svh] flex flex-col items-center justify-center bg-base-100 p-4">
+    <div className="h-[100svh] flex flex-col items-center justify-center bg-base-100 p-5">
       <Toaster />
       <div className="w-full h-[100%] max-w-md px-4 py-8 rounded-lg">
-        <h1 className="text-4xl font-bold mb-4 text-center h-[10%] text-batik-black">
+        <h1 className="text-4xl font-extrabold mb-4 text-center h-[10%] text-batik-black uppercase tracking-wide">
           Wetonscope
         </h1>
 

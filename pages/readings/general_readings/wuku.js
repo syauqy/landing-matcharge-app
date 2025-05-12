@@ -147,20 +147,20 @@ export default function BasicReadingPage() {
         }`}
       >
         <div className="navbar-start">
-          <Link
-            href="/home"
+          <button
+            onClick={() => router.back()}
             className="p-2 rounded-full text-xl border border-batik-text hover:bg-base-200"
           >
             <ArrowLeft size={20} className="text-batik-text" />
-          </Link>
+          </button>
         </div>
         {showTitleInNavbar && profileData && (
           <div className="navbar-center flex-col">
             <div className="text-xs text-batik-text font-semibold uppercase">
-              Weton
+              Wuku
             </div>
             <span className="text-batik-black font-semibold text-sm">
-              {profileData.dina_pasaran}
+              {profileData?.wuku?.name}
             </span>
           </div>
         )}
@@ -168,179 +168,65 @@ export default function BasicReadingPage() {
       </div>
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        <h1 className="text-3xl font-semibold text-left mb-4">About You</h1>
-        <section className="flex flex-row gap-5 items-center">
-          <div className="text-slate-600">
-            <div className="text-sm text-batik-text font-semibold">Weton</div>
-            <span className="text-batik-black font-semibold">
-              {profileData.dina_pasaran}
-            </span>
-          </div>
-        </section>
+        <div>
+          <h1 className="text-xl font-semibold text-left">
+            Wuku: The Essence of Your Being
+          </h1>
+          <p className="text-[10px] text-gray-700 mb-2">
+            Your Wuku is the specific week within the 210-day Javanese Pawukon
+            calendar into which you were born. It imprints you with unique
+            characteristics, symbolic guardians, and overarching life patterns.
+          </p>
+        </div>
         <section>
-          <h2 className="text-xl font-semibold text-left">
-            Weton: Your Soul&apos;s Signature
-          </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            Your Weton is like a unique spiritual signature, defined by the
-            specific day and market day of your birth in the Javanese calendar.
-            It reveals the fundamental energies shaping your personality,
-            potential, and the subtle rhythms of your life&apos;s journey.
-          </p>
           <div className="flex flex-col gap-4">
+            <div className="text-slate-600">
+              <div className="text-sm text-batik-text font-semibold">Wuku</div>
+              <span className="text-batik-black font-semibold">
+                {profileData?.wuku?.name}
+              </span>
+            </div>
             <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Day (Dina)
-              </div>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.dina_en} ({profileData.weton?.dina})
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.day_character?.description}
-                </div>
+              <div className="text-sm text-gray-700">
+                {profileData?.wuku?.character}
               </div>
             </div>
             <div className="flex flex-col">
               <div className="text-sm font-semibold text-batik-text">
-                Market Day (Pasaran)
+                Guardian Deity
               </div>
-              <div className="font-semibold">{profileData.weton?.pasaran}</div>
+              <p className="text-[10px] text-gray-700 italic">
+                The Deity associated with your Wuku is a divine patron,
+                bestowing specific spiritual qualities, protection, and
+                influencing your higher aspirations.
+              </p>
+              <div className="font-semibold">{profileData?.wuku?.god}</div>
               <div className="text-sm text-gray-700">
-                {profileData.weton?.pasaran_character?.description}
+                {profileData?.wuku?.god_meaning}
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="text-sm font-semibold text-batik-text">
-                Weton Energy
-              </div>
-              <div className="font-semibold">{profileData.dina_pasaran}</div>
+              <div className="text-sm font-semibold text-batik-text">Tree</div>
+              <p className="text-[10px] text-gray-700 italic">
+                The Tree of your Wuku symbolizes your connection to nature, your
+                path of growth, inherent virtues, and the kind of environment
+                where you best flourish.
+              </p>
+              <div className="font-semibold">{profileData?.wuku?.tree}</div>
               <div className="text-sm text-gray-700">
-                {profileData.weton?.neptu_character?.description}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-t border-batik-text/20 pt-4">
-          <h2 className="text-xl font-semibold text-left">
-            Your Inner Compass & Life&apos;s Journey
-          </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            These elements describe your fundamental character, how you approach
-            life, and the innate energies that guide your path.
-          </p>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">Laku</div>
-              <p className="text-[10px] text-gray-700 italic">
-                Laku describes the overarching &quot;manner&quot; or
-                &quot;way&quot; your life tends to unfold, like a specific
-                archetype or behavioral pattern.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.laku?.name} (
-                  {profileData.weton?.laku?.meaning})
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.laku?.description}
-                </div>
+                {profileData?.wuku?.tree_meaning}
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Pancasuda
-              </div>
+              <div className="text-sm font-semibold text-batik-text">Bird</div>
               <p className="text-[10px] text-gray-700 italic">
-                Pancasuda types define your innate &quot;character essence&quot;
-                or life&apos;s guiding archetype, revealing the unique talents
-                and potential path intricately woven into your birth Weton.
+                The Bird of your Wuku represents your ambitions, how you express
+                yourself, your manner of navigating life&apos;s journey, and
+                aspects of your fortune or luck.
               </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.saptawara?.name}
-                </div>
-                <div className="text-xs leading-4 text-gray-700 mb-1 font-medium ">
-                  {profileData.weton?.saptawara?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.saptawara?.description}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-t border-batik-text/20 pt-4">
-          <h2 className="text-xl font-semibold text-left">
-            Karmic Tides & Cyclical Patterns
-          </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            These aspects point to underlying patterns, cyclical influences from
-            different day counts, and potential karmic themes that shape your
-            experiences.
-          </p>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Rakam
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Rakam suggests a significant life theme or a pattern of
-                experiences that may repeat or define distinct periods of your
-                life.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.rakam?.name}
-                </div>
-                <div className="text-xs leading-4 text-gray-700 mb-1 font-medium ">
-                  {profileData.weton?.rakam?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.rakam?.description}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Sadwara
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Part of a six-day Pawukon cycle (Sadwara), this highlights
-                subtle behavioral tendencies, your approach to responsibility,
-                or social interaction styles.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.sadwara?.name} (
-                  {profileData.weton?.sadwara?.meaning})
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.sadwara?.description}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Hastawara
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                An eight-day Pawukon cycle influence (Hastawara), this can point
-                towards areas of specific luck, potential challenges, or types
-                of activities favored or to be cautious about.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.hastawara?.name}
-                </div>
-                <div className="text-xs leading-4 text-gray-700 mb-1 font-medium ">
-                  {profileData.weton?.hastawara?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.hastawara?.description}
-                </div>
+              <div className="font-semibold">{profileData?.wuku?.bird}</div>
+              <div className="text-sm text-gray-700">
+                {profileData?.wuku?.bird_meaning}
               </div>
             </div>
           </div>

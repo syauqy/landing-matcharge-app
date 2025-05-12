@@ -10,7 +10,7 @@ export function DashboardNavbar({ user, handleLogout }) {
         </div>
       </div>
       <div className="navbar-end">
-        {/* <div className="text-center sm:text-right text-xs sm:text-sm">
+        <div className="text-center sm:text-right text-xs sm:text-sm">
           <span className="block sm:inline mr-0 sm:mr-4 mb-1 sm:mb-0 text-gray-600">
             {user?.email}
           </span>
@@ -20,7 +20,7 @@ export function DashboardNavbar({ user, handleLogout }) {
           >
             Logout
           </button>
-        </div> */}
+        </div>
       </div>
     </nav>
   );

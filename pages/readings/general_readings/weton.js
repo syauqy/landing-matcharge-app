@@ -175,16 +175,7 @@ export default function BasicReadingPage() {
       </div>
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        <h1 className="text-3xl font-semibold text-left mb-4">About You</h1>
-        <section className="flex flex-row gap-5 items-center">
-          <div className="text-slate-600">
-            <div className="text-sm text-batik-text font-semibold">Weton</div>
-            <span className="text-batik-black font-semibold">
-              {profileData.dina_pasaran}
-            </span>
-          </div>
-        </section>
-        <section>
+        <div>
           <h2 className="text-xl font-semibold text-left">
             Weton: Your Soul&apos;s Signature
           </h2>
@@ -194,7 +185,15 @@ export default function BasicReadingPage() {
             It reveals the fundamental energies shaping your personality,
             potential, and the subtle rhythms of your life&apos;s journey.
           </p>
+        </div>
+        <section>
           <div className="flex flex-col gap-4">
+            <div className="text-slate-600">
+              <div className="text-sm text-batik-text font-semibold">Weton</div>
+              <span className="text-batik-black font-semibold">
+                {profileData.dina_pasaran}
+              </span>
+            </div>
             <div className="flex flex-col">
               <div className="text-sm font-semibold  text-batik-text">
                 Day (Dina)
@@ -268,7 +267,7 @@ export default function BasicReadingPage() {
                 <div className="font-semibold">
                   {profileData.weton?.saptawara?.name}
                 </div>
-                <div className="text-xs leading-4 text-gray-700 mb-1 font-medium ">
+                <div className="text-[10px] text-gray-700 italic ">
                   {profileData.weton?.saptawara?.meaning}
                 </div>
                 <div className="text-sm text-gray-700">
@@ -302,7 +301,7 @@ export default function BasicReadingPage() {
                 <div className="font-semibold">
                   {profileData.weton?.rakam?.name}
                 </div>
-                <div className="text-xs leading-4 text-gray-700 mb-1 font-medium ">
+                <div className="text-[10px] text-gray-700 italic">
                   {profileData.weton?.rakam?.meaning}
                 </div>
                 <div className="text-sm text-gray-700">
@@ -342,7 +341,7 @@ export default function BasicReadingPage() {
                 <div className="font-semibold">
                   {profileData.weton?.hastawara?.name}
                 </div>
-                <div className="text-xs leading-4 text-gray-700 mb-1 font-medium ">
+                <div className="text-[10px] text-gray-700 italic">
                   {profileData.weton?.hastawara?.meaning}
                 </div>
                 <div className="text-sm text-gray-700">

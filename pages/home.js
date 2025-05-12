@@ -20,17 +20,15 @@ export default function Home() {
   const [currentReadings, setCurrentReadings] = useState(0);
   const [latestReadings, setLatestReadings] = useState([]);
 
-  console.log(user);
-
   // console.log(user, authLoading);
 
   const READING_LIMIT = 2;
 
   //user auth
   useEffect(() => {
-    // if (!authLoading && !user) {
-    //   router.push("/");
-    // }
+    if (!authLoading && !user) {
+      router.push("/");
+    }
     // If auth is still loading from AuthContext, wait.
     if (authLoading) {
       console.log("Home useEffect: Auth loading, waiting...");
@@ -56,7 +54,7 @@ export default function Home() {
         // Check profile first - might redirect
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
-          .select("id, username, readings_count") // Fetch count if needed
+          .select("id, username") // Fetch count if needed
           .eq("id", user.id)
           .maybeSingle();
 
@@ -69,15 +67,6 @@ export default function Home() {
           router.push("/profile-setup");
           return; // Stop if redirecting
         }
-
-        // Set readings count if profile exists
-        if (profile.readings_count !== undefined) {
-          setCurrentReadings(profile.readings_count);
-        }
-
-        // Fetch latest readings only if profile check passed and we are still here
-        await fetchLatestReadings();
-        // await fetchReadings(); // Fetch all if needed
       } catch (err) {
         console.error("Error loading initial page data:", err);
         setError("Failed to load page data. Please try again.");
@@ -94,6 +83,7 @@ export default function Home() {
   }, [user, authLoading, router]);
 
   const checkProfile = async () => {
+    setLoading(true);
     try {
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
@@ -108,36 +98,9 @@ export default function Home() {
     } catch (err) {
       console.error("Error checking profile:", err);
       setError("Failed to check profile.");
-    }
-  };
-
-  const fetchReadings = async () => {
-    if (!user) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error } = await supabase
-        .from("readings")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setReadings(data);
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("readings_count")
-        .eq("id", user.id)
-        .single();
-
-      if (profileError) throw profileError;
-      setCurrentReadings(profile.readings_count);
-    } catch (err) {
-      console.error("Error fetching readings:", err);
-      setError("Failed to load readings.");
-    } finally {
       setLoading(false);
     }
+    setLoading(false);
   };
 
   const fetchLatestReadings = async () => {
@@ -165,83 +128,13 @@ export default function Home() {
     }
   }, [user, authLoading]);
 
-  const requestNewReading = async () => {
-    if (currentReadings >= READING_LIMIT) {
-      setError(`Free reading limit (${READING_LIMIT}) reached.`);
-      return;
-    }
-
-    setRequestingReading(true);
-    setError(null);
-    setMessage(null);
-    setFortuneResult(null);
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!session?.access_token) {
-        throw new Error("No active session");
-      }
-
-      const response = await fetch(
-        "https://weton-ai-next.vercel.app/api/get-fortune",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Error: ${response.status}`);
-      }
-
-      const fortuneData = await response.json();
-      setFortuneResult(fortuneData);
-      setMessage("New reading generated successfully!");
-      setCurrentReadings((prev) => prev + 1);
-      const { data, error } = await supabase
-        .from("readings")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setReadings(data);
-      fetchLatestReadings();
-    } catch (err) {
-      console.error("Error requesting new reading:", err);
-      setError(err.message);
-    } finally {
-      setRequestingReading(false);
-    }
-  };
-
   const handleLogout = async () => {
     console.log("user", user);
     await logout();
     // router.push("/");
   };
 
-  // if (authLoading) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <p>Loading...</p>
-  //     </div>
-  //   );
-  // }
-  // if (!user) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <p>Redirecting...</p>
-  //     </div>
-  //   );
-  // }
-
-  if (loadingData) {
+  if (loadingData || authLoading || !user || loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
         <span className="loading loading-spinner loading-lg"></span>
@@ -305,70 +198,6 @@ export default function Home() {
       </ul>
     );
   };
-
-  const renderFortuneResult = () => {
-    return (
-      <div className="mt-4 space-y-4">
-        <div className="bg-indigo-50 p-3 rounded border border-indigo-200">
-          <h3 className="text-sm font-semibold text-indigo-800 mb-1">
-            Your Weton Details
-          </h3>
-          <p className="text-xs text-indigo-700">
-            Weton:{" "}
-            <span className="font-medium">
-              {fortuneResult.wetonDetails.weton}
-            </span>
-          </p>
-          <p className="text-xs text-indigo-700">
-            Total Neptu:{" "}
-            <span className="font-medium">
-              {fortuneResult.wetonDetails.totalNeptu}
-            </span>
-            <span className="text-gray-600">
-              {" "}
-              (Day {fortuneResult.wetonDetails.dayNeptu} + Pasaran{" "}
-              {fortuneResult.wetonDetails.pasaranNeptu})
-            </span>
-          </p>
-        </div>
-
-        <div className="bg-gray-50 p-3 rounded border border-gray-200">
-          <h3 className="text-sm font-semibold text-gray-800 mb-2">
-            AI Fortune Analysis
-          </h3>
-          <div className="prose prose-sm text-gray-700 max-w-none">
-            {fortuneResult.analysis.split("\n").map((paragraph, index) => (
-              <p key={index} className="mb-2">
-                {paragraph.replace(/^\d+\.\s*/, "")}
-              </p>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // const renderLoadingState = () => {
-  //   return (
-  //     <div className="mt-4 text-center">
-  //       <p className="text-sm text-gray-600">
-  //         Calculating your fortune, please wait...
-  //       </p>
-  //     </div>
-  //   );
-  // };
-
-  // const renderErrorState = () => {
-  //   return (
-  //     <p className="mt-3 text-xs text-red-700 bg-red-100 p-2 rounded">
-  //       {error}
-  //     </p>
-  //   );
-  // };
-
-  // const renderSuccessState = () => {
-  //   return <p className="text-green-600 mb-4">{message}</p>;
-  // };
 
   return (
     <div className="h-[100svh] flex flex-col bg-base-100 relative">

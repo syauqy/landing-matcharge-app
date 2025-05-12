@@ -79,9 +79,8 @@ export default function ReadingsPage() {
           content="Explore various readings for insights."
         />
       </Head>
-
-      <div className="px-safe flex flex-col bg-base py-18">
-        <Navbar title="Readings" />
+      <Navbar title="Readings" />
+      <div className="px-safe flex flex-col bg-base py-4">
         <div className="py- sm:py-6">
           <div className="space-y-6">
             {SectionData.map((section, i) => (
