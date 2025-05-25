@@ -106,7 +106,7 @@ export default function ProfilePage() {
     );
   }
 
-  console.log(profileData);
+  console.log(profileData, new Date());
 
   // --- Generate Avatar URL ---
   const avatarUrl = profileData?.full_name

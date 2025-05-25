@@ -1,5 +1,5 @@
 // pages/dashboard.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
@@ -18,6 +18,7 @@ export default function Home() {
   const [profileData, setProfileData] = useState(null);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
+  const [dailyReading, setDailyReading] = useState([]);
   const [requestingReading, setRequestingReading] = useState(false);
   const [fortuneResult, setFortuneResult] = useState(null);
   const [currentReadings, setCurrentReadings] = useState(0);
@@ -26,15 +27,6 @@ export default function Home() {
   // console.log(user, authLoading);
 
   const READING_LIMIT = 2;
-
-  const todayReading = {
-    // Using an ISO string for easier parsing and formatting
-    date: "2025-05-17T00:00:00.000Z",
-    today:
-      "Hey, today could be a cool mix of chilling out with your own thoughts and connecting with your friends or crew.",
-    do: "Maybe take some time for yourself to recharge, but also don't miss out on good vibes with people around you.",
-    dont: "Try not to get too lost in your head or be too hard on yourself today.",
-  };
 
   const getTimeOfDay = () => {
     const currentHour = new Date().getHours();
@@ -54,7 +46,7 @@ export default function Home() {
     try {
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .select("id, full_name")
+        .select("id, full_name, weton, gender, username")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -78,6 +70,7 @@ export default function Home() {
         .from("readings")
         .select("*")
         .eq("user_id", user.id)
+        .neq("reading_category", "daily")
         .order("created_at", { ascending: false })
         .limit(5);
 
@@ -89,14 +82,87 @@ export default function Home() {
     }
   };
 
+  const handleDailyReading = async () => {
+    setError(null);
+    setMessage(null);
+
+    // Check if today's reading already exists for the user
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      // Check if today's daily reading already exists
+      const { data: existingReadings, error: fetchError } = await supabase
+        .from("readings")
+        .select("reading, created_at")
+        .eq("user_id", user.id)
+        .gte("created_at", today.toISOString())
+        .lt("created_at", tomorrow.toISOString())
+        .eq("reading_category", "daily")
+        .limit(1);
+
+      if (fetchError) throw fetchError;
+
+      if (existingReadings && existingReadings.length > 0) {
+        setDailyReading(existingReadings[0]);
+        setMessage("You already have a daily reading for today.");
+        setRequestingReading(false);
+        return null;
+      }
+
+      if (requestingReading) return null;
+      setRequestingReading(true);
+
+      console.log("generate new daily reading");
+      let readingData;
+
+      try {
+        const response = await fetch("/api/readings/daily", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ profile: profileData }),
+          credentials: "include",
+        });
+
+        readingData = await response.json(); // Always try to parse JSON
+      } catch (err) {
+        console.error(
+          "Error in fetch or processing response for daily reading:",
+          err
+        );
+        setError(err.message || "Failed to generate daily reading.");
+      } finally {
+        setRequestingReading(false);
+      }
+    } catch (err) {
+      console.error("Error checking today's reading:", err);
+      setError("Failed to check today's reading.");
+      setRequestingReading(false);
+    }
+  };
+
+  // Effect for fetching initial user-dependent data
   useEffect(() => {
     if (!authLoading && user) {
       checkProfile();
       fetchLatestReadings();
-    } else {
+    } else if (!authLoading && !user) {
+      // Ensure we don't redirect during initial authLoading
       router.push("/");
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, router]); // Added router to dependencies
+
+  // Effect to handle daily reading once profileData is available
+  useEffect(() => {
+    if (profileData && user) {
+      // Only run if profileData and user exist
+      handleDailyReading();
+    }
+  }, [profileData, user]); // Depends on profileData and user
 
   const handleLogout = async () => {
     console.log("user", user);
@@ -114,12 +180,13 @@ export default function Home() {
   }
 
   const renderTodayReading = () => {
-    if (!todayReading) return null; // Or some placeholder if it might be null
+    if (!dailyReading) return null;
+    const reading = dailyReading.reading;
 
     let formattedDate = "Date unavailable";
     try {
       // Example format: "May 17, 2025"
-      formattedDate = format(new Date(todayReading.date), "MMMM d");
+      formattedDate = format(new Date(dailyReading.created_at), "MMMM d");
     } catch (e) {
       console.error("Error formatting todayReading.date:", e);
       // Keep 'Date unavailable' or use todayReading.date as fallback
@@ -130,23 +197,21 @@ export default function Home() {
           <p className="text-sm font-semibold text-base-content/80">
             {formattedDate}
           </p>
-          <p className="mt-2 text-base-content">{todayReading.today}</p>
-          {todayReading.do && (
+          <p className="mt-2 text-base-content">{reading.today}</p>
+          {reading.do && (
             <div className="mt-3">
               <p className="font-semibold text-green-700 dark:text-green-500">
                 Do:
               </p>
-              <p className="text-sm text-base-content/90">{todayReading.do}</p>
+              <p className="text-sm text-base-content/90">{reading.do}</p>
             </div>
           )}
-          {todayReading.dont && (
+          {reading.dont && (
             <div className="mt-2">
               <p className="font-semibold text-red-700 dark:text-red-500">
                 Don&apos;t:
               </p>
-              <p className="text-sm text-base-content/90">
-                {todayReading.dont}
-              </p>
+              <p className="text-sm text-base-content/90">{reading.dont}</p>
             </div>
           )}
         </div>
@@ -172,7 +237,7 @@ export default function Home() {
     );
   };
 
-  console.log(profileData);
+  // console.log(profileData);
 
   return (
     <div className="h-[100svh] flex flex-col bg-base relative">
@@ -187,6 +252,16 @@ export default function Home() {
         <div className="flex flex-col gap-2">
           <div className="px-4">{renderTodayReading()}</div>
         </div>
+        {/* <div className="flex flex-col gap-2">
+          <button onClick={handleDailyReading} disabled={requestingReading}>
+            {requestingReading ? "Generating..." : "Generate Daily Reading"}
+          </button>
+          <div className="mockup-code w-full">
+            <pre>
+              <code>{JSON.stringify(dailyReading, null, 2)}</code>
+            </pre>
+          </div>
+        </div> */}
         <div className="mt-4 flex flex-col gap-2">
           <div className="px-4 text-lg font-medium text-batik-black">
             Latest readings

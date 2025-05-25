@@ -7,10 +7,8 @@ import Layout from "@/components/layout";
 export default function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
-      <Layout>
-        <AppUrlListener></AppUrlListener>
-        <Component {...pageProps} />
-      </Layout>
+      <AppUrlListener></AppUrlListener>
+      <Component {...pageProps} />
     </AuthProvider>
   );
 }
