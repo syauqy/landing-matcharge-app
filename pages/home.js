@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
+
 import Link from "next/link";
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
+import { format } from "date-fns";
 import { Menubar } from "@/components/layouts/menubar";
 
 export default function Home() {
@@ -13,6 +15,7 @@ export default function Home() {
   const [readings, setReadings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(true);
+  const [profileData, setProfileData] = useState(null);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
   const [requestingReading, setRequestingReading] = useState(false);
@@ -24,70 +27,34 @@ export default function Home() {
 
   const READING_LIMIT = 2;
 
-  //user auth
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/");
+  const todayReading = {
+    // Using an ISO string for easier parsing and formatting
+    date: "2025-05-17T00:00:00.000Z",
+    today:
+      "Hey, today could be a cool mix of chilling out with your own thoughts and connecting with your friends or crew.",
+    do: "Maybe take some time for yourself to recharge, but also don't miss out on good vibes with people around you.",
+    dont: "Try not to get too lost in your head or be too hard on yourself today.",
+  };
+
+  const getTimeOfDay = () => {
+    const currentHour = new Date().getHours();
+    if (currentHour >= 5 && currentHour < 12) {
+      return "morning";
+    } else if (currentHour >= 12 && currentHour < 18) {
+      return "afternoon";
+    } else if (currentHour >= 18 && currentHour < 22) {
+      return "evening";
+    } else {
+      return "night";
     }
-    // If auth is still loading from AuthContext, wait.
-    if (authLoading) {
-      console.log("Home useEffect: Auth loading, waiting...");
-      setLoadingData(true); // Show data loading indicator
-      return;
-    }
-
-    // If auth is done, but there's no user, redirect to login.
-    if (!user) {
-      console.log(
-        "Home useEffect: No user found after auth load, redirecting."
-      );
-      router.push("/");
-      return; // Stop execution
-    }
-
-    // Auth loaded and user exists, proceed to load page data.
-    console.log("Home useEffect: User found, loading page data...");
-    const loadPageData = async () => {
-      setLoadingData(true);
-      setError(null);
-      try {
-        // Check profile first - might redirect
-        const { data: profile, error: profileError } = await supabase
-          .from("profiles")
-          .select("id, username") // Fetch count if needed
-          .eq("id", user.id)
-          .maybeSingle();
-
-        if (profileError) throw profileError; // Let catch block handle
-
-        if (!profile) {
-          console.log(
-            "Home useEffect: Profile not found, redirecting to setup."
-          );
-          router.push("/profile-setup");
-          return; // Stop if redirecting
-        }
-      } catch (err) {
-        console.error("Error loading initial page data:", err);
-        setError("Failed to load page data. Please try again.");
-        // Potentially redirect on critical errors, or just show message
-      } finally {
-        // Only set loading false if we haven't redirected
-        if (router.pathname === "/home") {
-          setLoadingData(false);
-        }
-      }
-    };
-
-    loadPageData(); // Call the async function
-  }, [user, authLoading, router]);
+  };
 
   const checkProfile = async () => {
     setLoading(true);
     try {
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .select("id, username")
+        .select("id, full_name")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -95,6 +62,7 @@ export default function Home() {
         console.error("Error fetching profile:", profileError);
         router.push("/profile-setup");
       }
+      setProfileData(profile);
     } catch (err) {
       console.error("Error checking profile:", err);
       setError("Failed to check profile.");
@@ -125,6 +93,8 @@ export default function Home() {
     if (!authLoading && user) {
       checkProfile();
       fetchLatestReadings();
+    } else {
+      router.push("/");
     }
   }, [user, authLoading]);
 
@@ -134,7 +104,7 @@ export default function Home() {
     // router.push("/");
   };
 
-  if (loadingData || authLoading || !user || loading) {
+  if (authLoading || !user || loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
         <span className="loading loading-spinner loading-lg"></span>
@@ -143,54 +113,57 @@ export default function Home() {
     );
   }
 
-  const renderReadings = () => {
+  const renderTodayReading = () => {
+    if (!todayReading) return null; // Or some placeholder if it might be null
+
+    let formattedDate = "Date unavailable";
+    try {
+      // Example format: "May 17, 2025"
+      formattedDate = format(new Date(todayReading.date), "MMMM d");
+    } catch (e) {
+      console.error("Error formatting todayReading.date:", e);
+      // Keep 'Date unavailable' or use todayReading.date as fallback
+    }
     return (
-      <ul className="space-y-4">
-        {readings.map((reading) => (
-          <li key={reading.id}>
-            <div className="card bg-base-100 shadow-md">
-              {" "}
-              {/* Use theme's base background for cards */}
-              <div className="card-body p-4">
-                {" "}
-                {/* Adjust padding as needed */}
-                <Link
-                  href={`/readings/basic/${reading.id}`}
-                  className="hover:text-primary"
-                >
-                  <p className="text-sm text-base-content/80">
-                    {" "}
-                    {/* Use theme's content color with opacity */}
-                    {new Date(reading.created_at).toLocaleDateString()}
-                  </p>
-                </Link>
-              </div>
+      <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+        <div className="card-body p-4">
+          <p className="text-sm font-semibold text-base-content/80">
+            {formattedDate}
+          </p>
+          <p className="mt-2 text-base-content">{todayReading.today}</p>
+          {todayReading.do && (
+            <div className="mt-3">
+              <p className="font-semibold text-green-700 dark:text-green-500">
+                Do:
+              </p>
+              <p className="text-sm text-base-content/90">{todayReading.do}</p>
             </div>
-          </li>
-        ))}
-      </ul>
+          )}
+          {todayReading.dont && (
+            <div className="mt-2">
+              <p className="font-semibold text-red-700 dark:text-red-500">
+                Don&apos;t:
+              </p>
+              <p className="text-sm text-base-content/90">
+                {todayReading.dont}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
     );
   };
 
   const renderLatestReadings = () => {
     console.log(latestReadings);
     return (
-      <ul className="space-y-4">
+      <ul className="flex flex-row flex-nowrap overflow-x-auto">
         {latestReadings.map((r) => (
           <li key={r.id} className="w-fit">
-            <Link
-              href={`/readings/${r?.reading_category}/${r.slug}`}
-              className="hover:text-primary"
-            >
-              <div className="card bg-base-100 shadow-sm border border-[var(--color-batik-border)] h-20">
-                {" "}
-                {/* Keep custom border, use theme bg */}
-                <div className="card-body p-4 flex items-center justify-center">
-                  <p className="text-sm text-base-content font-semibold">
-                    {r.title}
-                  </p>{" "}
-                  {/* Use theme's content color */}
-                </div>
+            <Link href={`/readings/${r?.reading_category}/${r.slug}`}>
+              <div className="rounded-2xl flex flex-col gap-2 p-4 bg-base-100 ml-4 shadow-sm border border-[var(--color-batik-border)] h-[8rem] w-[10rem]">
+                <p className="text-base-content font-semibold">{r.title}</p>{" "}
+                <div className="text-xs text-base-content/80">{r.subtitle}</div>
               </div>
             </Link>
           </li>
@@ -199,21 +172,35 @@ export default function Home() {
     );
   };
 
+  console.log(profileData);
+
   return (
-    <div className="h-[100svh] flex flex-col bg-base-100 relative">
+    <div className="h-[100svh] flex flex-col bg-base relative">
       <DashboardNavbar user={user} handleLogout={handleLogout} />
       <div className="py-4 sm:py-6 flex-grow my-12">
+        <div className="px-4 pb-2">
+          <p className="text-lg sm:text-xl font-semibold text-batik-black">
+            Good {getTimeOfDay()},{" "}
+            {profileData.full_name?.split(" ")[0] || "User"}!
+          </p>
+        </div>
         <div className="flex flex-col gap-2">
-          <div className="px-4 text-lg font-medium text-batik-black">
-            Daily reading
-          </div>
-          <div className="px-4">{renderReadings()}</div>
+          <div className="px-4">{renderTodayReading()}</div>
         </div>
         <div className="mt-4 flex flex-col gap-2">
           <div className="px-4 text-lg font-medium text-batik-black">
             Latest readings
           </div>
-          <div className="px-4">{renderLatestReadings()}</div>
+          <div className="">{renderLatestReadings()}</div>
+        </div>
+        <div className="mt-4 flex flex-col gap-2">
+          <div className="px-4 text-lg font-medium text-batik-black">
+            Compatibility Reading
+          </div>
+          <div className="p-4 rounded-2xl text-batik-black">
+            <div></div>
+            <div></div>
+          </div>
         </div>
         <Menubar page={"home"} />
       </div>

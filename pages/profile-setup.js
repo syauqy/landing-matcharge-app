@@ -293,13 +293,45 @@ export default function ProfileSetupPage() {
         error = insertError;
       }
 
+      //generate the weton and wuku readings after registration
+      const { data: wetonData, error: wetonError } = await supabaseUserClient
+        .from("readings")
+        .insert([
+          {
+            user_id: user.id,
+            reading_type: "basic",
+            username: username,
+            title: "Weton",
+            subtitle:
+              "Uncover the foundational energies of your unique birth day combination.",
+            reading_category: "general_readings",
+            slug: "weton",
+          },
+          {
+            user_id: user.id,
+            reading_type: "basic",
+            username: username,
+            title: "Wuku",
+            subtitle:
+              "Explore the distinct characteristics and symbolic influences of your birth week.",
+            reading_category: "general_readings",
+            slug: "wuku",
+          },
+        ])
+        .select();
+
+      if (wetonError) throw wetonError;
       if (error) throw error;
 
       toast.success(
         "Profile saved successfully! Preparing your weton reading..."
       );
       setLoadingWeton(true);
-      router.push("/intro");
+
+      if (wetonData) {
+        router.push("/intro");
+      }
+
       // await requestWetonAnalysis(user.id, birthDate);
     } catch (err) {
       console.error("Error saving profile:", err);
