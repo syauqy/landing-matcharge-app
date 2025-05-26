@@ -36,10 +36,32 @@ export async function generateDailyReading(profile) {
       const response = await generateObject({
         model: google("gemini-2.5-flash-preview-04-17"),
         schema: z.object({
+          //   weton: z
+          //     .string()
+          //     .describe(
+          //       "Today's weton (eg. Monday Kliwon, Thursday Legi). State dina/day in english"
+          //     )
+          //     .catch(() => ""),
+          //   energy: z
+          //     .string()
+          //     .describe(
+          //       "Today's weton inherent energetic qualities in one sentence"
+          //     )
+          //     .catch(() => ""),
+          mood: z
+            .string()
+            .describe("Today's general mood and atmosphere in one sentence")
+            .catch(() => ""),
+          //   auspicious: z
+          //     .string()
+          //     .describe(
+          //       "Describes and summarize the daily reading in one sentence"
+          //     )
+          //     .catch(() => ""),
           today: z
             .string()
             .describe(
-              "Describes and summarize the daily reading in one sentence"
+              "Describes and summarize the daily reading of the user weton to today's weton in one sentence"
             )
             .catch(() => ""),
           do: z
@@ -53,6 +75,16 @@ export async function generateDailyReading(profile) {
             .describe(
               "Give a suggestion on what the user needs to avoid today in one sentence"
             )
+            .catch(() => ""),
+          fact: z
+            .string()
+            .describe(
+              "A small, interesting fact about the today Weton. Stated in English"
+            )
+            .catch(() => ""),
+          weton: z
+            .string()
+            .describe("Today's weton in english")
             .catch(() => ""),
         }),
         messages: [{ role: "user", content: dailyReadingPrompt(profile) }],

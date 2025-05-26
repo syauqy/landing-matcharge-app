@@ -8,6 +8,7 @@ import Link from "next/link";
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
 import { format } from "date-fns";
 import { Menubar } from "@/components/layouts/menubar";
+import { getWeton } from "@/utils";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -27,6 +28,15 @@ export default function Home() {
   // console.log(user, authLoading);
 
   const READING_LIMIT = 2;
+
+  // const today = ;
+  // const todayStr = today.toLocaleDateString("en-US", {
+  //   year: "numeric",
+  //   month: "long",
+  //   day: "numeric",
+  // });
+
+  console.log(getWeton(format(new Date(), "yyyy-MM-dd")).weton_en);
 
   const getTimeOfDay = () => {
     const currentHour = new Date().getHours();
@@ -85,6 +95,7 @@ export default function Home() {
   const handleDailyReading = async () => {
     setError(null);
     setMessage(null);
+    setRequestingReading(true);
 
     // Check if today's reading already exists for the user
     try {
@@ -96,7 +107,7 @@ export default function Home() {
       // Check if today's daily reading already exists
       const { data: existingReadings, error: fetchError } = await supabase
         .from("readings")
-        .select("reading, created_at")
+        .select("reading, created_at, status")
         .eq("user_id", user.id)
         .gte("created_at", today.toISOString())
         .lt("created_at", tomorrow.toISOString())
@@ -162,7 +173,37 @@ export default function Home() {
       // Only run if profileData and user exist
       handleDailyReading();
     }
-  }, [profileData, user]); // Depends on profileData and user
+  }, [profileData]); // Depends on profileData and user
+
+  useEffect(() => {
+    if (!user) return;
+
+    console.log("daily reading subs", user);
+
+    const channel = supabase
+      .channel("daily_reading_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "readings",
+          filter: {
+            user_id: `eq.${user?.id}`,
+            reading_category: "eq.daily",
+          },
+        },
+        (payload) => {
+          console.log("payload", payload);
+          setDailyReading(payload.new);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel).catch();
+    };
+  }, [user]);
 
   const handleLogout = async () => {
     console.log("user", user);
@@ -181,46 +222,61 @@ export default function Home() {
 
   const renderTodayReading = () => {
     if (!dailyReading) return null;
-    const reading = dailyReading.reading;
+    const reading = dailyReading?.reading;
 
     let formattedDate = "Date unavailable";
     try {
       // Example format: "May 17, 2025"
-      formattedDate = format(new Date(dailyReading.created_at), "MMMM d");
+      formattedDate = dailyReading?.created_at
+        ? format(new Date(dailyReading?.created_at), "MMMM d")
+        : "";
     } catch (e) {
       console.error("Error formatting todayReading.date:", e);
       // Keep 'Date unavailable' or use todayReading.date as fallback
     }
-    return (
-      <div className="card bg-base-100 border border-[var(--color-batik-border)]">
-        <div className="card-body p-4">
-          <p className="text-sm font-semibold text-base-content/80">
-            {formattedDate}
-          </p>
-          <p className="mt-2 text-base-content">{reading.today}</p>
-          {reading.do && (
-            <div className="mt-3">
-              <p className="font-semibold text-green-700 dark:text-green-500">
-                Do:
-              </p>
-              <p className="text-sm text-base-content/90">{reading.do}</p>
-            </div>
-          )}
-          {reading.dont && (
-            <div className="mt-2">
-              <p className="font-semibold text-red-700 dark:text-red-500">
-                Don&apos;t:
-              </p>
-              <p className="text-sm text-base-content/90">{reading.dont}</p>
-            </div>
-          )}
+    if (dailyReading?.status === "loading") {
+      return (
+        <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+          <div className="card-body p-4 flex items-center justify-center">
+            <span className="loading loading-spinner loading-md"></span>
+            <p className="ml-2">Generating your daily reading...</p>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+
+    if (dailyReading?.status === "completed") {
+      return (
+        <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+          <div className="card-body p-4">
+            <p className="text-sm font-semibold text-base-content/80">
+              {formattedDate}
+            </p>
+            <p className="mt-2 text-base-content">{reading?.today}</p>
+            {reading?.do && (
+              <div className="mt-3">
+                <p className="font-semibold text-green-700 dark:text-green-500">
+                  Do:
+                </p>
+                <p className="text-sm text-base-content/90">{reading?.do}</p>
+              </div>
+            )}
+            {reading?.dont && (
+              <div className="mt-2">
+                <p className="font-semibold text-red-700 dark:text-red-500">
+                  Don&apos;t:
+                </p>
+                <p className="text-sm text-base-content/90">{reading?.dont}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
   };
 
   const renderLatestReadings = () => {
-    console.log(latestReadings);
+    // console.log(latestReadings);
     return (
       <ul className="flex flex-row flex-nowrap overflow-x-auto">
         {latestReadings.map((r) => (
@@ -236,6 +292,8 @@ export default function Home() {
       </ul>
     );
   };
+
+  // console.log(dailyReading);
 
   // console.log(profileData);
 

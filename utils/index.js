@@ -246,7 +246,7 @@ export function getWeton(birthDate) {
     const pasaran_character = watakPasaran[pasaranIndex];
     const neptu_character = watakTotalNeptu[totalNeptu - 7];
 
-    console.log(day_character, pasaran_character, neptu_character);
+    // console.log(day_character, pasaran_character, neptu_character);
 
     //pancasuda
     const pancasudaNeptu = totalNeptu % 5;
