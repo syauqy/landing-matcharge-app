@@ -20,6 +20,7 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
   const [dailyReading, setDailyReading] = useState([]);
+  const [monthlyReading, setMonthlyReading] = useState([]);
   const [requestingReading, setRequestingReading] = useState(false);
   const [fortuneResult, setFortuneResult] = useState(null);
   const [currentReadings, setCurrentReadings] = useState(0);
@@ -28,15 +29,6 @@ export default function Home() {
   // console.log(user, authLoading);
 
   const READING_LIMIT = 2;
-
-  // const today = ;
-  // const todayStr = today.toLocaleDateString("en-US", {
-  //   year: "numeric",
-  //   month: "long",
-  //   day: "numeric",
-  // });
-
-  console.log(getWeton(format(new Date(), "yyyy-MM-dd")).weton_en);
 
   const getTimeOfDay = () => {
     const currentHour = new Date().getHours();
@@ -112,6 +104,7 @@ export default function Home() {
         .gte("created_at", today.toISOString())
         .lt("created_at", tomorrow.toISOString())
         .eq("reading_category", "daily")
+        .order("created_at", { ascending: false })
         .limit(1);
 
       if (fetchError) throw fetchError;
@@ -156,6 +149,78 @@ export default function Home() {
     }
   };
 
+  const handleMonthlyReading = async () => {
+    setError(null);
+    setMessage(null);
+    setRequestingReading(true);
+
+    // Check if today's reading already exists for the user
+    try {
+      const today = new Date();
+      const firstDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        1
+      );
+      const lastDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        0
+      );
+
+      // Check if monthly reading already exists for current month
+      const { data: existingReadings, error: fetchError } = await supabase
+        .from("readings")
+        .select("reading, created_at, status")
+        .eq("user_id", user.id)
+        .gte("created_at", firstDayOfMonth.toISOString())
+        .lt("created_at", lastDayOfMonth.toISOString())
+        .eq("reading_category", "monthly")
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (fetchError) throw fetchError;
+
+      if (existingReadings && existingReadings.length > 0) {
+        setMonthlyReading(existingReadings[0]);
+        setMessage("You already have a monthly reading for today.");
+        setRequestingReading(false);
+        return null;
+      }
+
+      if (requestingReading) return null;
+      setRequestingReading(true);
+
+      console.log("generate new monthly reading");
+      let readingData;
+
+      try {
+        const response = await fetch("/api/readings/monthly", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ profile: profileData }),
+          credentials: "include",
+        });
+
+        readingData = await response.json(); // Always try to parse JSON
+      } catch (err) {
+        console.error(
+          "Error in fetch or processing response for daily reading:",
+          err
+        );
+        setError(err.message || "Failed to generate daily reading.");
+      } finally {
+        setRequestingReading(false);
+      }
+    } catch (err) {
+      console.error("Error checking today's reading:", err);
+      setError("Failed to check today's reading.");
+      setRequestingReading(false);
+    }
+  };
+
   // Effect for fetching initial user-dependent data
   useEffect(() => {
     if (!authLoading && user) {
@@ -173,12 +238,12 @@ export default function Home() {
       // Only run if profileData and user exist
       handleDailyReading();
     }
-  }, [profileData]); // Depends on profileData and user
+  }, []); // Depends on profileData and user
 
   useEffect(() => {
     if (!user) return;
 
-    console.log("daily reading subs", user);
+    // console.log("daily reading subs", user);
 
     const channel = supabase
       .channel("daily_reading_changes")
@@ -307,19 +372,33 @@ export default function Home() {
             {profileData.full_name?.split(" ")[0] || "User"}!
           </p>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 p-4">
+          <button
+            className="btn btn-md btn-primary w-fit border"
+            onClick={handleDailyReading}
+            disabled={requestingReading}
+          >
+            {requestingReading ? "Generating..." : "Generate Daily Reading"}
+          </button>
           <div className="px-4">{renderTodayReading()}</div>
         </div>
-        {/* <div className="flex flex-col gap-2">
-          <button onClick={handleDailyReading} disabled={requestingReading}>
-            {requestingReading ? "Generating..." : "Generate Daily Reading"}
+        <div className="flex p-4">
+          <div>{message}</div>
+        </div>
+        <div className="flex flex-col gap-2 p-4">
+          <button
+            className="btn btn-md btn-primary w-fit border"
+            onClick={handleMonthlyReading}
+            disabled={requestingReading}
+          >
+            {requestingReading ? "Generating..." : "Generate Monthly Reading"}
           </button>
           <div className="mockup-code w-full">
             <pre>
-              <code>{JSON.stringify(dailyReading, null, 2)}</code>
+              <code>{JSON.stringify(monthlyReading, null, 2)}</code>
             </pre>
           </div>
-        </div> */}
+        </div>
         <div className="mt-4 flex flex-col gap-2">
           <div className="px-4 text-lg font-medium text-batik-black">
             Latest readings
