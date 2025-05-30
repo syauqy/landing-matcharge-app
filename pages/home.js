@@ -236,9 +236,10 @@ export default function Home() {
   useEffect(() => {
     if (profileData && user) {
       // Only run if profileData and user exist
+      handleMonthlyReading();
       handleDailyReading();
     }
-  }, []); // Depends on profileData and user
+  }, [profileData, user]); // Depends on profileData and user
 
   useEffect(() => {
     if (!user) return;
@@ -290,6 +291,8 @@ export default function Home() {
     const reading = dailyReading?.reading;
 
     let formattedDate = "Date unavailable";
+
+    // console.log(reading);
     try {
       // Example format: "May 17, 2025"
       formattedDate = dailyReading?.created_at
@@ -314,24 +317,27 @@ export default function Home() {
       return (
         <div className="card bg-base-100 border border-[var(--color-batik-border)]">
           <div className="card-body p-4">
-            <p className="text-sm font-semibold text-base-content/80">
-              {formattedDate}
+            <p className="text-sm font-semibold">
+              {formattedDate} ({reading?.weton})
             </p>
-            <p className="mt-2 text-base-content">{reading?.today}</p>
+            <p className="mt-2 text-base-content">{reading?.mood}</p>
             {reading?.do && (
               <div className="mt-3">
-                <p className="font-semibold text-green-700 dark:text-green-500">
-                  Do:
-                </p>
+                <p className="font-semibold ">Do:</p>
                 <p className="text-sm text-base-content/90">{reading?.do}</p>
               </div>
             )}
             {reading?.dont && (
               <div className="mt-2">
-                <p className="font-semibold text-red-700 dark:text-red-500">
-                  Don&apos;t:
-                </p>
+                <p className="font-semibold ">Don&apos;t:</p>
                 <p className="text-sm text-base-content/90">{reading?.dont}</p>
+              </div>
+            )}
+            {reading?.fact && (
+              <div className="mt-2">
+                <p className="text-xs italic text-base-content/90">
+                  {reading?.fact}
+                </p>
               </div>
             )}
           </div>
@@ -358,6 +364,132 @@ export default function Home() {
     );
   };
 
+  const renderMonthlyReading = () => {
+    if (!monthlyReading) return null;
+    const reading = monthlyReading?.reading;
+
+    let formattedDate = "Date unavailable";
+
+    console.log(reading);
+
+    try {
+      formattedDate = monthlyReading?.created_at
+        ? format(new Date(monthlyReading?.created_at), "MMMM")
+        : "";
+    } catch (e) {
+      console.error("Error formatting monthlyReading.date:", e);
+    }
+
+    if (monthlyReading?.status === "loading") {
+      return (
+        <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+          <div className="card-body p-4 flex items-center justify-center">
+            <span className="loading loading-spinner loading-md"></span>
+            <p className="ml-2">Generating your monthly reading...</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (monthlyReading?.status === "completed") {
+      return (
+        <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+          <div className="card-body p-4">
+            <p className="text-lg font-semibold text-center">
+              Monthly Reading - {formattedDate}
+            </p>
+            <p className="font-semibold text-center">
+              {reading?.summary?.core_theme}
+            </p>
+            <p className="text-sm text-base-content">
+              {reading?.summary?.description}
+            </p>
+            {reading?.summary?.auspicious_scale && (
+              <div className="mt-3">
+                <p className="font-semibold">Auspicious scale</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.summary?.auspicious_scale}
+                </p>
+              </div>
+            )}
+            {reading?.analysis?.impact && (
+              <div className="mt-3">
+                <p className="font-semibold">How it will affecting you</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.analysis?.impact}
+                </p>
+              </div>
+            )}
+            {reading?.analysis?.fortunate_windows && (
+              <div className="mt-3">
+                <p className="font-semibold">Auspicious times this month</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.analysis?.fortunate_windows}
+                </p>
+              </div>
+            )}
+            {reading?.analysis?.cautious_windows && (
+              <div className="mt-3">
+                <p className="font-semibold">Times for you to be cautious</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.analysis?.cautious_windows}
+                </p>
+              </div>
+            )}
+            <div className="mt-3">
+              <p className="font-semibold text-lg">
+                Insight and guidance for you
+              </p>
+            </div>
+            {reading?.guidance?.growth && (
+              <div className="mt-3">
+                <p className="font-semibold">
+                  Personal Growth & Self-Development
+                </p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.guidance?.growth}
+                </p>
+              </div>
+            )}
+            {reading?.guidance?.relationship && (
+              <div className="mt-3">
+                <p className="font-semibold">
+                  Relationships (Love, Family, Social)
+                </p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.guidance?.relationship}
+                </p>
+              </div>
+            )}
+            {reading?.guidance?.career && (
+              <div className="mt-3">
+                <p className="font-semibold">Career & Financial</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.guidance?.career}
+                </p>
+              </div>
+            )}
+            {reading?.guidance?.health && (
+              <div className="mt-3">
+                <p className="font-semibold">Health & Well-being</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.guidance?.health}
+                </p>
+              </div>
+            )}
+            {reading?.wisdom?.philosophy && (
+              <div className="mt-2">
+                <p className="text-xs italic text-base-content/90">
+                  {reading?.wisdom?.philosophy}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+  };
+
   // console.log(dailyReading);
 
   // console.log(profileData);
@@ -365,39 +497,41 @@ export default function Home() {
   return (
     <div className="h-[100svh] flex flex-col bg-base relative">
       <DashboardNavbar user={user} handleLogout={handleLogout} />
-      <div className="py-4 sm:py-6 flex-grow my-12">
-        <div className="px-4 pb-2">
+      <div className="py-4 pb-20 flex-grow my-12">
+        <div className="px-4">
           <p className="text-lg sm:text-xl font-semibold text-batik-black">
             Good {getTimeOfDay()},{" "}
             {profileData.full_name?.split(" ")[0] || "User"}!
           </p>
         </div>
         <div className="flex flex-col gap-2 p-4">
-          <button
+          {/* <button
             className="btn btn-md btn-primary w-fit border"
             onClick={handleDailyReading}
             disabled={requestingReading}
           >
             {requestingReading ? "Generating..." : "Generate Daily Reading"}
-          </button>
-          <div className="px-4">{renderTodayReading()}</div>
+          </button> */}
+          <div className="">{renderTodayReading()}</div>
         </div>
-        <div className="flex p-4">
+        {/* <div className="flex p-4">
           <div>{message}</div>
-        </div>
+        </div> */}
         <div className="flex flex-col gap-2 p-4">
-          <button
+          {/* <button
             className="btn btn-md btn-primary w-fit border"
             onClick={handleMonthlyReading}
             disabled={requestingReading}
           >
             {requestingReading ? "Generating..." : "Generate Monthly Reading"}
-          </button>
-          <div className="mockup-code w-full">
+          </button> */}
+
+          <div className="">{renderMonthlyReading()}</div>
+          {/* <div className="mockup-code w-full">
             <pre>
               <code>{JSON.stringify(monthlyReading, null, 2)}</code>
             </pre>
-          </div>
+          </div> */}
         </div>
         <div className="mt-4 flex flex-col gap-2">
           <div className="px-4 text-lg font-medium text-batik-black">
@@ -405,7 +539,7 @@ export default function Home() {
           </div>
           <div className="">{renderLatestReadings()}</div>
         </div>
-        <div className="mt-4 flex flex-col gap-2">
+        {/* <div className="mt-4 flex flex-col gap-2">
           <div className="px-4 text-lg font-medium text-batik-black">
             Compatibility Reading
           </div>
@@ -413,7 +547,7 @@ export default function Home() {
             <div></div>
             <div></div>
           </div>
-        </div>
+        </div> */}
         <Menubar page={"home"} />
       </div>
     </div>

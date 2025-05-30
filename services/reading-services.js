@@ -37,7 +37,8 @@ export async function generateDailyReading(profile) {
     try {
       const response = await generateObject({
         // model: google("gemini-2.5-flash-preview-04-17"),
-        model: openai("gpt-4.1-mini-2025-04-14"),
+        // model: openai("gpt-4.1-mini-2025-04-14"),
+        model: openai("gpt-4.1-nano-2025-04-14"),
         // model: google("gemini-2.5-flash-preview-05-20"),
         schema: z.object({
           mood: z
@@ -141,7 +142,8 @@ export async function generateMonthlyReading(profile) {
     try {
       const response = await generateObject({
         // model: google("gemini-2.5-flash-preview-04-17"),
-        model: openai("gpt-4.1-mini-2025-04-14"),
+        // model: openai("gpt-4.1-mini-2025-04-14"),
+        model: openai("gpt-4.1-nano-2025-04-14"),
         // model: anthropic("claude-3-haiku-20240307"),
         // model: google("gemini-2.5-flash-preview-05-20"),
         schema: z.object({
@@ -154,7 +156,9 @@ export async function generateMonthlyReading(profile) {
               .catch(() => ""),
             description: z
               .string()
-              .describe("brief description of the month")
+              .describe(
+                "brief description of that summarize the energy of the month"
+              )
               .catch(() => ""),
             keywords: z
               .string()
