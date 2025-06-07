@@ -133,7 +133,7 @@ export const CardData = {
       title: "Attachement Style",
       description:
         "Gain insight into how you form bonds and connect emotionally with partners.",
-      slug: "attachement-style",
+      slug: "attachment-style",
       category: "love-readings",
       type: "pro",
     },
@@ -157,10 +157,10 @@ export const CardData = {
     },
     {
       id: 16,
-      title: "Uncompatible With",
+      title: "Incompatible With",
       description:
         "Understand potential energetic clashes and challenges with other Wetons in relationships.",
-      slug: "love-uncompatibility",
+      slug: "love-incompatibility",
       category: "love-readings",
       type: "pro",
     },
