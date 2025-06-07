@@ -141,7 +141,7 @@ export default function IntroPage() {
               <div className="flex justify-center mt-6">
                 <button
                   onClick={() =>
-                    router.replace("/readings/general_readings/weton-intro")
+                    router.replace("/readings/general-readings/weton-intro")
                   }
                   className="btn bg-base-100 text-batik-black border border-batik-border py-2.5 px-5 rounded-2xl shadow-sm"
                 >

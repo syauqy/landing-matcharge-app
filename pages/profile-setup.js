@@ -171,7 +171,7 @@ export default function ProfileSetupPage() {
         created_at: new Date().toISOString(),
         reading_type: "free",
         title: "About You",
-        reading_category: "general_readings",
+        reading_category: "general-readings",
         slug: "basic",
       };
 
@@ -304,7 +304,7 @@ export default function ProfileSetupPage() {
             title: "Weton",
             subtitle:
               "Uncover the foundational energies of your unique birth day combination.",
-            reading_category: "general_readings",
+            reading_category: "general-readings",
             slug: "weton",
           },
           {
@@ -314,7 +314,7 @@ export default function ProfileSetupPage() {
             title: "Wuku",
             subtitle:
               "Explore the distinct characteristics and symbolic influences of your birth week.",
-            reading_category: "general_readings",
+            reading_category: "general-readings",
             slug: "wuku",
           },
         ])

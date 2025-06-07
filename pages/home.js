@@ -21,6 +21,8 @@ export default function Home() {
   const [message, setMessage] = useState(null);
   const [dailyReading, setDailyReading] = useState([]);
   const [monthlyReading, setMonthlyReading] = useState([]);
+  const [requestDailyReading, setRequestDailyReading] = useState(false);
+  const [requestMonthlyReading, setRequestMonthlyReading] = useState(false);
   const [requestingReading, setRequestingReading] = useState(false);
   const [fortuneResult, setFortuneResult] = useState(null);
   const [currentReadings, setCurrentReadings] = useState(0);
@@ -87,7 +89,7 @@ export default function Home() {
   const handleDailyReading = async () => {
     setError(null);
     setMessage(null);
-    setRequestingReading(true);
+    setRequestDailyReading(true);
 
     // Check if today's reading already exists for the user
     try {
@@ -112,12 +114,12 @@ export default function Home() {
       if (existingReadings && existingReadings.length > 0) {
         setDailyReading(existingReadings[0]);
         setMessage("You already have a daily reading for today.");
-        setRequestingReading(false);
+        setRequestDailyReading(false);
         return null;
       }
 
-      if (requestingReading) return null;
-      setRequestingReading(true);
+      if (requestDailyReading) return null;
+      setRequestDailyReading(true);
 
       console.log("generate new daily reading");
       let readingData;
@@ -140,19 +142,19 @@ export default function Home() {
         );
         setError(err.message || "Failed to generate daily reading.");
       } finally {
-        setRequestingReading(false);
+        setRequestDailyReading(false);
       }
     } catch (err) {
       console.error("Error checking today's reading:", err);
       setError("Failed to check today's reading.");
-      setRequestingReading(false);
+      setRequestDailyReading(false);
     }
   };
 
   const handleMonthlyReading = async () => {
     setError(null);
     setMessage(null);
-    setRequestingReading(true);
+    setRequestMonthlyReading(true);
 
     // Check if today's reading already exists for the user
     try {
@@ -184,12 +186,12 @@ export default function Home() {
       if (existingReadings && existingReadings.length > 0) {
         setMonthlyReading(existingReadings[0]);
         setMessage("You already have a monthly reading for today.");
-        setRequestingReading(false);
+        setRequestMonthlyReading(false);
         return null;
       }
 
-      if (requestingReading) return null;
-      setRequestingReading(true);
+      if (requestMonthlyReading) return null;
+      setRequestMonthlyReading(true);
 
       console.log("generate new monthly reading");
       let readingData;
@@ -212,12 +214,12 @@ export default function Home() {
         );
         setError(err.message || "Failed to generate daily reading.");
       } finally {
-        setRequestingReading(false);
+        setRequestMonthlyReading(false);
       }
     } catch (err) {
       console.error("Error checking today's reading:", err);
       setError("Failed to check today's reading.");
-      setRequestingReading(false);
+      setRequestMonthlyReading(false);
     }
   };
 
@@ -239,7 +241,7 @@ export default function Home() {
       handleMonthlyReading();
       handleDailyReading();
     }
-  }, [profileData, user]); // Depends on profileData and user
+  }, [profileData]); // Depends on profileData and user
 
   useEffect(() => {
     if (!user) return;
@@ -505,33 +507,10 @@ export default function Home() {
           </p>
         </div>
         <div className="flex flex-col gap-2 p-4">
-          {/* <button
-            className="btn btn-md btn-primary w-fit border"
-            onClick={handleDailyReading}
-            disabled={requestingReading}
-          >
-            {requestingReading ? "Generating..." : "Generate Daily Reading"}
-          </button> */}
           <div className="">{renderTodayReading()}</div>
         </div>
-        {/* <div className="flex p-4">
-          <div>{message}</div>
-        </div> */}
         <div className="flex flex-col gap-2 p-4">
-          {/* <button
-            className="btn btn-md btn-primary w-fit border"
-            onClick={handleMonthlyReading}
-            disabled={requestingReading}
-          >
-            {requestingReading ? "Generating..." : "Generate Monthly Reading"}
-          </button> */}
-
           <div className="">{renderMonthlyReading()}</div>
-          {/* <div className="mockup-code w-full">
-            <pre>
-              <code>{JSON.stringify(monthlyReading, null, 2)}</code>
-            </pre>
-          </div> */}
         </div>
         <div className="mt-4 flex flex-col gap-2">
           <div className="px-4 text-lg font-medium text-batik-black">

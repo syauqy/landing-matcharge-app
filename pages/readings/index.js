@@ -13,7 +13,7 @@ import { Navbar } from "@/components/layouts/navbar"; // Import Navbar
 // Reusable Card Component - Updated Styling
 const ReadingCard = ({ title, description, slug, category, type }) => (
   <a
-    href={"/readings/general_readings/" + slug}
+    href={"/readings/" + category + "/" + slug}
     className="relative snap-center snap-always flex-shrink-0 w-40 sm:w-64 bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow duration-200 h-32 flex flex-col justify-between"
   >
     <div className="mt-2">
