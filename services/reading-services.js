@@ -43,13 +43,16 @@ export async function generateDailyReading(profile) {
       const response = await generateObject({
         // model: google("gemini-2.5-flash-preview-04-17"),
         // model: openai("gpt-4.1-mini-2025-04-14"),
-        model: openai("gpt-4.1-nano-2025-04-14"),
-        // model: google("gemini-2.5-flash-preview-05-20"),
+        // model: openai("gpt-4.1-nano-2025-04-14"),
+        model: google("gemini-2.5-flash-preview-05-20"),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              thinkingBudget: 100,
+            },
+          },
+        },
         schema: z.object({
-          mood: z
-            .string()
-            .describe("Today's general mood and atmosphere in one sentence")
-            .catch(() => ""),
           today: z
             .string()
             .describe(
@@ -59,19 +62,19 @@ export async function generateDailyReading(profile) {
           do: z
             .string()
             .describe(
-              "Give a suggestion on what the user needs to do today in one sentence"
+              "Suggestion on what the user needs to do today in one sentence"
             )
             .catch(() => ""),
           dont: z
             .string()
             .describe(
-              "Give a suggestion on what the user needs to avoid today in one sentence"
+              "Suggestion on what the user needs to avoid today in one sentence"
             )
             .catch(() => ""),
           fact: z
             .string()
             .describe(
-              "A small, interesting fact about the today Weton. Stated in English"
+              "A short, interesting fact about the today Weton. Stated in English"
             )
             .catch(() => ""),
           weton: z
@@ -116,8 +119,6 @@ export async function generateDailyReading(profile) {
 }
 
 export async function generateMonthlyReading(profile) {
-  // supabase client is now an argument
-  console.log(profile.id, profile.username);
   const { data: newReading, error } = await supabase
     .from("readings")
     .insert({
@@ -148,9 +149,15 @@ export async function generateMonthlyReading(profile) {
       const response = await generateObject({
         // model: google("gemini-2.5-flash-preview-04-17"),
         // model: openai("gpt-4.1-mini-2025-04-14"),
-        model: openai("gpt-4.1-nano-2025-04-14"),
-        // model: anthropic("claude-3-haiku-20240307"),
-        // model: google("gemini-2.5-flash-preview-05-20"),
+        // model: openai("gpt-4.1-nano-2025-04-14"),
+        model: google("gemini-2.5-flash-preview-05-20"),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              thinkingBudget: 500,
+            },
+          },
+        },
         schema: z.object({
           summary: z.object({
             core_theme: z

@@ -50,7 +50,9 @@ export default function Home() {
     try {
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .select("id, full_name, weton, gender, username")
+        .select(
+          "weton, id, full_name, weton, gender, username, wuku, birth_date"
+        )
         .eq("id", user.id)
         .maybeSingle();
 
@@ -293,16 +295,12 @@ export default function Home() {
     const reading = dailyReading?.reading;
 
     let formattedDate = "Date unavailable";
-
-    // console.log(reading);
     try {
-      // Example format: "May 17, 2025"
       formattedDate = dailyReading?.created_at
         ? format(new Date(dailyReading?.created_at), "MMMM d")
         : "";
     } catch (e) {
       console.error("Error formatting todayReading.date:", e);
-      // Keep 'Date unavailable' or use todayReading.date as fallback
     }
     if (dailyReading?.status === "loading") {
       return (
@@ -322,7 +320,7 @@ export default function Home() {
             <p className="text-sm font-semibold">
               {formattedDate} ({reading?.weton})
             </p>
-            <p className="mt-2 text-base-content">{reading?.mood}</p>
+            <p className="mt-2 text-base-content">{reading?.today}</p>
             {reading?.do && (
               <div className="mt-3">
                 <p className="font-semibold ">Do:</p>

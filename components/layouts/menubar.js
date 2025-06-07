@@ -11,7 +11,7 @@ import clsx from "clsx";
 
 export function Menubar({ page }) {
   return (
-    <div class="dock dock-md border-batik-border z-20">
+    <div className="dock dock-md border-batik-border z-20">
       <Link
         href="/home"
         className={clsx(
