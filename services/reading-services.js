@@ -147,7 +147,6 @@ export async function generateMonthlyReading(profile) {
     attempt++;
     try {
       const response = await generateObject({
-        // model: google("gemini-2.5-flash-preview-04-17"),
         // model: openai("gpt-4.1-mini-2025-04-14"),
         // model: openai("gpt-4.1-nano-2025-04-14"),
         model: google("gemini-2.5-flash-preview-05-20"),
@@ -169,13 +168,7 @@ export async function generateMonthlyReading(profile) {
             description: z
               .string()
               .describe(
-                "brief description of that summarize the energy of the month"
-              )
-              .catch(() => ""),
-            keywords: z
-              .string()
-              .describe(
-                `3-5 concise keywords summarizing the month's primary energetic thrust.`
+                "Brief description of that summarize the energy of the month"
               )
               .catch(() => ""),
             auspicious_scale: z
@@ -186,16 +179,16 @@ export async function generateMonthlyReading(profile) {
               .catch(() => ""),
           }),
           analysis: z.object({
-            weton_combination: z
-              .string()
-              .describe(
-                "Identify the most influential Weton combinations that will occur throughout the month (e.g., periods dominated by certain dina or pasaran energies, or significant Weton conjunctions relative to the user's birth Weton). Explain their general characteristics."
-              )
-              .catch(() => ""),
+            // weton_combination: z
+            //   .string()
+            //   .describe(
+            //     "Identify the most influential Weton combinations that will occur throughout the month (e.g., periods dominated by certain dina or pasaran energies, or significant Weton conjunctions relative to the user's birth Weton). Explain their general characteristics."
+            //   )
+            //   .catch(() => ""),
             fortunate_windows: z
               .string()
               .describe(
-                " Highlight 2-3 specific date ranges or individual days within the month that are particularly auspicious for general activities, based on the Weton flow. Briefly explain why they are favorable."
+                "Highlight 2-3 specific date ranges or individual days within the month that are particularly auspicious for general activities, based on the Weton flow. Briefly explain why they are favorable."
               )
               .catch(() => ""),
             cautious_windows: z
@@ -244,16 +237,16 @@ export async function generateMonthlyReading(profile) {
               .catch(() => ""),
           }),
           wisdom: z.object({
-            primbon: z
-              .string()
-              .describe(
-                "Briefly cite a relevant traditional primbon interpretation or concept that aligns with the month's overarching theme or specific Weton influences. Explain its meaning for the user. (e.g., a specific pananggalan, sifat weton, or pepali)."
-              )
-              .catch(() => ""),
+            // primbon: z
+            //   .string()
+            //   .describe(
+            //     "Briefly cite a relevant traditional primbon interpretation or concept that aligns with the month's overarching theme or specific Weton influences. Explain its meaning for the user. (e.g., a specific pananggalan, sifat weton, or pepali)."
+            //   )
+            //   .catch(() => ""),
             philosophy: z
               .string()
               .describe(
-                "Connect the month's Weton energy to a core Javanese philosophical concept (e.g., harmoni, keselarasan, tata krama, memayu hayuning bawana, eling lan waspada). Explain how the user can embody this concept during the month."
+                "Connect the month's Weton and Wuku energy to a core Javanese philosophical concept (e.g., harmoni, keselarasan, tata krama, memayu hayuning bawana, eling lan waspada). Explain how the user can embody this concept during the month."
               )
               .catch(() => ""),
           }),
