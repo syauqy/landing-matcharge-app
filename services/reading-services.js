@@ -9,6 +9,7 @@ import {
   basicLovePrompt,
   proLovePrompt,
   proGeneralCalculationPrompt,
+  proGeneralCalculationPrompt2,
 } from "@/utils/prompts";
 import { z } from "zod";
 import { supabase } from "@/utils/supabaseClient";
@@ -683,7 +684,7 @@ export async function generateLoveBasicReading(profile) {
             reading: { error: lastErrorMsg },
             updated_at: new Date().toISOString(),
           })
-          .eq("id", newReading.id);
+          .eq("id", newLoveBasicReading.id);
       }
     }
   } while (attempt < maxAttempts);
@@ -983,7 +984,7 @@ export async function generateLoveProReading(profile) {
             reading: { error: lastErrorMsg },
             updated_at: new Date().toISOString(),
           })
-          .eq("id", newReading.id);
+          .eq("id", newLoveAttachmentReading.id);
       }
     }
   } while (attempt < maxAttempts);
@@ -1268,7 +1269,322 @@ export async function generateGeneralProReading(profile) {
             reading: { error: lastErrorMsg },
             updated_at: new Date().toISOString(),
           })
-          .eq("id", newReading.id);
+          .eq("id", newRakamReading.id);
+      }
+    }
+  } while (attempt < maxAttempts);
+}
+
+export async function generateGeneralProReading2(profile) {
+  const { data: newLakuReading, error } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Laku",
+      subtitle:
+        "Discover the archetype and behavioral pattern that guides your life's journey.",
+      username: profile.username,
+      status: "loading",
+      slug: "laku",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error inserting new reading:", error);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newLakuReading);
+
+  const { data: newValuesReading, errorValues } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Values",
+      subtitle:
+        "Pinpoint the core principles that drive your decisions and motivations.",
+      username: profile.username,
+      status: "loading",
+      slug: "values",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorValues) {
+    console.error("Error inserting new reading:", errorValues);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newValuesReading);
+
+  const { data: newInteractionStyle, errorInteraction } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Interaction Style",
+      subtitle:
+        "Learn how you naturally connect and communicate with the world around you.",
+      username: profile.username,
+      status: "loading",
+      slug: "interaction-style",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorInteraction) {
+    console.error("Error inserting new reading:", errorInteraction);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newInteractionStyle);
+
+  const { data: newLifePathReading, errorLifePath } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Life Path",
+      subtitle:
+        "Get insights into the themes and directions of your life's journey.",
+      username: profile.username,
+      status: "loading",
+      slug: "life-path",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorLifePath) {
+    console.error("Error inserting new reading:", errorLifePath);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newLifePathReading);
+
+  const maxAttempts = 2;
+  let attempt = 0;
+  let lastErrorMsg = "";
+  do {
+    attempt++;
+    try {
+      const response = await generateObject({
+        model: google("gemini-2.5-flash-preview-05-20"),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              thinkingBudget: 2000,
+            },
+          },
+        },
+        schema: z.object({
+          laku: z.object({
+            core_meaning: z
+              .string()
+              .describe(
+                'Explain the metaphorical meaning of this specific Laku and its core characteristics. For "Lakune Lintang," for example, describe qualities like a tendency towards solitude or quiet strength, often admired but not always socially outgoing.'
+              )
+              .catch(() => ""),
+            strengths: z
+              .string()
+              .describe(
+                "Detail the natural positive qualities that stem from this Laku (e.g., resilience, deep thought, independence, charisma, adaptability, diligence)."
+              )
+              .catch(() => ""),
+            challenges: z
+              .string()
+              .describe(
+                "Outline the potential pitfalls or areas where awareness and conscious effort are needed (e.g., tendency towards isolation, impatience, moodiness, too much reliance on self)."
+              )
+              .catch(() => ""),
+            influence: z
+              .string()
+              .describe(
+                "How does this Laku shape your general approach to daily life, decision-making, and facing adversity?"
+              )
+              .catch(() => ""),
+            wisdom: z
+              .string()
+              .describe(
+                "Offer actionable guidance on how to best embody the positive aspects of your Laku and mitigate its challenges, perhaps with a relevant Javanese proverb or a spiritual reflection."
+              )
+              .catch(() => ""),
+          }),
+          values: z.object({
+            primary_value: z
+              .string()
+              .describe(
+                "Identify and describe the dominant 2-3 core values that are most pronounced in your Weton combination (e.g., harmony (keselarasan), responsibility (tanggung jawab), sincerity (ikhlas), humility (andhap asor), collective well-being (memayu hayuning bawana), honesty (kejujuran), perseverance (tekun), wisdom (kawicaksanan))."
+              )
+              .catch(() => ""),
+            manifest: z
+              .string()
+              .describe(
+                "Explain how these values are likely to manifest in your daily behavior, relationships, and professional life. Provide concrete examples."
+              )
+              .catch(() => ""),
+            motivation: z
+              .string()
+              .describe(
+                "What truly drives your actions and aspirations, according to your Weton influences?"
+              )
+              .catch(() => ""),
+            conflicts: z
+              .string()
+              .describe(
+                "Briefly touch upon any inherent tensions between different values or how external pressures might challenge your core principles, and how your Weton suggests navigating these."
+              )
+              .catch(() => ""),
+            philosophy: z
+              .string()
+              .describe(
+                "Connect your core values to broader Javanese philosophical concepts or ethical guidelines, explaining their significance in a traditional context."
+              )
+              .catch(() => ""),
+          }),
+          interaction_style: z.object({
+            social_tendency: z
+              .string()
+              .describe(
+                "Are you naturally more introverted or extroverted? Direct or indirect in communication? Preferring harmony over confrontation, or vice-versa? Describe your overarching social tendency."
+              )
+              .catch(() => ""),
+            communication: z
+              .string()
+              .describe(
+                "Detail your typical communication style (e.g., articulate, reserved, expressive, pragmatic, empathetic, logical). How do you tend to convey your thoughts and feelings?"
+              )
+              .catch(() => ""),
+            relationship: z
+              .string()
+              .describe(
+                "How do you typically initiate, maintain, and navigate friendships, professional connections, and community ties? Are you a leader, a supportive follower, a mediator, or an independent contributor?"
+              )
+              .catch(() => ""),
+            social_dynamics: z
+              .string()
+              .describe(
+                "How do you typically react to social challenges, group pressures, or differing opinions?"
+              )
+              .catch(() => ""),
+            social_etiquette: z
+              .string()
+              .describe(
+                "Connect aspects of your interaction style to relevant Javanese tata krama (etiquette) or social norms, explaining how your Weton might naturally align with or challenge these traditions."
+              )
+              .catch(() => ""),
+          }),
+          life_path: z.object({
+            fortune: z
+              .string()
+              .describe(
+                'Describe the general "flavor" of your life path. Is it one of steady growth, unexpected turns, a focus on spiritual development, material abundance, or perhaps a path of service?'
+              )
+              .catch(() => ""),
+            theme: z
+              .string()
+              .describe(
+                "Identify recurring themes or lessons that may appear throughout your life (e.g., learning resilience, cultivating wisdom, building community, navigating change, finding balance, pursuing creative expression, overcoming adversity)."
+              )
+              .catch(() => ""),
+            flow: z
+              .string()
+              .describe(
+                "Where might you find life tends to unfold more easily or where opportunities naturally arise?"
+              )
+              .catch(() => ""),
+            challenge: z
+              .string()
+              .describe(
+                "Where might you encounter recurring lessons or challenges that serve as catalysts for personal development?"
+              )
+              .catch(() => ""),
+            wheel_of_life: z
+              .string()
+              .describe(
+                "Frame your life path within the Javanese concept of Cakra Manggilingan (the turning wheel of life), suggesting that understanding your Weton offers insight into the rhythm and nature of your unique journey."
+              )
+              .catch(() => ""),
+            outlook: z
+              .string()
+              .describe(
+                "Conclude with an empowering message, emphasizing that while your Weton provides a map, your conscious choices and actions ultimately shape your destiny."
+              )
+              .catch(() => ""),
+          }),
+        }),
+        messages: [
+          { role: "user", content: proGeneralCalculationPrompt2(profile) },
+        ],
+      });
+      const resObj = response.object;
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.laku,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newLakuReading.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.values,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newValuesReading.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.interaction_style,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newInteractionStyle.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.life_path,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newLifePathReading.id);
+      break;
+    } catch (error) {
+      lastErrorMsg = error.message;
+      console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
+      if (attempt >= maxAttempts) {
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newLakuReading.id);
       }
     }
   } while (attempt < maxAttempts);
