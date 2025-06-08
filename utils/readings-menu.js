@@ -6,7 +6,7 @@ export const CardData = {
       description:
         "Explore the foundational energies of your Javanese birth day combination.",
       slug: "weton",
-      category: "general-readings",
+      category: "general_readings",
       type: "free",
     },
     {
@@ -15,7 +15,7 @@ export const CardData = {
       description:
         "Uncover the specific influences of your birth week in the Pawukon cycle.",
       slug: "wuku",
-      category: "general-readings",
+      category: "general_readings",
       type: "free",
     },
     {
@@ -24,7 +24,7 @@ export const CardData = {
       description:
         "Identify your most prominent strengths and inherent characteristics.",
       slug: "primary-traits",
-      category: "general-readings",
+      category: "general_readings",
       type: "free",
     },
     {
@@ -33,7 +33,7 @@ export const CardData = {
       description:
         "Uncover the significant life themes or karmic imprints shaping your experiences.",
       slug: "rakam",
-      category: "general-readings",
+      category: "general_readings",
       type: "pro",
     },
     {
@@ -42,7 +42,7 @@ export const CardData = {
       description:
         "Explore the subtle behavioral tendencies influenced by the six-day Pawukon cycle.",
       slug: "sadwara",
-      category: "general-readings",
+      category: "general_readings",
       type: "pro",
     },
     {
@@ -51,7 +51,7 @@ export const CardData = {
       description:
         "Reveal the core pillar of your inner foundation and its potential.",
       slug: "pancasuda",
-      category: "general-readings",
+      category: "general_readings",
       type: "pro",
     },
     {
@@ -60,7 +60,7 @@ export const CardData = {
       description:
         "Understand the specific fortunes and challenges guided by the eight-day cycle influence.",
       slug: "hastawara",
-      category: "general-readings",
+      category: "general_readings",
       type: "pro",
     },
     {
@@ -69,7 +69,7 @@ export const CardData = {
       description:
         "Discover the archetype and behavioral pattern that guides your life's journey.",
       slug: "laku",
-      category: "general-readings",
+      category: "general_readings",
       type: "pro",
     },
     {
@@ -78,7 +78,7 @@ export const CardData = {
       description:
         "Pinpoint the core principles that drive your decisions and motivations.",
       slug: "values",
-      category: "general-readings",
+      category: "general_readings",
       type: "pro",
     },
     {
@@ -87,7 +87,7 @@ export const CardData = {
       description:
         "Learn how you naturally connect and communicate with the world around you.",
       slug: "interaction-style",
-      category: "general-readings",
+      category: "general_readings",
       type: "pro",
     },
     {
@@ -96,7 +96,7 @@ export const CardData = {
       description:
         "Get insights into the themes and directions of your life's journey.",
       slug: "life-path",
-      category: "general-readings",
+      category: "general_readings",
       type: "pro",
     },
   ],
@@ -107,7 +107,7 @@ export const CardData = {
       description:
         "Explore the core of how your Weton shapes your approach to love and partnership.",
       slug: "love-core",
-      category: "love-readings",
+      category: "love_readings",
       type: "free",
     },
     {
@@ -116,7 +116,7 @@ export const CardData = {
       description:
         "Discover your natural way of expressing and receiving affection in relationships.",
       slug: "love-style",
-      category: "love-readings",
+      category: "love_readings",
       type: "free",
     },
     {
@@ -125,7 +125,7 @@ export const CardData = {
       description:
         "Uncover your underlying beliefs and perspectives when it comes to romance.",
       slug: "love-attitudes",
-      category: "love-readings",
+      category: "love_readings",
       type: "free",
     },
     {
@@ -134,7 +134,7 @@ export const CardData = {
       description:
         "Gain insight into how you form bonds and connect emotionally with partners.",
       slug: "attachment-style",
-      category: "love-readings",
+      category: "love_readings",
       type: "pro",
     },
     {
@@ -143,7 +143,7 @@ export const CardData = {
       description:
         "Identify the unique strengths and gifts you bring to a loving relationship.",
       slug: "your-offer",
-      category: "love-readings",
+      category: "love_readings",
       type: "pro",
     },
     {
@@ -152,7 +152,7 @@ export const CardData = {
       description:
         "Learn about Weton energies that naturally harmonize with your own in love.",
       slug: "love-compatibility",
-      category: "love-readings",
+      category: "love_readings",
       type: "pro",
     },
     {
@@ -161,7 +161,7 @@ export const CardData = {
       description:
         "Understand potential energetic clashes and challenges with other Wetons in relationships.",
       slug: "love-incompatibility",
-      category: "love-readings",
+      category: "love_readings",
       type: "pro",
     },
   ],
