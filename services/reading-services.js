@@ -8,6 +8,7 @@ import {
   primaryTraitsPrompt,
   basicLovePrompt,
   proLovePrompt,
+  proGeneralCalculationPrompt,
 } from "@/utils/prompts";
 import { z } from "zod";
 import { supabase } from "@/utils/supabaseClient";
@@ -970,6 +971,291 @@ export async function generateLoveProReading(profile) {
           updated_at: new Date().toISOString(),
         })
         .eq("id", newLoveIncompatibleReading.id);
+      break;
+    } catch (error) {
+      lastErrorMsg = error.message;
+      console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
+      if (attempt >= maxAttempts) {
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newReading.id);
+      }
+    }
+  } while (attempt < maxAttempts);
+}
+
+export async function generateGeneralProReading(profile) {
+  const { data: newRakamReading, error } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Rakam",
+      subtitle:
+        "Uncover the significant life themes or karmic imprints shaping your experiences",
+      username: profile.username,
+      status: "loading",
+      slug: "rakam",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error inserting new reading:", error);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newRakamReading);
+
+  const { data: newSadwaraReading, errorSadwara } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Sadwara",
+      subtitle:
+        "Explore the subtle behavioral tendencies influenced by the six-day Pawukon cycle",
+      username: profile.username,
+      status: "loading",
+      slug: "sadwara",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorSadwara) {
+    console.error("Error inserting new reading:", errorSadwara);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newSadwaraReading);
+
+  const { data: newSaptawaraReading, errorSaptawara } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Character & Traits",
+      subtitle:
+        "Reveal the core pillar of your inner foundation and its potential influenced by the seven-day Pawukon cycle",
+      username: profile.username,
+      status: "loading",
+      slug: "saptawara",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorSaptawara) {
+    console.error("Error inserting new reading:", errorSaptawara);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newSaptawaraReading);
+
+  const { data: newHastawaraReading, errorHastawara } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Hastawara",
+      subtitle:
+        "Understand the specific fortunes and challenges guided by the eight-day cycle influence",
+      username: profile.username,
+      status: "loading",
+      slug: "hastawara",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorHastawara) {
+    console.error("Error inserting new reading:", errorHastawara);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newHastawaraReading);
+
+  const maxAttempts = 2;
+  let attempt = 0;
+  let lastErrorMsg = "";
+  do {
+    attempt++;
+    try {
+      const response = await generateObject({
+        model: google("gemini-2.5-flash-preview-05-20"),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              thinkingBudget: 2000,
+            },
+          },
+        },
+        schema: z.object({
+          rakam: z.object({
+            core_meaning: z
+              .string()
+              .describe(
+                'Explain the literal or metaphorical meaning of this Rakam (e.g., "Macan Ketawan" meaning "Caught Tiger," and its symbolic implications).'
+              )
+              .catch(() => ""),
+            character: z
+              .string()
+              .describe(
+                "Detail the inherent strengths and potential challenges/areas for self-awareness associated with this Rakam. Provide specific personality traits."
+              )
+              .catch(() => ""),
+            influence: z
+              .string()
+              .describe(
+                "Describe how this Rakam impacts your general fortune, social interactions, and public perception or reputation."
+              )
+              .catch(() => ""),
+            wisdom: z
+              .string()
+              .describe(
+                "Offer a relevant Javanese proverb (pepali) or traditional wisdom specifically associated with this Rakam, followed by actionable guidance on how to embrace its strengths and navigate its complexities for a more harmonious life."
+              )
+              .catch(() => ""),
+          }),
+          sadwara: z.object({
+            core_meaning: z
+              .string()
+              .describe(
+                'Explain the symbolic meaning or core characteristic associated with this Sadwara (e.g., "Tungle" meaning "Leaf," and its practical implications).'
+              )
+              .catch(() => ""),
+            character: z
+              .string()
+              .describe(
+                "Detail your practical tendencies, general energy levels, and any specific spiritual inclinations or needs associated with this Sadwara."
+              )
+              .catch(() => ""),
+            influence: z
+              .string()
+              .describe(
+                "Describe how this Sadwara subtly influences your routine, work ethic, and everyday interactions with others."
+              )
+              .catch(() => ""),
+            wisdom: z
+              .string()
+              .describe(
+                "Suggest a traditional Javanese practice or a contemplative approach that resonates with the energy of this Sadwara, offering actionable advice for optimizing daily living and spiritual connection."
+              )
+              .catch(() => ""),
+          }),
+          saptawara: z.object({
+            character: z
+              .string()
+              .describe(
+                'Detail the fundamental temperament and key symbolic associations (e.g., "Bumi Kapetak" or "Cultivated Earth")'
+              )
+              .catch(() => ""),
+            strenghts: z
+              .string()
+              .describe(
+                "Outline the primary positive traits and potential areas for growth or caution that are characteristic of individual."
+              )
+              .catch(() => ""),
+            influence: z
+              .string()
+              .describe(
+                "Describe how this traits generally influences your life path, ambition, or overarching sense of purpose."
+              )
+              .catch(() => ""),
+            wisdom: z
+              .string()
+              .describe(
+                "Offer actionable advice on how you can align with and best leverage the inherent energies of your character for personal well-being, success, and fulfilling your life's path."
+              )
+              .catch(() => ""),
+          }),
+          hastawara: z.object({
+            core_attributes: z
+              .string()
+              .describe(
+                "Describe the general characteristics of Weton types that might create inherent energetic friction or significant differences with your own. This could involve opposing elemental energies, neptu imbalances, or Laku styles that lead to natural friction."
+              )
+              .catch(() => ""),
+            impact: z
+              .string()
+              .describe(
+                "Describe the general auspicious or inauspicious qualities associated with this Hastawara, providing examples of activities that are traditionally favored or disfavored under its influence."
+              )
+              .catch(() => ""),
+            connection: z
+              .string()
+              .describe(
+                "Offer any relevant traditional Primbon interpretations, warnings, or blessings tied to this particular Hastawara."
+              )
+              .catch(() => ""),
+            wisdom: z
+              .string()
+              .describe(
+                "Provide actionable advice on how you can leverage awareness of your Hastawara's influence to make more conscious choices, navigate subtle life energies, and optimize your actions."
+              )
+              .catch(() => ""),
+          }),
+        }),
+        messages: [
+          { role: "user", content: proGeneralCalculationPrompt(profile) },
+        ],
+      });
+      const resObj = response.object;
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.rakam,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newRakamReading.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.sadwara,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newSadwaraReading.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.saptawara,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newSaptawaraReading.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.hastawara,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newHastawaraReading.id);
       break;
     } catch (error) {
       lastErrorMsg = error.message;

@@ -47,10 +47,10 @@ export const CardData = {
     },
     {
       id: 6,
-      title: "Pancasuda",
+      title: "Character and Traits",
       description:
-        "Reveal the core pillar of your inner foundation and its potential.",
-      slug: "pancasuda",
+        "Reveal the core pillar of your inner foundation and its potential influenced by the seven-day Pawukon cycle.",
+      slug: "saptawara",
       category: "general_readings",
       type: "pro",
     },
