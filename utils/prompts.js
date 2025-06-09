@@ -108,6 +108,11 @@ export const dailyReadingPrompt = (profile) => {
   - Language: Clear, accessible English, but seamlessly integrate Javanese terms where appropriate (with brief explanations if necessary).
   - Personal and Intimate: Speak directly to the user as if you're having a one-on-one conversation. Use "you" frequently.
   - Conversational: Use natural language that flows like a conversation, not clinical analysis.
+  - No AI phrases: Never use "dive into," "unleash," "game-changing," "revolutionary," "transformative," "leverage," "optimize," "unlock potential"
+  - Be direct: Say what you mean without unnecessary words
+  - Natural flow: It's fine to start sentences with "and," "but," or "so"
+  - Real voice: Don't force friendliness or fake excitement
+  - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
@@ -182,6 +187,11 @@ export const monthlyReadingPrompt = (profile) => {
   - Personal and Intimate: Speak directly to the user as if you're having a one-on-one conversation. Use "you" frequently.
   - Thoughtful and Reflective: Ask questions that encourage self-reflection and deeper understanding.
   - Conversational: Use natural language that flows like a conversation, not clinical analysis.
+  - No AI phrases: Never use "dive into," "unleash," "game-changing," "revolutionary," "transformative," "leverage," "optimize," "unlock potential"
+  - Be direct: Say what you mean without unnecessary words
+  - Natural flow: It's fine to start sentences with "and," "but," or "so"
+  - Real voice: Don't force friendliness or fake excitement
+  - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
@@ -192,6 +202,16 @@ export const monthlyReadingPrompt = (profile) => {
   - Ethical AI: Emphasize that Weton provides guidance, not absolute destiny. Encourage personal agency and free will.
   - Make it relevant to the modern life and generation
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
+
+  ## FINAL CHECK
+  Before finishing, ensure the writing:
+  - Sounds like something you'd say out loud
+  - Making sure each section is distinct and does not repeat insights from other sections
+  - Making sure is easy to read and understand
+  - Uses words a normal person would use
+  - Doesn't sound like marketing copy
+  - Feels genuine and honest
+  - Gets to the point quickly
     `;
   console.log("monthly", wetonData);
   return prompt;
@@ -249,6 +269,11 @@ export const primaryTraitsPrompt = (profile) => {
   - Personal and Intimate: Speak directly to the user as if you're having a one-on-one conversation. Use "you" frequently.
   - Thoughtful and Reflective: Ask questions that encourage self-reflection and deeper understanding.
   - Conversational: Use natural language that flows like a conversation, not clinical analysis.
+  - No AI phrases: Never use "dive into," "unleash," "game-changing," "revolutionary," "transformative," "leverage," "optimize," "unlock potential"
+  - Be direct: Say what you mean without unnecessary words
+  - Natural flow: It's fine to start sentences with "and," "but," or "so"
+  - Real voice: Don't force friendliness or fake excitement
+  - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
@@ -258,6 +283,16 @@ export const primaryTraitsPrompt = (profile) => {
   - Ethical AI: Emphasize that Weton provides guidance, not absolute destiny. Encourage personal agency and free will.
   - Make it relevant to the modern life and generation
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
+
+  ## FINAL CHECK
+  Before finishing, ensure the writing:
+  - Sounds like something you'd say out loud
+  - Making sure each section is distinct and does not repeat insights from other sections
+  - Making sure is easy to read and understand
+  - Uses words a normal person would use
+  - Doesn't sound like marketing copy
+  - Feels genuine and honest
+  - Gets to the point quickly
     `;
   // console.log(prompt);
   return prompt;
@@ -322,6 +357,11 @@ export const basicLovePrompt = (profile) => {
   - Personal and Intimate: Speak directly to the user as if you're having a one-on-one conversation. Use "you" frequently.
   - Thoughtful and Reflective: Ask questions that encourage self-reflection and deeper understanding.
   - Conversational: Use natural language that flows like a conversation, not clinical analysis.
+  - No AI phrases: Never use "dive into," "unleash," "game-changing," "revolutionary," "transformative," "leverage," "optimize," "unlock potential"
+  - Be direct: Say what you mean without unnecessary words
+  - Natural flow: It's fine to start sentences with "and," "but," or "so"
+  - Real voice: Don't force friendliness or fake excitement
+  - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
@@ -332,6 +372,16 @@ export const basicLovePrompt = (profile) => {
   - No Redundancy: While drawing from the same core birth data, ensure each section provides distinct insights relevant to its specific focus (Core Approach, Style, Attitudes) without unnecessary repetition.
   - Make it relevant to the modern life and generation
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
+
+  ## FINAL CHECK
+  Before finishing, ensure the writing:
+  - Sounds like something you'd say out loud
+  - Making sure each section is distinct and does not repeat insights from other sections
+  - Making sure is easy to read and understand
+  - Uses words a normal person would use
+  - Doesn't sound like marketing copy
+  - Feels genuine and honest
+  - Gets to the point quickly
     `;
   // console.log(prompt);
   return prompt;
@@ -416,6 +466,16 @@ export const proLovePrompt = (profile) => {
   - No Redundancy: While drawing from the same core birth data, ensure each section provides distinct insights relevant to its specific focus (Core Approach, Style, Attitudes) without unnecessary repetition.
   - Make it relevant to the modern life and generation
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
+
+  ## FINAL CHECK
+  Before finishing, ensure the writing:
+  - Sounds like something you'd say out loud
+  - Making sure each section is distinct and does not repeat insights from other sections
+  - Making sure is easy to read and understand
+  - Uses words a normal person would use
+  - Doesn't sound like marketing copy
+  - Feels genuine and honest
+  - Gets to the point quickly
     `;
   // console.log(prompt);
   return prompt;
@@ -486,6 +546,11 @@ export const proGeneralCalculationPrompt = (profile) => {
   - Personal and Intimate: Speak directly to the user as if you're having a one-on-one conversation. Use "you" frequently.
   - Thoughtful and Reflective: Ask questions that encourage self-reflection and deeper understanding.
   - Conversational: Use natural language that flows like a conversation, not clinical analysis.
+  - No AI phrases: Never use "dive into," "unleash," "game-changing," "revolutionary," "transformative," "leverage," "optimize," "unlock potential"
+  - Be direct: Say what you mean without unnecessary words
+  - Natural flow: It's fine to start sentences with "and," "but," or "so"
+  - Real voice: Don't force friendliness or fake excitement
+  - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
@@ -496,6 +561,16 @@ export const proGeneralCalculationPrompt = (profile) => {
   - No Redundancy: While the overall input data is the same, each section must focus exclusively on the specific component it addresses, avoiding repetition of insights from other sections.
   - Make it relevant to the modern life and generation
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
+
+  ## FINAL CHECK
+  Before finishing, ensure the writing:
+  - Sounds like something you'd say out loud
+  - Making sure each section is distinct and does not repeat insights from other sections
+  - Making sure is easy to read and understand
+  - Uses words a normal person would use
+  - Doesn't sound like marketing copy
+  - Feels genuine and honest
+  - Gets to the point quickly
     `;
   // console.log(prompt);
   return prompt;
@@ -512,11 +587,11 @@ export const proGeneralCalculationPrompt2 = (profile) => {
     - Weton: ${wetonDetails.weton_en}
     - Day (Dina): ${wetonDetails.dina} (Neptu: ${wetonDetails.neptu_dina})
     - Market Day (Pasaran): ${wetonDetails.pasaran} (Neptu: ${wetonDetails.neptu_pasaran})
-    - Laku: ${wetonDetails.laku.name}
     - Rakam: ${wetonDetails.rakam.name}
     - Wuku: ${wuku}
     - Sadwara: ${wetonDetails.sadwara.name}
     - Saptawara/Pancasuda: ${wetonDetails.saptawara.name}
+    - Laku: ${wetonDetails.laku.name}
     `;
 
   const prompt = `
@@ -571,6 +646,11 @@ export const proGeneralCalculationPrompt2 = (profile) => {
   - Personal and Intimate: Speak directly to the user as if you're having a one-on-one conversation. Use "you" frequently.
   - Thoughtful and Reflective: Ask questions that encourage self-reflection and deeper understanding.
   - Conversational: Use natural language that flows like a conversation, not clinical analysis.
+  - No AI phrases: Never use "dive into," "unleash," "game-changing," "revolutionary," "transformative," "leverage," "optimize," "unlock potential"
+  - Be direct: Say what you mean without unnecessary words
+  - Natural flow: It's fine to start sentences with "and," "but," or "so"
+  - Real voice: Don't force friendliness or fake excitement
+  - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
@@ -581,7 +661,17 @@ export const proGeneralCalculationPrompt2 = (profile) => {
   - No Redundancy: While the overall input data is the same, each section must focus exclusively on the specific character aspect it addresses, avoiding unnecessary repetition of insights from other sections.
   - Make it relevant to the modern life and generation
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
-    `;
+  
+  ## FINAL CHECK
+  Before finishing, ensure the writing:
+  - Sounds like something you'd say out loud
+  - Making sure each section is distinct and does not repeat insights from other sections
+  - Making sure is easy to read and understand
+  - Uses words a normal person would use
+  - Doesn't sound like marketing copy
+  - Feels genuine and honest
+  - Gets to the point quickly
+  `;
   // console.log(prompt);
   return prompt;
 };
