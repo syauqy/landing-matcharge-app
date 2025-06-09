@@ -79,22 +79,24 @@ export default function ReadingsPage() {
           content="Explore various readings for insights."
         />
       </Head>
-      <Navbar title="Readings" />
-      <div className="px-safe flex flex-col bg-base py-4">
-        <div className="py- sm:py-6">
-          <div className="space-y-6">
-            {SectionData.map((section, i) => (
-              <ReadingSection
-                key={i}
-                title={section.title}
-                subtitle={section.subtitle}
-                cards={section.cards}
-              />
-            ))}
+      <div className="h-[100svh] flex flex-col bg-base relative">
+        <Navbar title="Readings" />
+        <div className="px-safe flex flex-col bg-base pt-4 sm:pt-6 pb-20">
+          <div className="py- sm:py-6">
+            <div className="space-y-6">
+              {SectionData.map((section, i) => (
+                <ReadingSection
+                  key={i}
+                  title={section.title}
+                  subtitle={section.subtitle}
+                  cards={section.cards}
+                />
+              ))}
+            </div>
           </div>
-        </div>
 
-        <Menubar page={"readings"} />
+          <Menubar page={"readings"} />
+        </div>
       </div>
     </>
   );

@@ -186,10 +186,10 @@ export const CardData = {
     },
     {
       id: 19,
-      title: "Key Life Events",
+      title: "Key Life Themes",
       description:
         "Identify potential pivotal moments and themes that may shape your journey.",
-      slug: "key-life-events",
+      slug: "key-life",
       category: "work_readings",
       type: "pro",
     },

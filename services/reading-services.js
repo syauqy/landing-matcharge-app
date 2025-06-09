@@ -10,6 +10,7 @@ import {
   proLovePrompt,
   proGeneralCalculationPrompt,
   proGeneralCalculationPrompt2,
+  proCareerPrompt,
 } from "@/utils/prompts";
 import { z } from "zod";
 import { supabase } from "@/utils/supabaseClient";
@@ -1585,6 +1586,275 @@ export async function generateGeneralProReading2(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newLakuReading.id);
+      }
+    }
+  } while (attempt < maxAttempts);
+}
+
+export async function generateCareerProReading(profile) {
+  const { data: newCareerReading, error } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "work_readings",
+      title: "Your Career",
+      subtitle:
+        "Explore professions and work styles that resonate with your Weton's energy.",
+      username: profile.username,
+      status: "loading",
+      slug: "your-career",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error inserting new reading:", error);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newCareerReading);
+
+  const { data: newIdealLifeReading, errorIdealLife } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "work_readings",
+      title: "Ideal Life",
+      subtitle:
+        "Envision the life that truly fulfills your potential and deepest aspirations.",
+      username: profile.username,
+      status: "loading",
+      slug: "ideal-life",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorIdealLife) {
+    console.error("Error inserting new reading:", errorIdealLife);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newIdealLifeReading);
+
+  const { data: newKeyLifeReading, errorKeyLife } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "work_readings",
+      title: "Key Life Themes",
+      subtitle:
+        "Identify potential pivotal moments and themes that may shape your journey.",
+      username: profile.username,
+      status: "loading",
+      slug: "key-life",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorKeyLife) {
+    console.error("Error inserting new reading:", errorKeyLife);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newKeyLifeReading);
+
+  const maxAttempts = 2;
+  let attempt = 0;
+  let lastErrorMsg = "";
+  do {
+    attempt++;
+    try {
+      const response = await generateObject({
+        model: google("gemini-2.5-flash-preview-05-20"),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              thinkingBudget: 2000,
+            },
+          },
+        },
+        schema: z.object({
+          career: z.object({
+            introduction: z
+              .string()
+              .describe(
+                "Explain how your Weton and associated cycles provide insights into your natural talents, professional predispositions, and the environment where you are most likely to thrive in your career."
+              )
+              .catch(() => ""),
+            strengths: z
+              .string()
+              .describe(
+                "Detail 3-5 specific qualities that make you effective in a professional setting (e.g., natural leadership, meticulous attention to detail, strong collaborative spirit, innovative thinking, resilience under pressure, excellent communication). Provide examples of how these might manifest."
+              )
+              .catch(() => ""),
+            ideal_work: z
+              .string()
+              .describe(
+                "Describe the types of professional settings or industries where your Weton suggests you would feel most aligned and productive (e.g., independent work, team-based projects, creative fields, structured corporate environments, service-oriented roles, entrepreneurial ventures)."
+              )
+              .catch(() => ""),
+            leadership: z
+              .string()
+              .describe(
+                "How do you naturally approach leadership and working with others? Are you a visionary leader, a supportive team player, a meticulous manager, or an inspiring mentor?"
+              )
+              .catch(() => ""),
+            challenges: z
+              .string()
+              .describe(
+                "Identify any inherent tendencies that might present obstacles in your career path (e.g., impatience, aversion to routine, difficulty with authority, sensitivity to criticism). Offer guidance on how to navigate these."
+              )
+              .catch(() => ""),
+            financial_approach: z
+              .string()
+              .describe(
+                "Briefly touch upon your Weton's influence on your general approach to earning and managing wealth."
+              )
+              .catch(() => ""),
+            makarya: z
+              .string()
+              .describe(
+                "Connect your career insights to the Javanese concept of makarya or jembar rejeki (abundant sustenance), emphasizing the importance of effort and alignment with your inherent nature."
+              )
+              .catch(() => ""),
+          }),
+          ideal_life: z.object({
+            introduction: z
+              .string()
+              .describe(
+                "Explain how your birth Weton and its intricate components offer a profound understanding of your deepest desires for fulfillment and what truly contributes to your sense of inner harmony and purpose."
+              )
+              .catch(() => ""),
+            fulfillment: z
+              .string()
+              .describe(
+                "Describe what constitutes your unique vision of a fulfilling life. Is it rooted in spiritual growth, strong family bonds, creative expression, community service, adventurous experiences, intellectual mastery, or financial freedom?"
+              )
+              .catch(() => ""),
+            peace: z
+              .string()
+              .describe(
+                "Based on your Weton, identify the key elements or practices that are essential for you to achieve and maintain ayem tentrem (peace and tranquility) in your daily existence."
+              )
+              .catch(() => ""),
+            priorities: z
+              .string()
+              .describe(
+                "What are the fundamental areas of life (e.g., family, self-development, community, spiritual practice, work, leisure) that your Weton suggests should be prioritized for your overall well-being and sense of meaning?"
+              )
+              .catch(() => ""),
+            authentic: z
+              .string()
+              .describe(
+                "Discuss how living in alignment with your inherent Weton traits is crucial for realizing your ideal life, perhaps linking to concepts like urip kang murub (a life that glows) or mikul dhuwur mendhem jero (upholding virtues, burying flaws)."
+              )
+              .catch(() => ""),
+            auspicious: z
+              .string()
+              .describe(
+                "Suggest types of environments or pursuits that would naturally support your journey towards your ideal life."
+              )
+              .catch(() => ""),
+          }),
+          key_life: z.object({
+            introduction: z
+              .string()
+              .describe(
+                "Emphasize that this section outlines energetic predispositions and types of experiences, not specific, deterministic predictions of events. It aims to foster preparedness and understanding of life's natural rhythms as seen through Weton."
+              )
+              .catch(() => ""),
+            trajectory: z
+              .string()
+              .describe(
+                "Describe the general 'flavor' or dominant journey theme of your life path (e.g., a journey of continuous learning, consistent growth, navigating frequent changes, finding stability, or experiencing profound transformations)."
+              )
+              .catch(() => ""),
+            predominant: z
+              .string()
+              .describe(
+                "Identify the kinds of significant events or challenges you may recurrently encounter (e.g., opportunities for major career shifts, significant relationship milestones, periods requiring deep introspection, unexpected travel, tests of resilience, periods of abundant harvest, or calls to spiritual deepening)."
+              )
+              .catch(() => ""),
+            cycles: z
+              .string()
+              .describe(
+                "Based on the interplay of your Weton and Wuku cycles, suggest periods that might naturally be more conducive to active pursuit (growth) versus those better suited for reflection and consolidation (rest)."
+              )
+              .catch(() => ""),
+            lessons: z
+              .string()
+              .describe(
+                "Discuss the potential lessons or transformations that often accompany these key life themes, highlighting how they contribute to your overall development."
+              )
+              .catch(() => ""),
+            destiny: z
+              .string()
+              .describe(
+                "Frame these insights within the Javanese philosophical understanding of takdir (what is given) and usaha (what is cultivated through effort), empowering the user to actively engage with their life path."
+              )
+              .catch(() => ""),
+            transitions: z
+              .string()
+              .describe(
+                "Offer general guidance on how to approach major life transitions with awareness and wisdom, drawing from the resilience or adaptability suggested by your Weton elements."
+              )
+              .catch(() => ""),
+          }),
+        }),
+        messages: [{ role: "user", content: proCareerPrompt(profile) }],
+      });
+      const resObj = response.object;
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.career,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newCareerReading.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.ideal_life,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newIdealLifeReading.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.key_life,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newKeyLifeReading.id);
+    } catch (error) {
+      lastErrorMsg = error.message;
+      console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
+      if (attempt >= maxAttempts) {
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newCareerReading.id);
       }
     }
   } while (attempt < maxAttempts);
