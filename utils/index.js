@@ -382,11 +382,12 @@ const getHastawara = (birthDate) => {
   const wuku = getWuku(birthDate);
   const pawukon_number = wuku.pawukon;
 
-  if (pawukon_number > 72) {
-    hastawara_index = pawukon_number % 8;
-  } else {
-    hastawara_index = (pawukon_number + 2) % 8;
-  }
+  // if (pawukon_number > 72) {
+  //   hastawara_index = pawukon_number % 8;
+  // } else {
+  //   hastawara_index = (pawukon_number + 2) % 8;
+  // }
+  hastawara_index = pawukon_number % 8;
   const hastawara = nameHastawara[hastawara_index];
 
   return hastawara;
