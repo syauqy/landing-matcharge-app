@@ -5,7 +5,7 @@ import {
   UserCircleIcon,
   HeartIcon,
 } from "@heroicons/react/24/outline";
-import { House, User, Heart, CircleUserRound } from "lucide-react";
+import { House, User, Heart, CircleUserRound, LoveIcon } from "lucide-react";
 import { CrystalBall } from "@/components/icons";
 import clsx from "clsx";
 
@@ -21,6 +21,16 @@ export function Menubar({ page }) {
       >
         <House className="h-6 w-6" />
         <span className="dock-label">Home</span>
+      </Link>
+      <Link
+        href="/compatibility"
+        className={clsx(
+          page === "compatibility" && "dock-active font-bold",
+          "text-batik-text flex flex-col items-center"
+        )}
+      >
+        <Heart className="h-6 w-6" />
+        <span className="dock-label">Compatibility</span>
       </Link>
       <Link
         href="/readings"
