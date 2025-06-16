@@ -501,7 +501,7 @@ export default function Home() {
         <div className="px-4">
           <p className="text-lg sm:text-xl font-semibold text-batik-black">
             Good {getTimeOfDay()},{" "}
-            {profileData.full_name?.split(" ")[0] || "User"}!
+            {profileData?.full_name?.split(" ")[0] || "User"}!
           </p>
         </div>
         <div className="flex flex-col gap-2 p-4">

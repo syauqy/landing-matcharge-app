@@ -13,6 +13,8 @@ import {
   proGeneralCalculationPrompt2,
   proCareerPrompt,
   proFinancialPrompt,
+  proLoveCompatibilityPrompt,
+  proCoupleCompatibilityPrompt,
 } from "@/utils/prompts";
 import { z } from "zod";
 import { supabase } from "@/utils/supabaseClient";
@@ -2097,6 +2099,428 @@ export async function generateFinancialProReading(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newCareerReading.id);
+      }
+    }
+  } while (attempt < maxAttempts);
+}
+
+export async function generateLoveCompatibilityReading(
+  profile1,
+  profile2,
+  wetonJodoh
+) {
+  const { data: newCompatibilityReading, error } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "compatibility",
+      title: `${profile1.full_name.split(" ")[0]} and ${
+        profile2.full_name.split(" ")[0]
+      }'s Compatibility`,
+      subtitle:
+        "Uncover the sacred blueprint of your relationship, revealing your destined path to harmony, passion, and true $Jodoh$ through the timeless wisdom of the Javanese soul.",
+      username: profile1.username,
+      status: "loading",
+      slug: `${profile1.username}-${profile2.username}-compatibility`,
+      user_id: profile1.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error inserting new reading:", error);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newCompatibilityReading);
+
+  const maxAttempts = 2;
+  let attempt = 0;
+  let lastErrorMsg = "";
+  do {
+    attempt++;
+    try {
+      const response = await generateObject({
+        model: google("gemini-2.5-flash-preview-05-20"),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              thinkingBudget: 2000,
+            },
+          },
+        },
+        schema: z.object({
+          header: z
+            .string()
+            .describe(
+              "A Reading of Love's Destiny for [Person A's Name] and [Person B's Name]"
+            )
+            .catch(() => ""),
+          score: z
+            .number()
+            .describe("Overall Compatibility Score: A score of 0 to 100")
+            .catch(() => ""),
+          insight: z
+            .string()
+            .describe(
+              "A 2-3 sentences paragraph summarizing the heart of their romantic connection, its greatest gift, and its central lesson."
+            )
+            .catch(() => ""),
+          analysis: z.object({
+            foundational: z
+              .string()
+              .describe(
+                "Analyze the combined using the 8-cycle system (e.g, Ratu, Jodoh, Pegat, etc.). Explain what this cosmic blueprint means for their destiny as a couple."
+              )
+              .catch(() => ""),
+            dynamics: z
+              .string()
+              .describe(
+                "Describe their elemental interaction from Laku in the context of passion, emotion, and daily interaction."
+              )
+              .catch(() => ""),
+            home: z
+              .string()
+              .describe(
+                "Use the Pancasuda (5-cycle system) analysis (e.g, Sri, Dana, Lara, Pati, Lungguh) to explore their joint potential for creating a stable, secure, and prosperous home."
+              )
+              .catch(() => ""),
+            passion: z
+              .string()
+              .describe(
+                'Based on their Weton characteristics, describe their natural "love languages." How do they express and receive affection, passion, and intimacy?'
+              )
+              .catch(() => ""),
+            challenges: z
+              .string()
+              .describe(
+                "Identify their primary conflict style and provide a clear map for resolving disagreements and strengthening their emotional bond."
+              )
+              .catch(() => ""),
+            advice: z
+              .string()
+              .describe(
+                "Conclude with empowering advice on how to consciously nurture their love, honor each other's spirits, and transform challenges into deeper intimacy."
+              )
+              .catch(() => ""),
+          }),
+        }),
+        messages: [
+          {
+            role: "user",
+            content: proLoveCompatibilityPrompt(profile1, profile2, wetonJodoh),
+          },
+        ],
+      });
+      const resObj = response.object;
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newCompatibilityReading.id);
+    } catch (error) {
+      console.log(error);
+      lastErrorMsg = error.message;
+      console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
+      if (attempt >= maxAttempts) {
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newCompatibilityReading.id);
+      }
+    }
+  } while (attempt < maxAttempts);
+}
+
+export async function generateCoupleCompatibilityReading(
+  profile1,
+  profile2,
+  wetonJodoh
+) {
+  const { data: newCompatibilityReading, error } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "compatibility",
+      title: `${profile1.full_name.split(" ")[0]} and ${
+        profile2.full_name.split(" ")[0]
+      }'s Compatibility`,
+      subtitle:
+        "Uncover the sacred blueprint of your relationship, revealing your destined path to harmony, passion, and true love through the timeless wisdom of the Javanese soul.",
+      username: profile1.username,
+      status: "loading",
+      slug: `${profile1.username}-${profile2.username}-couple`,
+      user_id: profile1.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error inserting new reading:", error);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newCompatibilityReading);
+
+  const maxAttempts = 2;
+  let attempt = 0;
+  let lastErrorMsg = "";
+  do {
+    attempt++;
+    try {
+      const response = await generateObject({
+        model: google("gemini-2.5-flash-preview-05-20"),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              thinkingBudget: 2000,
+            },
+          },
+        },
+        schema: z.object({
+          header: z
+            .string()
+            .describe(
+              "A Reading of Love's Destiny for [Person A's Name] and [Person B's Name]"
+            )
+            .catch(() => ""),
+          score: z
+            .number()
+            .describe("Overall Compatibility Score: A score of 0 to 100")
+            .catch(() => ""),
+          insight: z
+            .string()
+            .describe(
+              "A 2-3 sentences paragraph summarizing the heart of their romantic connection, its greatest gift, and its central lesson."
+            )
+            .catch(() => ""),
+          summary: z.object({
+            overall_compatibility: z
+              .string()
+              .describe(
+                `Provide a concise summary of the couple's general compatibility (e.g., "A harmonious pairing with strong foundations," "A dynamic relationship that thrives on growth," "A challenging but transformative union requiring conscious effort").`
+              )
+              .catch(() => ""),
+            strengths: z
+              .string()
+              .describe(
+                "Identify the top 2-3 most significant areas of natural alignment and positive flow between the partners."
+              )
+              .catch(() => ""),
+            challenges: z
+              .string()
+              .describe(
+                "Identify the top 1-2 most significant areas that may require conscious attention, communication, and mutual effort."
+              )
+              .catch(() => ""),
+            essence: z
+              .string()
+              .describe(
+                'A metaphorical description of their combined energy (e.g., "Like two rivers flowing into a mighty current," "Like a complementary blend of fire and water," "Like two strong trees growing towards the sun").'
+              )
+              .catch(() => ""),
+          }),
+          deep_dive: z.object({
+            journey: z.object({
+              result: z
+                .string()
+                .describe(`[State the calculated result, e.g., "Padu"]`)
+                .catch(() => ""),
+              interpretation: z
+                .string()
+                .describe(
+                  `Provide a detailed explanation of what this specific result signifies for the couple's relationship (e.g., for "Padu," discuss frequent arguments but also potential for growth through conflict, and how to navigate it).`
+                )
+                .catch(() => ""),
+            }),
+            fortune: z.object({
+              result: z
+                .string()
+                .describe(`[State the calculated result, e.g., "Lungguh"]`)
+                .catch(() => ""),
+              interpretation: z
+                .string()
+                .describe(
+                  `Detail what this result means for their shared financial path and overall prosperity (e.g., for "Lungguh," that implies possessing a position of honor or authority. discuss material comfort and sufficiency).`
+                )
+                .catch(() => ""),
+            }),
+            character: z.object({
+              result: z
+                .string()
+                .describe(`[State the calculated result, e.g., "Sumur Sinaba"]`)
+                .catch(() => ""),
+              interpretation: z
+                .string()
+                .describe(
+                  `Explain the implications for their emotional connection, wisdom, and how they mutually support each other's inner lives (e.g., for "Sumur Sinaba," indicate a relationship where others seek their advice, signifying wisdom).`
+                )
+                .catch(() => ""),
+            }),
+            destiny: z.object({
+              result: z
+                .string()
+                .describe(`[State the calculated result, e.g., "Jodoh"]`)
+                .catch(() => ""),
+              interpretation: z
+                .string()
+                .describe(
+                  `Provide a comprehensive explanation of what this result suggests about their fated connection, major life events they might face together, and how they are destined to interact (e.g., for "Jodoh," indicate a deeply harmonious and fated connection).`
+                )
+                .catch(() => ""),
+            }),
+          }),
+          blend: z.object({
+            neptu: z.object({
+              interpretation: z
+                .string()
+                .describe(
+                  `Explain the general meaning of this neptu based on ${wetonJodoh.jodoh9.result} in terms of the couple's overall energetic signature, shared destiny, and collective temperament.`
+                )
+                .catch(() => ""),
+            }),
+            dina: z.object({
+              interpretation: z
+                .string()
+                .describe(
+                  `Explain the general meaning of this dina combination based on ${wetonJodoh.jodohDay.result}`
+                )
+                .catch(() => ""),
+              weton_essence: z
+                .string()
+                .describe(
+                  `Briefly describe the core energetic characteristics of each partner's individual Weton (e.g., "Kamis Legi brings a thoughtful, influential energy..." and "Sabtu Pon brings a determined, somewhat reserved energy...").`
+                )
+                .catch(() => ""),
+              dynamics: z
+                .string()
+                .describe(
+                  `Analyze how these two specific Weton energies interact. Are they complementary (saling melengkapi), do they create a powerful synergy, or are there natural areas of friction? Provide specific examples of how these might play out in their daily lives.`
+                )
+                .catch(() => ""),
+            }),
+          }),
+          dynamics: z.object({
+            harmony: z
+              .string()
+              .describe(
+                `Identify 2-3 key aspects where your combined Weton energies create effortless understanding, support, or shared joy (e.g., shared values, complementary work ethics, similar emotional needs, balanced elemental forces leading to stability or passion).`
+              )
+              .catch(() => ""),
+            mutual_growth: z
+              .string()
+              .describe(
+                `What unique qualities does each partner's Weton bring to the relationship that enriches the other, fosters mutual growth, or strengthens the partnership as a whole?`
+              )
+              .catch(() => ""),
+            synergy: z
+              .string()
+              .describe(
+                `Where do your combined Weton energies create a powerful synergy that allows you to achieve more together than individually?`
+              )
+              .catch(() => ""),
+            keselarasan: z
+              .string()
+              .describe(
+                `Connect these strengths to the Javanese ideal of keselarasan, explaining how your Weton blend naturally promotes balance and understanding.`
+              )
+              .catch(() => ""),
+          }),
+          challenges: z.object({
+            friction: z
+              .string()
+              .describe(
+                `Identify 2-3 key areas where your Weton components might naturally clash, creating misunderstandings, disagreements, or differing needs (e.g., conflicting communication styles, contrasting approaches to finances, differing desires for independence vs. closeness, emotional reactions).`
+              )
+              .catch(() => ""),
+            root_cause: z
+              .string()
+              .describe(
+                `Briefly explain why these clashes might occur, linking them directly to specific Weton characteristics or traditional interpretations (e.g., "Partner A's 'Lakune Geni' might clash with Partner B's 'Lakune Banyu' in emotionally charged situations, requiring mindful emotional regulation").`
+              )
+              .catch(() => ""),
+            strategies: z
+              .string()
+              .describe(
+                `Offer concrete, actionable advice rooted in Javanese wisdom for navigating these challenges (e.g., fostering patience (sabar), practicing sincerity (ikhlas), engaging in open dialogue (musyawarah), cultivating empathy (tepa slira), or understanding each other's watak (character) and sifat (traits)).`
+              )
+              .catch(() => ""),
+            transformative: z
+              .string()
+              .describe(
+                `Emphasize that challenges are opportunities for deeper understanding and growth, leading to a stronger, more resilient bond.`
+              )
+              .catch(() => ""),
+          }),
+          wisdom: z.object({
+            relationship_journey: z
+              .string()
+              .describe(
+                `Briefly summarize the core nature of your union, integrating the various insights from the reading.`
+              )
+              .catch(() => ""),
+            effort_devotion: z
+              .string()
+              .describe(
+                `Emphasize that while Weton provides a map of inherent tendencies, the success and happiness of a relationship ultimately depend on conscious effort (usaha), mutual respect, open communication, and devotion (bhakti) to one another.`
+              )
+              .catch(() => ""),
+            final_statement: z
+              .string()
+              .describe(
+                `A final, uplifting statement encouraging the couple to embrace their unique blend of energies and consciously build a fulfilling partnership.`
+              )
+              .catch(() => ""),
+          }),
+        }),
+        messages: [
+          {
+            role: "user",
+            content: proCoupleCompatibilityPrompt(
+              profile1,
+              profile2,
+              wetonJodoh
+            ),
+          },
+        ],
+      });
+      const resObj = response.object;
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newCompatibilityReading.id);
+    } catch (error) {
+      console.log(error);
+      lastErrorMsg = error.message;
+      console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
+      if (attempt >= maxAttempts) {
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newCompatibilityReading.id);
       }
     }
   } while (attempt < maxAttempts);

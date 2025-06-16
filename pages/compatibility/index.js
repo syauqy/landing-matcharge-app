@@ -6,7 +6,7 @@ import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import Link from "next/link"; // Import Link for navigation
-import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
+// import { DashboardNavbar } from "@/components/layouts/dashboard-navbar"; // Assuming not used directly
 import { Navbar } from "@/components/layouts/navbar";
 import { Menubar } from "@/components/layouts/menubar";
 import { SunIcon, MoonStarIcon } from "lucide-react";
@@ -17,17 +17,21 @@ export default function CompatibilityPage() {
   const router = useRouter();
 
   const [profileData, setProfileData] = useState(null);
-  const [readingsData, setReadingsData] = useState([]);
+  const [compatibilityReading, setCompatibilityReading] = useState([]);
+  const [coupleReading, setCoupleReading] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
-  const [loadingReadings, setLoadingReadings] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState("weton");
+  // const [activeTab, setActiveTab] = useState("weton"); // Seems unused
 
-  const [birthDate, setBirthDate] = useState("");
+  // const [birthDate, setBirthDate] = useState(""); // Will be replaced by friend selection
   const [partnerProfile, setPartnerProfile] = useState({});
   const [wetonJodoh, setWetonJodoh] = useState({});
 
-  // --- Fetch Profile Data ---
+  const [friendsList, setFriendsList] = useState([]);
+  const [loadingFriends, setLoadingFriends] = useState(false);
+  const [selectedFriendId, setSelectedFriendId] = useState("");
+
   const fetchProfile = async () => {
     if (!user) return;
     setLoadingProfile(true);
@@ -59,56 +63,192 @@ export default function CompatibilityPage() {
     }
   };
 
-  // --- Fetch Readings Data ---
-  const fetchReadings = async () => {
+  const fetchFriends = async () => {
     if (!user) return;
-    setLoadingReadings(true);
-    // Keep previous error unless readings fetch causes a new one
-    // setError(null);
+    setLoadingFriends(true);
+    setError(null);
     try {
-      const { data, error: readingsError } = await supabase
-        .from("readings")
-        .select("id, title, created_at, slug, reading_category") // Select specific fields needed
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(10); // Limit the number of readings shown initially
+      const { data, error: friendsError } = await supabase
+        .from("friendships")
+        .select(
+          `
+          id,
+          requester_id,
+          addressee_id,
+          profile_requester:requester_id (id, username, full_name, dina_pasaran, weton, wuku, gender, birth_date),
+          profile_addressee:addressee_id (id, username, full_name, dina_pasaran, weton, wuku, gender, birth_date)
+        `
+        )
+        .eq("status", "accepted")
+        .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`);
 
-      if (readingsError) throw readingsError;
-      setReadingsData(data || []); // Ensure it's an array even if null
+      if (friendsError) throw friendsError;
+
+      const friendProfiles = data
+        .map((friendship) => {
+          const friend =
+            friendship.requester_id === user.id
+              ? friendship.profile_addressee
+              : friendship.profile_requester;
+          // Ensure all necessary fields are present for a partner profile
+          if (friend && friend.weton && friend.wuku) {
+            return friend;
+          }
+          return null;
+        })
+        .filter(Boolean); // Remove nulls if any friend profile is incomplete
+
+      setFriendsList(friendProfiles || []);
     } catch (err) {
-      console.error("Error fetching readings:", err);
-      setError((prevError) => prevError || "Failed to load readings history."); // Preserve profile error if it exists
+      console.error("Error fetching friends:", err);
+      setError((prevError) => prevError || "Failed to load friends list.");
     } finally {
-      setLoadingReadings(false);
+      setLoadingFriends(false);
     }
   };
 
-  const handleTest = () => {
-    const wuku_data = getWuku(birthDate);
-    const weton_data = getWeton(birthDate);
-    // const saptawara = getWetonPrimbon(birthDate);
-    // setWetonPartner(weton_data);
-    // setWukuPartner(wuku_data);
-    setPartnerProfile({
-      full_name: "Partner Name",
-      birthDate: birthDate,
-      dina_pasaran: weton_data.weton_en,
-      gender: "",
-      username: "",
-      email: "",
-      wuku: wuku_data,
-      weton: weton_data,
-    });
-  };
-
   const calculateWetonJodoh = async () => {
-    if (!partnerProfile || !profileData) return;
+    if (!partnerProfile?.weton || !profileData?.weton) return; // Ensure weton data is present
     try {
       const result = await getWetonJodoh(profileData, partnerProfile);
       setWetonJodoh(result);
     } catch (error) {
       console.error("Error calculating Weton Jodoh:", error);
       setError("Failed to calculate Weton Jodoh.");
+    }
+  };
+
+  const handleCompatibilityReading = async () => {
+    setError(null);
+    setLoading(true);
+
+    if (!profileData?.username || !user || !partnerProfile?.username) {
+      setError("Profile data or user not available.");
+      setLoading(false);
+      return;
+    } else {
+      try {
+        const { data: existingReading, error: fetchError } = await supabase
+          .from("readings")
+          .select("reading, status")
+          .eq("reading_type", "pro")
+          .eq("user_id", user.id)
+          .eq("reading_category", "compatibility")
+          .eq(
+            "slug",
+            `${profileData.username}-${partnerProfile.username}-compatibility`
+          )
+          .maybeSingle();
+
+        console.log("Existing Reading:", existingReading, user.id);
+
+        if (fetchError && fetchError.code !== "PGRST116") {
+          throw fetchError;
+        }
+
+        // If reading exists, show it
+        if (existingReading) {
+          setCompatibilityReading(existingReading);
+          setLoading(false);
+          return;
+        } else if (!existingReading && !fetchError) {
+          console.log("No existing reading found, generating new one...");
+          setLoading(false);
+          try {
+            // Generate new reading if none exists
+            const response = await fetch("/api/compatibility/love", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                profile1: profileData,
+                profile2: partnerProfile,
+                wetonJodoh: wetonJodoh,
+              }),
+              credentials: "include",
+            });
+
+            const readingData = await response.json();
+            setCompatibilityReading(readingData);
+          } catch (err) {
+            console.error("Error:", err);
+            setError(err.message || "Failed to generate reading");
+            setLoading(false);
+          }
+        }
+      } catch (err) {
+        console.error("Error checking today's reading:", err);
+        setError("Failed to check today's reading.");
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleCoupleReading = async () => {
+    setError(null);
+    setLoading(true);
+
+    if (!profileData?.username || !user || !partnerProfile?.username) {
+      setError("Profile data or user not available.");
+      setLoading(false);
+      return;
+    } else {
+      try {
+        const { data: existingReading, error: fetchError } = await supabase
+          .from("readings")
+          .select("reading, status")
+          .eq("reading_type", "pro")
+          .eq("user_id", user.id)
+          .eq("reading_category", "compatibility")
+          .eq(
+            "slug",
+            `${profileData.username}-${partnerProfile.username}-couple`
+          )
+          .maybeSingle();
+
+        console.log("Existing Reading:", existingReading, user.id);
+
+        if (fetchError && fetchError.code !== "PGRST116") {
+          throw fetchError;
+        }
+
+        // If reading exists, show it
+        if (existingReading) {
+          setCoupleReading(existingReading);
+          setLoading(false);
+          return;
+        } else if (!existingReading && !fetchError) {
+          console.log("No existing reading found, generating new one...");
+          setLoading(false);
+          try {
+            // Generate new reading if none exists
+            const response = await fetch("/api/compatibility/couple", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                profile1: profileData,
+                profile2: partnerProfile,
+                wetonJodoh: wetonJodoh,
+              }),
+              credentials: "include",
+            });
+
+            const readingData = await response.json();
+            setCoupleReading(readingData);
+          } catch (err) {
+            console.error("Error:", err);
+            setError(err.message || "Failed to generate reading");
+            setLoading(false);
+          }
+        }
+      } catch (err) {
+        console.error("Error checking today's reading:", err);
+        setError("Failed to check today's reading.");
+        setLoading(false);
+      }
     }
   };
 
@@ -119,10 +259,26 @@ export default function CompatibilityPage() {
         router.push("/");
       } else {
         fetchProfile();
-        fetchReadings();
+        fetchFriends();
       }
     }
   }, [user, authLoading, router]); // Dependencies
+
+  // Effect to set partnerProfile when a friend is selected
+  useEffect(() => {
+    if (selectedFriendId && friendsList.length > 0) {
+      const selected = friendsList.find(
+        (friend) => friend.id === selectedFriendId
+      );
+      if (selected) {
+        setPartnerProfile(selected);
+        setWetonJodoh({}); // Reset previous Weton Jodoh result
+      }
+    } else if (!selectedFriendId) {
+      setPartnerProfile({}); // Clear partner profile if no friend is selected
+      setWetonJodoh({});
+    }
+  }, [selectedFriendId, friendsList]);
 
   // --- Logout Handler ---
   const handleLogout = async () => {
@@ -139,10 +295,6 @@ export default function CompatibilityPage() {
       </div>
     );
   }
-
-  console.log(profileData, new Date());
-  console.log(partnerProfile);
-  console.log(wetonJodoh);
 
   //r);
 
@@ -165,7 +317,7 @@ export default function CompatibilityPage() {
 
       {/* --- Main Layout Container --- */}
       <div className="h-[100svh] flex flex-col bg-base relative">
-        <Navbar title="Compatibility" />
+        <Navbar title="Compatibility" isConnection={true} />
         <div className="flex-grow overflow-y-auto justify-center pt-4 sm:pt-6 pb-20">
           {profileData && (
             <div className="px-5 mb-6 flex items-center gap-4">
@@ -205,24 +357,36 @@ export default function CompatibilityPage() {
           )}
 
           <div className="space-y-3 px-5 mb-6 flex flex-col items-center gap-4">
-            <label
-              className="block text-gray-700 mb-2 font-semibold"
-              htmlFor="birthDate"
-            >
-              Birth Date <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="date"
-              id="birthDate"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              className="w-full px-3 py-2 block border-0 border-b-2 border-batik-border-light text-lg"
-              required
-            />
-            <button onClick={handleTest} className="btn btn-secondary">
-              Get Partner Profile
-            </button>
-            {partnerProfile.full_name && (
+            {/* Friend Selector */}
+            <div className="w-full max-w-md">
+              <label
+                htmlFor="friendSelect"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Select a Friend for Compatibility
+              </label>
+              <select
+                id="friendSelect"
+                value={selectedFriendId}
+                onChange={(e) => setSelectedFriendId(e.target.value)}
+                className="select select-bordered w-full"
+                disabled={loadingFriends || friendsList.length === 0}
+              >
+                <option value="">
+                  {loadingFriends
+                    ? "Loading friends..."
+                    : friendsList.length === 0
+                    ? "No friends available"
+                    : "-- Select a Friend --"}
+                </option>
+                {friendsList.map((friend) => (
+                  <option key={friend.id} value={friend.id}>
+                    {friend.full_name || friend.username}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {partnerProfile.username && ( // Check if a partner is selected
               <div className="bg-base-100 rounded-lg p-4 md:p-6 mb-6 border border-[var(--color-batik-border)] w-full">
                 <h3 className="text-lg font-semibold mb-2">Partner Profile</h3>
                 <div className="space-y-3 text-sm">
@@ -233,7 +397,17 @@ export default function CompatibilityPage() {
                   />
                   <DetailItem
                     label="Birth Date"
-                    value={partnerProfile.birthDate}
+                    value={
+                      partnerProfile.birth_date
+                        ? new Date(
+                            partnerProfile.birth_date
+                          ).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })
+                        : "N/A"
+                    }
                   />
                   <DetailItem
                     label="Dina Pasaran"
@@ -247,78 +421,94 @@ export default function CompatibilityPage() {
                 </div>
               </div>
             )}
-            <button onClick={calculateWetonJodoh} className="btn btn-primary">
-              Get Weton Jodoh
-            </button>
-            {wetonJodoh && (
-              <div className="bg-base-100 rounded-lg p-4 md:p-6 mb-6 border border-[var(--color-batik-border)] w-full">
-                <h3 className="text-lg font-semibold mb-2">Weton Jodoh</h3>
-                <div className="space-y-3 text-sm">
-                  <DetailItem
-                    label="Division 4"
-                    value={wetonJodoh.jodoh4?.name}
-                  />
-                  <DetailItem
-                    label="Division 5"
-                    value={wetonJodoh.jodoh5?.name}
-                  />
-                  <DetailItem
-                    label="Division 7"
-                    value={wetonJodoh.jodoh7?.name}
-                  />
-                  <DetailItem
-                    label="Division 8"
-                    value={wetonJodoh.jodoh8?.name}
-                  />
+            {partnerProfile.username && (
+              <button
+                onClick={calculateWetonJodoh}
+                className="btn btn-primary"
+                disabled={!partnerProfile.weton || !profileData.weton}
+              >
+                Get Weton Jodoh
+              </button>
+            )}
+            {wetonJodoh.jodoh4 &&
+              partnerProfile.username && ( // Check if Weton Jodoh has been calculated for the selected partner
+                <div className="bg-base-100 rounded-lg p-4 md:p-6 mb-6 border border-[var(--color-batik-border)] w-full">
+                  <h3 className="text-lg font-semibold mb-2">Weton Jodoh</h3>
+                  <div className="space-y-3 text-sm">
+                    <DetailItem
+                      label="Division 4"
+                      value={wetonJodoh.jodoh4?.name}
+                    />
+                    <DetailItem
+                      label="Division 5"
+                      value={wetonJodoh.jodoh5?.name}
+                    />
+                    <DetailItem
+                      label="Division 7"
+                      value={wetonJodoh.jodoh7?.name}
+                    />
+                    <DetailItem
+                      label="Division 8"
+                      value={wetonJodoh.jodoh8?.name}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
+            {wetonJodoh.jodoh4 && partnerProfile.username && (
+              <>
+                <button
+                  onClick={handleCompatibilityReading}
+                  className="btn btn-accent"
+                  disabled={loading || !wetonJodoh.jodoh4}
+                >
+                  {loading && compatibilityReading.length === 0
+                    ? "Generating..."
+                    : "Get Love Reading"}
+                </button>
+                {compatibilityReading.reading && (
+                  <div className="border p-4 rounded-md mt-4 w-full">
+                    <h2 className="font-bold text-lg mb-2">
+                      Love Compatibility Reading
+                    </h2>
+                    {compatibilityReading.status === "pending" ? (
+                      <div className="text-center p-4">
+                        <span className="loading loading-dots loading-md"></span>
+                      </div>
+                    ) : (
+                      <pre className="whitespace-pre-wrap text-sm bg-gray-50 p-3 rounded">
+                        {JSON.stringify(compatibilityReading.reading, null, 2)}
+                      </pre>
+                    )}
+                  </div>
+                )}
+                <button
+                  onClick={handleCoupleReading}
+                  className="btn btn-secondary"
+                  disabled={loading || !wetonJodoh.jodoh4}
+                >
+                  {loading && coupleReading.length === 0
+                    ? "Generating..."
+                    : "Get Couple Dynamics Reading"}
+                </button>
+                {coupleReading.reading && (
+                  <div className="border p-4 rounded-md mt-4 w-full">
+                    <h2 className="font-bold text-lg mb-2">
+                      Couple Dynamics Reading
+                    </h2>
+                    {coupleReading.status === "pending" ? (
+                      <div className="text-center p-4">
+                        <span className="loading loading-dots loading-md"></span>
+                      </div>
+                    ) : (
+                      <pre className="whitespace-pre-wrap text-sm bg-gray-50 p-3 rounded">
+                        {JSON.stringify(coupleReading.reading, null, 2)}
+                      </pre>
+                    )}
+                  </div>
+                )}
+              </>
             )}
           </div>
-
-          {/* {profileData ? (
-            <div className="px-5">
-              <div className="bg-base-100 rounded-lg p-4 md:p-6 mb-6 border border-[var(--color-batik-border)]">
-                <div className="space-y-3 text-sm">
-                  <DetailItem
-                    label="Dina Pasaran"
-                    value={profileData?.dina_pasaran}
-                  />
-                  <DetailItem
-                    label="Total Neptu"
-                    value={profileData.weton?.total_neptu}
-                  />
-                  <DetailItem
-                    label="Laku"
-                    value={profileData?.weton?.laku?.name}
-                  />
-                  <DetailItem
-                    label="Rakam"
-                    value={profileData?.weton?.rakam?.name}
-                  />
-                  <DetailItem label="Wuku" value={profileData.wuku?.name} />
-                  <DetailItem
-                    label="Pancasuda"
-                    value={profileData.weton.saptawara.name}
-                  />
-                  <DetailItem
-                    label="Sadwara"
-                    value={profileData.weton.sadwara.name}
-                  />
-                  <DetailItem
-                    label="Hastawara"
-                    value={profileData.weton.hastawara.name}
-                  />
-                </div>
-              </div>
-            </div>
-          ) : (
-            !loadingProfile &&
-            !error && (
-              <div className="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 border border-gray-200 text-center text-gray-500">
-                Profile data could not be loaded or is incomplete.
-              </div>
-            )
-          )} */}
         </div>
         <Menubar page={"compatibility"} />
       </div>

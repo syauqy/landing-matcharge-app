@@ -402,7 +402,7 @@ const getHastawara = (birthDate) => {
 };
 
 export function getWetonJodoh(weton1, weton2) {
-  console.log("Calculating Weton Jodoh for:", weton1, weton2);
+  // console.log("Calculating Weton Jodoh for:", weton1, weton2);
   if (!weton1 || !weton2) {
     throw new Error("Both weton1 and weton2 must be provided.");
   }

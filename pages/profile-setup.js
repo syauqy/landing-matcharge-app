@@ -171,7 +171,7 @@ export default function ProfileSetupPage() {
         created_at: new Date().toISOString(),
         reading_type: "free",
         title: "About You",
-        reading_category: "general-readings",
+        reading_category: "general_readings",
         slug: "basic",
       };
 
@@ -190,7 +190,7 @@ export default function ProfileSetupPage() {
         toast.error("Failed to save reading data.");
       } else {
         // Redirect only after successful saving
-        router.push("/readings/general-readings/basic");
+        router.push("/readings/general_readings/basic");
       }
     } catch (err) {
       console.error("Error in weton analysis process:", err);
@@ -304,7 +304,7 @@ export default function ProfileSetupPage() {
             title: "Weton",
             subtitle:
               "Uncover the foundational energies of your unique birth day combination.",
-            reading_category: "general-readings",
+            reading_category: "general_readings",
             slug: "weton",
           },
           {
@@ -314,7 +314,7 @@ export default function ProfileSetupPage() {
             title: "Wuku",
             subtitle:
               "Explore the distinct characteristics and symbolic influences of your birth week.",
-            reading_category: "general-readings",
+            reading_category: "general_readings",
             slug: "wuku",
           },
         ])
