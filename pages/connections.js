@@ -6,12 +6,21 @@ import { Navbar } from "@/components/layouts/navbar";
 import { NavbarDetail } from "@/components/layouts/navbar-detail";
 import { Menubar } from "@/components/layouts/menubar";
 import Link from "next/link";
-import { UserPlus, UserCheck, UserX, Search, Loader2 } from "lucide-react";
+import {
+  UserPlus,
+  UserCheck,
+  UserX,
+  Search,
+  Loader2,
+  SunIcon,
+  MoonStarIcon,
+} from "lucide-react";
 
 export default function ConnectionsPage() {
   const { user, loading: authLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [searchingDone, setSearchingDone] = useState(false);
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [pendingRequests, setPendingRequests] = useState([]);
   const [loadingRequests, setLoadingRequests] = useState(true);
@@ -35,7 +44,8 @@ export default function ConnectionsPage() {
           profiles: requester_id (
             id,
             username,
-            full_name
+            full_name,
+            dina_pasaran, wuku->name
           )
         `
         )
@@ -65,8 +75,8 @@ export default function ConnectionsPage() {
           requester_id,
           addressee_id,
           status,
-          profile_requester:requester_id (id, username, full_name),
-          profile_addressee:addressee_id (id, username, full_name)
+          profile_requester:requester_id (id, username, full_name, dina_pasaran, wuku->name),
+          profile_addressee:addressee_id (id, username, full_name, dina_pasaran, wuku->name)
         `
         )
         .eq("status", "accepted")
@@ -101,12 +111,13 @@ export default function ConnectionsPage() {
       setSearchResults([]);
       return;
     }
+    setSearchingDone(false);
     setLoadingSearch(true);
     setError(null);
     try {
       const { data, error: searchError } = await supabase
         .from("profiles")
-        .select("id, username, full_name")
+        .select("id, username, full_name, dina_pasaran, wuku->name")
         .ilike("username", `%${searchTerm}%`)
         .neq("id", user?.id || "") // Exclude current user from search
         .limit(10);
@@ -119,6 +130,7 @@ export default function ConnectionsPage() {
       setSearchResults([]);
     } finally {
       setLoadingSearch(false);
+      setSearchingDone(true);
     }
   };
 
@@ -168,6 +180,8 @@ export default function ConnectionsPage() {
     );
   }
 
+  console.log(searchResults);
+
   return (
     <>
       <Head>
@@ -208,11 +222,26 @@ export default function ConnectionsPage() {
                   key={profile.id}
                   className="p-3 bg-base-100 rounded-lg shadow border border-batik-border flex items-center justify-between"
                 >
-                  <div>
-                    <p className="font-semibold text-batik-black">
-                      {profile.full_name || profile.username}
-                    </p>
-                    <p className="text-xs text-gray-500">@{profile.username}</p>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex flex-row gap-2 items-center leading-4">
+                      <p className="font-semibold text-batik-black">
+                        {profile.full_name || profile.username}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        @{profile.username}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="flex items-center gap-1">
+                        <SunIcon size={12} />
+                        {profile?.dina_pasaran}
+                      </div>
+                      <>&bull;</>
+                      <div className="flex items-center gap-1">
+                        <MoonStarIcon size={12} />
+                        {profile?.name}
+                      </div>
+                    </div>
                   </div>
                   <Link
                     href={`/profile/${profile.username}`}
@@ -224,6 +253,7 @@ export default function ConnectionsPage() {
               ))}
               {!loadingSearch &&
                 searchTerm !== "" &&
+                searchingDone &&
                 searchResults.length === 0 && (
                   <p className="text-sm text-gray-500">No users found.</p>
                 )}
@@ -244,13 +274,26 @@ export default function ConnectionsPage() {
                       key={req.id}
                       className="p-3 bg-base-100 rounded-lg shadow border border-batik-border flex items-center justify-between"
                     >
-                      <div>
-                        <p className="font-semibold text-batik-black">
-                          {req.profiles?.full_name || req.profiles?.username}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          @{req.profiles?.username}
-                        </p>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex flex-row gap-2 items-center leading-4">
+                          <p className="font-semibold text-batik-black">
+                            {req.full_name || req.username}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            @{req.username}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs">
+                          <div className="flex items-center gap-1">
+                            <SunIcon size={12} />
+                            {req?.dina_pasaran}
+                          </div>
+                          <>&bull;</>
+                          <div className="flex items-center gap-1">
+                            <MoonStarIcon size={12} />
+                            {req?.name}
+                          </div>
+                        </div>
                       </div>
                       <div className="flex gap-2">
                         <button
@@ -295,12 +338,27 @@ export default function ConnectionsPage() {
                       href={`/profile/${friend.username}`}
                       className="block p-3 bg-base-100 rounded-lg shadow border border-batik-border hover:bg-base-200 transition-colors"
                     >
-                      <p className="font-semibold text-batik-black">
-                        {friend.full_name || friend.username}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        @{friend.username}
-                      </p>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex flex-row gap-2 items-center leading-4">
+                          <p className="font-semibold text-batik-black">
+                            {friend.full_name || friend.username}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            @{friend.username}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs">
+                          <div className="flex items-center gap-1">
+                            <SunIcon size={12} />
+                            {friend?.dina_pasaran}
+                          </div>
+                          <>&bull;</>
+                          <div className="flex items-center gap-1">
+                            <MoonStarIcon size={12} />
+                            {friend?.name}
+                          </div>
+                        </div>
+                      </div>
                     </Link>
                   ))
                 : !loadingFriends && (

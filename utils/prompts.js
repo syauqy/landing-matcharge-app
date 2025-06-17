@@ -940,10 +940,9 @@ export const proLoveCompatibilityPrompt = (profile1, profile2, wetonJodoh) => {
   Generate a comprehensive Javanese Weton romantic compatibility reading, focusing on the dynamics of love, destiny, and building a life together.
 
   1. Header
-  2. Overall Compatibility Score: A score out of 100%.
-  3. Main Insight
+  2. Main Insight
 
-  4. In-Depth Analysis:
+  3. In-Depth Analysis:
   * The Foundational Destiny
   * The Dance of Hearts - Laku Dynamics
   * Building a Home Together
@@ -965,7 +964,8 @@ export const proLoveCompatibilityPrompt = (profile1, profile2, wetonJodoh) => {
   
   ## Mandatory Instructions
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi). Write the Indonesian and Javanese words in italic.
-  - Avoid em dashes. 
+  - Avoid em dashes. Avoid underscores.
+  - For text formatting, write in markdown.
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
   - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, due diligence, and the power of free will in managing one's financial path. Explicitly state that these are not financial advice.
@@ -982,6 +982,8 @@ export const proLoveCompatibilityPrompt = (profile1, profile2, wetonJodoh) => {
   - Doesn't sound like marketing copy
   - Feels genuine and honest
   - Gets to the point quickly
+
+  4. Overall Compatibility Score
   `;
   // console.log(prompt);
   return prompt;

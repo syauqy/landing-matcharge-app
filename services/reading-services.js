@@ -2116,13 +2116,14 @@ export async function generateLoveCompatibilityReading(
       reading_category: "compatibility",
       title: `${profile1.full_name.split(" ")[0]} and ${
         profile2.full_name.split(" ")[0]
-      }'s Compatibility`,
+      }`,
       subtitle:
-        "Uncover the sacred blueprint of your relationship, revealing your destined path to harmony, passion, and true $Jodoh$ through the timeless wisdom of the Javanese soul.",
+        "Uncover the sacred blueprint of your relationship, revealing your destined path to harmony, passion, and true love through the timeless wisdom of the Javanese soul.",
       username: profile1.username,
       status: "loading",
       slug: `${profile1.username}-${profile2.username}-compatibility`,
       user_id: profile1.id,
+      user_target_id: profile2.id,
     })
     .select()
     .maybeSingle();
@@ -2153,12 +2154,8 @@ export async function generateLoveCompatibilityReading(
           header: z
             .string()
             .describe(
-              "A Reading of Love's Destiny for [Person A's Name] and [Person B's Name]"
+              "One sentence summarizing the heart of their romantic connection. Do not mention any name."
             )
-            .catch(() => ""),
-          score: z
-            .number()
-            .describe("Overall Compatibility Score: A score of 0 to 100")
             .catch(() => ""),
           insight: z
             .string()
@@ -2204,6 +2201,10 @@ export async function generateLoveCompatibilityReading(
               )
               .catch(() => ""),
           }),
+          score: z
+            .number()
+            .describe("Overall Compatibility Score: A score of 0 to 100")
+            .catch(() => ""),
         }),
         messages: [
           {
@@ -2292,7 +2293,7 @@ export async function generateCoupleCompatibilityReading(
           header: z
             .string()
             .describe(
-              "A Reading of Love's Destiny for [Person A's Name] and [Person B's Name]"
+              "1 sentence summarizing the heart of their romantic connection, its greatest gift, and its central lesson."
             )
             .catch(() => ""),
           score: z
