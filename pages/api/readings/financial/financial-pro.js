@@ -1,19 +1,19 @@
 import { generateFinancialProReading } from "@/services/reading-services";
 import { waitUntil } from "@vercel/functions";
+import NextCors from "nextjs-cors";
 
 export default async function handler(req, res) {
+  await NextCors(req, res, {
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    origin: "*",
+    optionsSuccessStatus: 200,
+  });
   if (req.method === "POST") {
     if (!req.body || !req.body.profile) {
       return res.status(400).json({
         message: "Profile data (e.g., weton) is required in the request body.",
       });
     }
-
-    await NextCors(req, res, {
-      methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-      origin: "*",
-      optionsSuccessStatus: 200,
-    });
 
     const { profile } = req.body;
     try {

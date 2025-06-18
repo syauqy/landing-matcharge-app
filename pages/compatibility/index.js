@@ -278,18 +278,21 @@ export default function CompatibilityPage() {
           setLoading(false);
           try {
             // Generate new reading if none exists
-            const response = await fetch("/api/compatibility/love", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                profile1: profileData,
-                profile2: partnerProfile,
-                wetonJodoh: wetonJodoh,
-              }),
-              credentials: "include",
-            });
+            const response = await fetch(
+              "https://wetonai.vercel.app/api/compatibility/love",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  profile1: profileData,
+                  profile2: partnerProfile,
+                  wetonJodoh: wetonJodoh,
+                }),
+                credentials: "include",
+              }
+            );
 
             const readingData = await response.json();
             setCompatibilityReading(readingData);

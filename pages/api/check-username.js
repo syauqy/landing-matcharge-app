@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import NextCors from "nextjs-cors";
 
 // Initialize Supabase (using public anon key is safe here; user auth verified via token)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -9,6 +10,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export default async function handler(req, res) {
+  await NextCors(req, res, {
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    origin: "*",
+    optionsSuccessStatus: 200,
+  });
   // 1. Check Request Method
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
@@ -16,12 +22,6 @@ export default async function handler(req, res) {
       .status(405)
       .json({ error: "Method Not Allowed. Only POST requests are accepted." });
   }
-
-  await NextCors(req, res, {
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-    origin: "*",
-    optionsSuccessStatus: 200,
-  });
 
   try {
     // 2. Authenticate User via Authorization Header

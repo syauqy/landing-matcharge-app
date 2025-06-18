@@ -1,7 +1,13 @@
 import { generateCoupleCompatibilityReading } from "@/services/reading-services";
 import { waitUntil } from "@vercel/functions";
+import NextCors from "nextjs-cors";
 
 export default async function handler(req, res) {
+  await NextCors(req, res, {
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    origin: "*",
+    optionsSuccessStatus: 200,
+  });
   if (req.method === "POST") {
     if (
       !req.body ||
@@ -13,12 +19,6 @@ export default async function handler(req, res) {
         message: "Profile data (e.g., weton) is required in the request body.",
       });
     }
-
-    await NextCors(req, res, {
-      methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-      origin: "*",
-      optionsSuccessStatus: 200,
-    });
 
     const { profile1, profile2, wetonJodoh } = req.body;
     // console.log(profile1, profile2, wetonJodoh);
