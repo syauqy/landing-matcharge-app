@@ -11,7 +11,9 @@ export const config = {
   runtime: "edge",
 };
 
-export default async function handler(req, res) {
+const allowedOrigin = process.env.NEXT.PUBLIC.HOST || "http://localhost:3000";
+
+export default async function handler(req) {
   // await NextCors(req, res, {
   //   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   //   origin: "*",
@@ -20,10 +22,7 @@ export default async function handler(req, res) {
 
   if (req.method === "OPTIONS") {
     const headers = new Headers();
-    headers.set(
-      "Access-Control-Allow-Origin",
-      process.env.NEXT.PUBLIC.HOST || "http://localhost:3000"
-    ); // Or your specific frontend domain: 'http://localhost:3000'
+    headers.set("Access-Control-Allow-Origin", allowedOrigin); // Or your specific frontend domain: 'http://localhost:3000'
     headers.set("Access-Control-Allow-Credentials", "true");
     headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
     headers.set("Access-Control-Allow-Headers", "Content-Type");
@@ -33,15 +32,21 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "POST") {
+    const responseHeaders = {
+      "Access-Control-Allow-Origin": allowedOrigin,
+      "Access-Control-Allow-Credentials": "true",
+    };
+
     if (
       !req.body ||
       !req.body.profile1 ||
       !req.body.profile2 ||
       !req.body.wetonJodoh
     ) {
-      return res.status(400).json({
-        message: "Profile data (e.g., weton) is required in the request body.",
-      });
+      return NextResponse.json(
+        { message: "Profile data is required." },
+        { status: 400, headers: responseHeaders }
+      );
     }
 
     const { profile1, profile2, wetonJodoh } = req.body;
@@ -51,21 +56,24 @@ export default async function handler(req, res) {
         generateLoveCompatibilityReading(profile1, profile2, wetonJodoh)
       );
       // Send a 202 Accepted response immediately as the task is offloaded
-      return res
-        .status(202)
-        .json({ message: "Reading generation has been initiated." });
+      return NextResponse.json(
+        { message: "Reading generation has been initiated." },
+        { status: 202, headers: responseHeaders }
+      );
     } catch (error) {
       console.error(
         "API daily reading - Error initiating background task:",
         error
       );
-      return res.status(500).json({
-        message: "Error initiating daily reading generation.",
-        // error: error.message, // Consider exposing error.message only in development
-      });
+      return NextResponse.json(
+        { message: "Internal Server Error" },
+        { status: 500, headers: responseHeaders }
+      );
     }
   } else {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return NextResponse.json(
+      { message: `Method ${req.method} Not Allowed` },
+      { status: 405, headers: { Allow: "POST, OPTIONS" } }
+    );
   }
 }
