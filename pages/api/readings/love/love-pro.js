@@ -9,6 +9,12 @@ export default async function handler(req, res) {
       });
     }
 
+    await NextCors(req, res, {
+      methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+      origin: "*",
+      optionsSuccessStatus: 200,
+    });
+
     const { profile } = req.body;
     try {
       waitUntil(generateLoveProReading(profile));

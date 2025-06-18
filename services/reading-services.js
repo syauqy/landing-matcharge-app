@@ -2128,6 +2128,8 @@ export async function generateLoveCompatibilityReading(
     .select()
     .maybeSingle();
 
+  console.log("error", error);
+
   if (error) {
     console.error("Error inserting new reading:", error);
     throw error;

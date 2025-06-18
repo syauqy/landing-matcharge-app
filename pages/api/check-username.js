@@ -17,6 +17,12 @@ export default async function handler(req, res) {
       .json({ error: "Method Not Allowed. Only POST requests are accepted." });
   }
 
+  await NextCors(req, res, {
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    origin: "*",
+    optionsSuccessStatus: 200,
+  });
+
   try {
     // 2. Authenticate User via Authorization Header
     const authHeader = req.headers.authorization;

@@ -3,14 +3,23 @@ import Head from "next/head";
 import Image from "next/image"; // Import Next.js Image component for optimization
 import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext"; // Import useAuth
 import { useRouter } from "next/router";
 import Link from "next/link"; // Import Link for navigation
 // import { DashboardNavbar } from "@/components/layouts/dashboard-navbar"; // Assuming not used directly
 import { Navbar } from "@/components/layouts/navbar";
 import { Menubar } from "@/components/layouts/menubar";
-import { SunIcon, MoonStarIcon } from "lucide-react";
+import {
+  SunIcon,
+  MoonStarIcon,
+  Loader2,
+  Search,
+  Users,
+  UserPlusIcon,
+  XIcon,
+} from "lucide-react";
 import { getWuku, getWeton, getWetonPrimbon, getWetonJodoh } from "@/utils";
+import { format } from "date-fns";
 
 export default function CompatibilityPage() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -22,15 +31,26 @@ export default function CompatibilityPage() {
   const [loading, setLoading] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  // const [activeTab, setActiveTab] = useState("weton"); // Seems unused
 
-  // const [birthDate, setBirthDate] = useState(""); // Will be replaced by friend selection
   const [partnerProfile, setPartnerProfile] = useState({});
+
+  // State for Custom Partner Form
+  const [showCustomPartnerForm, setShowCustomPartnerForm] = useState(false);
+  const [customFullName, setCustomFullName] = useState("");
+  const [customBirthDate, setCustomBirthDate] = useState("");
+  const [customGender, setCustomGender] = useState(""); // Added gender
+  const [savingCustomPartner, setSavingCustomPartner] = useState(false);
   const [wetonJodoh, setWetonJodoh] = useState({});
 
   const [friendsList, setFriendsList] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(false);
-  const [selectedFriendId, setSelectedFriendId] = useState("");
+  // const [selectedFriendId, setSelectedFriendId] = useState(""); // Will be replaced by direct partner selection
+
+  const [customProfilesList, setCustomProfilesList] = useState([]);
+  const [loadingCustomProfiles, setLoadingCustomProfiles] = useState(false);
+  const [showPartnerSelectionSheet, setShowPartnerSelectionSheet] =
+    useState(false);
+  const [partnerSearchTerm, setPartnerSearchTerm] = useState("");
 
   const fetchProfile = async () => {
     if (!user) return;
@@ -105,6 +125,108 @@ export default function CompatibilityPage() {
     } finally {
       setLoadingFriends(false);
     }
+  };
+
+  const fetchCustomProfiles = async () => {
+    if (!user) return;
+    setLoadingCustomProfiles(true);
+    try {
+      const { data, error: customProfilesError } = await supabase
+        .from("custom_profiles")
+        .select(
+          "id, full_name, birth_date, gender, weton, wuku, dina_pasaran, type, username"
+        ) // username might be null for custom
+        .eq("id", user.id) // Assuming custom_profiles are linked by user_id, but the table structure has `id` as user.id
+        .eq("type", "custom");
+
+      if (customProfilesError) throw customProfilesError;
+      setCustomProfilesList(data || []);
+    } catch (err) {
+      console.error("Error fetching custom profiles:", err);
+      setError(
+        (prevError) => prevError || "Failed to load custom profiles list."
+      );
+    } finally {
+      setLoadingCustomProfiles(false);
+    }
+  };
+
+  // Handle saving a custom partner
+  const handleSaveCustomPartner = async (e) => {
+    e.preventDefault();
+    if (!user || savingCustomPartner) return;
+
+    if (!customFullName || !customBirthDate || !customGender) {
+      setError("Please fill out all custom partner fields.");
+      return;
+    }
+
+    setSavingCustomPartner(true);
+    setError(null);
+
+    try {
+      // const birthDateObj = new Date(`${customBirthDate}T12:00:00Z`); // Use UTC noon
+      // if (isNaN(birthDateObj.getTime())) {
+      //   throw new Error("Invalid birth date.");
+      // }
+
+      const wetonData = getWeton(customBirthDate);
+      const wukuData = getWuku(customBirthDate);
+
+      if (!wetonData || !wukuData) {
+        throw new Error("Could not calculate Weton/Wuku from birth date.");
+      }
+
+      // Insert into custom_partners table
+      const { data, error: insertError } = await supabase
+        .from("custom_profiles") // Assuming you have a custom_partners table
+        .insert({
+          id: user.id,
+          full_name: customFullName,
+          username:
+            customFullName.replace(/\s/g, "").toLowerCase() +
+            format(new Date(), "t"),
+          birth_date: customBirthDate,
+          gender: customGender,
+          weton: wetonData,
+          wuku: wukuData,
+          dina_pasaran: wetonData.weton,
+          type: "custom",
+        })
+        .select("*") // Select the inserted row to get its ID
+        .single();
+
+      if (insertError) throw insertError;
+
+      // Add the custom partner to friendships table
+      // const { error: friendshipError } = await supabase
+      //   .from("friendships")
+      //   .insert({
+      //     requester_id: user.id,
+      //     addressee_id: data.id,
+      //     status: "accepted",
+      //   });
+
+      // if (friendshipError) throw friendshipError;
+
+      // Set the newly created custom partner as the active partner profile
+      setPartnerProfile(data);
+      setWetonJodoh({}); // Reset Weton Jodoh calculation
+      setShowCustomPartnerForm(false); // Close the bottom sheet
+      fetchCustomProfiles(); // Refresh custom profiles list
+      resetCustomPartnerForm();
+    } catch (err) {
+      console.error("Error saving custom partner:", err);
+      setError(err.message || "Failed to save custom partner.");
+    } finally {
+      setSavingCustomPartner(false);
+    }
+  };
+
+  const resetCustomPartnerForm = () => {
+    setCustomFullName("");
+    setCustomBirthDate("");
+    setCustomGender("");
   };
 
   const calculateWetonJodoh = async () => {
@@ -260,25 +382,10 @@ export default function CompatibilityPage() {
       } else {
         fetchProfile();
         fetchFriends();
+        fetchCustomProfiles();
       }
     }
   }, [user, authLoading, router]); // Dependencies
-
-  // Effect to set partnerProfile when a friend is selected
-  useEffect(() => {
-    if (selectedFriendId && friendsList.length > 0) {
-      const selected = friendsList.find(
-        (friend) => friend.id === selectedFriendId
-      );
-      if (selected) {
-        setPartnerProfile(selected);
-        setWetonJodoh({}); // Reset previous Weton Jodoh result
-      }
-    } else if (!selectedFriendId) {
-      setPartnerProfile({}); // Clear partner profile if no friend is selected
-      setWetonJodoh({});
-    }
-  }, [selectedFriendId, friendsList]);
 
   // --- Logout Handler ---
   const handleLogout = async () => {
@@ -296,15 +403,6 @@ export default function CompatibilityPage() {
     );
   }
 
-  //r);
-
-  // --- Generate Avatar URL ---
-  const avatarUrl = profileData?.full_name
-    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
-        profileData.full_name
-      )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true` // Example colors, adjust as needed
-    : null; // Handle case where full_name might be missing
-
   return (
     <>
       <Head>
@@ -318,6 +416,7 @@ export default function CompatibilityPage() {
       {/* --- Main Layout Container --- */}
       <div className="h-[100svh] flex flex-col bg-base relative">
         <Navbar title="Compatibility" isConnection={true} />
+        {/* Main Content Area */}
         <div className="flex-grow overflow-y-auto justify-center pt-4 sm:pt-6 pb-20">
           {profileData && (
             <div className="px-5 mb-6 flex items-center gap-4">
@@ -356,37 +455,28 @@ export default function CompatibilityPage() {
             </div>
           )}
 
-          <div className="space-y-3 px-5 mb-6 flex flex-col items-center gap-4">
-            {/* Friend Selector */}
+          <div className="space-y-4 px-5 mb-6 flex flex-col items-center gap-4 w-full">
+            {/* Partner Selection Button */}
             <div className="w-full max-w-md">
-              <label
-                htmlFor="friendSelect"
-                className="block text-sm font-medium text-gray-700 mb-1"
+              <button
+                onClick={() => setShowPartnerSelectionSheet(true)}
+                className="btn btn-primary w-full"
               >
-                Select a Friend for Compatibility
-              </label>
-              <select
-                id="friendSelect"
-                value={selectedFriendId}
-                onChange={(e) => setSelectedFriendId(e.target.value)}
-                className="select select-bordered w-full"
-                disabled={loadingFriends || friendsList.length === 0}
-              >
-                <option value="">
-                  {loadingFriends
-                    ? "Loading friends..."
-                    : friendsList.length === 0
-                    ? "No friends available"
-                    : "-- Select a Friend --"}
-                </option>
-                {friendsList.map((friend) => (
-                  <option key={friend.id} value={friend.id}>
-                    {friend.full_name || friend.username}
-                  </option>
-                ))}
-              </select>
+                <Users size={20} className="mr-2" />
+                Select Partner for Compatibility
+              </button>
             </div>
-            {partnerProfile.username && ( // Check if a partner is selected
+
+            {/* Add Custom Partner Button */}
+            <button
+              onClick={() => setShowCustomPartnerForm(true)}
+              className="btn btn-outline btn-sm w-full max-w-md"
+            >
+              <UserPlusIcon size={18} className="mr-2" />
+              Add Custom Partner
+            </button>
+
+            {partnerProfile.id && (
               <div className="bg-base-100 rounded-lg p-4 md:p-6 mb-6 border border-[var(--color-batik-border)] w-full">
                 <h3 className="text-lg font-semibold mb-2">Partner Profile</h3>
                 <div className="space-y-3 text-sm">
@@ -421,7 +511,7 @@ export default function CompatibilityPage() {
                 </div>
               </div>
             )}
-            {partnerProfile.username && (
+            {partnerProfile.id && profileData?.weton && (
               <button
                 onClick={calculateWetonJodoh}
                 className="btn btn-primary"
@@ -430,31 +520,30 @@ export default function CompatibilityPage() {
                 Get Weton Jodoh
               </button>
             )}
-            {wetonJodoh.jodoh4 &&
-              partnerProfile.username && ( // Check if Weton Jodoh has been calculated for the selected partner
-                <div className="bg-base-100 rounded-lg p-4 md:p-6 mb-6 border border-[var(--color-batik-border)] w-full">
-                  <h3 className="text-lg font-semibold mb-2">Weton Jodoh</h3>
-                  <div className="space-y-3 text-sm">
-                    <DetailItem
-                      label="Division 4"
-                      value={wetonJodoh.jodoh4?.name}
-                    />
-                    <DetailItem
-                      label="Division 5"
-                      value={wetonJodoh.jodoh5?.name}
-                    />
-                    <DetailItem
-                      label="Division 7"
-                      value={wetonJodoh.jodoh7?.name}
-                    />
-                    <DetailItem
-                      label="Division 8"
-                      value={wetonJodoh.jodoh8?.name}
-                    />
-                  </div>
+            {wetonJodoh.jodoh4 && partnerProfile.id && (
+              <div className="bg-base-100 rounded-lg p-4 md:p-6 mb-6 border border-[var(--color-batik-border)] w-full">
+                <h3 className="text-lg font-semibold mb-2">Weton Jodoh</h3>
+                <div className="space-y-3 text-sm">
+                  <DetailItem
+                    label="Division 4"
+                    value={wetonJodoh.jodoh4?.name}
+                  />
+                  <DetailItem
+                    label="Division 5"
+                    value={wetonJodoh.jodoh5?.name}
+                  />
+                  <DetailItem
+                    label="Division 7"
+                    value={wetonJodoh.jodoh7?.name}
+                  />
+                  <DetailItem
+                    label="Division 8"
+                    value={wetonJodoh.jodoh8?.name}
+                  />
                 </div>
-              )}
-            {wetonJodoh.jodoh4 && partnerProfile.username && (
+              </div>
+            )}
+            {wetonJodoh.jodoh4 && partnerProfile.id && (
               <>
                 <button
                   onClick={handleCompatibilityReading}
@@ -511,6 +600,219 @@ export default function CompatibilityPage() {
           </div>
         </div>
         <Menubar page={"compatibility"} />
+
+        {/* Partner Selection Bottom Sheet */}
+        {showPartnerSelectionSheet && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-end justify-center">
+            <div className="bg-base-100 rounded-t-lg p-4 w-full max-w-md shadow-lg h-[70vh] flex flex-col">
+              <div className="flex justify-between items-center mb-4 pb-2 border-b border-base-300">
+                <h3 className="text-lg font-bold text-batik-black">
+                  Select a Partner
+                </h3>
+                <button
+                  onClick={() => setShowPartnerSelectionSheet(false)}
+                  className="btn btn-sm btn-circle btn-ghost"
+                >
+                  <XIcon size={20} />
+                </button>
+              </div>
+              <div className="mb-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search by name or username..."
+                    value={partnerSearchTerm}
+                    onChange={(e) =>
+                      setPartnerSearchTerm(e.target.value.toLowerCase())
+                    }
+                    className="input input-bordered w-full pl-10 input-sm"
+                  />
+                  <Search
+                    size={18}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
+                </div>
+              </div>
+              <div className="flex-grow overflow-y-auto space-y-2">
+                {(loadingFriends || loadingCustomProfiles) && (
+                  <div className="text-center py-4">
+                    <Loader2
+                      size={24}
+                      className="animate-spin mx-auto text-batik-black"
+                    />
+                    <p className="text-sm text-gray-500 mt-2">
+                      Loading partners...
+                    </p>
+                  </div>
+                )}
+                {!loadingFriends &&
+                  !loadingCustomProfiles &&
+                  friendsList.length === 0 &&
+                  customProfilesList.length === 0 && (
+                    <p className="text-sm text-gray-500 text-center py-4">
+                      No friends or custom profiles found.
+                    </p>
+                  )}
+                {[...friendsList, ...customProfilesList]
+                  .filter(
+                    (partner) =>
+                      (partner.full_name?.toLowerCase() || "").includes(
+                        partnerSearchTerm
+                      ) ||
+                      (partner.username?.toLowerCase() || "").includes(
+                        partnerSearchTerm
+                      )
+                  )
+                  .map((partner) => (
+                    <div
+                      key={partner.id + (partner.type || "friend")} // Ensure unique key if IDs might overlap (though unlikely with UUIDs)
+                      onClick={() => {
+                        setPartnerProfile(partner);
+                        setWetonJodoh({});
+                        setShowPartnerSelectionSheet(false);
+                        setPartnerSearchTerm(""); // Reset search
+                      }}
+                      className="p-3 bg-base-200 rounded-lg hover:bg-base-300 cursor-pointer flex items-center gap-3"
+                    >
+                      <div className="avatar placeholder">
+                        <div className="bg-neutral-focus text-neutral-content rounded-full w-10 h-10">
+                          <span className="text-sm">
+                            {(partner.full_name || partner.username || "P")
+                              .substring(0, 2)
+                              .toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-batik-black text-sm">
+                          {partner.full_name || partner.username}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {partner.username
+                            ? `@${partner.username}`
+                            : partner.type === "custom"
+                            ? "Custom Profile"
+                            : "Friend"}
+                        </p>
+                        {partner.dina_pasaran && (
+                          <p className="text-xs text-gray-500 mt-0.5">
+                            {partner.dina_pasaran}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                {!loadingFriends &&
+                  !loadingCustomProfiles &&
+                  [...friendsList, ...customProfilesList].filter(
+                    (partner) =>
+                      (partner.full_name?.toLowerCase() || "").includes(
+                        partnerSearchTerm
+                      ) ||
+                      (partner.username?.toLowerCase() || "").includes(
+                        partnerSearchTerm
+                      )
+                  ).length === 0 &&
+                  partnerSearchTerm !== "" && (
+                    <p className="text-sm text-gray-500 text-center py-4">
+                      No results for {partnerSearchTerm}.
+                    </p>
+                  )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Custom Partner Bottom Sheet/Modal */}
+        {showCustomPartnerForm && (
+          <div className="fixed inset-0 bg-slate-500/40 bg-opacity-10 z-50 flex items-end justify-center">
+            <div className="bg-base-100 rounded-t-lg p-6 w-full max-w-md shadow-lg transform transition-transform duration-300 ease-out translate-y-0">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold text-batik-black">
+                  Add Custom Partner
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowCustomPartnerForm(false);
+                    resetCustomPartnerForm();
+                  }}
+                  className="btn btn-sm btn-circle btn-ghost"
+                >
+                  ✕
+                </button>
+              </div>
+              {error && (
+                <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded-md text-sm">
+                  {error}
+                </div>
+              )}
+              <form onSubmit={handleSaveCustomPartner} className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="customFullName"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    id="customFullName"
+                    value={customFullName}
+                    onChange={(e) => setCustomFullName(e.target.value)}
+                    className="input input-bordered w-full"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="customBirthDate"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Birth Date
+                  </label>
+                  <input
+                    type="date"
+                    id="customBirthDate"
+                    value={customBirthDate}
+                    onChange={(e) => setCustomBirthDate(e.target.value)}
+                    className="input input-bordered w-full"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="customGender"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Gender
+                  </label>
+                  <select
+                    id="customGender"
+                    value={customGender}
+                    onChange={(e) => setCustomGender(e.target.value)}
+                    className="select select-bordered w-full"
+                    required
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary w-full"
+                  disabled={savingCustomPartner}
+                >
+                  {savingCustomPartner ? (
+                    <Loader2 size={20} className="animate-spin mr-2" />
+                  ) : null}
+                  Save Partner
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

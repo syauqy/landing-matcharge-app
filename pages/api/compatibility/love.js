@@ -3,6 +3,7 @@ import {
   generateLoveCompatibilityReading,
 } from "@/services/reading-services";
 import { waitUntil } from "@vercel/functions";
+import { supabase } from "@/utils/supabaseClient";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
@@ -16,6 +17,12 @@ export default async function handler(req, res) {
         message: "Profile data (e.g., weton) is required in the request body.",
       });
     }
+
+    await NextCors(req, res, {
+      methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+      origin: "*",
+      optionsSuccessStatus: 200,
+    });
 
     const { profile1, profile2, wetonJodoh } = req.body;
     // console.log(profile1, profile2, wetonJodoh);
