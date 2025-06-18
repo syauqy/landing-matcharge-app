@@ -11,7 +11,7 @@ export const config = {
   runtime: "edge",
 };
 
-const allowedOrigin = process.env.NEXT.PUBLIC.HOST || "http://localhost:3000";
+const allowedOrigin = process.env.NEXT_PUBLIC_HOST || "http://localhost:3000";
 
 export default async function handler(req) {
   // await NextCors(req, res, {
