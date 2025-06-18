@@ -20,9 +20,13 @@ export default async function handler(req, res) {
 
   if (req.method === "OPTIONS") {
     const headers = new Headers();
-    headers.set("Access-Control-Allow-Origin", "*"); // Or your specific frontend domain: 'http://localhost:3000'
+    headers.set(
+      "Access-Control-Allow-Origin",
+      process.env.NEXT.PUBLIC.HOST || "http://localhost:3000"
+    ); // Or your specific frontend domain: 'http://localhost:3000'
+    headers.set("Access-Control-Allow-Credentials", "true");
     headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-    headers.set("Access-Control-Allow-Headers", "Content-Type"); // Add any other headers your client might send
+    headers.set("Access-Control-Allow-Headers", "Content-Type");
 
     // Instead of res.setHeader, we return a new Response object with headers
     return new Response(null, { status: 204, headers });
