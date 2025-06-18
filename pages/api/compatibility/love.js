@@ -4,14 +4,33 @@ import {
 } from "@/services/reading-services";
 import { waitUntil } from "@vercel/functions";
 import { supabase } from "@/utils/supabaseClient";
-import NextCors from "nextjs-cors";
+// import NextCors from "nextjs-cors";
+
+export const config = {
+  runtime: "edge",
+};
 
 export default async function handler(req, res) {
-  await NextCors(req, res, {
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-    origin: "*",
-    optionsSuccessStatus: 200,
-  });
+  // await NextCors(req, res, {
+  //   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+  //   origin: "*",
+  //   optionsSuccessStatus: 200,
+  // });
+
+  if (req.method === "OPTIONS") {
+    res.setHeader("Access-Control-Allow-Origin", "*"); // Or your specific frontend domain
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    );
+    return res.status(204).end();
+  }
+
+  // Set the CORS header on the actual response.
+  // This must be done for all responses you send back.
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
   if (req.method === "POST") {
     if (
       !req.body ||
