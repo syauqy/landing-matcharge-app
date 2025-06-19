@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/utils/supabaseClient";
 import { Capacitor } from "@capacitor/core";
 import { Toaster, toast } from "sonner";
+import { openBrowser, closeBrowser } from "@/utils/native-browser";
 import Link from "next/link";
 
 // Import Slick CSS
@@ -52,6 +53,9 @@ export default function HomePage() {
   const isNative = Capacitor.isNativePlatform();
 
   console.log("HomePage: isNative:", isNative);
+  let redirectUrl = isNative
+    ? "https://wetonai.vercel.app/home"
+    : "http://localhost:3000/home";
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -118,17 +122,19 @@ export default function HomePage() {
     setLoading(true);
 
     try {
-      let redirectUrl = isNative
-        ? "https://wetonai.vercel.app/home"
-        : "http://localhost:3000/home";
-
       console.log(`Attempting Apple Sign-In with redirectTo: ${redirectUrl}`);
 
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "apple",
-        // options: {
-        //   redirectTo: redirectUrl,
-        // },
+        skipBrowserRedirect: true,
+        options: {
+          skipBrowserRedirect: true,
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
       });
 
       if (error) {
@@ -136,29 +142,48 @@ export default function HomePage() {
         toast.error(error.message);
         setLoading(false);
       }
+
+      await openBrowser(data.url);
     } catch (error) {
       console.error("Error during Apple login:", error);
       toast.error("An error occurred during login. Please try again.");
     } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleGoogleLogin = async () => {
     setLoading(true);
+    try {
+      console.log(`Attempting Google Sign-In with redirectTo: ${redirectUrl}`);
 
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/home`,
-      },
-    });
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        // options: {
+        //   redirectTo: `${window.location.origin}/home`,
+        // },
+        options: {
+          skipBrowserRedirect: true,
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
 
-    if (error) {
-      toast.error(error.message);
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+      }
+
+      await openBrowser(data.url);
+    } catch {
+      console.error("Error during Google login:", error);
+      toast.error("An error occurred during login. Please try again.");
+    } finally {
       setLoading(false);
     }
-    // No need to set loading to false on success as we're redirecting to Google
   };
 
   return (

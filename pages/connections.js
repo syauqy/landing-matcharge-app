@@ -244,7 +244,7 @@ export default function ConnectionsPage() {
                     </div>
                   </div>
                   <Link
-                    href={`/profile/${profile.username}`}
+                    href={`/profile/detail?username=${profile.username}`}
                     className="btn btn-xs btn-outline btn-primary"
                   >
                     View Profile
@@ -335,7 +335,7 @@ export default function ConnectionsPage() {
                 ? friends.map((friend) => (
                     <Link
                       key={friend.id}
-                      href={`/profile/${friend.username}`}
+                      href={`/profile/detail?username=${friend.username}`}
                       className="block p-3 bg-base-100 rounded-lg shadow border border-batik-border hover:bg-base-200 transition-colors"
                     >
                       <div className="flex flex-col gap-2">

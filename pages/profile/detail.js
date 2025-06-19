@@ -1,10 +1,11 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext"; // Import useAuth
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { useQueryState } from "nuqs";
 
 // Assuming these components are structured similarly to those in profile.js
 import { Navbar } from "@/components/layouts/navbar";
@@ -35,10 +36,13 @@ const DetailItem = ({ label, value, isBold = false }) => (
   </div>
 );
 
-function PublicProfilePage({ profile }) {
+function DetailProfilePage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth(); // Get current logged-in user
   const [activeTab, setActiveTab] = useState("weton");
+  const [username, setUsername] = useQueryState("username");
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [serializedInsight, setSerializedInsight] = useState(null);
   const [loadingSerializedInsight, setLoadingSerializedInsight] =
     useState(false);
@@ -50,6 +54,37 @@ function PublicProfilePage({ profile }) {
   const [loadingCompatibilityReading, setLoadingCompatibilityReading] =
     useState(false);
 
+  const fetchProfile = useCallback(async () => {
+    if (!username) return;
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, username, full_name, dina_pasaran, weton, wuku")
+        .eq("username", username)
+        .single();
+
+      if (error) {
+        console.error("Error fetching profile:", error);
+        return;
+      }
+
+      if (data) {
+        setProfile(data);
+      }
+    } catch (error) {
+      console.error("Error in fetchProfile:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [username]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  //friendship check
   useEffect(() => {
     if (!user || !profile || user.id === profile.id) {
       // Don't fetch if no logged-in user, no profile, or viewing own profile
@@ -99,6 +134,7 @@ function PublicProfilePage({ profile }) {
     fetchStatus();
   }, [user, profile, router]);
 
+  //compatibility check
   useEffect(() => {
     const fetchCompatibilityReading = async () => {
       if (friendshipStatus !== "friends" || !user || !profile) {
@@ -240,6 +276,29 @@ function PublicProfilePage({ profile }) {
 
   console.log(compatibilityReadingData);
 
+  if (loading || authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-batik-border"></div>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-700">
+            Profile not found
+          </h2>
+          <p className="text-gray-500 mt-2">
+            The requested profile could not be found.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // --- End Friendship Logic ---
 
   // Avatar logic: use profile.avatar_url or generate with ui-avatars
@@ -371,7 +430,7 @@ function PublicProfilePage({ profile }) {
             compatibilityReadingData.status === "completed" && (
               <div className="px-5 mb-6">
                 <Link
-                  href={`/readings/${compatibilityReadingData.reading_category}/${compatibilityReadingData.slug}`}
+                  href={`/readings/${compatibilityReadingData.reading_category}?slug=${compatibilityReadingData.slug}`}
                   passHref
                   className="block bg-base-100 rounded-lg p-4 md:p-6 border border-[var(--color-batik-border)] hover:shadow-lg transition-shadow duration-150 ease-in-out cursor-pointer"
                 >
@@ -597,45 +656,45 @@ function PublicProfilePage({ profile }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const { slug } = context.params;
+// export async function getServerSideProps(context) {
+//   const { slug } = context.params;
 
-  if (!slug || typeof slug !== "string" || slug.trim() === "") {
-    return { notFound: true }; // Invalid slug
-  }
+//   if (!slug || typeof slug !== "string" || slug.trim() === "") {
+//     return { notFound: true }; // Invalid slug
+//   }
 
-  // Fetch profile data from Supabase 'profiles' table
-  // Assumes your 'profiles' table has a 'username' column that matches the slug
-  const { data: profile, error } = await supabase
-    .from("profiles")
-    .select("id, username, full_name, dina_pasaran, weton, wuku") // Added id, avatar_url, bio
-    .eq("username", slug) // Match the username column with the slug
-    .single(); // Expect a single record
+//   // Fetch profile data from Supabase 'profiles' table
+//   // Assumes your 'profiles' table has a 'username' column that matches the slug
+//   const { data: profile, error } = await supabase
+//     .from("profiles")
+//     .select("id, username, full_name, dina_pasaran, weton, wuku") // Added id, avatar_url, bio
+//     .eq("username", slug) // Match the username column with the slug
+//     .single(); // Expect a single record
 
-  if (error) {
-    // .single() throws an error if 0 or >1 rows are found.
-    // This typically means the profile was not found or there's a data integrity issue (e.g. duplicate usernames).
-    console.error(
-      `Supabase error fetching profile for slug "${slug}":`,
-      error.message
-    );
-    return { notFound: true }; // Triggers a 404 page
-  }
+//   if (error) {
+//     // .single() throws an error if 0 or >1 rows are found.
+//     // This typically means the profile was not found or there's a data integrity issue (e.g. duplicate usernames).
+//     console.error(
+//       `Supabase error fetching profile for slug "${slug}":`,
+//       error.message
+//     );
+//     return { notFound: true }; // Triggers a 404 page
+//   }
 
-  // Although .single() should error if no profile is found,
-  // this is an extra check.
-  if (!profile) {
-    console.warn(
-      `Profile data unexpectedly null for slug "${slug}" despite no Supabase error.`
-    );
-    return { notFound: true };
-  }
+//   // Although .single() should error if no profile is found,
+//   // this is an extra check.
+//   if (!profile) {
+//     console.warn(
+//       `Profile data unexpectedly null for slug "${slug}" despite no Supabase error.`
+//     );
+//     return { notFound: true };
+//   }
 
-  return {
-    props: {
-      profile,
-    },
-  };
-}
+//   return {
+//     props: {
+//       profile,
+//     },
+//   };
+// }
 
-export default PublicProfilePage;
+export default DetailProfilePage;

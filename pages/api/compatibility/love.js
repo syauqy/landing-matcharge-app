@@ -4,9 +4,9 @@ import { waitUntil } from "@vercel/functions";
 import { supabase } from "@/utils/supabaseClient";
 // import NextCors from "nextjs-cors";
 
-export const config = {
-  runtime: "edge",
-};
+// export const config = {
+//   runtime: "edge",
+// };
 
 const allowedOrigin = "http://localhost:3000";
 
@@ -29,33 +29,33 @@ export default async function handler(req, res) {
   // }
 
   if (req.method === "POST") {
-    const responseHeaders = {
-      "Access-Control-Allow-Origin": allowedOrigin,
-      "Access-Control-Allow-Credentials": "true",
-    };
+    // const responseHeaders = {
+    //   "Access-Control-Allow-Origin": allowedOrigin,
+    //   "Access-Control-Allow-Credentials": "true",
+    // };
 
     // --- ADD THIS LINE FOR DEBUGGING ---
-    console.log("Received request body:", JSON.stringify(req.body, null, 2));
+    // console.log("Received request body:", JSON.stringify(req.body, null, 2));
 
     // ------------------------------------
 
     // The validation check that is likely failing
-    if (
-      !req.body ||
-      !req.body.profile1 ||
-      !req.body.profile2 ||
-      !req.body.wetonJodoh
-    ) {
-      console.log(
-        "Validation failed! One or more required fields are missing."
-      );
-      return NextResponse.json(
-        {
-          message: "Profile data (profile1, profile2, wetonJodoh) is required.",
-        },
-        { status: 400, headers: responseHeaders }
-      );
-    }
+    // if (
+    //   !req.body ||
+    //   !req.body.profile1 ||
+    //   !req.body.profile2 ||
+    //   !req.body.wetonJodoh
+    // ) {
+    //   console.log(
+    //     "Validation failed! One or more required fields are missing."
+    //   );
+    //   return NextResponse.json(
+    //     {
+    //       message: "Profile data (profile1, profile2, wetonJodoh) is required.",
+    //     },
+    //     { status: 400, headers: responseHeaders }
+    //   );
+    // }
 
     if (
       !req.body ||
@@ -63,10 +63,9 @@ export default async function handler(req, res) {
       !req.body.profile2 ||
       !req.body.wetonJodoh
     ) {
-      return NextResponse.json(
-        { message: "Profile data is required." },
-        { status: 400, headers: responseHeaders }
-      );
+      return res.status(400).json({
+        message: "Profile data (e.g., weton) is required in the request body.",
+      });
     }
 
     const { profile1, profile2, wetonJodoh } = req.body;
@@ -76,24 +75,33 @@ export default async function handler(req, res) {
         generateLoveCompatibilityReading(profile1, profile2, wetonJodoh)
       );
       // Send a 202 Accepted response immediately as the task is offloaded
-      return NextResponse.json(
-        { message: "Reading generation has been initiated." },
-        { status: 202, headers: responseHeaders }
-      );
+      return res
+        .status(202)
+        .json({ message: "Reading generation has been initiated." });
     } catch (error) {
+      // console.error(
+      //   "API daily reading - Error initiating background task:",
+      //   error
+      // );
+      // return NextResponse.json(
+      //   { message: "Internal Server Error" },
+      //   { status: 500, headers: responseHeaders }
+      // );
       console.error(
         "API daily reading - Error initiating background task:",
         error
       );
-      return NextResponse.json(
-        { message: "Internal Server Error" },
-        { status: 500, headers: responseHeaders }
-      );
+      return res.status(500).json({
+        message: "Error initiating daily reading generation.",
+        // error: error.message, // Consider exposing error.message only in development
+      });
     }
   } else {
-    return NextResponse.json(
-      { message: `Method ${req.method} Not Allowed` },
-      { status: 405, headers: { Allow: "POST, OPTIONS" } }
-    );
+    // return NextResponse.json(
+    //   { message: `Method ${req.method} Not Allowed` },
+    //   { status: 405, headers: { Allow: "POST, OPTIONS" } }
+    // );
+    res.setHeader("Allow", ["POST"]);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

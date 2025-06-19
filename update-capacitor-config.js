@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 // Path to your Capacitor config file (adjust if needed)
-const configPath = path.resolve(__dirname, "capacitor.config.ts");
+const configPath = path.resolve(__dirname, "capacitor.config.json");
 
 // Function to get local IP from en0
 function getLocalIP() {
@@ -21,34 +21,54 @@ function getLocalIP() {
 
 // Function to update the config file
 function updateConfig(ip) {
-  // Read the existing config
-  let configContent = fs.readFileSync(configPath, "utf-8");
+  const isMobileDev = process.env.IS_MOBILE_DEV;
 
-  // Replace the server.url line with the new IP
-  const newUrl = `http://${ip}:3000`;
-  const urlRegex = /url:\s*["']http:\/\/[^"']+["']/;
-  if (urlRegex.test(configContent)) {
-    configContent = configContent.replace(urlRegex, `url: "${newUrl}"`);
-  } else {
-    // If no url exists, add it to the server block
-    const serverBlockRegex = /server:\s*{[^}]*}/;
-    if (serverBlockRegex.test(configContent)) {
-      configContent = configContent.replace(
-        serverBlockRegex,
-        (match) => `${match.slice(0, -1)}    url: "${newUrl}",\n  }`,
+  console.log("is Mobile dev?", isMobileDev);
+
+  try {
+    let configContent = fs.readFileSync(configPath, "utf-8");
+
+    const config = JSON.parse(configContent);
+
+    if (isMobileDev) {
+      if (!ip) {
+        throw new Error(
+          "IS_MOBILE_DEV is set, but no IP address was provided. Usage: node update-capacitor-config.js <your-ip-address>"
+        );
+      }
+
+      const newUrl = `http://${ip}:3000`;
+      const urlRegex = /url:\s*["']http:\/\/[^"']+["']/;
+      // Create or overwrite the server object
+      config.server = {
+        url: newUrl,
+        cleartext: true,
+      };
+
+      console.log(
+        `✅ Configured for DEVELOPMENT. Server URL set to: ${newUrl}`
       );
     } else {
-      // If no server block, append it
-      configContent = configContent.replace(
-        /};/,
-        `  server: {\n    url: "${newUrl}",\n    cleartext: true,\n  },\n};`,
-      );
+      if (config.server) {
+        delete config.server;
+        console.log(
+          `✅ Configured for PRODUCTION. Removed 'server' configuration.`
+        );
+      } else {
+        console.log(
+          `✅ Configured for PRODUCTION. 'server' configuration was already absent.`
+        );
+      }
     }
-  }
+    const updatedConfigString = JSON.stringify(config, null, 2);
 
-  // Write the updated content back
-  fs.writeFileSync(configPath, configContent, "utf-8");
-  console.log(`Updated capacitor.config.ts with server.url: ${newUrl}`);
+    // 5. WRITE the new, valid JSON string back to the file
+    fs.writeFileSync(configPath, updatedConfigString, "utf-8");
+    console.log(`✅ Successfully updated capacitor.config.json`);
+  } catch (error) {
+    console.error(`❌ Error configuring capacitor.config.json:`, error.message);
+    process.exit(1); // Exit with an error code
+  }
 }
 
 // Main execution
@@ -56,5 +76,6 @@ try {
   const ip = getLocalIP();
   updateConfig(ip);
 } catch (err) {
+  console.log(err);
   console.error("Error updating config:", err.message);
 }

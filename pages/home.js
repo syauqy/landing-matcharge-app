@@ -9,6 +9,7 @@ import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
 import { format } from "date-fns";
 import { Menubar } from "@/components/layouts/menubar";
 import { getWeton } from "@/utils";
+import { closeBrowser } from "@/utils/native-browser";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -76,6 +77,7 @@ export default function Home() {
         .from("readings")
         .select("*")
         .eq("user_id", user.id)
+        .neq("reading_category", "compatibility")
         .neq("reading_category", "daily")
         .order("created_at", { ascending: false })
         .limit(5);
@@ -225,6 +227,12 @@ export default function Home() {
     }
   };
 
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     closeBrowser().catch(() => {});
+  //   }
+  // }, []);
+
   // Effect for fetching initial user-dependent data
   useEffect(() => {
     if (!authLoading && user) {
@@ -239,6 +247,7 @@ export default function Home() {
   // Effect to handle daily reading once profileData is available
   useEffect(() => {
     if (profileData && user) {
+      closeBrowser().catch(() => {});
       // Only run if profileData and user exist
       handleMonthlyReading();
       handleDailyReading();
@@ -370,7 +379,7 @@ export default function Home() {
 
     let formattedDate = "Date unavailable";
 
-    console.log(reading);
+    // console.log(reading);
 
     try {
       formattedDate = monthlyReading?.created_at

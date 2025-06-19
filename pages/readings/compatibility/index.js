@@ -1,17 +1,51 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/utils/supabaseClient";
-import { useAuth } from "@/context/AuthContext"; // Import useAuth
+import { useAuth } from "@/context/AuthContext";
+import { useQueryState } from "nuqs";
 import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm"; // For GitHub Flavored Markdown
 
-export default function DetailCompatibilityReading({ reading }) {
+export default function DetailCompatibilityReading() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
+  const [slug, setSlug] = useQueryState("slug");
+  const [reading, setReading] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchReading = useCallback(async () => {
+    if (!slug) return;
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("readings")
+        .select("id, status, reading, title, subtitle, reading_category") // Ensure reading_category is fetched if needed for other logic
+        .eq("slug", slug) // Match the username column with the slug
+        .single();
+
+      if (error) {
+        console.error("Error fetching reading data:", error);
+        return;
+      }
+
+      if (data) {
+        setReading(data);
+      }
+    } catch (error) {
+      console.error("Error in fetchReading:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [slug]);
+
+  useEffect(() => {
+    fetchReading();
+  }, [fetchReading]);
 
   // Redirect if not authenticated (though data is fetched server-side, good for consistency)
   useEffect(() => {
@@ -166,43 +200,43 @@ export default function DetailCompatibilityReading({ reading }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const { slug } = context.params;
+// export async function getServerSideProps(context) {
+//   const { slug } = context.params;
 
-  if (!slug || typeof slug !== "string" || slug.trim() === "") {
-    return { notFound: true }; // Invalid slug
-  }
+//   if (!slug || typeof slug !== "string" || slug.trim() === "") {
+//     return { notFound: true }; // Invalid slug
+//   }
 
-  // Fetch profile data from Supabase 'profiles' table
-  // Assumes your 'profiles' table has a 'username' column that matches the slug
-  const { data: reading, error } = await supabase
-    .from("readings")
-    .select("id, status, reading, title, subtitle, reading_category") // Ensure reading_category is fetched if needed for other logic
-    .eq("slug", slug) // Match the username column with the slug
-    .single(); // Expect a single record
+//   // Fetch profile data from Supabase 'profiles' table
+//   // Assumes your 'profiles' table has a 'username' column that matches the slug
+//   const { data: reading, error } = await supabase
+//     .from("readings")
+//     .select("id, status, reading, title, subtitle, reading_category") // Ensure reading_category is fetched if needed for other logic
+//     .eq("slug", slug) // Match the username column with the slug
+//     .single(); // Expect a single record
 
-  if (error) {
-    // .single() throws an error if 0 or >1 rows are found.
-    // This typically means the profile was not found or there's a data integrity issue (e.g. duplicate usernames).
-    console.error(
-      `Supabase error fetching reading for slug "${slug}":`,
-      error.message
-    );
-    return { notFound: true }; // Triggers a 404 page
-  }
+//   if (error) {
+//     // .single() throws an error if 0 or >1 rows are found.
+//     // This typically means the profile was not found or there's a data integrity issue (e.g. duplicate usernames).
+//     console.error(
+//       `Supabase error fetching reading for slug "${slug}":`,
+//       error.message
+//     );
+//     return { notFound: true }; // Triggers a 404 page
+//   }
 
-  // Although .single() should error if no profile is found,
-  // this is an extra check.
-  if (!reading) {
-    console.warn(
-      `Reading data unexpectedly null for slug "${slug}" despite no Supabase error.`
-    );
-    return { notFound: true };
-  }
+//   // Although .single() should error if no profile is found,
+//   // this is an extra check.
+//   if (!reading) {
+//     console.warn(
+//       `Reading data unexpectedly null for slug "${slug}" despite no Supabase error.`
+//     );
+//     return { notFound: true };
+//   }
 
-  return {
-    props: {
-      reading,
-    },
-  };
-}
+//   return {
+//     props: {
+//       reading,
+//     },
+//   };
+// }
