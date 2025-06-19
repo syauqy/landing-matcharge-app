@@ -37,6 +37,29 @@ export default async function handler(req) {
       "Access-Control-Allow-Credentials": "true",
     };
 
+    // --- ADD THIS LINE FOR DEBUGGING ---
+    console.log("Received request body:", JSON.stringify(req.body, null, 2));
+
+    // ------------------------------------
+
+    // The validation check that is likely failing
+    if (
+      !req.body ||
+      !req.body.profile1 ||
+      !req.body.profile2 ||
+      !req.body.wetonJodoh
+    ) {
+      console.log(
+        "Validation failed! One or more required fields are missing."
+      );
+      return NextResponse.json(
+        {
+          message: "Profile data (profile1, profile2, wetonJodoh) is required.",
+        },
+        { status: 400, headers: responseHeaders }
+      );
+    }
+
     if (
       !req.body ||
       !req.body.profile1 ||
@@ -50,7 +73,7 @@ export default async function handler(req) {
     }
 
     const { profile1, profile2, wetonJodoh } = req.body;
-    // console.log(profile1, profile2, wetonJodoh);
+    console.log(profile1, profile2, wetonJodoh);
     try {
       waitUntil(
         generateLoveCompatibilityReading(profile1, profile2, wetonJodoh)
