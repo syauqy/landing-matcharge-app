@@ -12,6 +12,14 @@ import {
 } from "@/lib/weton";
 import { nameHastawara } from "@/lib/hastawara";
 import { nameSadwara } from "@/lib/sadwara";
+import {
+  nameDivison4,
+  nameDivison5,
+  nameDivison7,
+  nameDivison8,
+  neptuCombination,
+  dinaCombination,
+} from "@/lib/jodoh";
 
 function getSaptawara(date) {
   try {
@@ -246,7 +254,7 @@ export function getWeton(birthDate) {
     const pasaran_character = watakPasaran[pasaranIndex];
     const neptu_character = watakTotalNeptu[totalNeptu - 7];
 
-    console.log(day_character, pasaran_character, neptu_character);
+    // console.log(day_character, pasaran_character, neptu_character);
 
     //pancasuda
     const pancasudaNeptu = totalNeptu % 5;
@@ -382,12 +390,109 @@ const getHastawara = (birthDate) => {
   const wuku = getWuku(birthDate);
   const pawukon_number = wuku.pawukon;
 
-  if (pawukon_number > 72) {
-    hastawara_index = pawukon_number % 8;
-  } else {
-    hastawara_index = (pawukon_number + 2) % 8;
-  }
+  // if (pawukon_number > 72) {
+  //   hastawara_index = pawukon_number % 8;
+  // } else {
+  //   hastawara_index = (pawukon_number + 2) % 8;
+  // }
+  hastawara_index = pawukon_number % 8;
   const hastawara = nameHastawara[hastawara_index];
 
   return hastawara;
+};
+
+export function getWetonJodoh(weton1, weton2) {
+  // console.log("Calculating Weton Jodoh for:", weton1, weton2);
+  if (!weton1 || !weton2) {
+    throw new Error("Both weton1 and weton2 must be provided.");
+  }
+
+  const totalNeptu1 = weton1.weton.total_neptu;
+  const totalNeptu2 = weton2.weton.total_neptu;
+
+  const combinedNeptu = totalNeptu1 + totalNeptu2;
+
+  const jodoh4 = getJodoh4(combinedNeptu);
+  const jodoh5 = getJodoh5(combinedNeptu);
+  const jodoh7 = getJodoh7(combinedNeptu);
+  const jodoh8 = getJodoh8(combinedNeptu);
+  const jodoh9 = getJodoh9(totalNeptu1, totalNeptu2);
+  const jodohDay = getJodohDay(weton1.weton.dina, weton2.weton.dina);
+
+  return {
+    jodoh4: jodoh4,
+    jodoh5: jodoh5,
+    jodoh7: jodoh7,
+    jodoh8: jodoh8,
+    jodoh9: jodoh9,
+    jodohDay: jodohDay,
+  };
+}
+
+const getJodoh4 = (combinedNeptu) => {
+  const weton_index = combinedNeptu % 4;
+  return nameDivison4[weton_index];
+};
+
+const getJodoh5 = (combinedNeptu) => {
+  const weton_index = combinedNeptu % 5;
+  return nameDivison5[weton_index];
+};
+
+const getJodoh7 = (combinedNeptu) => {
+  // console.log(
+  //   "Combined Neptu for Jodoh7:",
+  //   combinedNeptu,
+  //   "sisa",
+  //   combinedNeptu % 10
+  // );
+  let weton_index;
+  let remainder10 = combinedNeptu % 10;
+
+  if (remainder10 > 7) {
+    weton_index = combinedNeptu % 7;
+  } else {
+    weton_index = combinedNeptu % 10;
+  }
+
+  // console.log("Weton Index for Jodoh7:", weton_index);
+  return nameDivison7[weton_index];
+};
+
+const getJodoh8 = (combinedNeptu) => {
+  const weton_index = combinedNeptu % 8;
+  return nameDivison8[weton_index];
+};
+
+const getJodoh9 = (totalNeptu1, totalNeptu2) => {
+  const weton1 = totalNeptu1 % 9;
+  const weton2 = totalNeptu2 % 9;
+
+  const sortedWeton = [weton1, weton2].sort((a, b) => a - b);
+  const key = `${sortedWeton[0]}-${sortedWeton[1]}`;
+
+  if (neptuCombination[key]) {
+    return {
+      weton1: weton1,
+      weton2: weton2,
+      result: neptuCombination[key],
+    };
+  } else {
+    return "Kombinasi weton tidak ditemukan";
+  }
+};
+
+const getJodohDay = (dina1, dina2) => {
+  const sortedDina = [dina1, dina2].sort((a, b) => a - b);
+  const key = `${sortedDina[0]}-${sortedDina[1]}`;
+
+  if (dinaCombination[key]) {
+    return {
+      dina1: dina1,
+      dina2: dina2,
+      result: dinaCombination[key],
+    };
+  } else {
+    return "Kombinasi weton tidak ditemukan";
+  }
 };

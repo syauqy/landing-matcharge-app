@@ -1,5 +1,5 @@
 // pages/dashboard.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
@@ -8,6 +8,7 @@ import Link from "next/link";
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
 import { format } from "date-fns";
 import { Menubar } from "@/components/layouts/menubar";
+import { getWeton } from "@/utils";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -18,6 +19,10 @@ export default function Home() {
   const [profileData, setProfileData] = useState(null);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
+  const [dailyReading, setDailyReading] = useState([]);
+  const [monthlyReading, setMonthlyReading] = useState([]);
+  const [requestDailyReading, setRequestDailyReading] = useState(false);
+  const [requestMonthlyReading, setRequestMonthlyReading] = useState(false);
   const [requestingReading, setRequestingReading] = useState(false);
   const [fortuneResult, setFortuneResult] = useState(null);
   const [currentReadings, setCurrentReadings] = useState(0);
@@ -26,15 +31,6 @@ export default function Home() {
   // console.log(user, authLoading);
 
   const READING_LIMIT = 2;
-
-  const todayReading = {
-    // Using an ISO string for easier parsing and formatting
-    date: "2025-05-17T00:00:00.000Z",
-    today:
-      "Hey, today could be a cool mix of chilling out with your own thoughts and connecting with your friends or crew.",
-    do: "Maybe take some time for yourself to recharge, but also don't miss out on good vibes with people around you.",
-    dont: "Try not to get too lost in your head or be too hard on yourself today.",
-  };
 
   const getTimeOfDay = () => {
     const currentHour = new Date().getHours();
@@ -54,7 +50,9 @@ export default function Home() {
     try {
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .select("id, full_name")
+        .select(
+          "weton, id, full_name, weton, gender, username, wuku, birth_date"
+        )
         .eq("id", user.id)
         .maybeSingle();
 
@@ -78,6 +76,7 @@ export default function Home() {
         .from("readings")
         .select("*")
         .eq("user_id", user.id)
+        .neq("reading_category", "daily")
         .order("created_at", { ascending: false })
         .limit(5);
 
@@ -89,14 +88,192 @@ export default function Home() {
     }
   };
 
+  const handleDailyReading = async () => {
+    setError(null);
+    setMessage(null);
+    setRequestDailyReading(true);
+
+    // Check if today's reading already exists for the user
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      // Check if today's daily reading already exists
+      const { data: existingReadings, error: fetchError } = await supabase
+        .from("readings")
+        .select("reading, created_at, status")
+        .eq("user_id", user.id)
+        .gte("created_at", today.toISOString())
+        .lt("created_at", tomorrow.toISOString())
+        .eq("reading_category", "daily")
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (fetchError) throw fetchError;
+
+      if (existingReadings && existingReadings.length > 0) {
+        setDailyReading(existingReadings[0]);
+        setMessage("You already have a daily reading for today.");
+        setRequestDailyReading(false);
+        return null;
+      }
+
+      if (requestDailyReading) return null;
+      setRequestDailyReading(true);
+
+      console.log("generate new daily reading");
+      let readingData;
+
+      try {
+        const response = await fetch("/api/readings/daily", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ profile: profileData }),
+          credentials: "include",
+        });
+
+        readingData = await response.json(); // Always try to parse JSON
+      } catch (err) {
+        console.error(
+          "Error in fetch or processing response for daily reading:",
+          err
+        );
+        setError(err.message || "Failed to generate daily reading.");
+      } finally {
+        setRequestDailyReading(false);
+      }
+    } catch (err) {
+      console.error("Error checking today's reading:", err);
+      setError("Failed to check today's reading.");
+      setRequestDailyReading(false);
+    }
+  };
+
+  const handleMonthlyReading = async () => {
+    setError(null);
+    setMessage(null);
+    setRequestMonthlyReading(true);
+
+    // Check if today's reading already exists for the user
+    try {
+      const today = new Date();
+      const firstDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        1
+      );
+      const lastDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        0
+      );
+
+      // Check if monthly reading already exists for current month
+      const { data: existingReadings, error: fetchError } = await supabase
+        .from("readings")
+        .select("reading, created_at, status")
+        .eq("user_id", user.id)
+        .gte("created_at", firstDayOfMonth.toISOString())
+        .lt("created_at", lastDayOfMonth.toISOString())
+        .eq("reading_category", "monthly")
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (fetchError) throw fetchError;
+
+      if (existingReadings && existingReadings.length > 0) {
+        setMonthlyReading(existingReadings[0]);
+        setMessage("You already have a monthly reading for today.");
+        setRequestMonthlyReading(false);
+        return null;
+      }
+
+      if (requestMonthlyReading) return null;
+      setRequestMonthlyReading(true);
+
+      console.log("generate new monthly reading");
+      let readingData;
+
+      try {
+        const response = await fetch("/api/readings/monthly", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ profile: profileData }),
+          credentials: "include",
+        });
+
+        readingData = await response.json(); // Always try to parse JSON
+      } catch (err) {
+        console.error(
+          "Error in fetch or processing response for daily reading:",
+          err
+        );
+        setError(err.message || "Failed to generate daily reading.");
+      } finally {
+        setRequestMonthlyReading(false);
+      }
+    } catch (err) {
+      console.error("Error checking today's reading:", err);
+      setError("Failed to check today's reading.");
+      setRequestMonthlyReading(false);
+    }
+  };
+
+  // Effect for fetching initial user-dependent data
   useEffect(() => {
     if (!authLoading && user) {
       checkProfile();
       fetchLatestReadings();
-    } else {
+    } else if (!authLoading && !user) {
+      // Ensure we don't redirect during initial authLoading
       router.push("/");
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, router]); // Added router to dependencies
+
+  // Effect to handle daily reading once profileData is available
+  useEffect(() => {
+    if (profileData && user) {
+      // Only run if profileData and user exist
+      handleMonthlyReading();
+      handleDailyReading();
+    }
+  }, [profileData]); // Depends on profileData and user
+
+  useEffect(() => {
+    if (!user) return;
+
+    // console.log("daily reading subs", user);
+
+    const channel = supabase
+      .channel("daily_reading_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "readings",
+          filter: {
+            user_id: `eq.${user?.id}`,
+            reading_category: "eq.daily",
+          },
+        },
+        (payload) => {
+          console.log("payload", payload);
+          setDailyReading(payload.new);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel).catch();
+    };
+  }, [user]);
 
   const handleLogout = async () => {
     console.log("user", user);
@@ -114,48 +291,63 @@ export default function Home() {
   }
 
   const renderTodayReading = () => {
-    if (!todayReading) return null; // Or some placeholder if it might be null
+    if (!dailyReading) return null;
+    const reading = dailyReading?.reading;
 
     let formattedDate = "Date unavailable";
     try {
-      // Example format: "May 17, 2025"
-      formattedDate = format(new Date(todayReading.date), "MMMM d");
+      formattedDate = dailyReading?.created_at
+        ? format(new Date(dailyReading?.created_at), "MMMM d")
+        : "";
     } catch (e) {
       console.error("Error formatting todayReading.date:", e);
-      // Keep 'Date unavailable' or use todayReading.date as fallback
     }
-    return (
-      <div className="card bg-base-100 border border-[var(--color-batik-border)]">
-        <div className="card-body p-4">
-          <p className="text-sm font-semibold text-base-content/80">
-            {formattedDate}
-          </p>
-          <p className="mt-2 text-base-content">{todayReading.today}</p>
-          {todayReading.do && (
-            <div className="mt-3">
-              <p className="font-semibold text-green-700 dark:text-green-500">
-                Do:
-              </p>
-              <p className="text-sm text-base-content/90">{todayReading.do}</p>
-            </div>
-          )}
-          {todayReading.dont && (
-            <div className="mt-2">
-              <p className="font-semibold text-red-700 dark:text-red-500">
-                Don&apos;t:
-              </p>
-              <p className="text-sm text-base-content/90">
-                {todayReading.dont}
-              </p>
-            </div>
-          )}
+    if (dailyReading?.status === "loading") {
+      return (
+        <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+          <div className="card-body p-4 flex items-center justify-center">
+            <span className="loading loading-spinner loading-md"></span>
+            <p className="ml-2">Generating your daily reading...</p>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+
+    if (dailyReading?.status === "completed") {
+      return (
+        <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+          <div className="card-body p-4">
+            <p className="text-sm font-semibold">
+              {formattedDate} ({reading?.weton})
+            </p>
+            <p className="mt-2 text-base-content">{reading?.today}</p>
+            {reading?.do && (
+              <div className="mt-3">
+                <p className="font-semibold ">Do:</p>
+                <p className="text-sm text-base-content/90">{reading?.do}</p>
+              </div>
+            )}
+            {reading?.dont && (
+              <div className="mt-2">
+                <p className="font-semibold ">Don&apos;t:</p>
+                <p className="text-sm text-base-content/90">{reading?.dont}</p>
+              </div>
+            )}
+            {reading?.fact && (
+              <div className="mt-2">
+                <p className="text-xs italic text-base-content/90">
+                  {reading?.fact}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
   };
 
   const renderLatestReadings = () => {
-    console.log(latestReadings);
+    // console.log(latestReadings);
     return (
       <ul className="flex flex-row flex-nowrap overflow-x-auto">
         {latestReadings.map((r) => (
@@ -172,20 +364,151 @@ export default function Home() {
     );
   };
 
-  console.log(profileData);
+  const renderMonthlyReading = () => {
+    if (!monthlyReading) return null;
+    const reading = monthlyReading?.reading;
+
+    let formattedDate = "Date unavailable";
+
+    console.log(reading);
+
+    try {
+      formattedDate = monthlyReading?.created_at
+        ? format(new Date(monthlyReading?.created_at), "MMMM")
+        : "";
+    } catch (e) {
+      console.error("Error formatting monthlyReading.date:", e);
+    }
+
+    if (monthlyReading?.status === "loading") {
+      return (
+        <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+          <div className="card-body p-4 flex items-center justify-center">
+            <span className="loading loading-spinner loading-md"></span>
+            <p className="ml-2">Generating your monthly reading...</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (monthlyReading?.status === "completed") {
+      return (
+        <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+          <div className="card-body p-4">
+            <p className="text-lg font-semibold text-center">
+              Monthly Reading - {formattedDate}
+            </p>
+            <p className="font-semibold text-center">
+              {reading?.summary?.core_theme}
+            </p>
+            <p className="text-sm text-base-content">
+              {reading?.summary?.description}
+            </p>
+            {reading?.summary?.auspicious_scale && (
+              <div className="mt-3">
+                <p className="font-semibold">Auspicious scale</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.summary?.auspicious_scale}
+                </p>
+              </div>
+            )}
+            {reading?.analysis?.impact && (
+              <div className="mt-3">
+                <p className="font-semibold">How it will affecting you</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.analysis?.impact}
+                </p>
+              </div>
+            )}
+            {reading?.analysis?.fortunate_windows && (
+              <div className="mt-3">
+                <p className="font-semibold">Auspicious times this month</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.analysis?.fortunate_windows}
+                </p>
+              </div>
+            )}
+            {reading?.analysis?.cautious_windows && (
+              <div className="mt-3">
+                <p className="font-semibold">Times for you to be cautious</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.analysis?.cautious_windows}
+                </p>
+              </div>
+            )}
+            <div className="mt-3">
+              <p className="font-semibold text-lg">
+                Insight and guidance for you
+              </p>
+            </div>
+            {reading?.guidance?.growth && (
+              <div className="mt-3">
+                <p className="font-semibold">
+                  Personal Growth & Self-Development
+                </p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.guidance?.growth}
+                </p>
+              </div>
+            )}
+            {reading?.guidance?.relationship && (
+              <div className="mt-3">
+                <p className="font-semibold">
+                  Relationships (Love, Family, Social)
+                </p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.guidance?.relationship}
+                </p>
+              </div>
+            )}
+            {reading?.guidance?.career && (
+              <div className="mt-3">
+                <p className="font-semibold">Career & Financial</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.guidance?.career}
+                </p>
+              </div>
+            )}
+            {reading?.guidance?.health && (
+              <div className="mt-3">
+                <p className="font-semibold">Health & Well-being</p>
+                <p className="text-sm text-base-content/90">
+                  {reading?.guidance?.health}
+                </p>
+              </div>
+            )}
+            {reading?.wisdom?.philosophy && (
+              <div className="mt-2">
+                <p className="text-xs italic text-base-content/90">
+                  {reading?.wisdom?.philosophy}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+  };
+
+  // console.log(dailyReading);
+
+  // console.log(profileData);
 
   return (
     <div className="h-[100svh] flex flex-col bg-base relative">
       <DashboardNavbar user={user} handleLogout={handleLogout} />
-      <div className="py-4 sm:py-6 flex-grow my-12">
-        <div className="px-4 pb-2">
+      <div className="py-4 pb-20 flex-grow my-12">
+        <div className="px-4">
           <p className="text-lg sm:text-xl font-semibold text-batik-black">
             Good {getTimeOfDay()},{" "}
-            {profileData.full_name?.split(" ")[0] || "User"}!
+            {profileData?.full_name?.split(" ")[0] || "User"}!
           </p>
         </div>
-        <div className="flex flex-col gap-2">
-          <div className="px-4">{renderTodayReading()}</div>
+        <div className="flex flex-col gap-2 p-4">
+          <div className="">{renderTodayReading()}</div>
+        </div>
+        <div className="flex flex-col gap-2 p-4">
+          <div className="">{renderMonthlyReading()}</div>
         </div>
         <div className="mt-4 flex flex-col gap-2">
           <div className="px-4 text-lg font-medium text-batik-black">
@@ -193,7 +516,7 @@ export default function Home() {
           </div>
           <div className="">{renderLatestReadings()}</div>
         </div>
-        <div className="mt-4 flex flex-col gap-2">
+        {/* <div className="mt-4 flex flex-col gap-2">
           <div className="px-4 text-lg font-medium text-batik-black">
             Compatibility Reading
           </div>
@@ -201,7 +524,7 @@ export default function Home() {
             <div></div>
             <div></div>
           </div>
-        </div>
+        </div> */}
         <Menubar page={"home"} />
       </div>
     </div>

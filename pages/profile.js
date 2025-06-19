@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import Link from "next/link"; // Import Link for navigation
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
 import { Navbar } from "@/components/layouts/navbar";
+import { NavbarProfile } from "@/components/layouts/navbar-profile";
 import { Menubar } from "@/components/layouts/menubar";
 import { SunIcon, MoonStarIcon } from "lucide-react";
 
@@ -106,7 +107,7 @@ export default function ProfilePage() {
     );
   }
 
-  console.log(profileData);
+  console.log(profileData, new Date());
 
   // --- Generate Avatar URL ---
   const avatarUrl = profileData?.full_name
@@ -127,7 +128,7 @@ export default function ProfilePage() {
 
       {/* --- Main Layout Container --- */}
       <div className="h-[100svh] flex flex-col bg-base relative">
-        <Navbar title="Profile" />
+        <NavbarProfile title="Profile" />
         <div className="flex-grow overflow-y-auto pt-4 sm:pt-6 pb-20">
           {profileData && (
             <div className="px-5 mb-6 flex items-center gap-4">
@@ -529,8 +530,6 @@ export default function ProfilePage() {
             )}
           </div> */}
         </div>
-
-        {/* --- Menubar --- */}
         <Menubar page={"profile"} />
       </div>
     </>

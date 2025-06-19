@@ -1,4 +1,6 @@
 import React from "react";
+import Link from "next/link";
+import { Users2Icon } from "lucide-react";
 
 export function DashboardNavbar({ user, handleLogout }) {
   return (
@@ -10,17 +12,12 @@ export function DashboardNavbar({ user, handleLogout }) {
         </div>
       </div>
       <div className="navbar-end">
-        {/* <div className="text-center sm:text-right text-xs sm:text-sm">
-          <span className="block sm:inline mr-0 sm:mr-4 mb-1 sm:mb-0 text-gray-600">
-            {user?.email}
-          </span>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-xs"
-          >
-            Logout
-          </button>
-        </div> */}
+        <Link
+          href="/connections"
+          className="p-2 rounded-full text-xl border border-batik-text hover:bg-batik/80 hover:cursor-pointer"
+        >
+          <Users2Icon size={15} className="text-batik-text" />
+        </Link>
       </div>
     </nav>
   );

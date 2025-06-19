@@ -13,7 +13,7 @@ import { Navbar } from "@/components/layouts/navbar"; // Import Navbar
 // Reusable Card Component - Updated Styling
 const ReadingCard = ({ title, description, slug, category, type }) => (
   <a
-    href={"/readings/general_readings/" + slug}
+    href={"/readings/" + category + "/" + slug}
     className="relative snap-center snap-always flex-shrink-0 w-40 sm:w-64 bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow duration-200 h-32 flex flex-col justify-between"
   >
     <div className="mt-2">
@@ -79,22 +79,24 @@ export default function ReadingsPage() {
           content="Explore various readings for insights."
         />
       </Head>
-      <Navbar title="Readings" />
-      <div className="px-safe flex flex-col bg-base py-4">
-        <div className="py- sm:py-6">
-          <div className="space-y-6">
-            {SectionData.map((section, i) => (
-              <ReadingSection
-                key={i}
-                title={section.title}
-                subtitle={section.subtitle}
-                cards={section.cards}
-              />
-            ))}
+      <div className="h-[100svh] flex flex-col bg-base relative">
+        <Navbar title="Readings" />
+        <div className="px-safe flex flex-col bg-base pt-4 sm:pt-6 pb-20">
+          <div className="py- sm:py-6">
+            <div className="space-y-6">
+              {SectionData.map((section, i) => (
+                <ReadingSection
+                  key={i}
+                  title={section.title}
+                  subtitle={section.subtitle}
+                  cards={section.cards}
+                />
+              ))}
+            </div>
           </div>
-        </div>
 
-        <Menubar page={"readings"} />
+          <Menubar page={"readings"} />
+        </div>
       </div>
     </>
   );

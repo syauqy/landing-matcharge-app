@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: "export",
-  images: {
-    unoptimized: true,
-  },
+  // output: "export",
+  // images: {
+  //   unoptimized: true,
+  // },
   // allowedDevOrigins: [
   //   "local-origin.dev",
   //   "*.local-origin.dev",

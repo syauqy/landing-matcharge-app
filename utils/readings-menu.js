@@ -47,10 +47,10 @@ export const CardData = {
     },
     {
       id: 6,
-      title: "Pancasuda",
+      title: "Character and Traits",
       description:
-        "Reveal the core pillar of your inner foundation and its potential.",
-      slug: "pancasuda",
+        "Reveal the core pillar of your inner foundation and its potential influenced by the seven-day Pawukon cycle.",
+      slug: "saptawara",
       category: "general_readings",
       type: "pro",
     },
@@ -106,7 +106,7 @@ export const CardData = {
       title: "Your Love",
       description:
         "Explore the core of how your Weton shapes your approach to love and partnership.",
-      slug: "your-love",
+      slug: "love-core",
       category: "love_readings",
       type: "free",
     },
@@ -133,7 +133,7 @@ export const CardData = {
       title: "Attachement Style",
       description:
         "Gain insight into how you form bonds and connect emotionally with partners.",
-      slug: "attachement-style",
+      slug: "attachment-style",
       category: "love_readings",
       type: "pro",
     },
@@ -157,10 +157,10 @@ export const CardData = {
     },
     {
       id: 16,
-      title: "Uncompatible With",
+      title: "Incompatible With",
       description:
         "Understand potential energetic clashes and challenges with other Wetons in relationships.",
-      slug: "love-uncompatibility",
+      slug: "love-incompatibility",
       category: "love_readings",
       type: "pro",
     },
@@ -186,10 +186,10 @@ export const CardData = {
     },
     {
       id: 19,
-      title: "Key Life Events",
+      title: "Key Life Themes",
       description:
         "Identify potential pivotal moments and themes that may shape your journey.",
-      slug: "key-life-events",
+      slug: "key-life",
       category: "work_readings",
       type: "pro",
     },
@@ -201,6 +201,24 @@ export const CardData = {
       description:
         "Understand your natural approach to wealth, and financial opportunities.",
       slug: "your-financial",
+      category: "financial_readings",
+      type: "pro",
+    },
+    {
+      id: 21,
+      title: "Financial Cycles",
+      description:
+        "Understand insights into the cyclical nature of your financial fortunes.",
+      slug: "financial-cycles",
+      category: "financial_readings",
+      type: "pro",
+    },
+    {
+      id: 22,
+      title: "Wealth Through Purpose",
+      description:
+        "Explores how your Weton impacting financial prosperity and personal fulfillment.",
+      slug: "wealth-purpose",
       category: "financial_readings",
       type: "pro",
     },

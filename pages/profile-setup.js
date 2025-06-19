@@ -190,7 +190,7 @@ export default function ProfileSetupPage() {
         toast.error("Failed to save reading data.");
       } else {
         // Redirect only after successful saving
-        router.push("/readings/general-readings/basic");
+        router.push("/readings/general_readings/basic");
       }
     } catch (err) {
       console.error("Error in weton analysis process:", err);
