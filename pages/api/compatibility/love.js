@@ -1,7 +1,4 @@
-import {
-  generateLoveBasicReading,
-  generateLoveCompatibilityReading,
-} from "@/services/reading-services";
+import { generateLoveCompatibilityReading } from "@/services/reading-services";
 import { NextResponse } from "next/server";
 import { waitUntil } from "@vercel/functions";
 import { supabase } from "@/utils/supabaseClient";
@@ -13,23 +10,23 @@ export const config = {
 
 const allowedOrigin = "http://localhost:3000";
 
-export default async function handler(req) {
+export default async function handler(req, res) {
   // await NextCors(req, res, {
   //   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   //   origin: "*",
   //   optionsSuccessStatus: 200,
   // });
 
-  if (req.method === "OPTIONS") {
-    const headers = new Headers();
-    headers.set("Access-Control-Allow-Origin", allowedOrigin); // Or your specific frontend domain: 'http://localhost:3000'
-    headers.set("Access-Control-Allow-Credentials", "true");
-    headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-    headers.set("Access-Control-Allow-Headers", "Content-Type");
+  // if (req.method === "OPTIONS") {
+  //   const headers = new Headers();
+  //   headers.set("Access-Control-Allow-Origin", allowedOrigin); // Or your specific frontend domain: 'http://localhost:3000'
+  //   headers.set("Access-Control-Allow-Credentials", "true");
+  //   headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+  //   headers.set("Access-Control-Allow-Headers", "Content-Type");
 
-    // Instead of res.setHeader, we return a new Response object with headers
-    return new Response(null, { status: 204, headers });
-  }
+  //   // Instead of res.setHeader, we return a new Response object with headers
+  //   return new Response(null, { status: 204, headers });
+  // }
 
   if (req.method === "POST") {
     const responseHeaders = {
