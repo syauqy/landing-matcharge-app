@@ -4,7 +4,8 @@ import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
-import { fetchProfileData } from "@/utils/fetch"; // Adjust the import path as needed
+import { fetchProfileData } from "@/utils/fetch";
+import { config } from "@/utils/config";
 
 export default function AttachmentStylePage() {
   const { user, loading: authLoading } = useAuth();
@@ -82,14 +83,17 @@ export default function AttachmentStylePage() {
           setLoading(false);
           try {
             // Generate new reading if none exists
-            const response = await fetch("/api/readings/love/love-pro", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ profile: profileData }),
-              credentials: "include",
-            });
+            const response = await fetch(
+              `${config.api.url}/api/readings/love/love-pro`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ profile: profileData }),
+                credentials: "include",
+              }
+            );
 
             const readingData = await response.json();
             setReading(readingData);

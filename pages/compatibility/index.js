@@ -6,6 +6,7 @@ import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext"; // Import useAuth
 import { useRouter } from "next/router";
 import Link from "next/link"; // Import Link for navigation
+import { config } from "@/utils/config";
 // import { DashboardNavbar } from "@/components/layouts/dashboard-navbar"; // Assuming not used directly
 import { Navbar } from "@/components/layouts/navbar";
 import { Menubar } from "@/components/layouts/menubar";
@@ -256,10 +257,13 @@ export default function CompatibilityPage() {
           .eq("reading_type", "pro")
           .eq("user_id", user.id)
           .eq("reading_category", "compatibility")
-          .eq(
-            "slug",
-            `${profileData.username}-${partnerProfile.username}-compatibility`
+          .or(
+            `and(user_id.eq.${user.id},user_target_id.eq.${partnerProfile.id}),and(user_target_id.eq.${user.id},user_id.eq.${partnerProfile.id})`
           )
+          // .eq(
+          //   "slug",
+          //   `${profileData.username}-${partnerProfile.username}-compatibility`
+          // )
           .maybeSingle();
 
         console.log("Existing Reading:", existingReading, user.id);
@@ -278,18 +282,21 @@ export default function CompatibilityPage() {
           setLoading(false);
           try {
             // Generate new reading if none exists
-            const response = await fetch("/api/compatibility/love", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                profile1: profileData,
-                profile2: partnerProfile,
-                wetonJodoh: wetonJodoh,
-              }),
-              credentials: "include",
-            });
+            const response = await fetch(
+              `${config.api.url}/api/compatibility/love`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  profile1: profileData,
+                  profile2: partnerProfile,
+                  wetonJodoh: wetonJodoh,
+                }),
+                credentials: "include",
+              }
+            );
 
             const readingData = await response.json();
             setCompatibilityReading(readingData);
@@ -345,18 +352,21 @@ export default function CompatibilityPage() {
           setLoading(false);
           try {
             // Generate new reading if none exists
-            const response = await fetch("/api/compatibility/couple", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                profile1: profileData,
-                profile2: partnerProfile,
-                wetonJodoh: wetonJodoh,
-              }),
-              credentials: "include",
-            });
+            const response = await fetch(
+              `${config.api.url}/api/compatibility/couple`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  profile1: profileData,
+                  profile2: partnerProfile,
+                  wetonJodoh: wetonJodoh,
+                }),
+                credentials: "include",
+              }
+            );
 
             const readingData = await response.json();
             setCoupleReading(readingData);

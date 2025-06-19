@@ -4,6 +4,7 @@ import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
+import { config } from "@/utils/config";
 
 export default function PrimaryTraitsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -109,7 +110,7 @@ export default function PrimaryTraitsPage() {
           try {
             // Generate new reading if none exists
             const response = await fetch(
-              "/api/readings/general/primary-traits",
+              `${config.api.url}/api/readings/general/primary-traits`,
               {
                 method: "POST",
                 headers: {

@@ -3,6 +3,7 @@ import { useState, useEffect, use } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
+import { config } from "@/utils/config";
 
 import Link from "next/link";
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
@@ -129,7 +130,7 @@ export default function Home() {
       let readingData;
 
       try {
-        const response = await fetch("/api/readings/daily", {
+        const response = await fetch(`${config.api.url}/api/readings/daily`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -201,7 +202,7 @@ export default function Home() {
       let readingData;
 
       try {
-        const response = await fetch("/api/readings/monthly", {
+        const response = await fetch(`${config.api.url}/api/readings/monthly`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

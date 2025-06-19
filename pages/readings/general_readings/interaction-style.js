@@ -4,7 +4,8 @@ import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
-import { fetchProfileData } from "@/utils/fetch"; // Adjust the import path as needed
+import { fetchProfileData } from "@/utils/fetch";
+import { config } from "@/utils/config";
 
 export default function InteractionPage() {
   const { user, loading: authLoading } = useAuth();
@@ -83,7 +84,7 @@ export default function InteractionPage() {
           try {
             // Generate new reading if none exists
             const response = await fetch(
-              "/api/readings/general/general-pro-2",
+              `${config.api.url}/api/readings/general/general-pro-2`,
               {
                 method: "POST",
                 headers: {
