@@ -52,7 +52,9 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const isNative = Capacitor.isNativePlatform();
 
-  console.log("HomePage: isNative:", isNative);
+  // console.log("user", user);
+
+  console.log("Login Page: isNative:", isNative, user);
   let redirectUrl = isNative
     ? "https://wetonai.vercel.app/home"
     : "http://localhost:3000/home";
@@ -60,7 +62,7 @@ export default function HomePage() {
   useEffect(() => {
     if (!authLoading && user) {
       // If not loading and user is logged in, redirect to dashboard
-      // router.push("/home");
+      router.push("/home");
     }
   }, [user, authLoading, router]);
   //   App.addListener("appUrlOpen", (event) => {
@@ -130,10 +132,10 @@ export default function HomePage() {
         options: {
           skipBrowserRedirect: true,
           redirectTo: redirectUrl,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
+          // queryParams: {
+          //   access_type: "offline",
+          //   prompt: "consent",
+          // },
         },
       });
 
@@ -190,7 +192,7 @@ export default function HomePage() {
     <div className="h-[100svh] flex flex-col items-center justify-center bg-base-100 p-5">
       <Toaster />
       <div className="w-full h-[100%] max-w-md px-4 py-8 rounded-lg">
-        <h1 className="text-4xl font-extrabold mb-4 text-center h-[10%] text-batik-black tracking-wide">
+        <h1 className="text-4xl font-bold mb-4 text-center h-[10%] text-batik-black tracking-wide">
           WetonScope
         </h1>
 

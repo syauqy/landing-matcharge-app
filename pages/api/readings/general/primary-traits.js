@@ -2,6 +2,8 @@ import { generatePrimaryTraitsReading } from "@/services/reading-services";
 import { waitUntil } from "@vercel/functions";
 
 export default async function handler(req, res) {
+  console.log(req.method);
+
   if (req.method === "POST") {
     if (!req.body || !req.body.profile) {
       return res.status(400).json({
@@ -10,6 +12,8 @@ export default async function handler(req, res) {
     }
 
     const { profile } = req.body;
+
+    console.log(profile);
     try {
       waitUntil(generatePrimaryTraitsReading(profile));
       // Send a 202 Accepted response immediately as the task is offloaded

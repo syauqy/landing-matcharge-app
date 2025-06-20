@@ -331,7 +331,7 @@ export default function Home() {
               {formattedDate} ({reading?.weton})
             </p>
             <p className="mt-2 text-base-content">{reading?.today}</p>
-            {reading?.do && (
+            {/* {reading?.do && (
               <div className="mt-3">
                 <p className="font-semibold ">Do:</p>
                 <p className="text-sm text-base-content/90">{reading?.do}</p>
@@ -349,7 +349,7 @@ export default function Home() {
                   {reading?.fact}
                 </p>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       );
@@ -359,13 +359,17 @@ export default function Home() {
   const renderLatestReadings = () => {
     // console.log(latestReadings);
     return (
-      <ul className="flex flex-row flex-nowrap overflow-x-auto">
+      <ul className="flex flex-row flex-nowrap overflow-x-scroll">
         {latestReadings.map((r) => (
           <li key={r.id} className="w-fit">
             <Link href={`/readings/${r?.reading_category}/${r.slug}`}>
               <div className="rounded-2xl flex flex-col gap-2 p-4 bg-base-100 ml-4 shadow-sm border border-[var(--color-batik-border)] h-[8rem] w-[10rem]">
-                <p className="text-base-content font-semibold">{r.title}</p>{" "}
-                <div className="text-xs text-base-content/80">{r.subtitle}</div>
+                <p className="text-base-content font-semibold text-sm">
+                  {r.title}
+                </p>{" "}
+                <div className="text-xs text-base-content/80 text-balance">
+                  {r.subtitle}
+                </div>
               </div>
             </Link>
           </li>
@@ -414,7 +418,7 @@ export default function Home() {
             <p className="text-sm text-base-content">
               {reading?.summary?.description}
             </p>
-            {reading?.summary?.auspicious_scale && (
+            {/* {reading?.summary?.auspicious_scale && (
               <div className="mt-3">
                 <p className="font-semibold">Auspicious scale</p>
                 <p className="text-sm text-base-content/90">
@@ -493,7 +497,7 @@ export default function Home() {
                   {reading?.wisdom?.philosophy}
                 </p>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       );
@@ -514,17 +518,20 @@ export default function Home() {
             {profileData?.full_name?.split(" ")[0] || "User"}!
           </p>
         </div>
+        {/* <Link href={"/intro"}>See Intro</Link> */}
         <div className="flex flex-col gap-2 p-4">
           <div className="">{renderTodayReading()}</div>
         </div>
         <div className="flex flex-col gap-2 p-4">
           <div className="">{renderMonthlyReading()}</div>
         </div>
-        <div className="mt-4 flex flex-col gap-2">
-          <div className="px-4 text-lg font-medium text-batik-black">
-            Latest readings
+        <div className="my-4 flex flex-col gap-2">
+          <div className="px-4 text-lg font-semibold text-batik-black">
+            Latest Readings
           </div>
-          <div className="">{renderLatestReadings()}</div>
+          <div className="overflow-x-auto overflow-y-clip">
+            {renderLatestReadings()}
+          </div>
         </div>
         {/* <div className="mt-4 flex flex-col gap-2">
           <div className="px-4 text-lg font-medium text-batik-black">

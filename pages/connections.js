@@ -199,7 +199,7 @@ export default function ConnectionsPage() {
                 placeholder="Search people by username..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="input input-bordered input-sm w-full"
+                className="focus:outline-0 appearance-none border border-slate-200 p-2 rounded-2xl w-full"
               />
               <button
                 type="submit"

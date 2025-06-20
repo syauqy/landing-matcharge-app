@@ -6,13 +6,14 @@ import { useRouter } from "next/router"; // Import useRouter
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar"; // Import Navbar
 import { Menubar } from "@/components/layouts/menubar";
 import { CardData, SectionData } from "@/utils/readings-menu";
-import { Navbar } from "@/components/layouts/navbar"; // Import Navbar
+import { Navbar } from "@/components/layouts/navbar";
+import Link from "next/link";
 
 // Placeholder data for cards (replace with your actual data source)
 
 // Reusable Card Component - Updated Styling
 const ReadingCard = ({ title, description, slug, category, type }) => (
-  <a
+  <Link
     href={"/readings/" + category + "/" + slug}
     className="relative snap-center snap-always flex-shrink-0 w-40 sm:w-64 bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow duration-200 h-32 flex flex-col justify-between"
   >
@@ -27,7 +28,7 @@ const ReadingCard = ({ title, description, slug, category, type }) => (
         PRO
       </div>
     )}
-  </a>
+  </Link>
 );
 
 // Reusable Section Component - Updated Styling

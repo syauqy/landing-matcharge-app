@@ -91,9 +91,9 @@ export default function PrimaryTraitsPage() {
           .eq("slug", "primary-traits")
           .maybeSingle();
 
-        console.log("Existing Reading:", existingReading, user.id);
+        // console.log("Existing Reading:", existingReading, user.id);
 
-        console.log(existingReading);
+        // console.log(existingReading);
 
         if (fetchError && fetchError.code !== "PGRST116") {
           throw fetchError;
@@ -108,6 +108,10 @@ export default function PrimaryTraitsPage() {
           console.log("No existing reading found, generating new one...");
           setLoading(false);
           try {
+            console.log(
+              "requesting to ",
+              `${config.api.url}/readings/general/primary-traits`
+            );
             // Generate new reading if none exists
             const response = await fetch(
               `${config.api.url}/readings/general/primary-traits`,
@@ -117,18 +121,20 @@ export default function PrimaryTraitsPage() {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ profile: profileData }),
-                credentials: "include",
+                // credentials: "include",
               }
             );
 
             const readingData = await response.json();
             setReading(readingData);
+            setLoading(false);
           } catch (err) {
             console.error(
               "Error in fetch or processing response for daily reading:",
               err
             );
             setError(err.message || "Failed to generate daily reading.");
+            setLoading(false);
           } finally {
             setLoading(false);
           }
@@ -149,7 +155,9 @@ export default function PrimaryTraitsPage() {
     }
   }, [profileData]);
 
-  console.log("Profile Data:", profileData);
+  console.log("api url", config.api.url, "env", process.env.NODE_ENV);
+
+  // console.log("Profile Data:", profileData);
 
   if (authLoading) {
     return (

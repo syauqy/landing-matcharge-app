@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CircleAlertIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function BasicReadingPage() {
@@ -67,7 +67,7 @@ export default function BasicReadingPage() {
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
-    setShowTitleInNavbar(scrollPosition > 100);
+    setShowTitleInNavbar(scrollPosition > 80);
   };
 
   useEffect(() => {
@@ -77,12 +77,12 @@ export default function BasicReadingPage() {
     };
   }, []);
 
-  console.log("Profile Data:", profileData);
+  // console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
+        <span className="loading loading-spinner loading-lg text-batik-text"></span>
         <p className="mt-4">Loading your profile...</p>
       </div>
     );
@@ -90,28 +90,20 @@ export default function BasicReadingPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <div className="alert alert-error shadow-lg max-w-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2 2m2-2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>Error! {error}</span>
+      <div className="min-h-screen flex flex-col gap-4 items-center justify-center bg-base-100 text-base-content p-4">
+        <div className="alert bg-red-50 text-red-500 max-w-md text-center">
+          <div className="flex flex-col gap-3 text-center items-center">
+            <CircleAlertIcon className="h-10 w-10" />
+            <div className="text-center">Error! {error}</div>
           </div>
         </div>
-        <button onClick={() => router.back()} className="btn btn-neutral mt-6">
-          Go Back
-        </button>
+        <Link
+          href="/home"
+          className="p-2 px-4 rounded-full text-lg border border-batik-text hover:bg-batik/80 hover:cursor-pointer inline-flex items-center text-batik-text font-medium"
+        >
+          <ArrowLeft size={20} className="text-batik-text" />
+          <span className="ml-2">Back to Home</span>
+        </Link>
       </div>
     );
   }
@@ -154,12 +146,12 @@ export default function BasicReadingPage() {
         }`}
       >
         <div className="navbar-start">
-          <Link
+          {/* <Link
             href="/home"
             className="p-2 rounded-full text-xl border border-batik-text hover:bg-base-200"
           >
             <ArrowLeft size={20} className="text-batik-text" />
-          </Link>
+          </Link> */}
         </div>
         {showTitleInNavbar && profileData && (
           <div className="navbar-center flex-col">
@@ -350,6 +342,18 @@ export default function BasicReadingPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="border-t border-batik-text/20 pt-4">
+          <div className="flex justify-center my-6">
+            <button
+              onClick={() => router.replace("/readings/general_readings/wuku")}
+              className="btn text-lg text-batik-black border bg-batik border-batik-border py-3 px-7 rounded-2xl shadow-sm relative"
+            >
+              <span class="absolute inline-flex h-full w-1/3 animate-ping rounded-full bg-batik-border-light opacity-50"></span>
+              Explore your Wuku details
+            </button>
           </div>
         </section>
       </main>

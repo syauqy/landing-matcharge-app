@@ -60,7 +60,7 @@ export default function BasicReadingPage() {
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
-    setShowTitleInNavbar(scrollPosition > 100);
+    setShowTitleInNavbar(scrollPosition > 80);
   };
 
   useEffect(() => {

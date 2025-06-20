@@ -7,6 +7,7 @@ import { getWeton, getWuku } from "@/utils";
 import { Toaster, toast } from "sonner";
 import { Capacitor } from "@capacitor/core";
 import { Navbar } from "@/components/layouts/navbar";
+import { format } from "date-fns";
 
 export default function ProfileSetupPage() {
   const { user, loading: authLoading } = useAuth();
@@ -124,80 +125,6 @@ export default function ProfileSetupPage() {
     }
   };
 
-  // const requestWetonAnalysis = async (profileId, birthDate) => {
-  //   try {
-  //     const {
-  //       data: { session },
-  //     } = await supabase.auth.getSession();
-  //     if (!session?.access_token) {
-  //       console.error("Error getting auth token for weton analysis");
-  //       return;
-  //     }
-
-  //     const response = await fetch(
-  //       Capacitor.isNative
-  //         ? "https://weton-ai-next.vercel.app/api/get-fortune"
-  //         : "/api/get-fortune",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           Authorization: `Bearer ${session.access_token}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       console.error("Error getting weton analysis:", await response.text());
-  //       return;
-  //     }
-
-  //     const fortuneData = await response.json();
-
-  //     const supabaseUserClient = createClient(
-  //       process.env.NEXT_PUBLIC_SUPABASE_URL,
-  //       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  //       {
-  //         global: {
-  //           headers: { Authorization: `Bearer ${session.access_token}` },
-  //         },
-  //       }
-  //     );
-
-  //     const readingData = {
-  //       user_id: profileId,
-  //       username: username,
-  //       reading: fortuneData.analysis,
-  //       created_at: new Date().toISOString(),
-  //       reading_type: "free",
-  //       title: "About You",
-  //       reading_category: "general_readings",
-  //       slug: "basic",
-  //     };
-
-  //     console.log("dapeting analysis", readingData);
-
-  //     console.log("mulai simpan ke supabase");
-
-  //     const { data, error: saveError } = await supabaseUserClient
-  //       .from("readings")
-  //       .insert(readingData);
-
-  //     console.log(data);
-
-  //     if (saveError) {
-  //       console.error("Error saving reading:", saveError);
-  //       toast.error("Failed to save reading data.");
-  //     } else {
-  //       // Redirect only after successful saving
-  //       router.push("/readings/general_readings/basic");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error in weton analysis process:", err);
-  //     toast.error("Error in weton analysis process.");
-  //   }
-  // };
-
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -300,7 +227,7 @@ export default function ProfileSetupPage() {
           {
             user_id: user.id,
             reading_type: "basic",
-            username: username,
+            username: username.toLowerCase(),
             title: "Weton",
             subtitle:
               "Uncover the foundational energies of your unique birth day combination.",
@@ -310,7 +237,7 @@ export default function ProfileSetupPage() {
           {
             user_id: user.id,
             reading_type: "basic",
-            username: username,
+            username: username.toLowerCase(),
             title: "Wuku",
             subtitle:
               "Explore the distinct characteristics and symbolic influences of your birth week.",
@@ -371,14 +298,17 @@ export default function ProfileSetupPage() {
 
   if (loadingWeton) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-batik p-4">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">
-            Preparing Your Weton Reading...
-          </h1>
-          <p className="text-gray-700">
-            Please wait while we analyze your birth details.
-          </p>
+      <div className="min-h-screen flex items-center justify-center bg-batik p-5">
+        <div className="text-center flex flex-col gap-4 items-center">
+          <span className="loading loading-spinner loading-xl text-batik-text"></span>
+          <div>
+            <h1 className="text-xl font-semibold mb-4 text-slate-700">
+              Preparing Your Weton and Wuku Reading...
+            </h1>
+            <p className="text-slate-600">
+              Please wait while we analyze your birth details.
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -414,12 +344,12 @@ export default function ProfileSetupPage() {
                     id="username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value.trim())}
-                    className={`w-full mt-0 block border-0 border-b-2 border-batik-border-light px-0.5 py-2 text-lg focus:border-black ${
+                    className={`w-full lowercase mt-0 block border-0 border-b-2 border-batik-border-light px-0.5 py-2 text-lg focus:border-batik-border-hover focus:ring-0 appearance-none focus:outline-0 ${
                       usernameAvailable === true
-                        ? "border-green-500 focus:border-green-500 focus:ring-green-200"
+                        ? "border-green-500 focus:border-green-500 "
                         : usernameAvailable === false
-                        ? "border-red-500 focus:border-red-500 focus:ring-red-200"
-                        : "focus:border-blue-300 focus:ring-blue-200"
+                        ? "border-red-500 text-red-500"
+                        : ""
                     }`}
                     placeholder="Choose a unique username"
                     required
@@ -486,7 +416,7 @@ export default function ProfileSetupPage() {
                   required
                 />
                 <p className="text-xs text-gray-500 mt-2">
-                  Required for Weton calculation
+                  Required for Weton and Wuku calculation
                 </p>
               </div>
             )}
@@ -504,7 +434,7 @@ export default function ProfileSetupPage() {
                   id="gender"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="w-full py-2 pl-0.5 pr-10 block border-0 border-b-2 border-batik-border-light text-lg"
+                  className="w-full py-2 pl-0.5 pr-10 block border-0 border-b-2 border-batik-border-light text-lg appearance-none focus:outline-0"
                   required
                 >
                   <option value="">Select Gender</option>
@@ -513,7 +443,7 @@ export default function ProfileSetupPage() {
                   <option value="other">Other</option>
                 </select>
                 <p className="text-xs text-gray-500 mt-2">
-                  Required for personalized readings
+                  Required for personalized and compatibility readings
                 </p>
               </div>
             )}
@@ -532,7 +462,7 @@ export default function ProfileSetupPage() {
                   id="fullName"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full px-3 py-2 block border-0 border-b-2 border-batik-border-light text-lg"
+                  className="w-full px-3 py-2 block border-0 border-b-2 border-batik-border-light text-lg appearance-none focus:outline-0"
                   placeholder="Enter your full name"
                   required
                 />

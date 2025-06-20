@@ -28,26 +28,27 @@ export const DeepLinkHandler = () => {
 
       // Dive deep into the app if we have a specific place we were told to go:
       const slug = url.pathname;
+      console.log("Redirected to ", slug, "with ", url);
       router.push(slug);
     });
   }, []);
 
-  //   useEffect(() => {
-  //     const { data: authListener } = supabase.auth.onAuthStateChange(
-  //       (event, session) => {
-  //         if (event === "SIGNED_IN" && session?.user) {
-  //           closeBrowser().catch(() => {
-  //             // nom nom nom
-  //           });
-  //         }
-  //       }
-  //     );
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_IN" && session?.user) {
+          closeBrowser().catch(() => {
+            // nom nom nom
+          });
+        }
+      }
+    );
 
-  //     // Cleanup the listener on unmount
-  //     return () => {
-  //       authListener?.subscription.unsubscribe();
-  //     };
-  //   }, []);
+    // Cleanup the listener on unmount
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
+  }, []);
 
   return null;
 };
