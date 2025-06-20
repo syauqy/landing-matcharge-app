@@ -4,7 +4,7 @@ import { Users2Icon, ArrowLeft } from "lucide-react";
 
 export function Navbar({ title, isConnection, isBack }) {
   return (
-    <nav className="navbar min-h-[50px] bg-base-100 w-full px-5 sticky top-0 left-0 z-50 border-b border-batik-border">
+    <nav className="navbar min-h-[50px] bg-base-100 w-full px-5 sticky top-0 left-0 z-40 border-b border-batik-border">
       <div className="navbar-start">
         {isBack && (
           <button

@@ -267,6 +267,8 @@ export function getWeton(birthDate) {
     const hastawara = getHastawara(birthDate);
     const sadwara = getSadwara(birthDate);
 
+    console.log(day, pasaran);
+
     return {
       dina: hari,
       dina_en: day,

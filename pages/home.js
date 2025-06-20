@@ -359,7 +359,7 @@ export default function Home() {
   const renderLatestReadings = () => {
     // console.log(latestReadings);
     return (
-      <ul className="flex flex-row flex-nowrap overflow-x-scroll">
+      <ul className="flex flex-row flex-nowrap overflow-x-scroll overflow-y-hidden">
         {latestReadings.map((r) => (
           <li key={r.id} className="w-fit">
             <Link href={`/readings/${r?.reading_category}/${r.slug}`}>
@@ -367,7 +367,7 @@ export default function Home() {
                 <p className="text-base-content font-semibold text-sm">
                   {r.title}
                 </p>{" "}
-                <div className="text-xs text-base-content/80 text-balance">
+                <div className="text-xs text-base-content/80 text-balance truncate">
                   {r.subtitle}
                 </div>
               </div>
@@ -503,6 +503,11 @@ export default function Home() {
       );
     }
   };
+
+  console.log(
+    getWeton(format(new Date(), "yyyy-MM-dd"))?.weton_en,
+    Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
 
   // console.log(dailyReading);
 

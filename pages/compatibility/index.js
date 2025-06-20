@@ -613,7 +613,7 @@ export default function CompatibilityPage() {
 
         {/* Partner Selection Bottom Sheet */}
         {showPartnerSelectionSheet && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-end justify-center">
+          <div className="fixed inset-0 bg-slate-500/40 bg-opacity-10 z-40 flex items-end justify-center">
             <div className="bg-base-100 rounded-t-lg p-4 w-full max-w-md shadow-lg h-[70vh] flex flex-col">
               <div className="flex justify-between items-center mb-4 pb-2 border-b border-base-300">
                 <h3 className="text-lg font-bold text-batik-black">
@@ -623,7 +623,7 @@ export default function CompatibilityPage() {
                   onClick={() => setShowPartnerSelectionSheet(false)}
                   className="btn btn-sm btn-circle btn-ghost"
                 >
-                  <XIcon size={20} />
+                  CLOSE
                 </button>
               </div>
               <div className="mb-4">
@@ -748,7 +748,7 @@ export default function CompatibilityPage() {
                   }}
                   className="btn btn-sm btn-circle btn-ghost"
                 >
-                  ✕
+                  CLOSE
                 </button>
               </div>
               {error && (

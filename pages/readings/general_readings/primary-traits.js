@@ -92,10 +92,6 @@ export default function PrimaryTraitsPage() {
           .eq("slug", "primary-traits")
           .maybeSingle();
 
-        // console.log("Existing Reading:", existingReading, user.id);
-
-        // console.log(existingReading);
-
         if (fetchError && fetchError.code !== "PGRST116") {
           throw fetchError;
         }
@@ -116,20 +112,7 @@ export default function PrimaryTraitsPage() {
                 headers: { "Content-Type": "application/json" },
               }
             );
-            // const response = await fetch(
-            //   `${config.api.url}/readings/general/primary-traits`,
-            //   {
-            //     method: "POST",
-            //     headers: {
-            //       "Content-Type": "application/json",
-            //     },
-            //     body: JSON.stringify({ profile: profileData }),
-            //     // credentials: "include",
-            //   }
-            // );
 
-            // const readingData = await response.json();
-            // setReading(readingData);
             setReading(response);
             setLoading(false);
           } catch (err) {
@@ -154,6 +137,7 @@ export default function PrimaryTraitsPage() {
   useEffect(() => {
     if (profileData && user) {
       // Only run if profileData and user exist
+      handleGenerateReading();
       //   handleMonthlyReading();
       //   handleDailyReading();
     }
@@ -166,7 +150,7 @@ export default function PrimaryTraitsPage() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
+        <span className="loading loading-spinner loading-lg text-batik-text"></span>
         <p className="mt-4">Loading your profile...</p>
       </div>
     );
@@ -175,7 +159,7 @@ export default function PrimaryTraitsPage() {
   if (loading && !error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
+        <span className="loading loading-spinner loading-lg text-batik-text"></span>
         <p className="mt-4">Loading your reading...</p>
       </div>
     );
@@ -256,7 +240,7 @@ export default function PrimaryTraitsPage() {
         </div>
         {showTitleInNavbar && profileData && (
           <div className="navbar-center flex-col">
-            <div className="text-xs text-batik-text font-semibold uppercase">
+            <div className="text-sm text-batik-text font-semibold uppercase">
               Primary Traits
             </div>
           </div>
@@ -274,75 +258,97 @@ export default function PrimaryTraitsPage() {
         <section>
           <div className="flex flex-col gap-4">
             <div className="text-slate-600">
-              <div className="text-sm text-batik-text font-semibold">Weton</div>
-              <span className="text-batik-black font-semibold">
-                {profileData.dina_pasaran}
-              </span>
+              <div className="text-sm text-batik-text font-semibold">
+                Weton Identity
+              </div>
+              <div className="text-sm text-gray-700">
+                {reading?.reading?.weton_identity?.element}
+              </div>
             </div>
-            <button
-              className="btn btn-neutral btn-sm"
-              onClick={handleGenerateReading}
-            >
-              Generate Reading
-            </button>
             <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Primary Traits
+              <div className="text-sm font-semibold text-batik-text">
+                Character
               </div>
-              <div className="mockup-code w-full">
-                <pre>
-                  <code>{JSON.stringify(reading, null, 2)}</code>
-                </pre>
+              <div className="font-semibold">
+                {profileData.weton?.laku?.name}
               </div>
+              <div className="text-sm text-gray-700">
+                {reading?.reading?.characters?.laku}
+              </div>
+              <div className="text-sm text-gray-700 mt-2">
+                {reading?.reading?.symbol?.philosophy}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold text-batik-text">
+                Inherent Strengths
+              </div>
+              <ul className="list-disc list-outside text-sm text-gray-700 ml-4">
+                {reading?.reading?.characters?.strength?.map((s, i) => (
+                  <li key={i} className="text-sm text-gray-700">
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold text-batik-text">
+                Areas for Growth
+              </div>
+              <ul className="list-disc list-outside text-sm text-gray-700 ml-4">
+                {reading?.reading?.characters?.growth?.map((g, i) => (
+                  <li key={i} className="text-sm text-gray-700">
+                    {g}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </section>
 
-        {/* <section className="border-t border-batik-text/20 pt-4">
+        <section className="border-t border-batik-text/20 pt-4">
           <h2 className="text-xl font-semibold text-left">
-            Your Inner Compass & Life&apos;s Journey
+            Weton&apos;s Influence on Life
           </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            These elements describe your fundamental character, how you approach
-            life, and the innate energies that guide your path.
-          </p>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">Laku</div>
-              <p className="text-[10px] text-gray-700 italic">
-                Laku describes the overarching &quot;manner&quot; or
-                &quot;way&quot; your life tends to unfold, like a specific
-                archetype or behavioral pattern.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.laku?.name} (
-                  {profileData.weton?.laku?.meaning})
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.laku?.description}
-                </div>
+              <div className="text-sm font-semibold  text-batik-text">
+                Emotional Nature
+              </div>
+              <div className="text-sm text-gray-700">
+                {reading?.reading?.influences?.emotion}
               </div>
             </div>
             <div className="flex flex-col">
               <div className="text-sm font-semibold  text-batik-text">
-                Pancasuda
+                Social Interactions
               </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Pancasuda types define your innate &quot;character essence&quot;
-                or life&apos;s guiding archetype, revealing the unique talents
-                and potential path intricately woven into your birth Weton.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.saptawara?.name}
-                </div>
-                <div className="text-[10px] text-gray-700 italic ">
-                  {profileData.weton?.saptawara?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.saptawara?.description}
-                </div>
+              <div className="text-sm text-gray-700">
+                {reading?.reading?.influences?.social}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold  text-batik-text">
+                Work Ethics
+              </div>
+              <div className="text-sm text-gray-700">
+                {reading?.reading?.influences?.work}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold  text-batik-text">
+                Financial Tendencies
+              </div>
+              <div className="text-sm text-gray-700">
+                {reading?.reading?.influences?.financial}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold  text-batik-text">
+                Health
+              </div>
+              <div className="text-sm text-gray-700">
+                {reading?.reading?.influences?.health}
               </div>
             </div>
           </div>
@@ -350,74 +356,43 @@ export default function PrimaryTraitsPage() {
 
         <section className="border-t border-batik-text/20 pt-4">
           <h2 className="text-xl font-semibold text-left">
-            Karmic Tides & Cyclical Patterns
+            Embracing Your Weton&apos;s Wisdom
           </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            These aspects point to underlying patterns, cyclical influences from
-            different day counts, and potential karmic themes that shape your
-            experiences.
-          </p>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col">
               <div className="text-sm font-semibold  text-batik-text">
-                Rakam
+                Reflection
               </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Rakam suggests a significant life theme or a pattern of
-                experiences that may repeat or define distinct periods of your
-                life.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.rakam?.name}
-                </div>
-                <div className="text-[10px] text-gray-700 italic">
-                  {profileData.weton?.rakam?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.rakam?.description}
-                </div>
+              <div className="text-sm text-gray-700">
+                {reading?.reading?.wisdom?.reflection}
               </div>
             </div>
             <div className="flex flex-col">
               <div className="text-sm font-semibold  text-batik-text">
-                Sadwara
+                For You
               </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Part of a six-day Pawukon cycle (Sadwara), this highlights
-                subtle behavioral tendencies, your approach to responsibility,
-                or social interaction styles.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.sadwara?.name} (
-                  {profileData.weton?.sadwara?.meaning})
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.sadwara?.description}
-                </div>
+              <div className="text-sm text-gray-700">
+                {reading?.reading?.wisdom?.empowerment}
               </div>
             </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Hastawara
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                An eight-day Pawukon cycle influence (Hastawara), this can point
-                towards areas of specific luck, potential challenges, or types
-                of activities favored or to be cautious about.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.hastawara?.name}
-                </div>
-                <div className="text-[10px] text-gray-700 italic">
-                  {profileData.weton?.hastawara?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.hastawara?.description}
-                </div>
-              </div>
+          </div>
+        </section>
+
+        {/* <section>
+          <button
+            className="btn btn-neutral btn-sm"
+            onClick={handleGenerateReading}
+          >
+            Generate Reading
+          </button>
+          <div className="flex flex-col">
+            <div className="text-sm font-semibold  text-batik-text">
+              Primary Traits
+            </div>
+            <div className="mockup-code w-full">
+              <pre>
+                <code>{JSON.stringify(reading, null, 2)}</code>
+              </pre>
             </div>
           </div>
         </section> */}

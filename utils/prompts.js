@@ -73,9 +73,11 @@ export const basicReadingPrompt = (profile, wetonDetails) => {
 
 export const dailyReadingPrompt = (profile) => {
   const wetonDetails = profile?.weton;
+  const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const localDate = utcToZonedTime(new Date(), deviceTimeZone);
   const wuku = profile?.wuku?.name || "Unknown Wuku";
   const birthDate = format(new Date(profile.birth_date), "MMMM dd, yyyy");
-  const todayWeton = getWeton(format(new Date(), "yyyy-MM-dd"))?.weton_en;
+  const todayWeton = getWeton(format(localDate, "yyyy-MM-dd"))?.weton_en;
   const wetonData = `
     User's Data:
     - Gender: ${profile.gender}
@@ -97,11 +99,11 @@ export const dailyReadingPrompt = (profile) => {
 
     ## Output Structure & Content Requirements:
     Generate a comprehensive daily reading for the specified user and date, structured as follows:
-    1. Today's energy reading summary based on user's weton and wuku
+    1. Today's weton ${todayWeton} based on local timezone ${deviceTimeZone}
     2. What to do today with focus on health/work/relationships
     3. What don't do today with focus on health/work/elationships
     4. Interesting fact about ${todayWeton}, its symbolism, or a related Javanese proverb.
-    5. Today's weton ${todayWeton}
+    5. Today's energy reading summary based on user's weton and wuku
 
     ## Tone and Style
   - Tone: Reverent, wise, encouraging, empathetic, insightful, non-judgmental, actionable, and empowering. Avoid fatalistic language.
