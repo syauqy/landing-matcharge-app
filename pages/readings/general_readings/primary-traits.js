@@ -110,7 +110,7 @@ export default function PrimaryTraitsPage() {
           try {
             // Generate new reading if none exists
             const response = await fetch(
-              `${config.api.url}/api/readings/general/primary-traits`,
+              `${config.api.url}/readings/general/primary-traits`,
               {
                 method: "POST",
                 headers: {

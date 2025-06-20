@@ -283,7 +283,7 @@ export default function CompatibilityPage() {
           try {
             // Generate new reading if none exists
             const response = await fetch(
-              `${config.api.url}/api/compatibility/love`,
+              `${config.api.url}/compatibility/love`,
               {
                 method: "POST",
                 headers: {
@@ -353,7 +353,7 @@ export default function CompatibilityPage() {
           try {
             // Generate new reading if none exists
             const response = await fetch(
-              `${config.api.url}/api/compatibility/couple`,
+              `${config.api.url}/compatibility/couple`,
               {
                 method: "POST",
                 headers: {

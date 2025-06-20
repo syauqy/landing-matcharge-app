@@ -84,7 +84,7 @@ export default function RakamPage() {
           try {
             // Generate new reading if none exists
             const response = await fetch(
-              `${config.api.url}/api/readings/general/general-pro-1`,
+              `${config.api.url}/readings/general/general-pro-1`,
               {
                 method: "POST",
                 headers: {

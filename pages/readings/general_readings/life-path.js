@@ -84,7 +84,7 @@ export default function LifePathPage() {
           try {
             // Generate new reading if none exists
             const response = await fetch(
-              `${config.api.url}/api/readings/general/general-pro-2`,
+              `${config.api.url}/readings/general/general-pro-2`,
               {
                 method: "POST",
                 headers: {

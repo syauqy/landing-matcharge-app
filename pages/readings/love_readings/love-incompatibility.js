@@ -84,7 +84,7 @@ export default function LoveIncompatibilityPage() {
           try {
             // Generate new reading if none exists
             const response = await fetch(
-              `${config.api.url}/api/readings/love/love-pro`,
+              `${config.api.url}/readings/love/love-pro`,
               {
                 method: "POST",
                 headers: {

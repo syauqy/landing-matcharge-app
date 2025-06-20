@@ -87,7 +87,7 @@ export default function FinancialCyclesPage() {
           try {
             // Generate new reading if none exists
             const response = await fetch(
-              `${config.api.url}/api/readings/financial/financial-pro`,
+              `${config.api.url}/readings/financial/financial-pro`,
               {
                 method: "POST",
                 headers: {

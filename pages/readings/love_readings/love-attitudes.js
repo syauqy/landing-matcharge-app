@@ -80,7 +80,7 @@ export default function LoveAttitudesPage() {
           try {
             // Generate new reading if none exists
             const response = await fetch(
-              `${config.api.url}/api/readings/love/love-core`,
+              `${config.api.url}/readings/love/love-core`,
               {
                 method: "POST",
                 headers: {

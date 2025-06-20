@@ -130,7 +130,7 @@ export default function Home() {
       let readingData;
 
       try {
-        const response = await fetch(`${config.api.url}/api/readings/daily`, {
+        const response = await fetch(`${config.api.url}/readings/daily`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -202,7 +202,7 @@ export default function Home() {
       let readingData;
 
       try {
-        const response = await fetch(`${config.api.url}/api/readings/monthly`, {
+        const response = await fetch(`${config.api.url}/readings/monthly`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
