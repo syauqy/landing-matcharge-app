@@ -67,7 +67,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Profile is required" });
       }
 
-      waitUntil(generatePrimaryTraitsReading(profile, supabaseUserClient));
+      waitUntil(generatePrimaryTraitsReading(profile));
       // Send a 202 Accepted response immediately as the task is offloaded
       return res
         .status(202)
