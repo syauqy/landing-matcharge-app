@@ -283,10 +283,13 @@ export async function generateMonthlyReading(profile) {
   } while (attempt < maxAttempts);
 }
 
-export async function generatePrimaryTraitsReading(profile) {
+export async function generatePrimaryTraitsReading(
+  profile,
+  supabaseUserClient
+) {
   // supabase client is now an argument
   console.log(profile.id, profile.username);
-  const { data: newReading, error } = await supabase
+  const { data: newReading, error } = await supabaseUserClient
     .from("readings")
     .insert({
       reading_type: "basic",
@@ -430,7 +433,7 @@ export async function generatePrimaryTraitsReading(profile) {
       });
       const resObj = response.object;
 
-      await supabase
+      await supabaseUserClient
         .from("readings")
         .update({
           status: "completed",
@@ -446,7 +449,7 @@ export async function generatePrimaryTraitsReading(profile) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseUserClient
           .from("readings")
           .update({
             status: "error",
