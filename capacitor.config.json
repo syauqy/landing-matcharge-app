@@ -6,6 +6,9 @@
     "StatusBar": {
       "overlaysWebView": false,
       "style": "DARK"
+    },
+    "CapacitorHttp": {
+      "enabled": true
     }
   },
   "server": {

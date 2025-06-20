@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
 import { config } from "@/utils/config";
+import axios from "axios";
 
 export default function PrimaryTraitsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -108,29 +109,32 @@ export default function PrimaryTraitsPage() {
           console.log("No existing reading found, generating new one...");
           setLoading(false);
           try {
-            console.log(
-              "requesting to ",
-              `${config.api.url}/readings/general/primary-traits`
-            );
-            // Generate new reading if none exists
-            const response = await fetch(
+            const response = await axios.post(
               `${config.api.url}/readings/general/primary-traits`,
+              { profile: profileData },
               {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ profile: profileData }),
-                // credentials: "include",
+                headers: { "Content-Type": "application/json" },
               }
             );
+            // const response = await fetch(
+            //   `${config.api.url}/readings/general/primary-traits`,
+            //   {
+            //     method: "POST",
+            //     headers: {
+            //       "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify({ profile: profileData }),
+            //     // credentials: "include",
+            //   }
+            // );
 
-            const readingData = await response.json();
-            setReading(readingData);
+            // const readingData = await response.json();
+            // setReading(readingData);
+            setReading(response);
             setLoading(false);
           } catch (err) {
             console.error(
-              "Error in fetch or processing response for daily reading:",
+              "Error in fetch or processing response for primary traits:",
               err
             );
             setError(err.message || "Failed to generate daily reading.");
@@ -155,7 +159,7 @@ export default function PrimaryTraitsPage() {
     }
   }, [profileData]);
 
-  console.log("api url", config.api.url, "env", process.env.NODE_ENV);
+  // console.log("api url", config.api.url, "env", process.env.NODE_ENV);
 
   // console.log("Profile Data:", profileData);
 

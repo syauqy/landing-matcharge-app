@@ -285,11 +285,9 @@ export async function generateMonthlyReading(profile) {
 
 export async function generatePrimaryTraitsReading(profile) {
   // supabase client is now an argument
-  console.log(
-    "generating AI reading for primary traits with profile:",
-    profile.id,
-    profile.username
-  );
+  console.log("Starting AI generation process...");
+  const startTime = process.hrtime.bigint();
+
   const { data: newReading, error } = await supabase
     .from("readings")
     .insert({
@@ -310,8 +308,6 @@ export async function generatePrimaryTraitsReading(profile) {
     throw error;
   }
 
-  console.log("new reading generated on supabase", newReading);
-
   const maxAttempts = 2;
   let attempt = 0;
   let lastErrorMsg = "";
@@ -319,10 +315,6 @@ export async function generatePrimaryTraitsReading(profile) {
     attempt++;
     try {
       const response = await generateObject({
-        // model: google("gemini-2.5-flash-preview-04-17"),
-        // model: openai("gpt-4.1-mini-2025-04-14"),
-        // model: openai("gpt-4.1-nano-2025-04-14"),
-        // model: anthropic("claude-3-haiku-20240307"),
         model: google("gemini-2.5-flash-preview-05-20"),
         providerOptions: {
           google: {
@@ -445,6 +437,10 @@ export async function generatePrimaryTraitsReading(profile) {
           updated_at: new Date().toISOString(),
         })
         .eq("id", newReading.id);
+
+      const endTime = process.hrtime.bigint();
+      const durationMs = Number(endTime - startTime) / 1_000_000;
+      console.log(`Total AI Generation Logic took: ${durationMs}ms`);
       break;
     } catch (error) {
       lastErrorMsg = error.message;
