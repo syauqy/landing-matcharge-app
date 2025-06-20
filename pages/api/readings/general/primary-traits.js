@@ -1,8 +1,13 @@
 import { generatePrimaryTraitsReading } from "@/services/reading-services";
 import { waitUntil } from "@vercel/functions";
+import { NextResponse } from "next/server";
+
+// export const config = {
+//   runtime: "edge",
+// };
 
 export default async function handler(req, res) {
-  console.log(req.method);
+  console.log("req method", req.method);
 
   if (req.method === "POST") {
     if (!req.body || !req.body.profile) {
