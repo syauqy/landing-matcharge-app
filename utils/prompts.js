@@ -74,10 +74,9 @@ export const basicReadingPrompt = (profile, wetonDetails) => {
 export const dailyReadingPrompt = (profile) => {
   const wetonDetails = profile?.weton;
   const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const localDate = utcToZonedTime(new Date(), deviceTimeZone);
   const wuku = profile?.wuku?.name || "Unknown Wuku";
-  const birthDate = format(new Date(profile.birth_date), "MMMM dd, yyyy");
-  const todayWeton = getWeton(format(localDate, "yyyy-MM-dd"))?.weton_en;
+  // const birthDate = format(new Date(profile.birth_date), "MMMM dd, yyyy");
+  const todayWeton = getWeton(format(new Date(), "yyyy-MM-dd"))?.weton_en;
   const wetonData = `
     User's Data:
     - Gender: ${profile.gender}

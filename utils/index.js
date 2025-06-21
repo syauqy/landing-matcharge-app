@@ -485,8 +485,21 @@ const getJodoh9 = (totalNeptu1, totalNeptu2) => {
 };
 
 const getJodohDay = (dina1, dina2) => {
-  const sortedDina = [dina1, dina2].sort((a, b) => a - b);
+  const dayOrder = [
+    "Minggu",
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu",
+  ];
+  const sortedDina = [dina1, dina2].sort(
+    (a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b)
+  );
   const key = `${sortedDina[0]}-${sortedDina[1]}`;
+
+  console.log(sortedDina, key);
 
   if (dinaCombination[key]) {
     return {

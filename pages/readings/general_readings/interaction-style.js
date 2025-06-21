@@ -6,6 +6,10 @@ import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
 import { fetchProfileData } from "@/utils/fetch";
 import { config } from "@/utils/config";
+import dynamic from "next/dynamic";
+const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
+  ssr: false,
+});
 
 export default function InteractionPage() {
   const { user, loading: authLoading } = useAuth();
@@ -229,35 +233,34 @@ export default function InteractionPage() {
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         <div>
           <h2 className="text-xl font-semibold text-left">Interaction Style</h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            Explore the core of how your Weton shapes your approach to love and
-            partnership.
+          <p className="text-sm text-gray-700 mb-2">
+            Learn how you naturally connect and communicate with the world
+            around you.
           </p>
         </div>
         <section>
           <div className="flex flex-col gap-4">
-            <div className="text-slate-600">
-              <div className="text-sm text-batik-text font-semibold">Weton</div>
-              <span className="text-batik-black font-semibold">
-                {profileData.dina_pasaran}
-              </span>
-            </div>
             <button
-              className="btn btn-neutral btn-sm"
+              className="btn border-batik-border text-batik-text rounded-2xl"
               onClick={handleGenerateReading}
             >
               Generate Reading
             </button>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Interaction Style
+            {reading && (
+              <div className="flex flex-col">
+                <div className="text-sm font-semibold  text-batik-text">
+                  Interaction Style
+                </div>
+
+                <ReactJsonView
+                  src={reading}
+                  theme="bright:inverted"
+                  displayObjectSize={false}
+                  className="rounded-2xl"
+                  displayDataTypes={false}
+                />
               </div>
-              <div className="mockup-code w-full">
-                <pre>
-                  <code>{JSON.stringify(reading, null, 2)}</code>
-                </pre>
-              </div>
-            </div>
+            )}
           </div>
         </section>
 

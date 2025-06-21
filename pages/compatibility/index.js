@@ -477,14 +477,24 @@ export default function CompatibilityPage() {
               </button>
             </div>
 
+            <div className="w-full max-w-md">
+              <Link
+                href="/compatibility/custom"
+                className="btn btn-outline w-full"
+              >
+                <UserPlusIcon size={18} className="mr-2" />
+                Go to Custom Compatibility
+              </Link>
+            </div>
+
             {/* Add Custom Partner Button */}
-            <button
+            {/* <button
               onClick={() => setShowCustomPartnerForm(true)}
               className="btn btn-outline btn-sm w-full max-w-md"
             >
               <UserPlusIcon size={18} className="mr-2" />
               Add Custom Partner
-            </button>
+            </button> */}
 
             {partnerProfile.id && (
               <div className="bg-base-100 rounded-lg p-4 md:p-6 mb-6 border border-[var(--color-batik-border)] w-full">
@@ -626,7 +636,7 @@ export default function CompatibilityPage() {
                   CLOSE
                 </button>
               </div>
-              <div className="mb-4">
+              {/* <div className="mb-4">
                 <div className="relative">
                   <input
                     type="text"
@@ -642,7 +652,7 @@ export default function CompatibilityPage() {
                     className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="flex-grow overflow-y-auto space-y-2">
                 {(loadingFriends || loadingCustomProfiles) && (
                   <div className="text-center py-4">
@@ -663,6 +673,25 @@ export default function CompatibilityPage() {
                       No friends or custom profiles found.
                     </p>
                   )}
+
+                {/* Add New Friends Button */}
+                <Link
+                  href="/connections"
+                  className="btn btn-outline btn-sm w-full max-w-md"
+                >
+                  <UserPlusIcon size={18} className="mr-2" />
+                  Add New Friends
+                </Link>
+
+                <div className="divider text-batik-text">OR</div>
+                {/* Add Custom Partner Button */}
+                <button
+                  onClick={() => setShowCustomPartnerForm(true)}
+                  className="btn btn-outline btn-sm w-full max-w-md"
+                >
+                  <UserPlusIcon size={18} className="mr-2" />
+                  Add Custom Profile
+                </button>
                 {[...friendsList, ...customProfilesList]
                   .filter(
                     (partner) =>
@@ -739,7 +768,7 @@ export default function CompatibilityPage() {
             <div className="bg-base-100 rounded-t-lg p-6 w-full max-w-md shadow-lg transform transition-transform duration-300 ease-out translate-y-0">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold text-batik-black">
-                  Add Custom Partner
+                  Add Custom Profile
                 </h3>
                 <button
                   onClick={() => {
@@ -769,7 +798,7 @@ export default function CompatibilityPage() {
                     id="customFullName"
                     value={customFullName}
                     onChange={(e) => setCustomFullName(e.target.value)}
-                    className="input input-bordered w-full"
+                    className="input input-bordered w-full text-base"
                     required
                   />
                 </div>
@@ -785,7 +814,7 @@ export default function CompatibilityPage() {
                     id="customBirthDate"
                     value={customBirthDate}
                     onChange={(e) => setCustomBirthDate(e.target.value)}
-                    className="input input-bordered w-full"
+                    className="input input-bordered w-full text-base"
                     required
                   />
                 </div>
@@ -800,7 +829,7 @@ export default function CompatibilityPage() {
                     id="customGender"
                     value={customGender}
                     onChange={(e) => setCustomGender(e.target.value)}
-                    className="select select-bordered w-full"
+                    className="select select-bordered w-full text-base"
                     required
                   >
                     <option value="">Select Gender</option>

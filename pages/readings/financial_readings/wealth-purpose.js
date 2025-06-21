@@ -6,6 +6,10 @@ import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
 import { fetchProfileData } from "@/utils/fetch";
 import { config } from "@/utils/config";
+import dynamic from "next/dynamic";
+const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
+  ssr: false,
+});
 
 export default function WealthPurposePage() {
   const { user, loading: authLoading } = useAuth();
@@ -234,35 +238,34 @@ export default function WealthPurposePage() {
           <h2 className="text-xl font-semibold text-left">
             Wealth Through Purpose
           </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            Explore the core of how your Weton shapes your approach to love and
-            partnership.
+          <p className="text-sm text-gray-700 mb-2">
+            Explores how your Weton impacting financial prosperity and personal
+            fulfillment.
           </p>
         </div>
         <section>
           <div className="flex flex-col gap-4">
-            <div className="text-slate-600">
-              <div className="text-sm text-batik-text font-semibold">Weton</div>
-              <span className="text-batik-black font-semibold">
-                {profileData.dina_pasaran}
-              </span>
-            </div>
             <button
-              className="btn btn-neutral btn-sm"
+              className="btn border-batik-border text-batik-text rounded-2xl"
               onClick={handleGenerateReading}
             >
               Generate Reading
             </button>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Wealth Through Purpose
+            {reading && (
+              <div className="flex flex-col">
+                <div className="text-sm font-semibold  text-batik-text">
+                  Wealth Purpose
+                </div>
+
+                <ReactJsonView
+                  src={reading}
+                  theme="bright:inverted"
+                  displayObjectSize={false}
+                  className="rounded-2xl"
+                  displayDataTypes={false}
+                />
               </div>
-              <div className="mockup-code w-full">
-                <pre>
-                  <code>{JSON.stringify(reading, null, 2)}</code>
-                </pre>
-              </div>
-            </div>
+            )}
           </div>
         </section>
 

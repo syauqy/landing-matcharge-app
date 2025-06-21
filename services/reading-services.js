@@ -64,7 +64,7 @@ export async function generateDailyReading(profile) {
           today: z
             .string()
             .describe(
-              "Describes and summarize the daily reading of the user weton to today's weton in one sentence"
+              "Describes and summarize the daily reading of the user weton to today's weton in one sentence based on local timezone"
             )
             .catch(() => ""),
           do: z
@@ -87,7 +87,7 @@ export async function generateDailyReading(profile) {
             .catch(() => ""),
           weton: z
             .string()
-            .describe("Today's weton in english")
+            .describe("Today's weton in english based on local timezone")
             .catch(() => ""),
         }),
         messages: [{ role: "user", content: dailyReadingPrompt(profile) }],

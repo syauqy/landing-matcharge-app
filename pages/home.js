@@ -4,6 +4,7 @@ import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { config } from "@/utils/config";
+import { ArrowRight } from "lucide-react";
 
 import Link from "next/link";
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
@@ -178,7 +179,7 @@ export default function Home() {
       // Check if monthly reading already exists for current month
       const { data: existingReadings, error: fetchError } = await supabase
         .from("readings")
-        .select("reading, created_at, status")
+        .select("reading, created_at, status, reading_category, slug")
         .eq("user_id", user.id)
         .gte("created_at", firstDayOfMonth.toISOString())
         .lt("created_at", lastDayOfMonth.toISOString())
@@ -253,12 +254,10 @@ export default function Home() {
       handleMonthlyReading();
       handleDailyReading();
     }
-  }, [profileData]); // Depends on profileData and user
+  }, [profileData]);
 
   useEffect(() => {
     if (!user) return;
-
-    // console.log("daily reading subs", user);
 
     const channel = supabase
       .channel("daily_reading_changes")
@@ -294,7 +293,7 @@ export default function Home() {
   if (authLoading || !user || loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
+        <span className="loading loading-spinner loading-lg text-batik-text"></span>
         <p className="mt-4">Loading user data...</p>
       </div>
     );
@@ -357,13 +356,12 @@ export default function Home() {
   };
 
   const renderLatestReadings = () => {
-    // console.log(latestReadings);
     return (
       <ul className="flex flex-row flex-nowrap overflow-x-scroll overflow-y-hidden">
         {latestReadings.map((r) => (
-          <li key={r.id} className="w-fit">
+          <li key={r.id} className="w-fit ml-4 last:mr-4">
             <Link href={`/readings/${r?.reading_category}/${r.slug}`}>
-              <div className="rounded-2xl flex flex-col gap-2 p-4 bg-base-100 ml-4 shadow-sm border border-[var(--color-batik-border)] h-[8rem] w-[10rem]">
+              <div className="rounded-2xl flex flex-col gap-2 p-4 bg-base-100   shadow-sm border border-[var(--color-batik-border)] h-[8rem] w-[10rem]">
                 <p className="text-base-content font-semibold text-sm">
                   {r.title}
                 </p>{" "}
@@ -383,8 +381,6 @@ export default function Home() {
     const reading = monthlyReading?.reading;
 
     let formattedDate = "Date unavailable";
-
-    // console.log(reading);
 
     try {
       formattedDate = monthlyReading?.created_at
@@ -418,96 +414,24 @@ export default function Home() {
             <p className="text-sm text-base-content">
               {reading?.summary?.description}
             </p>
-            {/* {reading?.summary?.auspicious_scale && (
-              <div className="mt-3">
-                <p className="font-semibold">Auspicious scale</p>
-                <p className="text-sm text-base-content/90">
-                  {reading?.summary?.auspicious_scale}
-                </p>
-              </div>
-            )}
-            {reading?.analysis?.impact && (
-              <div className="mt-3">
-                <p className="font-semibold">How it will affecting you</p>
-                <p className="text-sm text-base-content/90">
-                  {reading?.analysis?.impact}
-                </p>
-              </div>
-            )}
-            {reading?.analysis?.fortunate_windows && (
-              <div className="mt-3">
-                <p className="font-semibold">Auspicious times this month</p>
-                <p className="text-sm text-base-content/90">
-                  {reading?.analysis?.fortunate_windows}
-                </p>
-              </div>
-            )}
-            {reading?.analysis?.cautious_windows && (
-              <div className="mt-3">
-                <p className="font-semibold">Times for you to be cautious</p>
-                <p className="text-sm text-base-content/90">
-                  {reading?.analysis?.cautious_windows}
-                </p>
-              </div>
-            )}
-            <div className="mt-3">
-              <p className="font-semibold text-lg">
-                Insight and guidance for you
-              </p>
-            </div>
-            {reading?.guidance?.growth && (
-              <div className="mt-3">
-                <p className="font-semibold">
-                  Personal Growth & Self-Development
-                </p>
-                <p className="text-sm text-base-content/90">
-                  {reading?.guidance?.growth}
-                </p>
-              </div>
-            )}
-            {reading?.guidance?.relationship && (
-              <div className="mt-3">
-                <p className="font-semibold">
-                  Relationships (Love, Family, Social)
-                </p>
-                <p className="text-sm text-base-content/90">
-                  {reading?.guidance?.relationship}
-                </p>
-              </div>
-            )}
-            {reading?.guidance?.career && (
-              <div className="mt-3">
-                <p className="font-semibold">Career & Financial</p>
-                <p className="text-sm text-base-content/90">
-                  {reading?.guidance?.career}
-                </p>
-              </div>
-            )}
-            {reading?.guidance?.health && (
-              <div className="mt-3">
-                <p className="font-semibold">Health & Well-being</p>
-                <p className="text-sm text-base-content/90">
-                  {reading?.guidance?.health}
-                </p>
-              </div>
-            )}
-            {reading?.wisdom?.philosophy && (
-              <div className="mt-2">
-                <p className="text-xs italic text-base-content/90">
-                  {reading?.wisdom?.philosophy}
-                </p>
-              </div>
-            )} */}
+            <Link
+              className="text-batik-text font-semibold inline-flex items-center"
+              href={`/readings/${monthlyReading?.reading_category}/${monthlyReading?.slug}`}
+            >
+              Read More
+              <ArrowRight className="ml-1 w-5 h-5" />
+            </Link>
           </div>
         </div>
       );
     }
   };
 
-  console.log(
-    getWeton(format(new Date(), "yyyy-MM-dd"))?.weton_en,
-    Intl.DateTimeFormat().resolvedOptions().timeZone
-  );
+  // const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  // const todayWeton = getWeton(format(new Date(), "yyyy-MM-dd"))?.weton_en;
+  // const localDate = utcToZonedTime(new Date(), deviceTimeZone);
+
+  // console.log(deviceTimeZone, new Date(), todayWeton);
 
   // console.log(dailyReading);
 
@@ -530,6 +454,44 @@ export default function Home() {
         <div className="flex flex-col gap-2 p-4">
           <div className="">{renderMonthlyReading()}</div>
         </div>
+        <div className="p-4 flex flex-col gap-2">
+          <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+            <div className="flex flex-col gap-2 p-4">
+              <div className="text-lg font-semibold">
+                The Heart&apos;s True Compass
+              </div>
+              <div>
+                Some connections feel like destiny. Javanese wisdom offers a
+                unique key to unlock the secrets of your union.
+              </div>
+              <Link
+                href={"/compatibility"}
+                className="btn border-batik-border text-batik-text rounded-2xl"
+              >
+                Reveal Your Compatibility
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className="p-4 flex flex-col gap-2">
+          <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+            <div className="flex flex-col gap-2 p-4">
+              <div className="text-lg font-semibold">
+                Understand Your Connections
+              </div>
+              <div>
+                Discover the unique Weton and Wuku blueprint of your friends to
+                foster deeper understanding and stronger bonds
+              </div>
+              <Link
+                className="btn border-batik-border text-batik-text rounded-2xl"
+                href={`/connections`}
+              >
+                Add Your Friends
+              </Link>
+            </div>
+          </div>
+        </div>
         <div className="my-4 flex flex-col gap-2">
           <div className="px-4 text-lg font-semibold text-batik-black">
             Latest Readings
@@ -538,6 +500,7 @@ export default function Home() {
             {renderLatestReadings()}
           </div>
         </div>
+
         {/* <div className="mt-4 flex flex-col gap-2">
           <div className="px-4 text-lg font-medium text-batik-black">
             Compatibility Reading

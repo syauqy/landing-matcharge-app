@@ -6,6 +6,10 @@ import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
 import { fetchProfileData } from "@/utils/fetch";
 import { config } from "@/utils/config";
+import dynamic from "next/dynamic";
+const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
+  ssr: false,
+});
 
 export default function SaptawaraPage() {
   const { user, loading: authLoading } = useAuth();
@@ -229,161 +233,36 @@ export default function SaptawaraPage() {
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         <div>
           <h2 className="text-xl font-semibold text-left">Saptawara</h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            Explore the core of how your Weton shapes your approach to love and
-            partnership.
+          <p className="text-sm text-gray-700 mb-2">
+            Reveal the core pillar of your inner foundation and its potential
+            influenced by the seven-day Pawukon cycle.
           </p>
         </div>
         <section>
           <div className="flex flex-col gap-4">
-            <div className="text-slate-600">
-              <div className="text-sm text-batik-text font-semibold">Weton</div>
-              <span className="text-batik-black font-semibold">
-                {profileData.dina_pasaran}
-              </span>
-            </div>
             <button
-              className="btn btn-neutral btn-sm"
+              className="btn border-batik-border text-batik-text rounded-2xl"
               onClick={handleGenerateReading}
             >
               Generate Reading
             </button>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Saptawara
+            {reading && (
+              <div className="flex flex-col">
+                <div className="text-sm font-semibold  text-batik-text">
+                  Saptawara
+                </div>
+
+                <ReactJsonView
+                  src={reading}
+                  theme="bright:inverted"
+                  displayObjectSize={false}
+                  className="rounded-2xl"
+                  displayDataTypes={false}
+                />
               </div>
-              <div className="mockup-code w-full">
-                <pre>
-                  <code>{JSON.stringify(reading, null, 2)}</code>
-                </pre>
-              </div>
-            </div>
+            )}
           </div>
         </section>
-
-        {/* <section className="border-t border-batik-text/20 pt-4">
-          <h2 className="text-xl font-semibold text-left">
-            Your Inner Compass & Life&apos;s Journey
-          </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            These elements describe your fundamental character, how you approach
-            life, and the innate energies that guide your path.
-          </p>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">Laku</div>
-              <p className="text-[10px] text-gray-700 italic">
-                Laku describes the overarching &quot;manner&quot; or
-                &quot;way&quot; your life tends to unfold, like a specific
-                archetype or behavioral pattern.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.laku?.name} (
-                  {profileData.weton?.laku?.meaning})
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.laku?.description}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Pancasuda
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Pancasuda types define your innate &quot;character essence&quot;
-                or life&apos;s guiding archetype, revealing the unique talents
-                and potential path intricately woven into your birth Weton.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.saptawara?.name}
-                </div>
-                <div className="text-[10px] text-gray-700 italic ">
-                  {profileData.weton?.saptawara?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.saptawara?.description}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-t border-batik-text/20 pt-4">
-          <h2 className="text-xl font-semibold text-left">
-            Karmic Tides & Cyclical Patterns
-          </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            These aspects point to underlying patterns, cyclical influences from
-            different day counts, and potential karmic themes that shape your
-            experiences.
-          </p>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Rakam
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Rakam suggests a significant life theme or a pattern of
-                experiences that may repeat or define distinct periods of your
-                life.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.rakam?.name}
-                </div>
-                <div className="text-[10px] text-gray-700 italic">
-                  {profileData.weton?.rakam?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.rakam?.description}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Sadwara
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Part of a six-day Pawukon cycle (Sadwara), this highlights
-                subtle behavioral tendencies, your approach to responsibility,
-                or social interaction styles.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.sadwara?.name} (
-                  {profileData.weton?.sadwara?.meaning})
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.sadwara?.description}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Hastawara
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                An eight-day Pawukon cycle influence (Hastawara), this can point
-                towards areas of specific luck, potential challenges, or types
-                of activities favored or to be cautious about.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.hastawara?.name}
-                </div>
-                <div className="text-[10px] text-gray-700 italic">
-                  {profileData.weton?.hastawara?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.hastawara?.description}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section> */}
       </main>
     </div>
   );

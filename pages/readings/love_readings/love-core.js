@@ -6,6 +6,10 @@ import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
 import { fetchProfileData } from "@/utils/fetch";
 import { config } from "@/utils/config";
+import dynamic from "next/dynamic";
+const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
+  ssr: false,
+});
 
 export default function LoveCorePage() {
   const { user, loading: authLoading } = useAuth();
@@ -232,28 +236,27 @@ export default function LoveCorePage() {
         </div>
         <section>
           <div className="flex flex-col gap-4">
-            <div className="text-slate-600">
-              <div className="text-sm text-batik-text font-semibold">Weton</div>
-              <span className="text-batik-black font-semibold">
-                {profileData.dina_pasaran}
-              </span>
-            </div>
             <button
-              className="btn btn-neutral btn-sm"
+              className="btn border-batik-border text-batik-text rounded-2xl"
               onClick={handleGenerateReading}
             >
               Generate Reading
             </button>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Your Love
+            {reading && (
+              <div className="flex flex-col">
+                <div className="text-sm font-semibold  text-batik-text">
+                  Your Love
+                </div>
+
+                <ReactJsonView
+                  src={reading}
+                  theme="bright:inverted"
+                  displayObjectSize={false}
+                  className="rounded-2xl"
+                  displayDataTypes={false}
+                />
               </div>
-              <div className="mockup-code w-full">
-                <pre>
-                  <code>{JSON.stringify(reading, null, 2)}</code>
-                </pre>
-              </div>
-            </div>
+            )}
           </div>
         </section>
 

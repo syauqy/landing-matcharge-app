@@ -59,11 +59,11 @@ export default function BasicReadingPage() {
     fetchProfileData();
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      console.log(window.history);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     console.log(window.history);
+  //   }
+  // }, []);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
