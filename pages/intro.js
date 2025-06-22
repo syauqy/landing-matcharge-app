@@ -177,14 +177,15 @@ export default function IntroPage() {
               <section className="grow justify-center items-center h-[28rem] flex ">
                 <div className="flex flex-col h-[28rem] justify-center items-center ">
                   <p className="mt-3 text-gray-700">
-                    For generations in Javanese culture, Weton and Wuku have
-                    been integral to daily life. They are consulted for
-                    everything from determining auspicious dates for marriages,
-                    building homes, and planting crops, to understanding family
-                    dynamics and personal growth. This knowledge, often recorded
-                    in ancient manuscripts called &quot;Primbon&quot; is a
-                    treasured part of Indonesian cultural wisdom, passed down
-                    through families and spiritual advisors.
+                    For generations in Javanese culture, <b>Weton</b> and{" "}
+                    <b>Wuku</b> have been integral to daily life. They are
+                    consulted for everything from determining auspicious dates
+                    for marriages, building homes, and planting crops, to
+                    understanding family dynamics and personal growth. This
+                    knowledge, often recorded in ancient manuscripts called
+                    &quot;<b>Primbon</b>&quot; is a treasured part of Indonesian
+                    cultural wisdom, passed down through families and spiritual
+                    advisors.
                   </p>
                 </div>
               </section>
