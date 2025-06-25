@@ -10,7 +10,7 @@ import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
 import { Navbar } from "@/components/layouts/navbar";
 import { NavbarProfile } from "@/components/layouts/navbar-profile";
 import { Menubar } from "@/components/layouts/menubar";
-import { SunIcon, MoonStarIcon } from "lucide-react";
+import { SunIcon, MoonStarIcon, Users2Icon } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -107,7 +107,7 @@ export default function ProfilePage() {
     );
   }
 
-  console.log(profileData, new Date());
+  console.log(profileData);
 
   // --- Generate Avatar URL ---
   const avatarUrl = profileData?.full_name
@@ -133,19 +133,28 @@ export default function ProfilePage() {
           {profileData && (
             <div className="px-5 mb-6 flex items-center gap-4">
               <div className="avatar">
-                <div className="w-16 rounded-full">
+                <div className="w-16 rounded-full ring-3 ring-offset-2 ring-batik-border">
                   <img
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                      profileData.full_name
-                    )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`}
+                    src={
+                      profileData?.avatar_url
+                        ? profileData?.avatar_url
+                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            profileData.full_name
+                          )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
+                    }
                     alt={profileData.full_name}
                   />
                 </div>
               </div>
-              <div>
-                <p className="text-xl font-bold text-batik-black">
-                  {profileData?.full_name || "User Name"}
-                </p>
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-col">
+                  <div className="text-xl font-bold text-batik-black">
+                    {profileData?.full_name || "Full Name"}
+                  </div>
+                  <div className="leading-3 text-sm text-gray-500">
+                    {profileData?.username || "username"}
+                  </div>
+                </div>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="flex items-center gap-1">
                     <SunIcon size={12} />
@@ -157,6 +166,13 @@ export default function ProfilePage() {
                     {profileData?.wuku?.name}
                   </div>
                 </div>
+                <Link
+                  href="/connections"
+                  className="py-1.5 px-3 text-xs inline-flex items-center w-fit rounded-full border text-batik-text border-batik-text hover:bg-batik/80 hover:cursor-pointer"
+                >
+                  <Users2Icon size={13} className=" mr-2" />
+                  <span>View Connections</span>
+                </Link>
               </div>
             </div>
           )}
@@ -175,7 +191,7 @@ export default function ProfilePage() {
                     onClick={() => setActiveTab("weton")}
                     className={`${
                       activeTab === "weton"
-                        ? "border-batik-text text-white bg-batik-border font-semibold"
+                        ? "border-batik-text text-batik-black bg-batik-border font-semibold"
                         : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
                     } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
                   >
@@ -185,7 +201,7 @@ export default function ProfilePage() {
                     onClick={() => setActiveTab("wuku")}
                     className={`${
                       activeTab === "wuku"
-                        ? "border-batik-text text-white bg-batik-border font-semibold"
+                        ? "border-batik-text text-batik-black bg-batik-border font-semibold"
                         : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
                     } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
                   >
@@ -195,7 +211,7 @@ export default function ProfilePage() {
                     onClick={() => setActiveTab("settings")}
                     className={`${
                       activeTab === "settings"
-                        ? "border-batik-text text-white bg-batik-border font-semibold"
+                        ? "border-batik-text text-batik-black bg-batik-border font-semibold"
                         : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
                     } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
                   >
@@ -205,31 +221,55 @@ export default function ProfilePage() {
               </div>
 
               {/* Tab Content */}
-              <div className="bg-base-100 rounded-lg p-4 md:p-6 mb-6 border border-[var(--color-batik-border)]">
+              <div className="bg-base-100 rounded-2xl p-4 md:p-6 mb-6 border border-[var(--color-batik-border)]">
                 {activeTab === "weton" && profileData.weton && (
                   <div className="space-y-6 text-sm">
-                    <DetailItem label="Dina" value={profileData.weton?.dina} />
-                    <DetailItem
-                      label="Pasaran"
-                      value={profileData.weton?.pasaran}
-                    />
-                    <DetailItem
-                      label="Neptu Dina"
-                      value={profileData.weton?.neptu_dina}
-                    />
-                    <DetailItem
-                      label="Neptu Pasaran"
-                      value={profileData.weton?.neptu_pasaran}
-                    />
-                    <DetailItem
-                      label="Total Neptu"
-                      value={profileData.weton?.total_neptu}
-                      isBold={true}
-                    />
-                    <DetailItem
-                      label="Dina Pasaran"
-                      value={profileData?.dina_pasaran}
-                    />
+                    <div className="flex flex-row gap-y-4">
+                      <div className="flex flex-col border-y border-l border-slate-400 rounded-l-xl">
+                        <div className="border-b border-slate-300 p-2">
+                          Weton
+                        </div>
+                        <div className="border-b border-slate-300 p-2">
+                          Day (Dina)
+                        </div>
+                        <div className="border-b border-slate-300 p-2">
+                          Market Day (Pasaran)
+                        </div>
+                        <div className="border-b border-slate-300 p-2">
+                          Total Neptu
+                        </div>
+                        <div className="border-b border-slate-300 p-2">
+                          Laku
+                        </div>
+                        <div className="border-b border-slate-300 p-2">
+                          Pancasuda
+                        </div>
+                        <div className="p-2">Rakam</div>
+                      </div>
+                      <div className="flex flex-col border flex-grow border-slate-400 rounded-r-xl">
+                        <div className="border-b border-slate-300 p-2">
+                          {profileData.weton?.weton_en}
+                        </div>
+                        <div className="border-b border-slate-300 p-2">
+                          {profileData.weton?.dina_en}
+                        </div>
+                        <div className="border-b border-slate-300 p-2">
+                          {profileData.weton?.pasaran}
+                        </div>
+                        <div className="border-b border-slate-300 p-2">
+                          {profileData.weton?.total_neptu}
+                        </div>
+                        <div className="border-b border-slate-300 p-2">
+                          {profileData.weton?.laku?.name}
+                        </div>
+                        <div className="border-b border-slate-300 p-2">
+                          {profileData.weton?.saptawara?.name}
+                        </div>
+                        <div className="p-2">
+                          {profileData.weton?.rakam?.name}
+                        </div>
+                      </div>
+                    </div>
 
                     {/* Day (Dina) Character */}
                     {(profileData.weton?.dina_en ||
@@ -433,6 +473,7 @@ export default function ProfilePage() {
                       <DetailItem
                         label="Username"
                         value={profileData.username}
+                        isCapital={true}
                       />
                       <DetailItem label="Email" value={user?.email} />
                       <DetailItem
@@ -449,11 +490,24 @@ export default function ProfilePage() {
                             : "N/A"
                         }
                       />
-                      <DetailItem label="Gender" value={profileData.gender} />
+                      <DetailItem
+                        label="Gender"
+                        value={profileData.gender}
+                        isCapital={true}
+                      />
                       <DetailItem
                         label="Subscription"
                         value={profileData.subscription_status || "Free Tier"}
+                        isCapital={true}
                       />
+                    </div>
+                    <div>
+                      <Link
+                        href={"/intro"}
+                        className="btn w-full bg-batik border-batik-text"
+                      >
+                        See Intro
+                      </Link>
                     </div>
                     <div className="pt-6 border-t border-gray-200">
                       <button
@@ -537,11 +591,11 @@ export default function ProfilePage() {
 }
 
 // Helper component for displaying profile details neatly
-const DetailItem = ({ label, value, isBold = false }) => (
+const DetailItem = ({ label, value, isBold = false, isCapital = false }) => (
   <div>
     <span className="text-gray-500">{label}:</span>
     <span
-      className={`ml-2 capitalize ${
+      className={`ml-2 ${isCapital ? "capitalize" : ""} ${
         isBold ? "font-semibold text-batik-black" : "text-gray-700"
       }`}
     >

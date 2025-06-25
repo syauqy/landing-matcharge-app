@@ -36,15 +36,15 @@ export const CardData = {
       category: "general_readings",
       type: "pro",
     },
-    {
-      id: 5,
-      title: "Sadwara",
-      description:
-        "Explore the subtle behavioral tendencies influenced by the six-day Pawukon cycle.",
-      slug: "sadwara",
-      category: "general_readings",
-      type: "pro",
-    },
+    // {
+    //   id: 5,
+    //   title: "Sadwara",
+    //   description:
+    //     "Explore the subtle behavioral tendencies influenced by the six-day Pawukon cycle.",
+    //   slug: "sadwara",
+    //   category: "general_readings",
+    //   type: "pro",
+    // },
     {
       id: 6,
       title: "Character and Traits",
@@ -54,15 +54,15 @@ export const CardData = {
       category: "general_readings",
       type: "pro",
     },
-    {
-      id: 7,
-      title: "Hastawara",
-      description:
-        "Understand the specific fortunes and challenges guided by the eight-day cycle influence.",
-      slug: "hastawara",
-      category: "general_readings",
-      type: "pro",
-    },
+    // {
+    //   id: 7,
+    //   title: "Hastawara",
+    //   description:
+    //     "Understand the specific fortunes and challenges guided by the eight-day cycle influence.",
+    //   slug: "hastawara",
+    //   category: "general_readings",
+    //   type: "pro",
+    // },
     {
       id: 8,
       title: "Laku",

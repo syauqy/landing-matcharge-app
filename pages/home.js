@@ -435,12 +435,12 @@ export default function Home() {
 
   // console.log(dailyReading);
 
-  // console.log(profileData);
+  console.log(user);
 
   return (
     <div className="h-[100svh] flex flex-col bg-base relative">
-      <DashboardNavbar user={user} handleLogout={handleLogout} />
-      <div className="py-4 pb-20 flex-grow my-12">
+      <DashboardNavbar user={user} />
+      <div className="py-4 pb-20 overflow-y-auto flex-grow mt-12 mb-8">
         <div className="px-4">
           <p className="text-lg sm:text-xl font-semibold text-batik-black">
             Good {getTimeOfDay()},{" "}

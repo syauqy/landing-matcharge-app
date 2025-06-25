@@ -12,12 +12,12 @@ export function NavbarProfile({ title }) {
         </div>
       </div>
       <div className="navbar-end">
-        <Link
+        {/* <Link
           href="/connections"
           className="p-2 rounded-full text-xl border border-batik-text hover:bg-batik/80 hover:cursor-pointer"
         >
           <Users2Icon size={15} className="text-batik-text" />
-        </Link>
+        </Link> */}
       </div>
     </nav>
   );

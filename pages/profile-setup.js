@@ -5,9 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { getWeton, getWuku } from "@/utils";
 import { Toaster, toast } from "sonner";
-import { Capacitor } from "@capacitor/core";
 import { Navbar } from "@/components/layouts/navbar";
-import { format } from "date-fns";
 
 export default function ProfileSetupPage() {
   const { user, loading: authLoading } = useAuth();
@@ -23,6 +21,8 @@ export default function ProfileSetupPage() {
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [usernameAvailable, setUsernameAvailable] = useState(null);
   const [usernameError, setUsernameError] = useState("");
+
+  console.log(user);
 
   // Effect to redirect if not logged in
   useEffect(() => {
@@ -52,7 +52,8 @@ export default function ProfileSetupPage() {
 
     if (user) {
       checkProfile();
-      setFullName(user?.identities[0]?.identity_data?.full_name);
+      setFullName(user?.user_metadata?.full_name);
+      setUsername(user?.email ? user.email.split("@")[0] : "");
     }
   }, [user, router]);
 
@@ -173,6 +174,7 @@ export default function ProfileSetupPage() {
       weton: wetonDetails,
       wuku: wukuDetails,
       dina_pasaran: wetonDetails?.weton_en,
+      avatar_url: user?.user_metadata?.avatar_url,
     };
 
     try {
@@ -346,8 +348,10 @@ export default function ProfileSetupPage() {
                     onChange={(e) => setUsername(e.target.value.trim())}
                     className={`w-full lowercase mt-0 block border-0 border-b-2 border-batik-border-light px-0.5 py-2 text-lg focus:border-batik-border-hover focus:ring-0 appearance-none focus:outline-0 ${
                       usernameAvailable === true
-                        ? "border-green-500 focus:border-green-500 "
+                        ? "border-green-500 focus:border-green-500"
                         : usernameAvailable === false
+                        ? "border-red-500 text-red-500"
+                        : !username.length > 0
                         ? "border-red-500 text-red-500"
                         : ""
                     }`}
@@ -371,22 +375,24 @@ export default function ProfileSetupPage() {
                       </svg>
                     </div>
                   )}
-                  {!isCheckingUsername && usernameAvailable === true && (
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="h-5 w-5 text-green-500"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                  )}
+                  {!isCheckingUsername &&
+                    usernameAvailable &&
+                    username.length > 2 === true && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="h-5 w-5 text-green-500"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    )}
                 </div>
                 {usernameError && (
                   <p className="text-xs text-red-500 mt-1">{usernameError}</p>
@@ -462,7 +468,7 @@ export default function ProfileSetupPage() {
                   id="fullName"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full px-3 py-2 block border-0 border-b-2 border-batik-border-light text-lg appearance-none focus:outline-0"
+                  className="w-full px-0.5 py-2 block border-0 border-b-2 border-batik-border-light text-lg appearance-none focus:outline-0"
                   placeholder="Enter your full name"
                   required
                 />
@@ -480,6 +486,7 @@ export default function ProfileSetupPage() {
                   onClick={nextStep}
                   disabled={
                     (currentStep === 1 && !usernameAvailable) ||
+                    !username.length > 0 ||
                     (currentStep === 2 && !birthDate) ||
                     (currentStep === 3 && !gender)
                   }
