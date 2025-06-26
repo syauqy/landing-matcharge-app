@@ -199,11 +199,11 @@ export default function ConnectionsPage() {
                 placeholder="Search people by username..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="focus:outline-0 appearance-none border border-slate-200 p-2 rounded-2xl w-full"
+                className="focus:outline-0 appearance-none border border-batik-text p-2 rounded-xl w-full"
               />
               <button
                 type="submit"
-                className="btn btn-sm btn-primary"
+                className="shrink-0 rounded-xl bg-batik text-batik-text border-batik-text border font-semibold p-2"
                 disabled={loadingSearch}
               >
                 {loadingSearch ? (
@@ -260,72 +260,74 @@ export default function ConnectionsPage() {
             </div>
           </section>
 
-          <section>
-            <h2 className="text-xl font-semibold text-batik-black mb-3">
-              Requests ({pendingRequests.length})
-            </h2>
-            {loadingRequests && (
-              <p className="text-sm text-gray-500">Loading requests...</p>
-            )}
-            <div className="space-y-2">
-              {pendingRequests.length > 0
-                ? pendingRequests.map((req) => (
-                    <div
-                      key={req.id}
-                      className="p-3 bg-base-100 rounded-lg shadow border border-batik-border flex items-center justify-between"
-                    >
-                      <div className="flex flex-col gap-2">
-                        <div className="flex flex-row gap-2 items-center leading-4">
-                          <p className="font-semibold text-batik-black">
-                            {req.full_name || req.username}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            @{req.username}
-                          </p>
+          {pendingRequests?.length > 0 && (
+            <section>
+              <h2 className="text-xl font-semibold text-batik-black mb-3">
+                Requests ({pendingRequests.length})
+              </h2>
+              {loadingRequests && (
+                <p className="text-sm text-gray-500">Loading requests...</p>
+              )}
+              <div className="space-y-2">
+                {pendingRequests.length > 0
+                  ? pendingRequests.map((req) => (
+                      <div
+                        key={req.id}
+                        className="p-3 bg-base-100 rounded-lg shadow border border-batik-border flex items-center justify-between"
+                      >
+                        <div className="flex flex-col gap-2">
+                          <div className="flex flex-row gap-2 items-center leading-4">
+                            <p className="font-semibold text-batik-black">
+                              {req.full_name || req.username}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              @{req.username}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs">
+                            <div className="flex items-center gap-1">
+                              <SunIcon size={12} />
+                              {req?.dina_pasaran}
+                            </div>
+                            <>&bull;</>
+                            <div className="flex items-center gap-1">
+                              <MoonStarIcon size={12} />
+                              {req?.name}
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2 text-xs">
-                          <div className="flex items-center gap-1">
-                            <SunIcon size={12} />
-                            {req?.dina_pasaran}
-                          </div>
-                          <>&bull;</>
-                          <div className="flex items-center gap-1">
-                            <MoonStarIcon size={12} />
-                            {req?.name}
-                          </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() =>
+                              handleFriendRequestAction(req.id, "decline")
+                            }
+                            className="btn btn-xs btn-error"
+                          >
+                            Decline
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleFriendRequestAction(req.id, "accept")
+                            }
+                            className="btn btn-xs btn-success"
+                          >
+                            Accept
+                          </button>
                         </div>
                       </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() =>
-                            handleFriendRequestAction(req.id, "decline")
-                          }
-                          className="btn btn-xs btn-error"
-                        >
-                          Decline
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleFriendRequestAction(req.id, "accept")
-                          }
-                          className="btn btn-xs btn-success"
-                        >
-                          Accept
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                : !loadingRequests && (
-                    <p className="text-sm text-gray-500">
-                      No pending requests.
-                    </p>
-                  )}
-            </div>
-          </section>
+                    ))
+                  : !loadingRequests && (
+                      <p className="text-sm text-gray-500">
+                        No pending requests.
+                      </p>
+                    )}
+              </div>
+            </section>
+          )}
 
           <section>
-            <h2 className="text-xl font-semibold text-batik-black mb-3">
-              Your Friends ({friends.length})
+            <h2 className="text-lg font-semibold text-batik-black mb-3">
+              Your Connections ({friends.length})
             </h2>
             {loadingFriends && (
               <p className="text-sm text-gray-500">Loading friends...</p>
@@ -363,7 +365,8 @@ export default function ConnectionsPage() {
                   ))
                 : !loadingFriends && (
                     <p className="text-sm text-gray-500">
-                      You have no friends yet. Try searching for some!
+                      You have no connections yet. Try searching using the
+                      search bar above.
                     </p>
                   )}
             </div>
