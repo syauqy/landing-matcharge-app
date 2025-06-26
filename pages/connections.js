@@ -75,8 +75,8 @@ export default function ConnectionsPage() {
           requester_id,
           addressee_id,
           status,
-          profile_requester:requester_id (id, username, full_name, dina_pasaran, wuku->name),
-          profile_addressee:addressee_id (id, username, full_name, dina_pasaran, wuku->name)
+          profile_requester:requester_id (id, username, full_name, dina_pasaran, wuku->name, avatar_url),
+          profile_addressee:addressee_id (id, username, full_name, dina_pasaran, wuku->name, avatar_url)
         `
         )
         .eq("status", "accepted")
@@ -117,7 +117,7 @@ export default function ConnectionsPage() {
     try {
       const { data, error: searchError } = await supabase
         .from("profiles")
-        .select("id, username, full_name, dina_pasaran, wuku->name")
+        .select("id, username, full_name, dina_pasaran, wuku->name, avatar_url")
         .ilike("username", `%${searchTerm}%`)
         .neq("id", user?.id || "") // Exclude current user from search
         .limit(10);
@@ -180,7 +180,7 @@ export default function ConnectionsPage() {
     );
   }
 
-  console.log(searchResults);
+  console.log(pendingRequests);
 
   return (
     <>
@@ -218,20 +218,35 @@ export default function ConnectionsPage() {
             )}
             <div className="space-y-2">
               {searchResults.map((profile) => (
-                <div
+                <Link
+                  href={`/profile/detail?username=${profile.username}`}
                   key={profile.id}
-                  className="p-3 bg-base-100 rounded-lg shadow border border-batik-border flex items-center justify-between"
+                  className="flex-row gap-3 p-3 bg-base-100 rounded-2xl shadow-xs border border-batik-border flex items-center"
                 >
-                  <div className="flex flex-col gap-2">
-                    <div className="flex flex-row gap-2 items-center leading-4">
-                      <p className="font-semibold text-batik-black">
+                  <div className="avatar">
+                    <div className="w-12 rounded-full ring-batik-border">
+                      <img
+                        src={
+                          profile?.avatar_url
+                            ? profile?.avatar_url
+                            : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                profile.full_name
+                              )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
+                        }
+                        alt={profile.full_name}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2 max-w-[80%]">
+                    <div className="flex flex-row gap-2 items-end leading-4">
+                      <p className="font-semibold text-batik-black text-ellipsis overflow-hidden text-nowrap">
                         {profile.full_name || profile.username}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-xs text-gray-500 leading-3.5 text-ellipsis overflow-hidden text-nowrap">
                         @{profile.username}
                       </p>
                     </div>
-                    <div className="flex items-center gap-2 text-xs">
+                    <div className="flex items-center gap-1 text-xs">
                       <div className="flex items-center gap-1">
                         <SunIcon size={12} />
                         {profile?.dina_pasaran}
@@ -243,13 +258,7 @@ export default function ConnectionsPage() {
                       </div>
                     </div>
                   </div>
-                  <Link
-                    href={`/profile/detail?username=${profile.username}`}
-                    className="btn btn-xs btn-outline btn-primary"
-                  >
-                    View Profile
-                  </Link>
-                </div>
+                </Link>
               ))}
               {!loadingSearch &&
                 searchTerm !== "" &&
@@ -262,8 +271,8 @@ export default function ConnectionsPage() {
 
           {pendingRequests?.length > 0 && (
             <section>
-              <h2 className="text-xl font-semibold text-batik-black mb-3">
-                Requests ({pendingRequests.length})
+              <h2 className="text-lg font-semibold text-batik-black mb-3">
+                Connection Requests ({pendingRequests.length})
               </h2>
               {loadingRequests && (
                 <p className="text-sm text-gray-500">Loading requests...</p>
@@ -271,37 +280,28 @@ export default function ConnectionsPage() {
               <div className="space-y-2">
                 {pendingRequests.length > 0
                   ? pendingRequests.map((req) => (
-                      <div
-                        key={req.id}
-                        className="p-3 bg-base-100 rounded-lg shadow border border-batik-border flex items-center justify-between"
+                      <Link
+                        href={`/profile/detail?username=${req?.profiles?.username}`}
+                        key={req?.profiles?.id}
+                        className="flex-row gap-3 p-3 bg-base-100 rounded-2xl shadow-xs border border-batik-border flex items-center"
                       >
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-1 max-w-[55%]">
                           <div className="flex flex-row gap-2 items-center leading-4">
-                            <p className="font-semibold text-batik-black">
-                              {req.full_name || req.username}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              @{req.username}
+                            <p className="font-semibold text-batik-black overflow-hidden text-nowrap text-ellipsis">
+                              {req?.profiles?.full_name ||
+                                req?.profiles?.username}
                             </p>
                           </div>
-                          <div className="flex items-center gap-2 text-xs">
-                            <div className="flex items-center gap-1">
-                              <SunIcon size={12} />
-                              {req?.dina_pasaran}
-                            </div>
-                            <>&bull;</>
-                            <div className="flex items-center gap-1">
-                              <MoonStarIcon size={12} />
-                              {req?.name}
-                            </div>
-                          </div>
+                          <p className="text-sm text-gray-500 overflow-hidden text-nowrap text-ellipsis">
+                            @{req?.profiles?.username}
+                          </p>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-center shrink-0">
                           <button
                             onClick={() =>
                               handleFriendRequestAction(req.id, "decline")
                             }
-                            className="btn btn-xs btn-error"
+                            className="btn bg-red-200 p-2 text-xs text-red-600 rounded-xl"
                           >
                             Decline
                           </button>
@@ -309,12 +309,12 @@ export default function ConnectionsPage() {
                             onClick={() =>
                               handleFriendRequestAction(req.id, "accept")
                             }
-                            className="btn btn-xs btn-success"
+                            className="btn bg-green-200 p-2 text-xs text-green-700 rounded-xl"
                           >
                             Accept
                           </button>
                         </div>
-                      </div>
+                      </Link>
                     ))
                   : !loadingRequests && (
                       <p className="text-sm text-gray-500">
@@ -338,18 +338,32 @@ export default function ConnectionsPage() {
                     <Link
                       key={friend.id}
                       href={`/profile/detail?username=${friend.username}`}
-                      className="block p-3 bg-base-100 rounded-lg shadow border border-batik-border hover:bg-base-200 transition-colors"
+                      className="flex flex-row items-center gap-3 p-3 bg-base-100 rounded-2xl shadow-xs border border-batik-border hover:bg-batik/50 transition-colors"
                     >
-                      <div className="flex flex-col gap-2">
-                        <div className="flex flex-row gap-2 items-center leading-4">
-                          <p className="font-semibold text-batik-black">
+                      <div className="avatar">
+                        <div className="w-12 rounded-full ring-batik-border">
+                          <img
+                            src={
+                              friend?.avatar_url
+                                ? friend?.avatar_url
+                                : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                    friend.full_name
+                                  )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
+                            }
+                            alt={friend.full_name}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2 max-w-[80%]">
+                        <div className="flex flex-row gap-2 items-end leading-4">
+                          <p className="font-semibold text-batik-black text-ellipsis overflow-hidden text-nowrap">
                             {friend.full_name || friend.username}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-xs text-gray-500 leading-3.5 text-ellipsis overflow-hidden text-nowrap">
                             @{friend.username}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2 text-xs">
+                        <div className="flex items-center gap-1 text-xs">
                           <div className="flex items-center gap-1">
                             <SunIcon size={12} />
                             {friend?.dina_pasaran}
