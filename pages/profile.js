@@ -1,17 +1,15 @@
 // pages/profile.js
 import Head from "next/head";
-import Image from "next/image"; // Import Next.js Image component for optimization
 import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import Link from "next/link"; // Import Link for navigation
-import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
-import { Navbar } from "@/components/layouts/navbar";
 import { NavbarProfile } from "@/components/layouts/navbar-profile";
 import { Menubar } from "@/components/layouts/menubar";
 import { SunIcon, MoonStarIcon, Users2Icon } from "lucide-react";
 import { openBrowser, closeBrowser } from "@/utils/native-browser";
+import { LoadingProfile } from "@/components/layouts/loading-profile";
 
 export default function ProfilePage() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -107,24 +105,21 @@ export default function ProfilePage() {
     router.push("/");
   };
 
-  // --- Loading States ---
   if (authLoading || (!profileData && loadingProfile)) {
-    // Show loading if auth is loading OR if profile hasn't loaded yet
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-base">
-        <p className="text-batik-black">Loading Profile...</p>
-      </div>
-    );
+    return <LoadingProfile />;
   }
 
   console.log(profileData);
 
-  // --- Generate Avatar URL ---
-  const avatarUrl = profileData?.full_name
-    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
-        profileData.full_name
-      )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true` // Example colors, adjust as needed
-    : null; // Handle case where full_name might be missing
+  const displayAvatarUrl =
+    profileData.avatar_url ||
+    (profileData.full_name
+      ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
+          profileData.full_name
+        )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
+      : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+          profileData.username
+        )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`);
 
   return (
     <>
@@ -144,24 +139,15 @@ export default function ProfilePage() {
             <div className="px-5 mb-6 flex items-center gap-4">
               <div className="avatar">
                 <div className="w-16 rounded-full ring-3 ring-offset-2 ring-batik-border">
-                  <img
-                    src={
-                      profileData?.avatar_url
-                        ? profileData?.avatar_url
-                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            profileData.full_name
-                          )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
-                    }
-                    alt={profileData.full_name}
-                  />
+                  <img src={displayAvatarUrl} alt={profileData.full_name} />
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 max-w-[80%]">
                 <div className="flex flex-col">
-                  <div className="text-xl font-bold text-batik-black">
+                  <div className="text-xl font-bold text-batik-black overflow-x-clip text-nowrap text-ellipsis">
                     {profileData?.full_name || "Full Name"}
                   </div>
-                  <div className="leading-3 text-sm text-gray-500">
+                  <div className="leading-3 text-sm text-gray-500 overflow-x-clip text-nowrap text-ellipsis">
                     {profileData?.username || "username"}
                   </div>
                 </div>
@@ -359,6 +345,9 @@ export default function ProfilePage() {
                                   profileData.weton?.neptu_character
                                     ?.description
                                 }
+                              </div>
+                              <div className="text-base text-gray-700 mt-2">
+                                {profileData.weton?.watak_weton}
                               </div>
                             </div>
                           </div>
@@ -604,10 +593,10 @@ export default function ProfilePage() {
                         <div className="px-4 py-2">Subscription</div>
                       </div>
                       <div className="flex flex-col border flex-grow border-batik-border rounded-r-xl font-medium text-batik-black">
-                        <div className="border-b border-batik-border px-4 py-2">
+                        <div className="border-b border-batik-border px-4 py-2 overflow-x-clip text-nowrap text-ellipsis">
                           {profileData.full_name}
                         </div>
-                        <div className="border-b border-batik-border px-4 py-2">
+                        <div className="border-b border-batik-border px-4 py-2 overflow-x-clip text-nowrap text-ellipsis">
                           {profileData.username}
                         </div>
                         <div className="border-b border-batik-border px-4 py-2">
@@ -690,17 +679,3 @@ export default function ProfilePage() {
     </>
   );
 }
-
-// Helper component for displaying profile details neatly
-const DetailItem = ({ label, value, isBold = false, isCapital = false }) => (
-  <div>
-    <span className="text-gray-500">{label}:</span>
-    <span
-      className={`ml-2 ${isCapital ? "capitalize" : ""} ${
-        isBold ? "font-semibold text-batik-black" : "text-gray-700"
-      }`}
-    >
-      {value !== null && value !== undefined ? value : "N/A"}
-    </span>
-  </div>
-);

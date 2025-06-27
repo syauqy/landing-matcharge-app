@@ -425,7 +425,7 @@ export default function CompatibilityPage() {
 
       {/* --- Main Layout Container --- */}
       <div className="h-[100svh] flex flex-col bg-base relative">
-        <Navbar title="Compatibility" isConnection={true} />
+        <Navbar title="Compatibility" isConnection={true} isBack={true} />
         {/* Main Content Area */}
         <div className="flex-grow overflow-y-auto justify-center pt-4 sm:pt-6 pb-20">
           {profileData && (

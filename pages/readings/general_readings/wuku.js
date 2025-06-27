@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { ArrowLeft, HelpCircle } from "lucide-react";
+import { LoadingProfile } from "@/components/layouts/loading-profile";
 
 export default function BasicReadingPage() {
   const { user, loading: authLoading } = useAuth();
@@ -12,6 +12,29 @@ export default function BasicReadingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [sheetContent, setSheetContent] = useState({
+    title: "",
+    description: "",
+  });
+
+  const tooltipContent = {
+    wuku: `Your Wuku is the 7-day "week" within the 230-day Javanese Pawukon calendar cycle you were born into. Think of it as a more detailed and specific version of a zodiac sign, representing the broader "season" or "chapter" of your birth. There are 30 different Wuku in total, and each one possesses a unique and intricate set of characteristics, influences, and symbolic patrons that define a person's overarching character, fortune, and potential life path. While your Weton is your specific energetic signature, your Wuku provides the larger mythological and cosmological context for your destiny.`,
+    god: "The Guardian Deity (Dewa) is the divine patron or guiding spirit assigned to your specific birth-week. Drawing from the Hindu-Javanese pantheon, this deity's character, powers, and story directly influence your own innate virtues, flaws, and life themes. For example, being born under a deity of justice might bestow a strong moral compass and leadership qualities, while a deity of wealth might grant a natural talent for prosperity but also a risk of greed. This divine patronage essentially provides the core personality blueprint and spiritual lesson for everyone born within that Wuku.",
+    tree: "The Tree of your Wuku symbolizes your connection to nature, your path of growth, inherent virtues, and the kind of environment where you best flourish.",
+    bird: `The Bird of your Wuku represents your ambitions, how you express yourself, your manner of navigating life's journey, and aspects of your fortune or luck.`,
+  };
+
+  useEffect(() => {
+    if (isSheetOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isSheetOpen]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -60,7 +83,7 @@ export default function BasicReadingPage() {
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
-    setShowTitleInNavbar(scrollPosition > 80);
+    setShowTitleInNavbar(scrollPosition > 50);
   };
 
   useEffect(() => {
@@ -70,40 +93,32 @@ export default function BasicReadingPage() {
     };
   }, []);
 
+  const handleShowExplanation = (title, description) => {
+    setSheetContent({ title, description });
+    setIsSheetOpen(true);
+  };
+
   console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
-        <p className="mt-4">Loading your profile...</p>
-      </div>
-    );
+    return <LoadingProfile />;
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <div className="alert alert-error shadow-lg max-w-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2 2m2-2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>Error! {error}</span>
+      <div className="min-h-screen flex flex-col gap-4 items-center justify-center bg-base-100 text-base-content p-4">
+        <div className="alert bg-red-50 text-red-500 max-w-md text-center">
+          <div className="flex flex-col gap-3 text-center items-center">
+            <CircleAlertIcon className="h-10 w-10" />
+            <div className="text-center">Error! {error}</div>
           </div>
         </div>
-        <button onClick={() => router.back()} className="btn btn-neutral mt-6">
-          Go Back
+        <button
+          onClick={() => router.back()}
+          className="p-2 px-4 rounded-full text-lg border border-batik-text hover:bg-batik/80 hover:cursor-pointer inline-flex items-center text-batik-text font-medium"
+        >
+          <ArrowLeft size={20} className="text-batik-text" />
+          <span className="ml-2">Go Back</span>
         </button>
       </div>
     );
@@ -172,66 +187,121 @@ export default function BasicReadingPage() {
           <h1 className="text-xl font-semibold text-left">
             Wuku: The Essence of Your Being
           </h1>
-          <p className="text-[10px] text-gray-700 mb-2">
+          <p className="text-sm text-gray-700 mb-2">
             Your Wuku is the specific week within the 210-day Javanese Pawukon
             calendar into which you were born. It imprints you with unique
             characteristics, symbolic guardians, and overarching life patterns.
           </p>
         </div>
         <section>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-8">
             <div className="text-slate-600">
-              <div className="text-sm text-batik-text font-semibold">Wuku</div>
-              <span className="text-batik-black font-semibold">
+              <div className="flex items-center gap-2">
+                <div className="text-batik-text font-semibold">Wuku</div>
+                <button
+                  onClick={() =>
+                    handleShowExplanation("Wuku", tooltipContent?.wuku)
+                  }
+                  className="text-batik-text hover:text-batik-text"
+                >
+                  <HelpCircle size={16} />
+                </button>
+              </div>
+              <div className="text-batik-black text-lg font-semibold">
                 {profileData?.wuku?.name}
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm text-gray-700">
+              </div>
+              <div className="text-gray-700">
                 {profileData?.wuku?.character}
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="text-sm font-semibold text-batik-text">
-                Guardian Deity
+              <div className="flex items-center gap-2">
+                <div className="font-semibold text-batik-text">
+                  Guardian Deity
+                </div>
+                <button
+                  onClick={() =>
+                    handleShowExplanation("Guardian Deity", tooltipContent?.god)
+                  }
+                  className="text-batik-text hover:text-batik-text"
+                >
+                  <HelpCircle size={16} />
+                </button>
               </div>
-              <p className="text-[10px] text-gray-700 italic">
-                The Deity associated with your Wuku is a divine patron,
-                bestowing specific spiritual qualities, protection, and
-                influencing your higher aspirations.
-              </p>
-              <div className="font-semibold">{profileData?.wuku?.god}</div>
-              <div className="text-sm text-gray-700">
+              <div className="text-lg font-semibold">
+                {profileData?.wuku?.god}
+              </div>
+              <div className="text-gray-700">
                 {profileData?.wuku?.god_meaning}
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="text-sm font-semibold text-batik-text">Tree</div>
-              <p className="text-[10px] text-gray-700 italic">
-                The Tree of your Wuku symbolizes your connection to nature, your
-                path of growth, inherent virtues, and the kind of environment
-                where you best flourish.
-              </p>
-              <div className="font-semibold">{profileData?.wuku?.tree}</div>
-              <div className="text-sm text-gray-700">
+              <div className="flex items-center gap-2">
+                <div className="font-semibold text-batik-text">Tree</div>
+                <button
+                  onClick={() =>
+                    handleShowExplanation("Wuku's Tree", tooltipContent?.tree)
+                  }
+                  className="text-batik-text hover:text-batik-text"
+                >
+                  <HelpCircle size={16} />
+                </button>
+              </div>
+              <div className="text-lg font-semibold">
+                {profileData?.wuku?.tree}
+              </div>
+              <div className="text-gray-700">
                 {profileData?.wuku?.tree_meaning}
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="text-sm font-semibold text-batik-text">Bird</div>
-              <p className="text-[10px] text-gray-700 italic">
-                The Bird of your Wuku represents your ambitions, how you express
-                yourself, your manner of navigating life&apos;s journey, and
-                aspects of your fortune or luck.
-              </p>
-              <div className="font-semibold">{profileData?.wuku?.bird}</div>
-              <div className="text-sm text-gray-700">
+              <div className="flex items-center gap-2">
+                <div className="font-semibold text-batik-text">Bird</div>
+                <button
+                  onClick={() =>
+                    handleShowExplanation("Wuku's Bird", tooltipContent?.bird)
+                  }
+                  className="text-batik-text hover:text-batik-text"
+                >
+                  <HelpCircle size={16} />
+                </button>
+              </div>
+              <div className="text-lg font-semibold">
+                {profileData?.wuku?.bird}
+              </div>
+              <div className="text-gray-700">
                 {profileData?.wuku?.bird_meaning}
               </div>
             </div>
           </div>
         </section>
       </main>
+      {isSheetOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 bg-opacity-50 z-50 flex items-end justify-center animate-fade-in-up"
+          onClick={() => setIsSheetOpen(false)}
+        >
+          <div
+            className="bg-base-100 rounded-t-2xl p-5 pb-10 w-full max-w-3xl mx-auto shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold text-batik-black">
+                {sheetContent.title}
+              </h3>
+              <button
+                onClick={() => setIsSheetOpen(false)}
+                className="btn btn-sm btn-circle btn-ghost"
+              >
+                CLOSE
+              </button>
+            </div>
+            <p className="text-base text-gray-700">
+              {sheetContent.description}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

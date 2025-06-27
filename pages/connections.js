@@ -3,18 +3,9 @@ import Head from "next/head";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { Navbar } from "@/components/layouts/navbar";
-import { NavbarDetail } from "@/components/layouts/navbar-detail";
 import { Menubar } from "@/components/layouts/menubar";
 import Link from "next/link";
-import {
-  UserPlus,
-  UserCheck,
-  UserX,
-  Search,
-  Loader2,
-  SunIcon,
-  MoonStarIcon,
-} from "lucide-react";
+import { Loader2, SunIcon, MoonStarIcon } from "lucide-react";
 
 export default function ConnectionsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -45,7 +36,7 @@ export default function ConnectionsPage() {
             id,
             username,
             full_name,
-            dina_pasaran, wuku->name
+            dina_pasaran, wuku->name, weton->laku
           )
         `
         )
@@ -75,8 +66,8 @@ export default function ConnectionsPage() {
           requester_id,
           addressee_id,
           status,
-          profile_requester:requester_id (id, username, full_name, dina_pasaran, wuku->name, avatar_url),
-          profile_addressee:addressee_id (id, username, full_name, dina_pasaran, wuku->name, avatar_url)
+          profile_requester:requester_id (id, username, full_name, dina_pasaran, wuku->name, avatar_url, weton->laku),
+          profile_addressee:addressee_id (id, username, full_name, dina_pasaran, wuku->name, avatar_url, weton->laku)
         `
         )
         .eq("status", "accepted")
@@ -117,7 +108,9 @@ export default function ConnectionsPage() {
     try {
       const { data, error: searchError } = await supabase
         .from("profiles")
-        .select("id, username, full_name, dina_pasaran, wuku->name, avatar_url")
+        .select(
+          "id, username, full_name, dina_pasaran, wuku->name, avatar_url, weton->laku"
+        )
         .ilike("username", `%${searchTerm}%`)
         .neq("id", user?.id || "") // Exclude current user from search
         .limit(10);
@@ -180,7 +173,7 @@ export default function ConnectionsPage() {
     );
   }
 
-  console.log(pendingRequests);
+  // console.log(friends);
 
   return (
     <>
@@ -249,7 +242,7 @@ export default function ConnectionsPage() {
                     <div className="flex items-center gap-1 text-xs">
                       <div className="flex items-center gap-1">
                         <SunIcon size={12} />
-                        {profile?.dina_pasaran}
+                        {profile?.laku?.name}
                       </div>
                       <>&bull;</>
                       <div className="flex items-center gap-1">
@@ -272,7 +265,7 @@ export default function ConnectionsPage() {
           {pendingRequests?.length > 0 && (
             <section>
               <h2 className="text-lg font-semibold text-batik-black mb-3">
-                Connection Requests ({pendingRequests.length})
+                Connection Requests
               </h2>
               {loadingRequests && (
                 <p className="text-sm text-gray-500">Loading requests...</p>
@@ -283,7 +276,7 @@ export default function ConnectionsPage() {
                       <Link
                         href={`/profile/detail?username=${req?.profiles?.username}`}
                         key={req?.profiles?.id}
-                        className="flex-row gap-3 p-3 bg-base-100 rounded-2xl shadow-xs border border-batik-border flex items-center"
+                        className="flex-row gap-3 p-3 bg-base-100 rounded-2xl shadow-xs border border-batik-border flex items-center justify-between"
                       >
                         <div className="flex flex-col gap-1 max-w-[55%]">
                           <div className="flex flex-row gap-2 items-center leading-4">
@@ -327,7 +320,7 @@ export default function ConnectionsPage() {
 
           <section>
             <h2 className="text-lg font-semibold text-batik-black mb-3">
-              Your Connections ({friends.length})
+              Your Connections
             </h2>
             {loadingFriends && (
               <p className="text-sm text-gray-500">Loading friends...</p>
@@ -366,7 +359,7 @@ export default function ConnectionsPage() {
                         <div className="flex items-center gap-1 text-xs">
                           <div className="flex items-center gap-1">
                             <SunIcon size={12} />
-                            {friend?.dina_pasaran}
+                            {friend?.laku?.name}
                           </div>
                           <>&bull;</>
                           <div className="flex items-center gap-1">

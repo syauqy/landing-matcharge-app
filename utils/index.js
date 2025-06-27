@@ -9,6 +9,7 @@ import {
   watakHari,
   watakPasaran,
   watakTotalNeptu,
+  watakWeton,
 } from "@/lib/weton";
 import { nameHastawara } from "@/lib/hastawara";
 import { nameSadwara } from "@/lib/sadwara";
@@ -266,6 +267,7 @@ export function getWeton(birthDate) {
     const rakam = getRakam(date);
     const hastawara = getHastawara(birthDate);
     const sadwara = getSadwara(birthDate);
+    const watakWeton = getWetonDescription(`${hari} ${pasaran}`);
 
     console.log(day, pasaran);
 
@@ -287,6 +289,7 @@ export function getWeton(birthDate) {
       hastawara: hastawara,
       rakam: rakam,
       laku: laku,
+      watak_weton: watakWeton,
     };
   } catch (error) {
     console.error("Error in getWeton function:", error);
@@ -511,3 +514,13 @@ const getJodohDay = (dina1, dina2) => {
     return "Kombinasi weton tidak ditemukan";
   }
 };
+
+function getWetonDescription(wetonName) {
+  // console.log(wetonName);
+  // Find the object where weton_name matches the provided name
+  const wetonObject = watakWeton.find((item) => item.weton_name === wetonName);
+  console.log(wetonObject);
+
+  // Return the description if found, otherwise return a message
+  return wetonObject ? wetonObject.description : "Weton not found";
+}

@@ -2,10 +2,9 @@
 import Head from "next/head";
 import { useEffect } from "react"; // Import useEffect
 import { useAuth } from "@/context/AuthContext"; // Import useAuth
-import { useRouter } from "next/router"; // Import useRouter
-import { DashboardNavbar } from "@/components/layouts/dashboard-navbar"; // Import Navbar
+import { useRouter } from "next/router"; // Import useRouter// Import Navbar
 import { Menubar } from "@/components/layouts/menubar";
-import { CardData, SectionData } from "@/utils/readings-menu";
+import { SectionData } from "@/utils/readings-menu";
 import { Navbar } from "@/components/layouts/navbar";
 import Link from "next/link";
 
@@ -15,16 +14,16 @@ import Link from "next/link";
 const ReadingCard = ({ title, description, slug, category, type }) => (
   <Link
     href={"/readings/" + category + "/" + slug}
-    className="relative snap-center snap-always flex-shrink-0 w-40 sm:w-64 bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow duration-200 h-32 flex flex-col justify-between"
+    className="relative snap-center snap-always flex-shrink-0 w-40 sm:w-64 bg-white rounded-2xl shadow-xs p-4 border border-batik-border hover:shadow-lg transition-shadow duration-200 h-32 flex flex-col justify-between"
   >
     <div className="mt-2">
-      <h3 className="text-md font-semibold mb-1 leading-5 text-gray-800">
+      <h3 className="text-sm font-semibold mb-1 leading-5 text-gray-800">
         {title}
       </h3>
-      <p className="text-[9px] text-gray-600 line-clamp-3">{description}</p>
+      <p className="text-xs text-gray-600 line-clamp-3">{description}</p>
     </div>
     {type === "pro" && (
-      <div className="absolute rounded-lg px-3 py-0.5 z-10 font-semibold bg-amber-400 text-[10px] top-1 right-1 text-batik-black">
+      <div className="absolute rounded-xl px-3 py-0.5 z-10 font-semibold bg-amber-400 text-[10px] top-1 right-1 text-batik-black">
         PRO
       </div>
     )}
@@ -36,7 +35,7 @@ const ReadingSection = ({ title, cards, subtitle }) => (
   <section className="mb-6">
     <div className="mb-3 px-5">
       <h2 className="text-xl font-semibold  text-batik-black">{title}</h2>
-      <h3 className="font-light text-batik-black text-xs">{subtitle}</h3>
+      <h3 className="font-light text-batik-black text-sm">{subtitle}</h3>
     </div>
     <div className="flex flex-row flex-wrap gap-3 pb-4 px-5">
       {cards.map((card) => (

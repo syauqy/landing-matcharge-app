@@ -6,10 +6,8 @@ import { useAuth } from "@/context/AuthContext"; // Import useAuth
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { useQueryState } from "nuqs";
-
-// Assuming these components are structured similarly to those in profile.js
 import { Navbar } from "@/components/layouts/navbar";
-import { Menubar } from "@/components/layouts/menubar";
+import clsx from "clsx";
 import {
   SunIcon,
   MoonStarIcon,
@@ -17,24 +15,8 @@ import {
   UserCheck,
   UserX,
   Loader2,
-  UserLock,
   LockIcon,
 } from "lucide-react";
-
-// Helper component for displaying profile details neatly (copied from profile.js or shared)
-const DetailItem = ({ label, value, isBold = false }) => (
-  <div>
-    <span className="text-gray-500">{label}:</span>
-    <span
-      className={`ml-2 ${
-        // Removed 'capitalize' to match profile.js DetailItem if it doesn't have it, or add if needed.
-        isBold ? "font-semibold text-batik-black" : "text-gray-700"
-      }`}
-    >
-      {value !== null && value !== undefined ? String(value) : "N/A"}
-    </span>
-  </div>
-);
 
 function DetailProfilePage() {
   const router = useRouter();
@@ -178,8 +160,8 @@ function DetailProfilePage() {
           `and(user_id.eq.${profile.id},or(slug.eq.${slug2Base}-compatibility,slug.eq.${slug2Base}-couple))`,
         ].join(",");
 
-        console.log(user);
-        console.log(orConditions);
+        // console.log(user);
+        // console.log(orConditions);
 
         const { data, error } = await supabase
           .from("readings")
@@ -205,13 +187,6 @@ function DetailProfilePage() {
       setCompatibilityReadingData(null); // Clear if not friends
     }
   }, [friendshipStatus, user, profile]);
-
-  // With getServerSideProps, if notFound: true is returned, Next.js handles the 404 page.
-  // This component will only render if 'profile' data is successfully passed.
-  if (!profile) {
-    // This should ideally not be reached if getServerSideProps is correctly implemented.
-    return <p>Profile not found.</p>;
-  }
 
   const handleFriendAction = async () => {
     if (!user || !profile || user.id === profile.id || isFriendActionLoading)
@@ -286,7 +261,7 @@ function DetailProfilePage() {
     );
   }
 
-  if (!profile) {
+  if (user.id && !loading && !authLoading && !profile) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -329,11 +304,8 @@ function DetailProfilePage() {
       </Head>
 
       <div className="h-[100svh] flex flex-col bg-base relative">
-        <Navbar
-          title={`${profile.full_name || profile.username}`}
-          isBack={true}
-        />
-        <div className="flex-grow overflow-y-auto pt-4 sm:pt-6 pb-20">
+        <Navbar title={profile.full_name} isBack={true} />
+        <div className="flex-grow overflow-y-auto overflow-x-clip pt-4 sm:pt-6 pb-20">
           {/* Profile Header */}
           <div className="px-5 mb-6 flex items-center gap-4">
             <div className="avatar">
@@ -356,7 +328,7 @@ function DetailProfilePage() {
               <div className="flex items-center gap-2 text-sm">
                 <div className="flex items-center gap-1">
                   <SunIcon size={12} />
-                  {profile?.dina_pasaran}
+                  {profile?.weton?.laku?.name}
                 </div>
                 <>&bull;</>
                 <div className="flex items-center gap-1">
@@ -380,39 +352,56 @@ function DetailProfilePage() {
               {friendshipError && (
                 <p className="text-sm text-red-500 mb-2">{friendshipError}</p>
               )}
-              <button
-                onClick={handleFriendAction}
-                disabled={isFriendActionLoading || !friendshipStatus}
-                className={`w-full btn rounded-2xl ${
-                  friendshipStatus === "friends"
-                    ? "btn-outline btn-error" // Option to remove friend
-                    : friendshipStatus === "pending_sent"
-                    ? "bg-red-100 border-red-500 text-red-600" // Option to cancel request
-                    : friendshipStatus === "pending_received"
-                    ? "bg-green-100 border-green-500 text-green-600" // Option to accept
-                    : "bg-batik border-batik-border" // Option to add friend
-                } flex items-center justify-center gap-2`}
-              >
-                {isFriendActionLoading ? (
-                  <Loader2 size={18} className="animate-spin" />
-                ) : friendshipStatus === "friends" ? (
-                  <>
-                    <UserX size={18} /> Remove Friend
-                  </>
-                ) : friendshipStatus === "pending_sent" ? (
-                  <>
-                    <UserX size={18} /> Cancel Request
-                  </>
-                ) : friendshipStatus === "pending_received" ? (
-                  <>
-                    <UserCheck size={18} /> Accept Request
-                  </>
-                ) : (
-                  <>
-                    <UserPlus size={18} /> Add Friend
-                  </>
+              <div
+                className={clsx(
+                  "grid items-center w-full",
+                  friendshipStatus == "friends"
+                    ? "grid-cols-2 gap-2"
+                    : "grid-cols-1"
                 )}
-              </button>
+              >
+                {friendshipStatus === "friends" && (
+                  <Link
+                    href="/compatibility"
+                    className="btn rounded-2xl w-full bg-batik/50 border-batik-border text-batik-black"
+                  >
+                    Get Compatibility
+                  </Link>
+                )}
+                <button
+                  onClick={handleFriendAction}
+                  disabled={isFriendActionLoading || !friendshipStatus}
+                  className={`btn rounded-2xl ${
+                    friendshipStatus === "friends"
+                      ? "border-red-500 text-red-600 bg-red-100" // Option to remove friend
+                      : friendshipStatus === "pending_sent"
+                      ? "bg-red-100 border-red-500 text-red-600" // Option to cancel request
+                      : friendshipStatus === "pending_received"
+                      ? "bg-green-100 border-green-500 text-green-600" // Option to accept
+                      : "bg-batik border-batik-border" // Option to add friend
+                  } flex items-center justify-center gap-2`}
+                >
+                  {isFriendActionLoading ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : friendshipStatus === "friends" ? (
+                    <>
+                      <UserX size={18} /> Remove Friend
+                    </>
+                  ) : friendshipStatus === "pending_sent" ? (
+                    <>
+                      <UserX size={18} /> Cancel Request
+                    </>
+                  ) : friendshipStatus === "pending_received" ? (
+                    <>
+                      <UserCheck size={18} /> Accept Request
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus size={18} /> Add Friend
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           )}
 
@@ -498,7 +487,7 @@ function DetailProfilePage() {
                     onClick={() => setActiveTab("weton")}
                     className={`${
                       activeTab === "weton"
-                        ? "border-batik-text text-white bg-batik-border font-semibold"
+                        ? "border-batik-text text-batik-black bg-batik-border font-semibold"
                         : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
                     } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
                   >
@@ -508,7 +497,7 @@ function DetailProfilePage() {
                     onClick={() => setActiveTab("wuku")}
                     className={`${
                       activeTab === "wuku"
-                        ? "border-batik-text text-white bg-batik-border font-semibold"
+                        ? "border-batik-text text-batik-black bg-batik-border font-semibold"
                         : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
                     } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
                   >
@@ -518,80 +507,237 @@ function DetailProfilePage() {
               </div>
 
               {/* Tab Content */}
-              <div className="bg-base-100 rounded-lg p-4 md:p-6 mb-6 border border-[var(--color-batik-border)]">
+              <div>
                 {activeTab === "weton" &&
                   profile.weton && ( // Check if weton data exists
-                    <div className="space-y-6 text-sm">
-                      <DetailItem label="Dina" value={profile.weton?.dina} />
-                      <DetailItem
-                        label="Pasaran"
-                        value={profile.weton?.pasaran}
-                      />
-                      <DetailItem
-                        label="Neptu Dina"
-                        value={profile.weton?.neptu_dina}
-                      />
-                      <DetailItem
-                        label="Neptu Pasaran"
-                        value={profile.weton?.neptu_pasaran}
-                      />
-                      <DetailItem
-                        label="Total Neptu"
-                        value={profile.weton?.total_neptu}
-                        isBold={true}
-                      />
-                      <DetailItem
-                        label="Dina Pasaran"
-                        value={profile.dina_pasaran} // from profile root
-                      />
+                    <div className="flex flex-col gap-5">
+                      <div className="flex flex-row gap-y-4 text-sm">
+                        <div className="flex flex-col border-y border-l border-batik-border rounded-l-xl">
+                          {/* <div className="border-b border-batik-border px-4 py-2">
+                            Weton
+                          </div>
+                          <div className="border-b border-batik-border px-4 py-2">
+                            Day (Dina)
+                          </div>
+                          <div className="border-b border-batik-border px-4 py-2">
+                            Market Day (Pasaran)
+                          </div>
+                          <div className="border-b border-batik-border px-4 py-2">
+                            Total Neptu
+                          </div> */}
+                          <div className="border-b border-batik-border px-4 py-2">
+                            Laku
+                          </div>
+                          <div className="border-b border-batik-border px-4 py-2">
+                            Pancasuda
+                          </div>
+                          <div className="px-4 py-2">Rakam</div>
+                        </div>
+                        <div className="flex flex-col border flex-grow border-batik-border rounded-r-xl font-medium text-batik-black">
+                          {/* <Link
+                            href="#weton"
+                            className="border-b border-batik-border px-4 py-2"
+                          >
+                            {profile.weton?.weton_en}
+                          </Link>
+                          <Link
+                            href="#dina"
+                            className="border-b border-batik-border px-4 py-2"
+                          >
+                            {profile.weton?.dina_en}
+                          </Link>
+                          <Link
+                            href="#pasaran"
+                            className="border-b border-batik-border px-4 py-2"
+                          >
+                            {profile.weton?.pasaran}
+                          </Link>
+                          <Link
+                            href="#weton"
+                            className="border-b border-batik-border px-4 py-2"
+                          >
+                            {profile.weton?.total_neptu}
+                          </Link> */}
+                          <Link
+                            href="#laku"
+                            className="border-b border-batik-border px-4 py-2"
+                          >
+                            {profile.weton?.laku?.name}
+                          </Link>
+                          <Link
+                            href="#pancasuda"
+                            className="border-b border-batik-border px-4 py-2"
+                          >
+                            {profile.weton?.saptawara?.name}
+                          </Link>
+                          <Link href="#rakam" className="px-4 p-2">
+                            {profile.weton?.rakam?.name}
+                          </Link>
+                        </div>
+                      </div>
+                      <div className="bg-base-100 rounded-2xl p-4 md:p-6 mb-6 border border-[var(--color-batik-border)]">
+                        <div className="space-y-4 text-sm">
+                          {/* {(profile.weton?.dina_en ||
+                            profile.weton?.day_character?.description) && (
+                            <div id="dina" className="flex flex-col gap-1">
+                              <div className="text-sm font-semibold  text-batik-text">
+                                Day (Dina)
+                              </div>
+                              <div>
+                                <div className="text-lg font-semibold">
+                                  {profile.weton?.dina_en}
+                                </div>
+                                <div className="text-base text-gray-700">
+                                  {profile.weton?.day_character?.description}
+                                </div>
+                              </div>
+                            </div>
+                          )}
 
-                      {(profile.weton?.dina_en ||
-                        profile.weton?.day_character?.description) && (
-                        <div className="pt-3 mt-3 border-t border-gray-200">
-                          <h3 className="font-semibold text-batik-text mb-1">
-                            Day (Dina): {profile.weton?.dina_en} (
-                            {profile.weton?.dina})
-                          </h3>
-                          <p className="text-gray-700">
-                            {profile.weton?.day_character?.description}
-                          </p>
-                        </div>
-                      )}
+                          {(profile.weton?.pasaran ||
+                            profile.weton?.pasaran_character?.description) && (
+                            <div
+                              id="pasaran"
+                              className="flex flex-col gap-1 pt-4 border-t border-batik-border"
+                            >
+                              <div className="text-sm font-semibold  text-batik-text">
+                                Market Day (Pasaran)
+                              </div>
+                              <div>
+                                <div className="text-lg font-semibold">
+                                  {profile.weton?.pasaran}
+                                </div>
+                                <div className="text-base text-gray-700">
+                                  {
+                                    profile.weton?.pasaran_character
+                                      ?.description
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          )} */}
 
-                      {(profile.weton?.pasaran ||
-                        profile.weton?.pasaran_character?.description) && (
-                        <div className="pt-3 mt-3 border-t border-gray-200">
-                          <h3 className="font-semibold text-batik-text mb-1">
-                            Market Day (Pasaran): {profile.weton?.pasaran}
-                          </h3>
-                          <p className="text-gray-700">
-                            {profile.weton?.pasaran_character?.description}
-                          </p>
-                        </div>
-                      )}
+                          {profile.weton?.neptu_character?.description && (
+                            <div
+                              id="weton"
+                              className="flex flex-col gap-1 pt-4"
+                            >
+                              <div className="text-sm font-semibold  text-batik-text">
+                                Characters and Traits
+                              </div>
+                              <div>
+                                <div className="text-base text-gray-700">
+                                  {profile.weton?.neptu_character?.description}
+                                </div>
+                                <div className="text-base text-gray-700 mt-2">
+                                  {profile.weton?.watak_weton}
+                                </div>
+                              </div>
+                            </div>
+                          )}
 
-                      {profile.weton?.neptu_character?.description && (
-                        <div className="pt-3 mt-3 border-t border-gray-200">
-                          <h3 className="font-semibold text-batik-text mb-1">
-                            Weton Energy
-                          </h3>
-                          <p className="text-gray-700">
-                            {profile.weton?.neptu_character?.description}
-                          </p>
+                          {/* Laku */}
+                          {profile.weton?.laku && (
+                            <div
+                              id="laku"
+                              className="flex flex-col gap-1 pt-4 border-t border-batik-border"
+                            >
+                              <div className="text-sm font-semibold  text-batik-text">
+                                Laku
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <div>
+                                  <div className="text-lg font-semibold">
+                                    {profile.weton.laku.name}
+                                  </div>
+                                  <div className="text-sm font-light text-slate-700">
+                                    {profile.weton.laku.meaning}
+                                  </div>
+                                </div>
+                                <div className="text-base text-gray-700">
+                                  {profile.weton.laku.description}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Pancasuda (Saptawara) */}
+                          {profile.weton?.saptawara && (
+                            <div
+                              id="pancasuda"
+                              className="flex flex-col gap-1 pt-4 border-t border-batik-border"
+                            >
+                              <div className="text-sm font-semibold  text-batik-text">
+                                Pancasuda
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <div>
+                                  <div className="text-lg font-semibold">
+                                    {profile.weton.saptawara.name}
+                                  </div>
+                                  <div className="text-sm font-light text-slate-700">
+                                    {profile.weton.saptawara.meaning}
+                                  </div>
+                                </div>
+                                <div className="text-base text-gray-700">
+                                  {profile.weton.saptawara.description}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Rakam */}
+                          {profile.weton?.rakam && (
+                            <div
+                              id="rakam"
+                              className="flex flex-col gap-1 pt-4 border-t border-batik-border"
+                            >
+                              <div className="text-sm font-semibold  text-batik-text">
+                                Rakam
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <div>
+                                  <div className="text-lg font-semibold">
+                                    {profile.weton.rakam.name}
+                                  </div>
+                                  <div className="text-sm font-light text-slate-700">
+                                    {profile.weton.rakam.meaning}
+                                  </div>
+                                </div>
+                                <div className="text-base text-gray-700">
+                                  {profile.weton.rakam.description}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* {profile.weton?.sadwara && (
+                          <div className="pt-3 mt-3 border-t border-gray-200">
+                            <h3 className="font-semibold text-batik-text mb-1">
+                              Sadwara: {profile.weton.sadwara.name}
+                              {profile.weton.sadwara.meaning &&
+                                ` (${profile.weton.sadwara.meaning})`}
+                            </h3>
+                            <p className="text-gray-700">
+                              {profile.weton.sadwara.description}
+                            </p>
+                          </div>
+                        )}
+
+                        {profile.weton?.hastawara && (
+                          <div className="pt-3 mt-3 border-t border-gray-200">
+                            <h3 className="font-semibold text-batik-text mb-1">
+                              Hastawara: {profile.weton.hastawara.name}
+                              {profile.weton.hastawara.meaning &&
+                                ` (${profile.weton.hastawara.meaning})`}
+                            </h3>
+                            <p className="text-gray-700">
+                              {profile.weton.hastawara.description}
+                            </p>
+                          </div>
+                        )} */}
                         </div>
-                      )}
-                      {profile.weton?.laku && (
-                        <div className="pt-3 mt-3 border-t border-gray-200">
-                          <h3 className="font-semibold text-batik-text mb-1">
-                            Laku: {profile.weton.laku.name}
-                            {profile.weton.laku.meaning &&
-                              ` (${profile.weton.laku.meaning})`}
-                          </h3>
-                          <p className="text-gray-700">
-                            {profile.weton.laku.description}
-                          </p>
-                        </div>
-                      )}
+                      </div>
                     </div>
                   )}
                 {activeTab === "weton" && !profile.weton && (
@@ -602,29 +748,117 @@ function DetailProfilePage() {
 
                 {activeTab === "wuku" &&
                   profile.wuku && ( // Check if wuku data exists
-                    <div className="space-y-6 text-sm">
-                      <div>
-                        <h3 className="font-semibold text-batik-text mb-1">
-                          Wuku: {profile.wuku?.name}
-                        </h3>
-                        {profile.wuku?.character && (
-                          <p className="text-gray-700">
-                            {profile.wuku.character}
-                          </p>
-                        )}
+                    <div className="flex flex-col gap-5">
+                      <div className="flex flex-row gap-y-4 text-sm">
+                        <div className="flex flex-col border-y border-l border-batik-border rounded-l-xl">
+                          <div className="border-b border-batik-border px-4 py-2">
+                            Wuku
+                          </div>
+                          <div className="border-b border-batik-border px-4 py-2">
+                            Guardian Deity
+                          </div>
+                          <div className="border-b border-batik-border px-4 py-2">
+                            Tree
+                          </div>
+                          <div className="px-4 py-2">Bird</div>
+                        </div>
+                        <div className="flex flex-col border flex-grow border-batik-border rounded-r-xl font-medium text-batik-black">
+                          <Link
+                            href="#wuku"
+                            className="border-b border-batik-border px-4 py-2"
+                          >
+                            {profile.wuku?.name}
+                          </Link>
+                          <Link
+                            href="#god"
+                            className="border-b border-batik-border px-4 py-2"
+                          >
+                            {profile.wuku.god}
+                          </Link>
+                          <Link
+                            href="#tree"
+                            className="border-b border-batik-border px-4 py-2"
+                          >
+                            {profile.wuku.tree}
+                          </Link>
+                          <Link href="#bird" className="px-4 py-2">
+                            {profile.wuku.bird}
+                          </Link>
+                        </div>
                       </div>
-                      {profile.wuku?.god && (
-                        <div className="pt-3 mt-3 border-t border-gray-200">
-                          <h4 className="font-semibold text-batik-text mb-1">
-                            Guardian Deity: {profile.wuku.god}
-                          </h4>
-                          {profile.wuku?.god_meaning && (
-                            <p className="text-gray-700">
-                              {profile.wuku.god_meaning}
-                            </p>
+                      <div className="bg-base-100 rounded-2xl p-4 md:p-6 mb-6 border border-[var(--color-batik-border)]">
+                        <div className="space-y-4 text-sm">
+                          {profile?.wuku?.character && (
+                            <div id="wuku" className="flex flex-col gap-1">
+                              <div className="text-sm font-semibold  text-batik-text">
+                                Wuku
+                              </div>
+                              <div>
+                                <div className="text-lg font-semibold">
+                                  {profile?.wuku?.name}
+                                </div>
+                                <div className="text-base text-gray-700">
+                                  {profile?.wuku?.character}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {profile?.wuku?.god && (
+                            <div
+                              id="god"
+                              className="flex flex-col gap-1 pt-4 border-t border-batik-border"
+                            >
+                              <div className="text-sm font-semibold  text-batik-text">
+                                Guardian Deity
+                              </div>
+                              <div>
+                                <div className="text-lg font-semibold">
+                                  {profile?.wuku?.god}
+                                </div>
+                                <div className="text-base text-gray-700">
+                                  {profile.wuku.god_meaning}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {profile?.wuku?.tree && (
+                            <div
+                              id="tree"
+                              className="flex flex-col gap-1 pt-4 border-t border-batik-border"
+                            >
+                              <div className="text-sm font-semibold  text-batik-text">
+                                Tree
+                              </div>
+                              <div>
+                                <div className="text-lg font-semibold">
+                                  {profile?.wuku?.tree}
+                                </div>
+                                <div className="text-base text-gray-700">
+                                  {profile.wuku.tree_meaning}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {profile?.wuku?.bird && (
+                            <div
+                              id="bird"
+                              className="flex flex-col gap-1 pt-4 border-t border-batik-border"
+                            >
+                              <div className="text-sm font-semibold  text-batik-text">
+                                Bird
+                              </div>
+                              <div>
+                                <div className="text-lg font-semibold">
+                                  {profile?.wuku?.bird}
+                                </div>
+                                <div className="text-base text-gray-700">
+                                  {profile.wuku.bird_meaning}
+                                </div>
+                              </div>
+                            </div>
                           )}
                         </div>
-                      )}
+                      </div>
                     </div>
                   )}
                 {activeTab === "wuku" && !profile.wuku && (
