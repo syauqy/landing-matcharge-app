@@ -336,7 +336,7 @@ export async function generatePrimaryTraitsReading(profile) {
             laku: z
               .string()
               .describe(
-                "Explain the primary Lakune associated with this Weton, Neptu, Laku, Rakam and Wuku. Describe what this signifies about their fundamental character and how they navigate life."
+                "Explain the primary Laku associated with this Weton, Neptu, Laku, Rakam and Wuku. Describe what this signifies about their fundamental character and how they navigate life."
               )
               .catch(() => ""),
             strength: z
@@ -665,6 +665,9 @@ export async function generateLoveBasicReading(profile) {
         .update({
           status: "completed",
           reading: resObj.love_style,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
           updated_at: new Date().toISOString(),
         })
         .eq("id", newLoveStyleReading.id);
@@ -674,6 +677,9 @@ export async function generateLoveBasicReading(profile) {
         .update({
           status: "completed",
           reading: resObj.love_attitudes,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
           updated_at: new Date().toISOString(),
         })
         .eq("id", newLoveAttitudesReading.id);

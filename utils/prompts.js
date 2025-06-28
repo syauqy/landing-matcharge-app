@@ -122,7 +122,7 @@ export const dailyReadingPrompt = (profile) => {
   - Accuracy: Ensure all wuku, weton, rakam, and laku calculations and their interpretations regarding today's reading are accurate according to traditional Javanese Primbon knowledge.
   - Ethical AI: Emphasize that Weton provides guidance, not absolute destiny. Encourage personal agency and free will.
   - No Redundancy: While drawing from the same core birth data, ensure each section provides distinct insights relevant to its specific focus without unnecessary repetition.
-  - Make it relevant to the modern life and generation
+  - Make it relevant to the younger generation like millenials and gen-z.
   - Do not invent details.
     `;
   console.log("daily", wetonData);
@@ -201,7 +201,7 @@ export const monthlyReadingPrompt = (profile) => {
   - Accuracy: Ensure all Weton, Wuku, Rakam, and Laku calculations and their interpretations regarding love are accurate according to traditional Javanese Primbon knowledge.
   - No Redundancy: While drawing from the same core birth data, ensure each section provides distinct insights relevant to its specific focus without unnecessary repetition.
   - Ethical AI: Emphasize that Weton provides guidance, not absolute destiny. Encourage personal agency and free will.
-  - Make it relevant to the modern life and generation
+  - Make it relevant to the younger generation like millenials and gen-z.
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
 
   ## FINAL CHECK
@@ -230,6 +230,8 @@ export const primaryTraitsPrompt = (profile) => {
     - Laku: ${wetonDetails.laku.name}
     - Rakam: ${wetonDetails.rakam.name}
     - Wuku: ${wuku}
+    - Weton Archetype: ${wetonDetails.watak_weton.archetype}
+    - Watak Weton: ${wetonDetails.watak_weton.description}
     `;
 
   const prompt = `
@@ -245,7 +247,7 @@ export const primaryTraitsPrompt = (profile) => {
   * Elemental & Directional Signature
   
   2. Character & traits: The Essence of Your Being
-  * Overall Disposition (Lakune/Perilaku)
+  * Overall Disposition (Laku)
   * Inherent Strengths
   * Areas for Growth
 
@@ -310,17 +312,18 @@ export const basicLovePrompt = (profile) => {
     - Weton: ${wetonDetails.weton_en}
     - Day (Dina): ${wetonDetails.dina} (Neptu: ${wetonDetails.neptu_dina})
     - Market Day (Pasaran): ${wetonDetails.pasaran} (Neptu: ${wetonDetails.neptu_pasaran})
+    - Weton Archetype: ${wetonDetails.watak_weton.archetype}
+    - Watak Weton: ${wetonDetails.watak_weton.description}
     - Laku: ${wetonDetails.laku.name}
     - Rakam: ${wetonDetails.rakam.name}
     - Wuku: ${wuku}
-    - Sadwara: ${wetonDetails.sadwara.name}
     - Saptawara: ${wetonDetails.saptawara.name}
     `;
 
   const prompt = `
   ## Agent Role:
   You are an AI-powered Weton expert, deeply knowledgeable in Javanese Weton calculations, Primbon interpretations, and the spiritual and practical wisdom embedded within Javanese philosophy. 
-  Your purpose is to provide insightful, holistic, and actionable guidance on love and partnership, drawing from the intricate influences of Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara. 
+  Your purpose is to provide insightful, holistic, and actionable guidance on love and partnership, drawing from the intricate influences of Weton, Wuku, Rakam, Laku, Watak Weton, and Saptawara. 
   You understand the nuances of these systems and their permutations across relational dynamics. You are also adept at weaving in relevant Javanese cultural and philosophical contexts respectfully.
   
   ##Input:
@@ -329,7 +332,7 @@ export const basicLovePrompt = (profile) => {
   ## Output Structure & Content Requirements:
   Generate a detailed analysis of the user's Weton primary traits, structured as follows:
   1. Love & Partnership: Your Core Approach
-  This reading delves into the fundamental blueprint of how your Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara collectively shape your inherent approach to love and partnership.
+  This reading delves into the fundamental blueprint of how your Weton, Wuku, Rakam, Laku, Weton Archetype, Watak Weton, and Saptawara collectively shape your inherent approach to love and partnership.
   * Overall Romantic Archetype
   * Emotional Foundation
   * Interpersonal Instincts
@@ -337,7 +340,7 @@ export const basicLovePrompt = (profile) => {
   * Javanese Philosophical Connection
   
   2. Your Love Style
-  Explores how you express and desire love, drawing from your Weton and Laku.
+  Explores how you express and desire love, drawing from your Weton, Watak Weton, and Laku.
   * Primary Expression of Affection
   * Desired Received Affection
   * Romantic Ideal & Pursuits
@@ -345,12 +348,12 @@ export const basicLovePrompt = (profile) => {
   * Javanese Cultural Nuance
 
   3. Your Love Attitudes
-  Examines your inherent beliefs and perspectives on love, commitment, and relationships, shaped by your Weton, Rakam, and Sadwara.
+  Examines your inherent beliefs and perspectives on love, commitment, and relationships, shaped by your Weton, Rakam, and Watak Weton.
   * View on Commitment & Longevity
   * Approach to Conflict & Disagreement
   * Trust, Loyalty, & Fidelity: 
   * Independence vs. Interdependence
-  * Role of Harmony (Keselarasan)
+  * Role of Harmony
 
   ## Tone and Style
   - Tone: Reverent, wise, encouraging, empathetic, insightful, non-judgmental, actionable, and empowering. Avoid fatalistic language.
@@ -368,10 +371,10 @@ export const basicLovePrompt = (profile) => {
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
   - Avoid em dashes.
   - Depth: Provide meaningful insights without being overly verbose. Aim for depth over length.
-  - Accuracy: Ensure all Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara calculations and their interpretations regarding love are accurate according to traditional Javanese Primbon knowledge.
+  - Accuracy: Ensure all Weton, Wuku, Rakam, Laku, and Saptawara calculations and their interpretations regarding love are accurate according to traditional Javanese Primbon knowledge.
   - Ethical AI: Emphasize that Weton provides guidance, not absolute destiny. Encourage personal agency and free will.
   - No Redundancy: While drawing from the same core birth data, ensure each section provides distinct insights relevant to its specific focus (Core Approach, Style, Attitudes) without unnecessary repetition.
-  - Make it relevant to the modern life and generation
+  - Make it relevant to the younger generation like millenials and gen-z.
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
 
   ## FINAL CHECK

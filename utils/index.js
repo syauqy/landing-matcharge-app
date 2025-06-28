@@ -267,7 +267,7 @@ export function getWeton(birthDate) {
     const rakam = getRakam(date);
     const hastawara = getHastawara(birthDate);
     const sadwara = getSadwara(birthDate);
-    const watakWeton = getWetonDescription(`${hari} ${pasaran}`);
+    const watakWeton = getWatakWeton(`${hari} ${pasaran}`);
 
     console.log(day, pasaran);
 
@@ -515,12 +515,12 @@ const getJodohDay = (dina1, dina2) => {
   }
 };
 
-function getWetonDescription(wetonName) {
+function getWatakWeton(wetonName) {
   // console.log(wetonName);
   // Find the object where weton_name matches the provided name
-  const wetonObject = watakWeton.find((item) => item.weton_name === wetonName);
-  console.log(wetonObject);
+  const wetonObject = watakWeton.find((item) => item.weton === wetonName);
+  // console.log(wetonObject);
 
   // Return the description if found, otherwise return a message
-  return wetonObject ? wetonObject.description : "Weton not found";
+  return wetonObject ? wetonObject : "Weton not found";
 }

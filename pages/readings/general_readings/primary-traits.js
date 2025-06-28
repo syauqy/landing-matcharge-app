@@ -3,9 +3,12 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { config } from "@/utils/config";
+import { LoadingProfile } from "@/components/layouts/loading-profile";
+import { ErrorLayout } from "@/components/layouts/error-page";
 import axios from "axios";
+import Link from "next/link";
 
 export default function PrimaryTraitsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -15,10 +18,13 @@ export default function PrimaryTraitsPage() {
   const [error, setError] = useState(null);
   const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
+  const [isTraitsSectionOpen, setIsTraitsSectionOpen] = useState(false);
+  const [isInfluenceSectionOpen, setIsInfluenceSectionOpen] = useState(false);
+  const [isWisdomSectionOpen, setIsWisdomSectionOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
+      router.push("/");
       return;
     }
 
@@ -143,17 +149,8 @@ export default function PrimaryTraitsPage() {
     }
   }, [profileData]);
 
-  // console.log("api url", config.api.url, "env", process.env.NODE_ENV);
-
-  // console.log("Profile Data:", profileData);
-
   if (authLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg text-batik-text"></span>
-        <p className="mt-4">Loading your profile...</p>
-      </div>
-    );
+    return <LoadingProfile />;
   }
 
   if (loading && !error) {
@@ -166,31 +163,7 @@ export default function PrimaryTraitsPage() {
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <div className="alert alert-error shadow-lg max-w-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2 2m2-2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>Error! {error}</span>
-          </div>
-        </div>
-        <button onClick={() => router.back()} className="btn btn-neutral mt-6">
-          Go Back
-        </button>
-      </div>
-    );
+    return <ErrorLayout error={error} router={router} />;
   }
 
   if (!profileData) {
@@ -226,7 +199,7 @@ export default function PrimaryTraitsPage() {
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <div
-        className={`navbar px-5 bg-base-100 sticky top-0 z-50 transition-all duration-300 ${
+        className={`navbar px-5 bg-base-100 sticky top-0 z-40 transition-all duration-300 ${
           showTitleInNavbar ? "border-b border-batik-border" : ""
         }`}
       >
@@ -250,152 +223,200 @@ export default function PrimaryTraitsPage() {
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         <div>
-          <h2 className="text-xl font-semibold text-left">Primary Traits</h2>
-          <p className="text-[10px] text-gray-700 mb-2">
+          <h1 className="text-xl font-semibold text-left">Primary Traits</h1>
+          <p className="text-sm text-gray-700 mb-2">
             Identify your most prominent strengths and inherent characteristics.
           </p>
         </div>
         <section>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-8">
             <div className="text-slate-600">
-              <div className="text-sm text-batik-text font-semibold">
+              <div className="text-batik-text font-semibold">
                 Weton Identity
               </div>
-              <div className="text-sm text-gray-700">
+              <div className="text-gray-700">
                 {reading?.reading?.weton_identity?.element}
               </div>
             </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold text-batik-text">
-                Character
-              </div>
-              <div className="font-semibold">
-                {profileData.weton?.laku?.name}
-              </div>
-              <div className="text-sm text-gray-700">
-                {reading?.reading?.characters?.laku}
-              </div>
-              <div className="text-sm text-gray-700 mt-2">
-                {reading?.reading?.symbol?.philosophy}
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold text-batik-text">
-                Inherent Strengths
-              </div>
-              <ul className="list-disc list-outside text-sm text-gray-700 ml-4">
-                {reading?.reading?.characters?.strength?.map((s, i) => (
-                  <li key={i} className="text-sm text-gray-700">
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold text-batik-text">
-                Areas for Growth
-              </div>
-              <ul className="list-disc list-outside text-sm text-gray-700 ml-4">
-                {reading?.reading?.characters?.growth?.map((g, i) => (
-                  <li key={i} className="text-sm text-gray-700">
-                    {g}
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
         </section>
 
-        <section className="border-t border-batik-text/20 pt-4">
-          <h2 className="text-xl font-semibold text-left">
-            Weton&apos;s Influence on Life
-          </h2>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Emotional Nature
-              </div>
-              <div className="text-sm text-gray-700">
-                {reading?.reading?.influences?.emotion}
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Social Interactions
-              </div>
-              <div className="text-sm text-gray-700">
-                {reading?.reading?.influences?.social}
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Work Ethics
-              </div>
-              <div className="text-sm text-gray-700">
-                {reading?.reading?.influences?.work}
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Financial Tendencies
-              </div>
-              <div className="text-sm text-gray-700">
-                {reading?.reading?.influences?.financial}
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Health
-              </div>
-              <div className="text-sm text-gray-700">
-                {reading?.reading?.influences?.health}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-t border-batik-text/20 pt-4">
-          <h2 className="text-xl font-semibold text-left">
-            Embracing Your Weton&apos;s Wisdom
-          </h2>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Reflection
-              </div>
-              <div className="text-sm text-gray-700">
-                {reading?.reading?.wisdom?.reflection}
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                For You
-              </div>
-              <div className="text-sm text-gray-700">
-                {reading?.reading?.wisdom?.empowerment}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* <section>
+        <section className="border-t border-batik-border pt-4">
           <button
-            className="btn btn-neutral btn-sm"
-            onClick={handleGenerateReading}
+            onClick={() => setIsTraitsSectionOpen(!isTraitsSectionOpen)}
+            className="w-full flex justify-between items-center text-left focus:outline-none"
           >
-            Generate Reading
+            <h2 className="text-xl font-semibold">Your Traits</h2>
+            <ChevronDown
+              className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
+                isTraitsSectionOpen ? "rotate-180" : ""
+              }`}
+            />
           </button>
-          <div className="flex flex-col">
-            <div className="text-sm font-semibold  text-batik-text">
-              Primary Traits
-            </div>
-            <div className="mockup-code w-full">
-              <pre>
-                <code>{JSON.stringify(reading, null, 2)}</code>
-              </pre>
+          <div
+            className={`grid transition-all duration-500 ease-in-out ${
+              isTraitsSectionOpen
+                ? "grid-rows-[1fr] opacity-100 mt-4"
+                : "grid-rows-[0fr] opacity-0"
+            }`}
+          >
+            <div className="overflow-hidden">
+              <div className="flex flex-col gap-8">
+                <div className="flex flex-col">
+                  <div className="font-semibold text-batik-text">Character</div>
+                  <div className="text-lg font-semibold">
+                    {profileData.weton?.laku?.name}
+                  </div>
+                  <div className="text-gray-700">
+                    {reading?.reading?.characters?.laku}
+                  </div>
+                  <div className="text-gray-700 mt-2">
+                    {reading?.reading?.symbol?.philosophy}
+                  </div>
+                  <Link
+                    href={"/readings/general_readings/laku"}
+                    className="font-semibold text-batik-text underline mt-4 inline-flex items-center"
+                  >
+                    Learn More about {profileData.weton?.laku?.name}
+                    <ArrowRight size={16} className="ml-2 text-batik-text" />
+                  </Link>
+                </div>
+                <div className="flex flex-col">
+                  <div className="font-semibold text-batik-text">
+                    Inherent Strengths
+                  </div>
+                  <ul className="list-disc list-outsidetext-gray-700 ml-4">
+                    {reading?.reading?.characters?.strength?.map((s, i) => (
+                      <li key={i} className="text-gray-700">
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="flex flex-col">
+                  <div className="font-semibold text-batik-text">
+                    Areas for Growth
+                  </div>
+                  <ul className="list-disc list-outside text-gray-700 ml-4">
+                    {reading?.reading?.characters?.growth?.map((g, i) => (
+                      <li key={i} className="text-gray-700">
+                        {g}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
-        </section> */}
+        </section>
+
+        <section className="border-t border-batik-border pt-4">
+          <button
+            onClick={() => setIsInfluenceSectionOpen(!isInfluenceSectionOpen)}
+            className="w-full flex justify-between items-center text-left focus:outline-none"
+          >
+            <h2 className="text-xl font-semibold">
+              Weton&apos;s Influence on Life
+            </h2>
+            <ChevronDown
+              className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
+                isInfluenceSectionOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+          <div
+            className={`grid transition-all duration-500 ease-in-out ${
+              isInfluenceSectionOpen
+                ? "grid-rows-[1fr] opacity-100 mt-4"
+                : "grid-rows-[0fr] opacity-0"
+            }`}
+          >
+            <div className="overflow-hidden">
+              <div className="flex flex-col gap-8">
+                <div className="flex flex-col">
+                  <div className="font-semibold  text-batik-text">
+                    Emotional Nature
+                  </div>
+                  <div className="text-gray-700">
+                    {reading?.reading?.influences?.emotion}
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <div className="font-semibold  text-batik-text">
+                    Social Interactions
+                  </div>
+                  <div className="text-gray-700">
+                    {reading?.reading?.influences?.social}
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <div className="font-semibold  text-batik-text">
+                    Work Ethics
+                  </div>
+                  <div className="text-gray-700">
+                    {reading?.reading?.influences?.work}
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <div className="font-semibold  text-batik-text">
+                    Financial Tendencies
+                  </div>
+                  <div className="text-gray-700">
+                    {reading?.reading?.influences?.financial}
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <div className="font-semibold  text-batik-text">Health</div>
+                  <div className="text-gray-700">
+                    {reading?.reading?.influences?.health}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-y border-batik-border pt-4 pb-6">
+          <button
+            onClick={() => setIsWisdomSectionOpen(!isWisdomSectionOpen)}
+            className="w-full flex justify-between items-center text-left focus:outline-none"
+          >
+            <h2 className="text-xl font-semibold text-left">
+              Embracing Your Weton&apos;s Wisdom
+            </h2>
+            <ChevronDown
+              className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
+                isWisdomSectionOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+          <div
+            className={`grid transition-all duration-500 ease-in-out ${
+              isWisdomSectionOpen
+                ? "grid-rows-[1fr] opacity-100 mt-4"
+                : "grid-rows-[0fr] opacity-0"
+            }`}
+          >
+            <div className="overflow-hidden">
+              <div className="flex flex-col gap-8">
+                <div className="flex flex-col">
+                  <div className="font-semibold  text-batik-text">
+                    Reflection
+                  </div>
+                  <div className="text-gray-700">
+                    {reading?.reading?.wisdom?.reflection}
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <div className="font-semibold  text-batik-text">For You</div>
+                  <div className="text-gray-700">
+                    {reading?.reading?.wisdom?.empowerment}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

@@ -186,15 +186,9 @@ export default function BasicReadingPage() {
       </div>
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        <h1 className="text-3xl font-semibold text-left mb-4">About You</h1>
-        <section className="flex flex-row gap-5 items-center">
-          <div className="text-slate-600">
-            <div className="text-sm text-batik-text font-semibold">Weton</div>
-            <span className="text-batik-black font-semibold">
-              {profileData.dina_pasaran}
-            </span>
-          </div>
-        </section>
+        <h1 className="text-3xl font-semibold text-left mb-4">
+          {profileData?.weton?.watak_weton?.archetype}
+        </h1>
         <section>
           <div>
             <h2 className="text-xl font-semibold text-left">
@@ -230,7 +224,7 @@ export default function BasicReadingPage() {
                 {profileData.weton?.neptu_character?.description}
               </div>
               <div className="text-base text-gray-700 mt-3">
-                {profileData.weton?.watak_weton}
+                {profileData.weton?.watak_weton?.description}
               </div>
             </div>
             <div className="flex flex-col">

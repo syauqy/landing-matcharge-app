@@ -147,7 +147,7 @@ export default function BasicReadingPage() {
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <div
-        className={`navbar px-5 bg-base-100 sticky top-0 z-50 transition-all duration-300 ${
+        className={`navbar px-5 bg-base-100 sticky top-0 z-40 transition-all duration-300 ${
           showTitleInNavbar ? "border-b border-batik-border" : ""
         }`}
       >
@@ -205,7 +205,7 @@ export default function BasicReadingPage() {
                 {profileData.weton?.neptu_character?.description}
               </div>
               <div className="text-base text-gray-700 mt-3">
-                {profileData.weton?.watak_weton}
+                {profileData.weton?.watak_weton?.description}
               </div>
             </div>
             <div className="flex flex-col">

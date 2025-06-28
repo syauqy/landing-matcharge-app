@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import { getWeton, getWuku } from "@/utils";
 import { Toaster, toast } from "sonner";
 import { Navbar } from "@/components/layouts/navbar";
+import { config } from "@/utils/config";
+import axios from "axios";
 
 export default function ProfileSetupPage() {
   const { user, loading: authLoading } = useAuth();
@@ -249,6 +251,8 @@ export default function ProfileSetupPage() {
         ])
         .select();
 
+      generateFreeReading(profileData);
+
       if (wetonError) throw wetonError;
       if (error) throw error;
 
@@ -267,6 +271,38 @@ export default function ProfileSetupPage() {
       toast.error(`Failed to save profile: ${err.message}`);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const generateFreeReading = async (profileData) => {
+    if (!profileData || !user) {
+      console.error("Profile data or user not available.");
+      return;
+    } else {
+      try {
+        const response = await axios.post(
+          `${config.api.url}/readings/general/primary-traits`,
+          { profile: profileData },
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+
+        const response_loveCore = await axios.post(
+          `${config.api.url}/readings/love/love-core`,
+          { profile: profileData },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      } catch (err) {
+        console.error(
+          "Error in fetch or processing response for primary traits:",
+          err
+        );
+      }
     }
   };
 
