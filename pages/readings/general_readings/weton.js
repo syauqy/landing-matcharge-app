@@ -104,7 +104,7 @@ export default function BasicReadingPage() {
     setIsSheetOpen(true);
   };
 
-  console.log("Profile Data:", profileData);
+  // console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
     return <LoadingProfile />;

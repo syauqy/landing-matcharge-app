@@ -67,7 +67,6 @@ export default function HomePage() {
       router.push("/home");
     }
   }, [user, authLoading, router]);
-  //   App.addListener("appUrlOpen", (event) => {
   //     console.log("App opened with URL:", event.url);
 
   //     if (event.url.includes("#access_token=")) {
@@ -134,10 +133,10 @@ export default function HomePage() {
         options: {
           skipBrowserRedirect: true,
           redirectTo: redirectUrl,
-          // queryParams: {
-          //   access_type: "offline",
-          //   prompt: "consent",
-          // },
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
         },
       });
 
@@ -195,7 +194,7 @@ export default function HomePage() {
       <Toaster />
       <div className="w-full h-[100%] max-w-md px-4 py-8 rounded-lg">
         <h1 className="text-4xl font-bold mb-4 text-center h-[10%] text-batik-black tracking-wide">
-          WetonScope
+          Wetonscope
         </h1>
 
         <Slider {...sliderSettings} className="onboarding-slider mb-8 h-[70%]">

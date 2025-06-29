@@ -251,8 +251,6 @@ function DetailProfilePage() {
     (user && profile && user.id === profile.id) ||
     friendshipStatus === "friends";
 
-  console.log(compatibilityReadingData);
-
   if (loading || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -276,7 +274,7 @@ function DetailProfilePage() {
     );
   }
 
-  // --- End Friendship Logic ---
+  console.log(profile);
 
   // Avatar logic: use profile.avatar_url or generate with ui-avatars
   const displayAvatarUrl =
@@ -617,6 +615,49 @@ function DetailProfilePage() {
                             </div>
                           )} */}
 
+                          {profile.weton?.watak_weton && (
+                            <div
+                              id="weton"
+                              className="flex flex-col gap-1 pt-4"
+                            >
+                              <div className="text-sm font-semibold  text-batik-text">
+                                Archetype
+                              </div>
+                              <div className="flex flex-col gap-3">
+                                <div className="text-lg font-semibold">
+                                  {profile.weton.watak_weton.archetype}
+                                </div>
+                                <div className="flex flex-col">
+                                  <div className="text-sm font-semibold text-batik-text/70">
+                                    Vibe
+                                  </div>
+                                  <div className="text-base text-gray-700">
+                                    {profile.weton.watak_weton.vibe}
+                                  </div>
+                                </div>
+                                <div className="flex flex-col">
+                                  <div className="text-sm font-semibold text-batik-text/70">
+                                    Green Flags
+                                  </div>
+                                  <div className="text-base text-gray-700">
+                                    {profile.weton.watak_weton.green_flags}
+                                  </div>
+                                </div>
+                                <div className="flex flex-col">
+                                  <div className="text-sm font-semibold text-batik-text/70">
+                                    Potential Challenges
+                                  </div>
+                                  <div className="text-base text-gray-700">
+                                    {
+                                      profile.weton.watak_weton
+                                        .potential_challenges
+                                    }
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
                           {profile.weton?.neptu_character?.description && (
                             <div
                               id="weton"
@@ -628,9 +669,6 @@ function DetailProfilePage() {
                               <div>
                                 <div className="text-base text-gray-700">
                                   {profile.weton?.neptu_character?.description}
-                                </div>
-                                <div className="text-base text-gray-700 mt-2">
-                                  {profile.weton?.watak_weton}
                                 </div>
                               </div>
                             </div>

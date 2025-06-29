@@ -347,7 +347,7 @@ export default function ProfilePage() {
                                 }
                               </div>
                               <div className="text-base text-gray-700 mt-2">
-                                {profileData.weton?.watak_weton}
+                                {profileData.weton?.watak_weton?.description}
                               </div>
                             </div>
                           </div>

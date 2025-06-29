@@ -1,5 +1,5 @@
 // pages/dashboard.jsx
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
@@ -30,6 +30,8 @@ export default function Home() {
   const [fortuneResult, setFortuneResult] = useState(null);
   const [currentReadings, setCurrentReadings] = useState(0);
   const [latestReadings, setLatestReadings] = useState([]);
+  const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
+  const scrollContainerRef = useRef(null);
 
   // console.log(user, authLoading);
 
@@ -284,11 +286,19 @@ export default function Home() {
     };
   }, [user]);
 
-  const handleLogout = async () => {
-    console.log("user", user);
-    await logout();
-    // router.push("/");
+  const handleScroll = () => {
+    const scrollPosition = window.scrollY;
+    setShowTitleInNavbar(scrollPosition > 50);
   };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  console.log(showTitleInNavbar);
 
   if (authLoading || !user || loading) {
     return (
@@ -435,16 +445,19 @@ export default function Home() {
 
   // console.log(dailyReading);
 
-  console.log(user);
+  // console.log(user);
 
   return (
-    <div className="h-[100svh] flex flex-col bg-base relative">
-      <DashboardNavbar user={user} />
-      <div className="py-4 pb-20 overflow-y-auto flex-grow mt-12 mb-8">
+    <div className="min-h-screen flex flex-col bg-base-100">
+      <DashboardNavbar user={user} showTitleInNavbar={showTitleInNavbar} />
+      <div
+        // ref={scrollContainerRef}
+        className="py-4 pb-20 overflow-y-auto flex-grow mb-8"
+      >
         <div className="px-4">
-          <p className="text-lg sm:text-xl font-semibold text-batik-black">
+          <p className="text-2xl font-semibold text-batik-black">
             Good {getTimeOfDay()},{" "}
-            {profileData?.full_name?.split(" ")[0] || "User"}!
+            {profileData?.full_name?.split(" ")[0] || "User"}! 👋
           </p>
         </div>
         {/* <Link href={"/intro"}>See Intro</Link> */}

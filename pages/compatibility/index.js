@@ -14,9 +14,11 @@ import {
   SunIcon,
   MoonStarIcon,
   Loader2,
+  HeartIcon,
   Search,
   Users,
   UserPlusIcon,
+  SmilePlusIcon,
   XIcon,
 } from "lucide-react";
 import { getWuku, getWeton, getWetonPrimbon, getWetonJodoh } from "@/utils";
@@ -96,8 +98,8 @@ export default function CompatibilityPage() {
           id,
           requester_id,
           addressee_id,
-          profile_requester:requester_id (id, username, full_name, dina_pasaran, weton, wuku, gender, birth_date),
-          profile_addressee:addressee_id (id, username, full_name, dina_pasaran, weton, wuku, gender, birth_date)
+          profile_requester:requester_id (id, username, full_name, dina_pasaran, weton, wuku, gender, birth_date, avatar_url),
+          profile_addressee:addressee_id (id, username, full_name, dina_pasaran, weton, wuku, gender, birth_date, avatar_url)
         `
         )
         .eq("status", "accepted")
@@ -397,12 +399,6 @@ export default function CompatibilityPage() {
     }
   }, [user, authLoading, router]); // Dependencies
 
-  // --- Logout Handler ---
-  const handleLogout = async () => {
-    await logout();
-    router.push("/");
-  };
-
   // --- Loading States ---
   if (authLoading || (!profileData && loadingProfile)) {
     // Show loading if auth is loading OR if profile hasn't loaded yet
@@ -427,37 +423,117 @@ export default function CompatibilityPage() {
       <div className="h-[100svh] flex flex-col bg-base relative">
         <Navbar title="Compatibility" isConnection={true} isBack={true} />
         {/* Main Content Area */}
-        <div className="flex-grow overflow-y-auto justify-center pt-4 sm:pt-6 pb-20">
-          {profileData && (
-            <div className="px-5 mb-6 flex items-center gap-4">
-              <div className="avatar">
-                <div className="w-16 rounded-full">
-                  <img
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                      profileData.full_name
-                    )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`}
-                    alt={profileData.full_name}
-                  />
-                </div>
-              </div>
-              <div>
-                <p className="text-xl font-bold text-batik-black">
-                  {profileData?.full_name || "User Name"}
-                </p>
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="flex items-center gap-1">
-                    <SunIcon size={12} />
-                    {profileData?.dina_pasaran}
-                  </div>
-                  <>&bull;</>
-                  <div className="flex items-center gap-1">
-                    <MoonStarIcon size={12} />
-                    {profileData?.wuku?.name}
-                  </div>
-                </div>
-              </div>
+        <div className="flex-grow overflow-y-auto justify-center pt-4 sm:pt-6 pb-20 px-5">
+          <div className="flex-col items-center text-center">
+            <div className="text-sm">
+              Select a partner to create a Love Compatibility reading and see
+              the relationship dynamics.
             </div>
-          )}
+            <div className="flex my-4 flex-row gap-4 justify-between">
+              {profileData && (
+                <div className="p-2 flex-col flex items-center w-[45%]">
+                  <h3 className="font-semibold text-lg mb-2">You</h3>
+                  <div className="avatar">
+                    <div className="size-24 ring-3 ring-offset-2 ring-batik-border rounded-full">
+                      <img
+                        src={
+                          profileData?.avatar_url ||
+                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            profileData.full_name
+                          )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
+                        }
+                        alt={profileData.full_name}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xl font-bold text-batik-black">
+                      {profileData?.full_name.split(" ")[0] || "User Name"}
+                    </p>
+                    <div className="flex flex-col items-center text-sm">
+                      <div className="flex items-center gap-1">
+                        <SunIcon size={12} />
+                        {profileData?.weton?.weton_en}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MoonStarIcon size={12} />
+                        {profileData?.wuku?.name}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="flex-grow w-fit">
+                <div className="flex h-full justify-center items-center text-2xl font-semibold">
+                  &
+                </div>
+              </div>
+
+              {partnerProfile.id ? (
+                <div className="p-2 flex-col flex items-center w-[45%] ">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Partner Profile
+                  </h3>
+                  <div className="avatar">
+                    <div className="size-24 ring-3 ring-offset-2 ring-batik-border rounded-full">
+                      <img
+                        src={
+                          partnerProfile?.avatar_url ||
+                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            partnerProfile.full_name
+                          )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
+                        }
+                        alt={partnerProfile.full_name}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xl font-bold text-batik-black ">
+                      {partnerProfile?.full_name.split(" ")[0] || "User Name"}
+                    </p>
+                    <div className="flex flex-col items-center text-sm">
+                      <div className="flex items-center gap-1">
+                        <SunIcon size={12} />
+                        {partnerProfile?.weton?.weton_en}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MoonStarIcon size={12} />
+                        {partnerProfile?.wuku?.name}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-2 flex-col flex items-center w-[45%] ">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Partner Profile
+                  </h3>
+                  <div className="avatar">
+                    <div className=" size-24 ring-3 ring-offset-2 ring-batik-border rounded-full">
+                      <div className="flex h-full justify-center items-center">
+                        <SmilePlusIcon size={30} className="text-batik-text" />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xl font-bold text-batik-black ">
+                      {partnerProfile?.full_name?.split(" ")[0] || "User Name"}
+                    </p>
+                    <div className="flex flex-col items-center text-sm">
+                      <div className="flex items-center gap-1">
+                        <SunIcon size={12} />
+                        {partnerProfile?.weton?.weton_en}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MoonStarIcon size={12} />
+                        {partnerProfile?.wuku?.name}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
           {error && (
             <div className="mb-4 p-5 bg-red-100 text-red-700 border border-red-300 rounded-md text-sm">
@@ -496,41 +572,6 @@ export default function CompatibilityPage() {
               Add Custom Partner
             </button> */}
 
-            {partnerProfile.id && (
-              <div className="bg-base-100 rounded-lg p-4 md:p-6 mb-6 border border-[var(--color-batik-border)] w-full">
-                <h3 className="text-lg font-semibold mb-2">Partner Profile</h3>
-                <div className="space-y-3 text-sm">
-                  <DetailItem
-                    label="Full Name"
-                    value={partnerProfile.full_name}
-                    isBold={true}
-                  />
-                  <DetailItem
-                    label="Birth Date"
-                    value={
-                      partnerProfile.birth_date
-                        ? new Date(
-                            partnerProfile.birth_date
-                          ).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })
-                        : "N/A"
-                    }
-                  />
-                  <DetailItem
-                    label="Dina Pasaran"
-                    value={partnerProfile.dina_pasaran}
-                  />
-                  <DetailItem label="Wuku" value={partnerProfile.wuku?.name} />
-                  <DetailItem
-                    label="Total Neptu"
-                    value={partnerProfile.weton?.total_neptu}
-                  />
-                </div>
-              </div>
-            )}
             {partnerProfile.id && profileData?.weton && (
               <button
                 onClick={calculateWetonJodoh}
@@ -767,7 +808,7 @@ export default function CompatibilityPage() {
           <div className="fixed inset-0 bg-slate-500/40 bg-opacity-10 z-50 flex items-end justify-center">
             <div className="bg-base-100 rounded-t-lg p-6 w-full max-w-md shadow-lg transform transition-transform duration-300 ease-out translate-y-0">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-batik-black">
+                <h3 className="text-lg font-bold text-batik-black">
                   Add Custom Profile
                 </h3>
                 <button
@@ -810,7 +851,7 @@ export default function CompatibilityPage() {
                     Birth Date
                   </label>
                   <input
-                    type="date"
+                    type="datetime-local"
                     id="customBirthDate"
                     value={customBirthDate}
                     onChange={(e) => setCustomBirthDate(e.target.value)}
