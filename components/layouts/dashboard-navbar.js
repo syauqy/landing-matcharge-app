@@ -13,9 +13,11 @@ export function DashboardNavbar({ user, handleLogout, showTitleInNavbar }) {
     >
       <div className="navbar-start"></div>
       <div className="navbar-center flex items-center">
-        <div className="text-sm text-batik-text font-bold uppercase tracking-widest">
-          Wetonscope
-        </div>
+        {showTitleInNavbar && (
+          <div className="text-sm text-batik-text font-bold uppercase tracking-widest">
+            Wetonscope
+          </div>
+        )}
       </div>
       <div className="navbar-end">
         {/* <Link

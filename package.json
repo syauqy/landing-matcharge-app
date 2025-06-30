@@ -27,8 +27,6 @@
     "@capacitor/status-bar": "^7.0.1",
     "@google/generative-ai": "^0.24.0",
     "@heroicons/react": "^2.2.0",
-    "@ionic/react": "^8.6.2",
-    "@ionic/react-router": "^8.6.2",
     "@microlink/react-json-view": "^1.26.2",
     "@revenuecat/purchases-capacitor": "^10.3.6",
     "@supabase/ssr": "^0.6.1",

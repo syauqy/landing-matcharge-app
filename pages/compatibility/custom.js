@@ -179,7 +179,7 @@ export default function CompatibilityPage() {
       </Head>
 
       {/* --- Main Layout Container --- */}
-      <div className="min-h-screen flex flex-col bg-base">
+      <div className="min-h-screen flex flex-col bg-base-100">
         <Navbar isBack={true} title="Weton Jodoh" />
         {/* Main Content Area */}
         <main className="flex-grow overflow-y-auto justify-center pt-4 sm:pt-6 pb-20 px-5">

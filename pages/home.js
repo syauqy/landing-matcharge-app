@@ -40,13 +40,13 @@ export default function Home() {
   const getTimeOfDay = () => {
     const currentHour = new Date().getHours();
     if (currentHour >= 5 && currentHour < 12) {
-      return "morning";
+      return "Good morning";
     } else if (currentHour >= 12 && currentHour < 18) {
-      return "afternoon";
+      return "Good afternoon";
     } else if (currentHour >= 18 && currentHour < 22) {
-      return "evening";
+      return "Good evening";
     } else {
-      return "night";
+      return "Good night";
     }
   };
 
@@ -288,7 +288,7 @@ export default function Home() {
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
-    setShowTitleInNavbar(scrollPosition > 50);
+    setShowTitleInNavbar(scrollPosition > 40);
   };
 
   useEffect(() => {
@@ -297,8 +297,6 @@ export default function Home() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  console.log(showTitleInNavbar);
 
   if (authLoading || !user || loading) {
     return (
@@ -456,8 +454,8 @@ export default function Home() {
       >
         <div className="px-4">
           <p className="text-2xl font-semibold text-batik-black">
-            Good {getTimeOfDay()},{" "}
-            {profileData?.full_name?.split(" ")[0] || "User"}! 👋
+            {getTimeOfDay()}, {profileData?.full_name?.split(" ")[0] || "User"}!
+            👋
           </p>
         </div>
         {/* <Link href={"/intro"}>See Intro</Link> */}

@@ -424,15 +424,17 @@ export default function CompatibilityPage() {
         <Navbar title="Compatibility" isConnection={true} isBack={true} />
         {/* Main Content Area */}
         <div className="flex-grow overflow-y-auto justify-center pt-4 sm:pt-6 pb-20 px-5">
-          <div className="flex-col items-center text-center">
-            <div className="text-sm">
+          <div className="flex-col items-center text-center mb-4">
+            <div className="text-sm my-5">
               Select a partner to create a Love Compatibility reading and see
               the relationship dynamics.
             </div>
-            <div className="flex my-4 flex-row gap-4 justify-between">
+            <div className="flex my-4 flex-row justify-between">
               {profileData && (
                 <div className="p-2 flex-col flex items-center w-[45%]">
-                  <h3 className="font-semibold text-lg mb-2">You</h3>
+                  <h3 className="font-semibold text-lg mb-2">
+                    {profileData?.full_name.split(" ")[0] || "User Name"}
+                  </h3>
                   <div className="avatar">
                     <div className="size-24 ring-3 ring-offset-2 ring-batik-border rounded-full">
                       <img
@@ -446,18 +448,11 @@ export default function CompatibilityPage() {
                       />
                     </div>
                   </div>
-                  <div>
-                    <p className="text-xl font-bold text-batik-black">
-                      {profileData?.full_name.split(" ")[0] || "User Name"}
-                    </p>
+                  <div className="mt-3">
+                    <p className="text-xl font-bold text-batik-black"></p>
                     <div className="flex flex-col items-center text-sm">
                       <div className="flex items-center gap-1">
-                        <SunIcon size={12} />
                         {profileData?.weton?.weton_en}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MoonStarIcon size={12} />
-                        {profileData?.wuku?.name}
                       </div>
                     </div>
                   </div>
@@ -465,14 +460,14 @@ export default function CompatibilityPage() {
               )}
               <div className="flex-grow w-fit">
                 <div className="flex h-full justify-center items-center text-2xl font-semibold">
-                  &
+                  💖
                 </div>
               </div>
 
               {partnerProfile.id ? (
                 <div className="p-2 flex-col flex items-center w-[45%] ">
                   <h3 className="text-lg font-semibold mb-2">
-                    Partner Profile
+                    {partnerProfile?.full_name.split(" ")[0] || "Partner Name"}
                   </h3>
                   <div className="avatar">
                     <div className="size-24 ring-3 ring-offset-2 ring-batik-border rounded-full">
@@ -487,18 +482,10 @@ export default function CompatibilityPage() {
                       />
                     </div>
                   </div>
-                  <div>
-                    <p className="text-xl font-bold text-batik-black ">
-                      {partnerProfile?.full_name.split(" ")[0] || "User Name"}
-                    </p>
+                  <div className="mt-3">
                     <div className="flex flex-col items-center text-sm">
                       <div className="flex items-center gap-1">
-                        <SunIcon size={12} />
                         {partnerProfile?.weton?.weton_en}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MoonStarIcon size={12} />
-                        {partnerProfile?.wuku?.name}
                       </div>
                     </div>
                   </div>
@@ -506,27 +493,12 @@ export default function CompatibilityPage() {
               ) : (
                 <div className="p-2 flex-col flex items-center w-[45%] ">
                   <h3 className="text-lg font-semibold mb-2">
-                    Partner Profile
+                    {partnerProfile?.full_name?.split(" ")[0] || "Partner"}
                   </h3>
                   <div className="avatar">
-                    <div className=" size-24 ring-3 ring-offset-2 ring-batik-border rounded-full">
+                    <div className=" size-24 ring-3 ring-offset-2 ring-batik-border rounded-full bg-batik-border">
                       <div className="flex h-full justify-center items-center">
-                        <SmilePlusIcon size={30} className="text-batik-text" />
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xl font-bold text-batik-black ">
-                      {partnerProfile?.full_name?.split(" ")[0] || "User Name"}
-                    </p>
-                    <div className="flex flex-col items-center text-sm">
-                      <div className="flex items-center gap-1">
-                        <SunIcon size={12} />
-                        {partnerProfile?.weton?.weton_en}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MoonStarIcon size={12} />
-                        {partnerProfile?.wuku?.name}
+                        <SmilePlusIcon size={30} className="text-batik-white" />
                       </div>
                     </div>
                   </div>
@@ -541,19 +513,17 @@ export default function CompatibilityPage() {
             </div>
           )}
 
-          <div className="space-y-4 px-5 mb-6 flex flex-col items-center gap-4 w-full">
-            {/* Partner Selection Button */}
+          <div className="space-y-4 px-5 my-6 flex flex-col items-center gap-4 w-full">
             <div className="w-full max-w-md">
               <button
                 onClick={() => setShowPartnerSelectionSheet(true)}
-                className="btn btn-primary w-full"
+                className="w-full rounded-2xl bg-rose-400 text-white py-2.5 font-bold"
               >
-                <Users size={20} className="mr-2" />
-                Select Partner for Compatibility
+                Select Partner
               </button>
             </div>
 
-            <div className="w-full max-w-md">
+            {/* <div className="w-full max-w-md">
               <Link
                 href="/compatibility/custom"
                 className="btn btn-outline w-full"
@@ -561,7 +531,7 @@ export default function CompatibilityPage() {
                 <UserPlusIcon size={18} className="mr-2" />
                 Go to Custom Compatibility
               </Link>
-            </div>
+            </div> */}
 
             {/* Add Custom Partner Button */}
             {/* <button
