@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { getWuku, getWeton, getWetonPrimbon, getWetonJodoh } from "@/utils";
 import { format } from "date-fns";
+import clsx from "clsx";
 
 export default function CompatibilityPage() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -41,6 +42,7 @@ export default function CompatibilityPage() {
   const [showCustomPartnerForm, setShowCustomPartnerForm] = useState(false);
   const [customFullName, setCustomFullName] = useState("");
   const [customBirthDate, setCustomBirthDate] = useState("");
+  const [customBirthTime, setCustomBirthTime] = useState("");
   const [customGender, setCustomGender] = useState(""); // Added gender
   const [savingCustomPartner, setSavingCustomPartner] = useState(false);
   const [wetonJodoh, setWetonJodoh] = useState({});
@@ -168,11 +170,6 @@ export default function CompatibilityPage() {
     setError(null);
 
     try {
-      // const birthDateObj = new Date(`${customBirthDate}T12:00:00Z`); // Use UTC noon
-      // if (isNaN(birthDateObj.getTime())) {
-      //   throw new Error("Invalid birth date.");
-      // }
-
       const wetonData = getWeton(customBirthDate);
       const wukuData = getWuku(customBirthDate);
 
@@ -409,6 +406,8 @@ export default function CompatibilityPage() {
     );
   }
 
+  console.log(customBirthDate, customBirthTime);
+
   return (
     <>
       <Head>
@@ -519,7 +518,7 @@ export default function CompatibilityPage() {
                 onClick={() => setShowPartnerSelectionSheet(true)}
                 className="w-full rounded-2xl bg-rose-400 text-white py-2.5 font-bold"
               >
-                Select Partner
+                Select a Partner
               </button>
             </div>
 
@@ -635,7 +634,7 @@ export default function CompatibilityPage() {
         {/* Partner Selection Bottom Sheet */}
         {showPartnerSelectionSheet && (
           <div className="fixed inset-0 bg-slate-500/40 bg-opacity-10 z-40 flex items-end justify-center">
-            <div className="bg-base-100 rounded-t-lg p-4 w-full max-w-md shadow-lg h-[70vh] flex flex-col">
+            <div className="bg-base-100 rounded-t-lg p-4 w-full max-w-md shadow-lg h-[90vh] flex flex-col">
               <div className="flex justify-between items-center mb-4 pb-2 border-b border-base-300">
                 <h3 className="text-lg font-bold text-batik-black">
                   Select a Partner
@@ -664,110 +663,120 @@ export default function CompatibilityPage() {
                   />
                 </div>
               </div> */}
-              <div className="flex-grow overflow-y-auto space-y-2">
-                {(loadingFriends || loadingCustomProfiles) && (
-                  <div className="text-center py-4">
-                    <Loader2
-                      size={24}
-                      className="animate-spin mx-auto text-batik-black"
-                    />
-                    <p className="text-sm text-gray-500 mt-2">
-                      Loading partners...
-                    </p>
-                  </div>
-                )}
-                {!loadingFriends &&
-                  !loadingCustomProfiles &&
-                  friendsList.length === 0 &&
-                  customProfilesList.length === 0 && (
-                    <p className="text-sm text-gray-500 text-center py-4">
-                      No friends or custom profiles found.
-                    </p>
+              <div className="flex-grow overflow-y-auto space-y-4">
+                <div className="overflow-y-scroll max-h-[75%]">
+                  {(loadingFriends || loadingCustomProfiles) && (
+                    <div className="text-center py-4">
+                      <Loader2
+                        size={24}
+                        className="animate-spin mx-auto text-batik-black"
+                      />
+                      <p className="text-sm text-gray-500 mt-2">
+                        Loading partners...
+                      </p>
+                    </div>
                   )}
-
-                {/* Add New Friends Button */}
-                <Link
-                  href="/connections"
-                  className="btn btn-outline btn-sm w-full max-w-md"
-                >
-                  <UserPlusIcon size={18} className="mr-2" />
-                  Add New Friends
-                </Link>
-
-                <div className="divider text-batik-text">OR</div>
-                {/* Add Custom Partner Button */}
-                <button
-                  onClick={() => setShowCustomPartnerForm(true)}
-                  className="btn btn-outline btn-sm w-full max-w-md"
-                >
-                  <UserPlusIcon size={18} className="mr-2" />
-                  Add Custom Profile
-                </button>
-                {[...friendsList, ...customProfilesList]
-                  .filter(
-                    (partner) =>
-                      (partner.full_name?.toLowerCase() || "").includes(
-                        partnerSearchTerm
-                      ) ||
-                      (partner.username?.toLowerCase() || "").includes(
-                        partnerSearchTerm
-                      )
-                  )
-                  .map((partner) => (
-                    <div
-                      key={partner.id + (partner.type || "friend")} // Ensure unique key if IDs might overlap (though unlikely with UUIDs)
-                      onClick={() => {
-                        setPartnerProfile(partner);
-                        setWetonJodoh({});
-                        setShowPartnerSelectionSheet(false);
-                        setPartnerSearchTerm(""); // Reset search
-                      }}
-                      className="p-3 bg-base-200 rounded-lg hover:bg-base-300 cursor-pointer flex items-center gap-3"
-                    >
-                      <div className="avatar placeholder">
-                        <div className="bg-neutral-focus text-neutral-content rounded-full w-10 h-10">
-                          <span className="text-sm">
-                            {(partner.full_name || partner.username || "P")
-                              .substring(0, 2)
-                              .toUpperCase()}
-                          </span>
+                  {!loadingFriends &&
+                    !loadingCustomProfiles &&
+                    friendsList.length === 0 &&
+                    customProfilesList.length === 0 && (
+                      <p className="text-sm text-gray-500 text-center py-4">
+                        No friends or custom profiles found.
+                      </p>
+                    )}
+                  {[...friendsList, ...customProfilesList]
+                    .filter(
+                      (partner) =>
+                        (partner.full_name?.toLowerCase() || "").includes(
+                          partnerSearchTerm
+                        ) ||
+                        (partner.username?.toLowerCase() || "").includes(
+                          partnerSearchTerm
+                        )
+                    )
+                    .map((partner) => (
+                      <div
+                        key={partner.id + (partner.type || "friend")} // Ensure unique key if IDs might overlap (though unlikely with UUIDs)
+                        onClick={() => {
+                          setPartnerProfile(partner);
+                          setWetonJodoh({});
+                          setShowPartnerSelectionSheet(false);
+                          setPartnerSearchTerm(""); // Reset search
+                        }}
+                        className="flex-row gap-3 p-3 bg-base-100 rounded-2xl shadow-xs border border-batik-border flex items-center mb-3"
+                      >
+                        <div className="avatar">
+                          <div className="w-12 rounded-full ring-batik-border">
+                            <img
+                              src={
+                                partner?.avatar_url
+                                  ? partner?.avatar_url
+                                  : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                      partner.full_name
+                                    )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
+                              }
+                              alt={partner.full_name}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2 max-w-[80%]">
+                          <div className="flex flex-row gap-2 items-end leading-4">
+                            <p className="font-semibold text-batik-black text-ellipsis overflow-hidden text-nowrap">
+                              {partner.full_name || partner.username}
+                            </p>
+                            <p className="text-xs text-gray-500 leading-3.5 text-ellipsis overflow-hidden text-nowrap">
+                              @{partner.username}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs">
+                            <div className="flex items-center gap-1">
+                              <SunIcon size={12} />
+                              {partner?.weton?.laku?.name}
+                            </div>
+                            <>&bull;</>
+                            <div className="flex items-center gap-1">
+                              <MoonStarIcon size={12} />
+                              {partner?.wuku?.name}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <p className="font-semibold text-batik-black text-sm">
-                          {partner.full_name || partner.username}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {partner.username
-                            ? `@${partner.username}`
-                            : partner.type === "custom"
-                            ? "Custom Profile"
-                            : "Friend"}
-                        </p>
-                        {partner.dina_pasaran && (
-                          <p className="text-xs text-gray-500 mt-0.5">
-                            {partner.dina_pasaran}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                {!loadingFriends &&
-                  !loadingCustomProfiles &&
-                  [...friendsList, ...customProfilesList].filter(
-                    (partner) =>
-                      (partner.full_name?.toLowerCase() || "").includes(
-                        partnerSearchTerm
-                      ) ||
-                      (partner.username?.toLowerCase() || "").includes(
-                        partnerSearchTerm
-                      )
-                  ).length === 0 &&
-                  partnerSearchTerm !== "" && (
-                    <p className="text-sm text-gray-500 text-center py-4">
-                      No results for {partnerSearchTerm}.
-                    </p>
-                  )}
+                    ))}
+                  {!loadingFriends &&
+                    !loadingCustomProfiles &&
+                    [...friendsList, ...customProfilesList].filter(
+                      (partner) =>
+                        (partner.full_name?.toLowerCase() || "").includes(
+                          partnerSearchTerm
+                        ) ||
+                        (partner.username?.toLowerCase() || "").includes(
+                          partnerSearchTerm
+                        )
+                    ).length === 0 &&
+                    partnerSearchTerm !== "" && (
+                      <p className="text-sm text-gray-500 text-center py-4">
+                        No results for {partnerSearchTerm}.
+                      </p>
+                    )}
+                </div>
+
+                <div>
+                  <Link
+                    href="/connections"
+                    className="btn btn-outline w-full rounded-2xl max-w-md border-slate-200 py-2.5 font-semibold text-slate-600"
+                  >
+                    <span className="mr-1">😁</span>
+                    Add New Friends
+                  </Link>
+                  <div className="divider text-batik-text text-sm">OR</div>
+                  <button
+                    onClick={() => setShowCustomPartnerForm(true)}
+                    className="btn btn-outline w-full rounded-2xl max-w-md border-slate-200 py-2.5 font-semibold text-slate-600"
+                  >
+                    <span className="mr-1">🎭</span>
+                    Add Custom Profile
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -800,7 +809,7 @@ export default function CompatibilityPage() {
                 <div>
                   <label
                     htmlFor="customFullName"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm text-gray-700 mb-1"
                   >
                     Full Name
                   </label>
@@ -809,30 +818,49 @@ export default function CompatibilityPage() {
                     id="customFullName"
                     value={customFullName}
                     onChange={(e) => setCustomFullName(e.target.value)}
-                    className="input input-bordered w-full text-base"
+                    className="w-full px-3 py-2 font-semibold border-2 border-batik/70 text-base rounded-2xl focus:border-batik-border-light focus:border-2 bg-batik/70 appearance-none focus:outline-hidden"
                     required
                   />
                 </div>
-                <div>
-                  <label
-                    htmlFor="customBirthDate"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Birth Date
-                  </label>
-                  <input
-                    type="datetime-local"
-                    id="customBirthDate"
-                    value={customBirthDate}
-                    onChange={(e) => setCustomBirthDate(e.target.value)}
-                    className="input input-bordered w-full text-base"
-                    required
-                  />
+                <div className="grid grid-cols-2 gap-3 w-full">
+                  <div>
+                    <label
+                      htmlFor="customBirthDate"
+                      className="block text-sm text-gray-700 mb-1"
+                    >
+                      Birth Date
+                    </label>
+                    <input
+                      type="date"
+                      id="customBirthDate"
+                      value={customBirthDate}
+                      onChange={(e) => setCustomBirthDate(e.target.value)}
+                      className="w-full px-3 py-2 font-semibold border-2 border-batik/70 text-base rounded-2xl focus:border-batik-border-light focus:border-2 bg-batik/70 appearance-none focus:outline-hidden"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="customBirthTime"
+                      className="block text-sm text-gray-700 mb-1"
+                    >
+                      Birth Time
+                    </label>
+                    <input
+                      type="time"
+                      id="customBirthTime"
+                      value={customBirthTime}
+                      onChange={(e) => setCustomBirthTime(e.target.value)}
+                      className="w-full px-3 py-2 font-semibold border-2 border-batik/70 text-base rounded-2xl focus:border-batik-border-light focus:border-2 bg-batik/70 appearance-none focus:outline-hidden"
+                      required
+                    />
+                  </div>
                 </div>
+
                 <div>
                   <label
                     htmlFor="customGender"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm text-gray-700 mb-1"
                   >
                     Gender
                   </label>
@@ -840,7 +868,10 @@ export default function CompatibilityPage() {
                     id="customGender"
                     value={customGender}
                     onChange={(e) => setCustomGender(e.target.value)}
-                    className="select select-bordered w-full text-base"
+                    className={clsx(
+                      customGender === "" ? "text-slate-400" : "text-gray-700",
+                      "w-full px-3 py-2 pr-10 font-semibold border-2 border-batik/70 text-base rounded-2xl focus:border-batik-border-light appearance-none focus:border-2 bg-batik/70 focus:outline-hidden"
+                    )}
                     required
                   >
                     <option value="">Select Gender</option>
@@ -851,13 +882,13 @@ export default function CompatibilityPage() {
                 </div>
                 <button
                   type="submit"
-                  className="btn btn-primary w-full"
+                  className="w-full rounded-2xl max-w-md bg-rose-400 py-2.5 font-semibold text-white mb-3"
                   disabled={savingCustomPartner}
                 >
                   {savingCustomPartner ? (
                     <Loader2 size={20} className="animate-spin mr-2" />
                   ) : null}
-                  Save Partner
+                  Save Profile
                 </button>
               </form>
             </div>
