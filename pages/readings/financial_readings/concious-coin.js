@@ -15,7 +15,7 @@ const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
 });
 import { Capacitor } from "@capacitor/core";
 
-export default function FinancialCyclesPage() {
+export default function ConciousCoinPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
@@ -28,7 +28,7 @@ export default function FinancialCyclesPage() {
   const [isAuspiciousSectionOpen, setIsAuspiciousSectionOpen] = useState(false);
   const [isCautionSectionOpen, setIsCautionSectionOpen] = useState(false);
   const [isAligningSectionOpen, setIsAligningSectionOpen] = useState(false);
-  const [isAbundantSectionOpen, setIsAbundantSectionOpen] = useState(false);
+  const [isPhilosophySectionOpen, setIsPhilosophySectionOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function FinancialCyclesPage() {
           .eq("reading_type", "pro")
           .eq("user_id", user.id)
           .eq("reading_category", "financial_readings")
-          .eq("slug", "financial-cycles")
+          .eq("slug", "concious-coin")
           .maybeSingle();
 
         console.log("Existing Reading:", existingReading, user.id, fetchError);
@@ -203,7 +203,7 @@ export default function FinancialCyclesPage() {
         {showTitleInNavbar && profileData && (
           <div className="navbar-center flex-col">
             <div className="text-sm text-batik-text font-semibold uppercase">
-              Financial Cycles
+              Conscious Coin
             </div>
           </div>
         )}
@@ -212,10 +212,10 @@ export default function FinancialCyclesPage() {
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         <div>
-          <h2 className="text-xl font-semibold text-left">Financial Cycles</h2>
+          <h2 className="text-xl font-semibold text-left">Conscious Coin</h2>
           <p className="text-sm text-gray-700 mb-2">
-            Understand insights into the cyclical nature of your financial
-            fortunes.
+            Understand your spending style that reflects your values and
+            priorities.
           </p>
         </div>
 
@@ -231,7 +231,9 @@ export default function FinancialCyclesPage() {
                 }
                 className="w-full flex justify-between items-center text-left focus:outline-none"
               >
-                <h2 className="text-xl font-semibold">🔄 Financial Cycles</h2>
+                <h2 className="text-xl font-semibold">
+                  💸 Aligning Spending with Your Soul
+                </h2>
                 <ChevronDown
                   className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
                     isFinancialCyclesSectionOpen ? "rotate-180" : ""
@@ -248,7 +250,7 @@ export default function FinancialCyclesPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.cycles}
+                      {reading?.reading?.introduction}
                     </Markdown>
                   </div>
                 </div>
@@ -261,9 +263,7 @@ export default function FinancialCyclesPage() {
                 }
                 className="w-full flex justify-between items-center text-left focus:outline-none"
               >
-                <h2 className="text-xl font-semibold">
-                  🌟 Auspicious Periods for Financial Actions
-                </h2>
+                <h2 className="text-xl font-semibold">🌟 Your Core Values</h2>
                 <ChevronDown
                   className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
                     isAuspiciousSectionOpen ? "rotate-180" : ""
@@ -280,7 +280,7 @@ export default function FinancialCyclesPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.auspicious}
+                      {reading?.reading?.values}
                     </Markdown>
                   </div>
                 </div>
@@ -292,7 +292,7 @@ export default function FinancialCyclesPage() {
                 className="w-full flex justify-between items-center text-left focus:outline-none"
               >
                 <h2 className="text-xl font-semibold">
-                  ⚠️ Periods for Financial Caution
+                  🎖️ Budget that Honors You
                 </h2>
                 <ChevronDown
                   className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
@@ -310,7 +310,7 @@ export default function FinancialCyclesPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.caution}
+                      {reading?.reading?.budget}
                     </Markdown>
                   </div>
                 </div>
@@ -322,7 +322,7 @@ export default function FinancialCyclesPage() {
                 className="w-full flex justify-between items-center text-left focus:outline-none"
               >
                 <h2 className="text-xl font-semibold">
-                  📐 Aligning with Auspicious Days
+                  🎁 Art of Mindful Giving
                 </h2>
                 <ChevronDown
                   className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
@@ -340,7 +340,39 @@ export default function FinancialCyclesPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.auspicious_alignment}
+                      {reading?.reading?.mindful}
+                    </Markdown>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section className="border-t border-batik-border pt-4">
+              <button
+                onClick={() =>
+                  setIsPhilosophySectionOpen(!isPhilosophySectionOpen)
+                }
+                className="w-full flex justify-between items-center text-left focus:outline-none"
+              >
+                <h2 className="text-xl font-semibold">
+                  🧭 A Guiding Philosophy
+                </h2>
+                <ChevronDown
+                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
+                    isPhilosophySectionOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              <div
+                className={`grid transition-all duration-500 ease-in-out ${
+                  isPhilosophySectionOpen
+                    ? "grid-rows-[1fr] opacity-100 mt-4"
+                    : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="flex flex-col">
+                    <Markdown className="text-gray-700">
+                      {reading?.reading?.philosophy}
                     </Markdown>
                   </div>
                 </div>

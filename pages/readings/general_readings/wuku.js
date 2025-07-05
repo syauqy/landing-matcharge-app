@@ -196,7 +196,7 @@ export default function BasicReadingPage() {
         <section>
           <div className="flex flex-col gap-8">
             <div className="text-slate-600">
-              <div className="flex items-center gap-2">
+              <div className="flex gap-2 justify-between items-center">
                 <div className="text-batik-text font-semibold">Wuku</div>
                 <button
                   onClick={() =>
@@ -215,9 +215,9 @@ export default function BasicReadingPage() {
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-2">
+              <div className="flex gap-2 justify-between items-center">
                 <div className="font-semibold text-batik-text">
-                  Guardian Deity
+                  👑 Guardian Deity
                 </div>
                 <button
                   onClick={() =>
@@ -236,8 +236,8 @@ export default function BasicReadingPage() {
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <div className="font-semibold text-batik-text">Tree</div>
+              <div className="flex gap-2 justify-between items-center">
+                <div className="font-semibold text-batik-text">🌳 Tree</div>
                 <button
                   onClick={() =>
                     handleShowExplanation("Wuku's Tree", tooltipContent?.tree)
@@ -255,8 +255,8 @@ export default function BasicReadingPage() {
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <div className="font-semibold text-batik-text">Bird</div>
+              <div className="flex gap-2 justify-between items-center">
+                <div className="font-semibold text-batik-text">🕊️ Bird</div>
                 <button
                   onClick={() =>
                     handleShowExplanation("Wuku's Bird", tooltipContent?.bird)

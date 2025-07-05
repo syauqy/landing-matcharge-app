@@ -191,7 +191,7 @@ export default function LoveCorePage() {
         </div>
         {showTitleInNavbar && profileData && (
           <div className="navbar-center flex-col">
-            <div className="text-xs text-batik-text font-semibold uppercase">
+            <div className="text-sm text-batik-text font-semibold uppercase">
               Your Love
             </div>
           </div>
@@ -201,7 +201,7 @@ export default function LoveCorePage() {
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto  pb-16">
         <div>
-          <h2 className="text-xl font-semibold text-left">Your Love</h2>
+          <h2 className="text-xl font-semibold text-left">💖 Your Love</h2>
           <p className="text-sm text-gray-700 mb-2">
             Explore the core of how your Weton shapes your approach to love and
             partnership.
@@ -217,7 +217,7 @@ export default function LoveCorePage() {
                 }
                 className="w-full flex justify-between items-center text-left focus:outline-none"
               >
-                <h2 className="text-xl font-semibold">Romantic Archetype</h2>
+                <h2 className="text-xl font-semibold">🌹 Romantic Archetype</h2>
                 <ChevronDown
                   className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
                     isArchetypeSectionOpen ? "rotate-180" : ""
@@ -248,7 +248,9 @@ export default function LoveCorePage() {
                 }
                 className="w-full flex justify-between items-center text-left focus:outline-none"
               >
-                <h2 className="text-xl font-semibold">Emotional Foundation</h2>
+                <h2 className="text-xl font-semibold">
+                  ⚓ Emotional Foundation
+                </h2>
                 <ChevronDown
                   className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
                     isEmotionalSectionOpen ? "rotate-180" : ""
@@ -280,7 +282,7 @@ export default function LoveCorePage() {
                 className="w-full flex justify-between items-center text-left focus:outline-none"
               >
                 <h2 className="text-xl font-semibold">
-                  Interpersonal Instincts
+                  🧭 Interpersonal Instincts
                 </h2>
                 <ChevronDown
                   className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
@@ -313,7 +315,7 @@ export default function LoveCorePage() {
                 className="w-full flex justify-between items-center text-left focus:outline-none"
               >
                 <h2 className="text-xl font-semibold">
-                  Underlying Drives in Love
+                  🚘 Underlying Drives in Love
                 </h2>
                 <ChevronDown
                   className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
@@ -346,7 +348,7 @@ export default function LoveCorePage() {
                 className="w-full flex justify-between items-center text-left focus:outline-none"
               >
                 <h2 className="text-xl font-semibold">
-                  Javanese Philosophical Connection
+                  🧘 Javanese Philosophical Connection
                 </h2>
                 <ChevronDown
                   className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${

@@ -89,7 +89,9 @@ export const fetchProfileData = async ({
     // Fetch the user's profile data from the 'profiles' table
     const { data: userProfile, error: profileFetchError } = await supabase
       .from("profiles")
-      .select("weton, id, full_name, weton, gender, username, wuku, birth_date")
+      .select(
+        "weton, id, full_name, weton, gender, username, wuku, birth_date, avatar_url, subscription"
+      )
       .eq("id", user.id)
       .maybeSingle();
     if (profileFetchError) throw profileFetchError;

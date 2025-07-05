@@ -5,7 +5,8 @@
   "plugins": {
     "StatusBar": {
       "overlaysWebView": false,
-      "style": "DARK"
+      "style": "LIGHT",
+      "backgroundColor": "#ffffff"
     },
     "CapacitorHttp": {
       "enabled": true

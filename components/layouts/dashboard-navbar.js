@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { Users2Icon } from "lucide-react";
+import React from "react";
 import clsx from "clsx";
 
 export function DashboardNavbar({ user, handleLogout, showTitleInNavbar }) {
   return (
     <nav
       className={clsx(
-        "navbar min-h-[50px] w-full px-5 sticky top-0 left-0 z-10",
+        "navbar min-h-[50px] w-full px-5 sticky top-0 left-0 z-10 ",
         showTitleInNavbar ? "border-b border-batik-border bg-base-100" : ""
       )}
     >

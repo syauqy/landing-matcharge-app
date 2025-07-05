@@ -195,7 +195,7 @@ export default function LoveAttitudesPage() {
         </div>
         {showTitleInNavbar && profileData && (
           <div className="navbar-center flex-col">
-            <div className="text-xs text-batik-text font-semibold uppercase">
+            <div className="text-sm text-batik-text font-semibold uppercase">
               Love Attitudes
             </div>
           </div>
@@ -205,7 +205,7 @@ export default function LoveAttitudesPage() {
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         <div>
-          <h2 className="text-xl font-semibold text-left">Love Attitudes</h2>
+          <h2 className="text-xl font-semibold text-left">💬 Love Attitudes</h2>
           <p className="text-sm text-gray-700 mb-2">
             Uncover your underlying beliefs and perspectives when it comes to
             romance.
@@ -217,7 +217,7 @@ export default function LoveAttitudesPage() {
             onClick={() => setIsCommitmentSectionOpen(!isCommitmentSectionOpen)}
             className="w-full flex justify-between items-center text-left focus:outline-none"
           >
-            <h2 className="text-xl font-semibold">View on Commitment</h2>
+            <h2 className="text-xl font-semibold">🔗 View on Commitment</h2>
             <ChevronDown
               className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
                 isCommitmentSectionOpen ? "rotate-180" : ""
@@ -247,7 +247,7 @@ export default function LoveAttitudesPage() {
             className="w-full flex justify-between items-center text-left focus:outline-none"
           >
             <h2 className="text-xl font-semibold">
-              Approach to Conflict & Disagreement
+              ⚖️ Approach to Conflict & Disagreement
             </h2>
             <ChevronDown
               className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
@@ -278,7 +278,7 @@ export default function LoveAttitudesPage() {
             className="w-full flex justify-between items-center text-left focus:outline-none"
           >
             <h2 className="text-xl font-semibold">
-              Trust, Loyalty, & Fidelity
+              🛡️ Trust, Loyalty, & Fidelity
             </h2>
             <ChevronDown
               className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
@@ -309,7 +309,7 @@ export default function LoveAttitudesPage() {
             className="w-full flex justify-between items-center text-left focus:outline-none"
           >
             <h2 className="text-xl font-semibold">
-              Independence vs. Interdependence
+              ☯️ Independence vs. Interdependence
             </h2>
             <ChevronDown
               className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
@@ -339,7 +339,9 @@ export default function LoveAttitudesPage() {
             onClick={() => setIsHarmonySectionOpen(!isHarmonySectionOpen)}
             className="w-full flex justify-between items-center text-left focus:outline-none"
           >
-            <h2 className="text-xl font-semibold">Javanese Cultural Nuance</h2>
+            <h2 className="text-xl font-semibold">
+              🧘 Javanese Cultural Nuance
+            </h2>
             <ChevronDown
               className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
                 isHarmonySectionOpen ? "rotate-180" : ""

@@ -161,7 +161,7 @@ export async function generateMonthlyReading(profile) {
         providerOptions: {
           google: {
             thinkingConfig: {
-              thinkingBudget: 500,
+              thinkingBudget: 1000,
             },
           },
         },
@@ -1853,17 +1853,17 @@ export async function generateCareerProReading(profile) {
 }
 
 export async function generateFinancialProReading(profile) {
-  const { data: newCareerReading, error } = await supabase
+  const { data: newFinancialReading, error } = await supabase
     .from("readings")
     .insert({
       reading_type: "pro",
       reading_category: "financial_readings",
-      title: "Your Career",
+      title: "Your Financial",
       subtitle:
-        "Explore professions and work styles that resonate with your Weton's energy.",
+        "Understand your natural approach to wealth, and financial opportunities.",
       username: profile.username,
       status: "loading",
-      slug: "your-career",
+      slug: "your-financial",
       user_id: profile.id,
     })
     .select()
@@ -1874,31 +1874,30 @@ export async function generateFinancialProReading(profile) {
     throw error;
   }
 
-  console.log("new reading generated on supabase", newCareerReading);
+  console.log("new reading generated on supabase", newFinancialReading);
 
-  const { data: newFinancialCyclesReading, errorFinancialCycles } =
-    await supabase
-      .from("readings")
-      .insert({
-        reading_type: "pro",
-        reading_category: "financial_readings",
-        title: "Financial Cycles",
-        subtitle:
-          "Understand insights into the cyclical nature of your financial fortunes.",
-        username: profile.username,
-        status: "loading",
-        slug: "financial-cycles",
-        user_id: profile.id,
-      })
-      .select()
-      .maybeSingle();
+  const { data: newConciousCoinReading, errorConciousCoin } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "financial_readings",
+      title: "Concious Coin",
+      subtitle:
+        "Understand your spending style that reflects your values and priorities.",
+      username: profile.username,
+      status: "loading",
+      slug: "concious-coin",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
 
-  if (errorFinancialCycles) {
-    console.error("Error inserting new reading:", errorFinancialCycles);
+  if (errorConciousCoin) {
+    console.error("Error inserting new reading:", errorConciousCoin);
     throw error;
   }
 
-  console.log("new reading generated on supabase", newFinancialCyclesReading);
+  console.log("new reading generated on supabase", newConciousCoinReading);
 
   const { data: newWealthPurposeReading, errorWealthPurpose } = await supabase
     .from("readings")
@@ -1930,7 +1929,8 @@ export async function generateFinancialProReading(profile) {
     attempt++;
     try {
       const response = await generateObject({
-        model: google("gemini-2.5-flash-preview-05-20"),
+        // model: google("gemini-2.5-flash-preview-05-20"),
+        model: google("gemini-2.5-pro"),
         providerOptions: {
           google: {
             thinkingConfig: {
@@ -1940,10 +1940,10 @@ export async function generateFinancialProReading(profile) {
         },
         schema: z.object({
           financial: z.object({
-            introduction: z
+            archetype: z
               .string()
               .describe(
-                "Explain how your Weton and Rakam provide insights into your fundamental financial character, including your innate relationship with money, and general tendencies towards abundance or careful management."
+                `Based on a holistic view of their profile, assign them a resonant archetype title. (e.g., "The Diligent Builder," "The Charismatic Merchant," "The Community Steward," "The Intuitive Risk-Taker", and so on)`
               )
               .catch(() => ""),
             mindset: z
@@ -1955,7 +1955,7 @@ export async function generateFinancialProReading(profile) {
             tendencies: z
               .string()
               .describe(
-                "Discuss your overall predisposition towards attracting or managing financial resources. This isn't about specific amounts, but about the flow of wealth in your life."
+                "Discuss your overall predisposition towards attracting or managing financial resources. This isn't about specific amounts, but about the flow of wealth in your life. explain their natural comfort level with financial risk."
               )
               .catch(() => ""),
             opportunities: z
@@ -1970,58 +1970,40 @@ export async function generateFinancialProReading(profile) {
                 "Outline any inherent tendencies that might lead to financial challenges or require careful management (e.g., impulsive spending, excessive generosity, aversion to financial planning, periods of unexpected fluctuation)."
               )
               .catch(() => ""),
-            abundant: z
+            karmic: z
               .string()
               .describe(
-                "Connect your financial insights to the Javanese concept of jembar rejeki, emphasizing how mindful living and alignment with your Weton can foster greater abundance."
+                "Analyze their Pancasuda and Rakam. Clearly explain their innate financial advantage (e.g., *Satria Wibawa* - commanding respect that brings opportunity) or the primary financial challenge they are here to master. Frame the challenge as a vital area for personal growth."
               )
               .catch(() => ""),
           }),
-          cycles: z.object({
-            introduction: z
-              .string()
-              .describe(
-                "Explain how Javanese calendrical systems, particularly Wuku cycles and daily Weton movements, offer unique insights into the ebb and flow of financial energies, guiding auspicious timing."
-              )
-              .catch(() => ""),
-            cycles: z
-              .string()
-              .describe(
-                "Describe the broader periods of financial growth, stability, or potential challenge that may recur in your life, based on your inherent Wuku and Weton influences."
-              )
-              .catch(() => ""),
-            auspicious: z
-              .string()
-              .describe(
-                "Highlight general types of times or phases that are traditionally considered more favorable for specific financial endeavors (e.g., starting new businesses, making significant investments, major purchases, signing contracts). Explain the energetic reason behind these recommendations."
-              )
-              .catch(() => ""),
-            caution: z
-              .string()
-              .describe(
-                "Identify types of times or phases that may require greater caution or conservative financial strategies (e.g., avoiding large risks, reviewing budgets, delaying major expenditures)."
-              )
-              .catch(() => ""),
-            dina_apik: z
-              .string()
-              .describe(
-                "Offer actionable advice on how to tune into and leverage these cyclical insights, emphasizing the wisdom of choosing dina apik for important financial undertakings, without guaranteeing outcomes."
-              )
-              .catch(() => ""),
-            disclaimer: z
-              .string()
-              .describe(
-                "Suggest types of environments or pursuits that would naturally support your journey towards your ideal life.Reinforce that these are energetic tendencies and not absolute predictions. Personal effort, due diligence, and market conditions remain crucial."
-              )
-              .catch(() => ""),
-          }),
+          // cycles: z.object({
+          //   cycles: z
+          //     .string()
+          //     .describe(
+          //       "Describe the broader periods of financial growth, stability, or potential challenge that may recur in your life, based on your inherent Wuku and Weton influences."
+          //     )
+          //     .catch(() => ""),
+          //   auspicious: z
+          //     .string()
+          //     .describe(
+          //       "Highlight general types of times or phases that are traditionally considered more favorable for specific financial endeavors (e.g., starting new businesses, making significant investments, major purchases, signing contracts). Explain the energetic reason behind these recommendations."
+          //     )
+          //     .catch(() => ""),
+          //   caution: z
+          //     .string()
+          //     .describe(
+          //       "Identify types of times or phases that may require greater caution or conservative financial strategies (e.g., avoiding large risks, reviewing budgets, delaying major expenditures)."
+          //     )
+          //     .catch(() => ""),
+          //   auspicious_alignment: z
+          //     .string()
+          //     .describe(
+          //       "Offer actionable advice on how to tune into and leverage these cyclical insights, emphasizing the wisdom of choosing dina apik for important financial undertakings, without guaranteeing outcomes."
+          //     )
+          //     .catch(() => ""),
+          // }),
           purpose: z.object({
-            introduction: z
-              .string()
-              .describe(
-                "Explain how true abundance, from a Javanese perspective, often flows when one's material pursuits are aligned with their inherent gifts and contributions to the world."
-              )
-              .catch(() => ""),
             talents: z
               .string()
               .describe(
@@ -2046,10 +2028,42 @@ export async function generateFinancialProReading(profile) {
                 'Offer advice on how to cultivate a personal "ecosystem" where your work, values, and financial aspirations are harmoniously intertwined, leading to sustainable prosperity.'
               )
               .catch(() => ""),
-            sumbangsih: z
+            proverb: z
               .string()
               .describe(
-                "Connect this section to the Javanese concept of sumbangsih, emphasizing that genuine contribution and service can be a powerful engine for both material and spiritual abundance."
+                "Conclude with a fitting Javanese proverb that serves as a mantra for their journey to purposeful wealth."
+              )
+              .catch(() => ""),
+          }),
+          concious: z.object({
+            introduction: z
+              .string()
+              .describe(
+                `Start with a simple, profound idea: every financial transaction is an exchange of energy. Ask the user, "Is the energy you send out into the world through your money aligned with the person you truly are?"`
+              )
+              .catch(() => ""),
+            values: z
+              .string()
+              .describe(
+                `Identify the user's Wuku Guardian Deity (*Dewa*). Describe the primary virtues of that deity (e.g., justice, creativity, compassion, wisdom). Present these as the user's "Soul's Core Values."`
+              )
+              .catch(() => ""),
+            budget: z
+              .string()
+              .describe(
+                `Guide them to think about their spending through the lens of these values. Ask reflective questions like: "Your patron is Batara Wisnu, a symbol of universal compassion. When you look at your monthly spending, how much of it is dedicated to caring for others or for the world? This isn't a judgment, but an observation."`
+              )
+              .catch(() => ""),
+            mindful: z
+              .string()
+              .describe(
+                `Based on their core values, provide gentle guidance on how they can express their nature through generosity. "For you, true generosity may not be about money, but about sharing your gift of wisdom or your time for a just cause."`
+              )
+              .catch(() => ""),
+            philosophy: z
+              .string()
+              .describe(
+                `Introduce the Javanese concept of *Memayu Hayuning Bawana* (a commitment to beautifying the beauty of the world). Frame it as a timeless guide for ethical and conscious use of resources.`
               )
               .catch(() => ""),
           }),
@@ -2068,19 +2082,19 @@ export async function generateFinancialProReading(profile) {
           total_token: response.usage.totalTokens,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", newCareerReading.id);
+        .eq("id", newFinancialReading.id);
 
       await supabase
         .from("readings")
         .update({
           status: "completed",
-          reading: resObj.cycles,
+          reading: resObj.concious,
           input_token: response.usage.promptTokens,
           output_token: response.usage.completionTokens,
           total_token: response.usage.totalTokens,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", newFinancialCyclesReading.id);
+        .eq("id", newConciousCoinReading.id);
 
       await supabase
         .from("readings")
@@ -2104,7 +2118,7 @@ export async function generateFinancialProReading(profile) {
             reading: { error: lastErrorMsg },
             updated_at: new Date().toISOString(),
           })
-          .eq("id", newCareerReading.id);
+          .eq("id", newFinancialReading.id);
       }
     }
   } while (attempt < maxAttempts);

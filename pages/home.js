@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import { Menubar } from "@/components/layouts/menubar";
 import { getWeton } from "@/utils";
 import { closeBrowser } from "@/utils/native-browser";
+import { StatusBar, Style } from "@capacitor/status-bar";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -448,10 +449,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-base-100">
       <DashboardNavbar user={user} showTitleInNavbar={showTitleInNavbar} />
-      <div
-        // ref={scrollContainerRef}
-        className="py-4 pb-20 overflow-y-auto flex-grow mb-8"
-      >
+      <div className="py-4 pb-20 overflow-y-auto flex-grow mb-8">
         <div className="px-4">
           <p className="text-2xl font-semibold text-batik-black">
             {getTimeOfDay()}, {profileData?.full_name?.split(" ")[0] || "User"}!

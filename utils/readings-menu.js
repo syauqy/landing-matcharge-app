@@ -206,13 +206,22 @@ export const CardData = {
     },
     {
       id: 21,
-      title: "Financial Cycles",
+      title: "Conscious Coin",
       description:
-        "Understand insights into the cyclical nature of your financial fortunes.",
-      slug: "financial-cycles",
+        "Understand your spending style that reflects your values and priorities.",
+      slug: "concious-coin",
       category: "financial_readings",
       type: "pro",
     },
+    // {
+    //   id: 21,
+    //   title: "Financial Cycles",
+    //   description:
+    //     "Understand insights into the cyclical nature of your financial fortunes.",
+    //   slug: "financial-cycles",
+    //   category: "financial_readings",
+    //   type: "pro",
+    // },
     {
       id: 22,
       title: "Wealth Through Purpose",
@@ -227,25 +236,25 @@ export const CardData = {
 
 export const SectionData = [
   {
-    title: "General Readings",
+    title: "🔮 General Readings",
     subtitle:
       "Unlock the core of your being and discover the unique energies that shape you.",
     cards: CardData.general,
   },
   {
-    title: "Love and Relationship",
+    title: "💖 Love and Relationship",
     subtitle:
       "Navigate the world of love by understanding your unique romantic tendencies and connection styles.",
     cards: CardData.love,
   },
   {
-    title: "Work, Career, and Purpose",
+    title: "💼 Work, Career, and Purpose",
     subtitle:
       "Align your professional path with your innate talents and discover your true calling.",
     cards: CardData.work,
   },
   {
-    title: "Financial Fortune",
+    title: "💰 Financial Fortune",
     subtitle:
       "Gain insights into your financial tendencies to better manage and grow your resources.",
     cards: CardData.financial,

@@ -25,7 +25,7 @@ export default function BasicReadingPage() {
     dina: "The Dina simply refers to the seven days of the regular week, from Sunday to Saturday. In the Javanese system, however, each day is not just a name but a living energy with a specific numerical value, or neptu. This value represents the day's fundamental character—for instance, one day might carry an energy of movement and speech, while another carries an energy of stillness and stability. The Dina of your birth provides the first layer of your personality, defining the broad strokes of your character and outward demeanor.",
     pasaran:
       'The Pasaran is the mystical heart of the Javanese calendar, a five-day cycle that runs concurrently with the seven-day week. The five days (Legi, Pahing, Pon, Wage, Kliwon), each represent a different spiritual quality or "flavor" of energy, influencing everything from market commerce to metaphysical potency. The Pasaran of your birth infuses your core personality with a deeper, more subtle spiritual influence, governing your inner motivations, your connection to the unseen world, and your natural inclinations in matters of intuition and desire.',
-    laku: `Your Laku, which translates to "path" or "behavior," is your elemental archetype, describing how your life force naturally expresses itself. Derived from your Weton's total spiritual value (neptu), your Laku aligns you with a powerful natural force, such as the Sun (Laku Srengenge), Water (Laku Banyu), or Wind (Laku Angin). This reveals your most authentic mode of being—whether you are destined to lead and illuminate, to advise and flow, or to wander and communicate—and provides a guide for how to best navigate the world in harmony with your true nature.`,
+    laku: `Your Laku, which translates to "path" or "behavior," is your elemental archetype, describing how your life force naturally expresses itself. Derived from your Weton's total spiritual value (neptu), your Laku aligns you with a powerful natural force, such as the Sun (Laku Srengenge), Water (Laku Banyu), or Wind (Laku Angin). This reveals your most authentic mode of being, whether you are destined to lead and illuminate, to advise and flow, or to wander and communicate, and provides a guide for how to best navigate the world in harmony with your true nature.`,
     pancasuda: `Pancasuda is a specific calculation that reveals your "Innate Fortune Factor," a core theme related to your luck and prosperity. By analyzing your Weton's numerical value, Pancasuda pinpoints a significant karmic gift or challenge that will consistently appear in your life. For example, your fortune factor might be Tunggak Semi ("The Sprouting Stump"), indicating a miraculous ability to regenerate wealth after a loss, or Lebu Katiup Angin ("Dust in the Wind"), suggesting a lifelong lesson in learning how to maintain stability and hold onto resources.`,
     rakam: `Rakam acts as your "Karmic Imprint", offering a narrative about your destiny, character, and social interactions. Like Pancasuda, it is derived from your Weton, but it provides a broader, more story-driven insight into your life's path. Your Rakam might reveal a destiny of respected authority (Satria Wibawa) or a path of overcoming great trials through courage (Kala Tinantang). It functions as a "verdict" on your fate, highlighting the central virtues you must cultivate or the character flaws you must overcome to achieve your highest potential.`,
   };
@@ -187,7 +187,7 @@ export default function BasicReadingPage() {
         <section>
           <div className="flex flex-col gap-8">
             <div className="text-slate-600">
-              <div className="flex items-center gap-2">
+              <div className="flex gap-2 justify-between items-center">
                 <div className="text-batik-text font-semibold">Weton</div>
                 <button
                   onClick={() =>
@@ -209,7 +209,7 @@ export default function BasicReadingPage() {
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-2">
+              <div className="flex gap-2 justify-between items-center">
                 <div className="font-semibold text-batik-text">Day (Dina)</div>
                 <button
                   onClick={() =>
@@ -230,7 +230,7 @@ export default function BasicReadingPage() {
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-2">
+              <div className="flex gap-2 justify-between items-center">
                 <div className="font-semibold text-batik-text">
                   Market Day (Pasaran)
                 </div>
@@ -268,8 +268,8 @@ export default function BasicReadingPage() {
           </div>
           <div className="flex flex-col gap-8">
             <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <div className="font-semibold  text-batik-text">Laku</div>
+              <div className="flex gap-2 justify-between items-center">
+                <div className="font-semibold  text-batik-text">🎭 Laku</div>
                 <button
                   onClick={() =>
                     handleShowExplanation("Laku", tooltipContent?.laku)
@@ -290,8 +290,10 @@ export default function BasicReadingPage() {
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <div className="font-semibold  text-batik-text">Pancasuda</div>
+              <div className="flex gap-2 justify-between items-center">
+                <div className="font-semibold  text-batik-text">
+                  🍀 Pancasuda
+                </div>
                 <button
                   onClick={() =>
                     handleShowExplanation(
@@ -333,8 +335,8 @@ export default function BasicReadingPage() {
 
           <div className="flex flex-col gap-8">
             <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <div className="font-semibold  text-batik-text">Rakam</div>
+              <div className="flex gap-2 justify-between items-center">
+                <div className="font-semibold  text-batik-text">📜 Rakam</div>
                 <button
                   onClick={() =>
                     handleShowExplanation("Rakam", tooltipContent?.rakam)
@@ -420,6 +422,16 @@ export default function BasicReadingPage() {
                 <div className="text-sm text-gray-700">
                   {profileData.weton?.hastawara?.description}
                 </div>
+              </div>
+            </div> */}
+            {/* <div className="flex flex-col gap-2">
+              <div className="">
+                <div></div>
+              </div>
+              <div className="flex flex-row gap-3">
+                <button>
+
+                </button>
               </div>
             </div> */}
           </div>

@@ -8,6 +8,7 @@ import { config } from "@/utils/config";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import axios from "axios";
+import { PromotionBanner } from "@/components/readings/promotion-banner";
 import Link from "next/link";
 
 export default function PrimaryTraitsPage() {
@@ -144,8 +145,6 @@ export default function PrimaryTraitsPage() {
     if (profileData && user) {
       // Only run if profileData and user exist
       handleGenerateReading();
-      //   handleMonthlyReading();
-      //   handleDailyReading();
     }
   }, [profileData]);
 
@@ -232,7 +231,7 @@ export default function PrimaryTraitsPage() {
           <div className="flex flex-col gap-8">
             <div className="text-slate-600">
               <div className="text-batik-text font-semibold">
-                Weton Identity
+                🌀 Weton Identity
               </div>
               <div className="text-gray-700">
                 {reading?.reading?.weton_identity?.element}
@@ -263,7 +262,9 @@ export default function PrimaryTraitsPage() {
             <div className="overflow-hidden">
               <div className="flex flex-col gap-8">
                 <div className="flex flex-col">
-                  <div className="font-semibold text-batik-text">Character</div>
+                  <div className="font-semibold text-batik-text">
+                    🎭 Character
+                  </div>
                   <div className="text-lg font-semibold">
                     {profileData.weton?.laku?.name}
                   </div>
@@ -273,19 +274,19 @@ export default function PrimaryTraitsPage() {
                   <div className="text-gray-700 mt-2">
                     {reading?.reading?.symbol?.philosophy}
                   </div>
-                  <Link
-                    href={"/readings/general_readings/laku"}
-                    className="font-semibold text-batik-text underline mt-4 inline-flex items-center"
-                  >
-                    Learn More about {profileData.weton?.laku?.name}
-                    <ArrowRight size={16} className="ml-2 text-batik-text" />
-                  </Link>
+                  <PromotionBanner
+                    title={`Learn More about ${profileData.weton?.laku?.name}`}
+                    content="Discover the archetype and behavioral pattern that guides your life's journey."
+                    url={"/readings/general_readings/laku"}
+                    pro={true}
+                    icon={"🎭"}
+                  />
                 </div>
                 <div className="flex flex-col">
                   <div className="font-semibold text-batik-text">
-                    Inherent Strengths
+                    💪 Inherent Strengths
                   </div>
-                  <ul className="list-disc list-outsidetext-gray-700 ml-4">
+                  <ul className="list-disc list-outside text-gray-700 ml-5">
                     {reading?.reading?.characters?.strength?.map((s, i) => (
                       <li key={i} className="text-gray-700">
                         {s}
@@ -295,9 +296,9 @@ export default function PrimaryTraitsPage() {
                 </div>
                 <div className="flex flex-col">
                   <div className="font-semibold text-batik-text">
-                    Areas for Growth
+                    🌱 Areas for Growth
                   </div>
-                  <ul className="list-disc list-outside text-gray-700 ml-4">
+                  <ul className="list-disc list-outside text-gray-700 ml-5">
                     {reading?.reading?.characters?.growth?.map((g, i) => (
                       <li key={i} className="text-gray-700">
                         {g}
@@ -335,7 +336,7 @@ export default function PrimaryTraitsPage() {
               <div className="flex flex-col gap-8">
                 <div className="flex flex-col">
                   <div className="font-semibold  text-batik-text">
-                    Emotional Nature
+                    🌊 Emotional Nature
                   </div>
                   <div className="text-gray-700">
                     {reading?.reading?.influences?.emotion}
@@ -343,7 +344,7 @@ export default function PrimaryTraitsPage() {
                 </div>
                 <div className="flex flex-col">
                   <div className="font-semibold  text-batik-text">
-                    Social Interactions
+                    💬 Social Interactions
                   </div>
                   <div className="text-gray-700">
                     {reading?.reading?.influences?.social}
@@ -351,7 +352,7 @@ export default function PrimaryTraitsPage() {
                 </div>
                 <div className="flex flex-col">
                   <div className="font-semibold  text-batik-text">
-                    Work Ethics
+                    👔 Work Ethics
                   </div>
                   <div className="text-gray-700">
                     {reading?.reading?.influences?.work}
@@ -359,14 +360,24 @@ export default function PrimaryTraitsPage() {
                 </div>
                 <div className="flex flex-col">
                   <div className="font-semibold  text-batik-text">
-                    Financial Tendencies
+                    💵 Financial Tendencies
                   </div>
                   <div className="text-gray-700">
                     {reading?.reading?.influences?.financial}
                   </div>
+                  <PromotionBanner
+                    title={`Know Financial Traits`}
+                    content="Understand your natural approach to wealth, and financial opportunities."
+                    url={"/readings/financials_readings/your-financial"}
+                    pro={true}
+                    icon={"💰"}
+                  />
                 </div>
+
                 <div className="flex flex-col">
-                  <div className="font-semibold  text-batik-text">Health</div>
+                  <div className="font-semibold  text-batik-text">
+                    🧘🏻‍♀️ Health
+                  </div>
                   <div className="text-gray-700">
                     {reading?.reading?.influences?.health}
                   </div>
@@ -401,14 +412,16 @@ export default function PrimaryTraitsPage() {
               <div className="flex flex-col gap-8">
                 <div className="flex flex-col">
                   <div className="font-semibold  text-batik-text">
-                    Reflection
+                    🤔 Reflection
                   </div>
                   <div className="text-gray-700">
                     {reading?.reading?.wisdom?.reflection}
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <div className="font-semibold  text-batik-text">For You</div>
+                  <div className="font-semibold  text-batik-text">
+                    💌 Message For You
+                  </div>
                   <div className="text-gray-700">
                     {reading?.reading?.wisdom?.empowerment}
                   </div>

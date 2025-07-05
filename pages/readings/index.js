@@ -79,7 +79,7 @@ export default function ReadingsPage() {
           content="Explore various readings for insights."
         />
       </Head>
-      <div className="h-[100svh] flex flex-col bg-base relative select-none">
+      <div className="min-h-screen flex flex-col bg-base relative select-none">
         <Navbar title="Readings" />
         <div className="px-safe flex flex-col bg-base pt-4 sm:pt-6 pb-20">
           <div className="py- sm:py-6">

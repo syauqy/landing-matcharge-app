@@ -3,9 +3,16 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { fetchProfileData } from "@/utils/fetch";
 import { config } from "@/utils/config";
+import { LoadingProfile } from "@/components/layouts/loading-profile";
+import { ErrorLayout } from "@/components/layouts/error-page";
+import Markdown from "markdown-to-jsx";
+import { Capacitor } from "@capacitor/core";
+// import ReactMarkdown from "react-markdown";
+// import axios from "axios";
+// import { PromotionBanner } from "@/components/readings/promotion-banner";
 import dynamic from "next/dynamic";
 const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
   ssr: false,
@@ -19,12 +26,16 @@ export default function FinancialPage() {
   const [error, setError] = useState(null);
   const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
+  const [isMindsetSectionOpen, setIsMindsetSectionOpen] = useState(true);
+  const [isTendeciesSectionOpen, setIsTendeciesSectionOpen] = useState(false);
+  const [isOpportunitiesSectionOpen, setIsOpportunitiesSectionOpen] =
+    useState(false);
+  const [isPitfallSectionOpen, setIsPitfallSectionOpen] = useState(false);
+  const [isAbundantSectionOpen, setIsAbundantSectionOpen] = useState(false);
+  const isNative = Capacitor.isNativePlatform();
 
   const disclaimer =
-    "While Weton provides valuable insights into inherent tendencies and energetic dynamics, it does not dictate absolute destinies or outcomes in relationships. These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure. Human agency, conscious effort, open communication, and genuine love are paramount. Every relationship is a unique journey of two individuals, and challenges can always be overcome with dedication.";
-
-  const introduction =
-    "Your birth Weton, Monday Kliwon, and its intricate components, including your Wuku Kuningan, offer a profound understanding of your deepest desires for fulfillment and what truly contributes to your sense of inner harmony and purpose. This section explores the essence of your ideal life, guiding you towards a path where you can experience genuine peace and meaning.";
+    "These are energetic tendencies, not absolute predictions. Your personal effort, diligent research, and understanding of market conditions remain crucial. This guidance offers insights into your inherent predispositions, but your conscious choices and actions ultimately shape your financial reality.";
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -62,7 +73,6 @@ export default function FinancialPage() {
       return;
     } else {
       try {
-        // Check if primary-traits reading exists
         const { data: existingReading, error: fetchError } = await supabase
           .from("readings")
           .select("reading, status")
@@ -124,58 +134,24 @@ export default function FinancialPage() {
 
   useEffect(() => {
     if (profileData && user) {
-      // Only run if profileData and user exist
-      //   handleMonthlyReading();
-      //   handleDailyReading();
+      if (isNative) {
+        handleGenerateReading();
+      }
     }
   }, [profileData]);
 
+  const introduction = profileData?.weton
+    ? `Your ${profileData?.weton?.weton_en} Weton, with a Neptu of ${profileData?.weton?.total_neptu}, combined with your Rakam ${profileData?.weton?.rakam?.name}, provides deep insight into your fundamental character. This combination reveals your innate relationship with money, your general tendencies towards abundance, and how you naturally approach finacial management.`
+    : "";
+
   console.log("Profile Data:", profileData);
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
-        <p className="mt-4">Loading your profile...</p>
-      </div>
-    );
-  }
-
-  if (loading && !error) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
-        <p className="mt-4">Loading your reading...</p>
-      </div>
-    );
+  if (authLoading || (loading && !error)) {
+    return <LoadingProfile />;
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <div className="alert alert-error shadow-lg max-w-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2 2m2-2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>Error! {error}</span>
-          </div>
-        </div>
-        <button onClick={() => router.back()} className="btn btn-neutral mt-6">
-          Go Back
-        </button>
-      </div>
-    );
+    return <ErrorLayout error={error} router={router} />;
   }
 
   if (!profileData) {
@@ -225,7 +201,7 @@ export default function FinancialPage() {
         </div>
         {showTitleInNavbar && profileData && (
           <div className="navbar-center flex-col">
-            <div className="text-xs text-batik-text font-semibold uppercase">
+            <div className="text-sm text-batik-text font-semibold uppercase">
               Your Financial
             </div>
           </div>
@@ -236,160 +212,213 @@ export default function FinancialPage() {
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         <div>
           <h2 className="text-xl font-semibold text-left">Your Financial</h2>
-          <p className="text-sm text-gray-700 mb-2">
-            Understand your natural approach to wealth, and financial
-            opportunities.
-          </p>
+          {profileData?.subscription == "free" && (
+            <p className="text-sm text-gray-700 mb-2">{introduction}</p>
+          )}
         </div>
-        <section>
-          <div className="flex flex-col gap-4">
-            <button
-              className="btn border-batik-border text-batik-text rounded-2xl"
-              onClick={handleGenerateReading}
-            >
-              Generate Reading
-            </button>
-            {reading && (
+
+        {reading?.status === "completed" ? (
+          <div className="space-y-6">
+            <section className="pt-4">
+              <h2 className="text-sm text-batik-text font-semibold">
+                Your Financial Archetype
+              </h2>
               <div className="flex flex-col">
-                <div className="text-sm font-semibold  text-batik-text">
-                  Your Financial
-                </div>
-
-                <ReactJsonView
-                  src={reading}
-                  theme="bright:inverted"
-                  displayObjectSize={false}
-                  className="rounded-2xl"
-                  displayDataTypes={false}
+                <p className="text-batik-black text-lg font-semibold">
+                  {reading?.reading?.archetype}
+                </p>
+              </div>
+            </section>
+            <section className="pt-4">
+              <button
+                onClick={() => setIsMindsetSectionOpen(!isMindsetSectionOpen)}
+                className="w-full flex justify-between items-center text-left focus:outline-none"
+              >
+                <h2 className="text-xl font-semibold">🤔 Financial Mindset</h2>
+                <ChevronDown
+                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
+                    isMindsetSectionOpen ? "rotate-180" : ""
+                  }`}
                 />
+              </button>
+              <div
+                className={`grid transition-all duration-500 ease-in-out ${
+                  isMindsetSectionOpen
+                    ? "grid-rows-[1fr] opacity-100 mt-4"
+                    : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="flex flex-col">
+                    <Markdown className="text-gray-700">
+                      {reading?.reading?.mindset}
+                    </Markdown>
+                  </div>
+                </div>
               </div>
-            )}
+            </section>
+            <section className="border-t border-batik-border pt-4">
+              <button
+                onClick={() =>
+                  setIsTendeciesSectionOpen(!isTendeciesSectionOpen)
+                }
+                className="w-full flex justify-between items-center text-left focus:outline-none"
+              >
+                <h2 className="text-xl font-semibold">
+                  📈 General Wealth Tendencies
+                </h2>
+                <ChevronDown
+                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
+                    isTendeciesSectionOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              <div
+                className={`grid transition-all duration-500 ease-in-out ${
+                  isTendeciesSectionOpen
+                    ? "grid-rows-[1fr] opacity-100 mt-4"
+                    : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="flex flex-col">
+                    <Markdown className="text-gray-700">
+                      {reading?.reading?.tendencies}
+                    </Markdown>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section className="border-t border-batik-border pt-4">
+              <button
+                onClick={() =>
+                  setIsOpportunitiesSectionOpen(!isOpportunitiesSectionOpen)
+                }
+                className="w-full flex justify-between items-center text-left focus:outline-none"
+              >
+                <h2 className="text-xl font-semibold">
+                  🎯 Opportunities for Attracting Wealth
+                </h2>
+                <ChevronDown
+                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
+                    isOpportunitiesSectionOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              <div
+                className={`grid transition-all duration-500 ease-in-out ${
+                  isOpportunitiesSectionOpen
+                    ? "grid-rows-[1fr] opacity-100 mt-4"
+                    : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="flex flex-col">
+                    <Markdown className="text-gray-700">
+                      {reading?.reading?.opportunities}
+                    </Markdown>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section className="border-t border-batik-border pt-4">
+              <button
+                onClick={() => setIsPitfallSectionOpen(!isPitfallSectionOpen)}
+                className="w-full flex justify-between items-center text-left focus:outline-none"
+              >
+                <h2 className="text-xl font-semibold">
+                  🚧 Pontential Financial Pitfalls
+                </h2>
+                <ChevronDown
+                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
+                    isPitfallSectionOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              <div
+                className={`grid transition-all duration-500 ease-in-out ${
+                  isPitfallSectionOpen
+                    ? "grid-rows-[1fr] opacity-100 mt-4"
+                    : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="flex flex-col">
+                    <Markdown className="text-gray-700">
+                      {reading?.reading?.pitfalls}
+                    </Markdown>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section className="border-t border-batik-border pt-4">
+              <button
+                onClick={() => setIsAbundantSectionOpen(!isAbundantSectionOpen)}
+                className="w-full flex justify-between items-center text-left focus:outline-none"
+              >
+                <h2 className="text-xl font-semibold">
+                  🧘 Hidden Strength & Karmic Lesson
+                </h2>
+                <ChevronDown
+                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
+                    isAbundantSectionOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              <div
+                className={`grid transition-all duration-500 ease-in-out ${
+                  isAbundantSectionOpen
+                    ? "grid-rows-[1fr] opacity-100 mt-4"
+                    : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="flex flex-col">
+                    <Markdown className="text-gray-700">
+                      {reading?.reading?.karmic}
+                    </Markdown>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section className="p-4 border-slate-100 border rounded-2xl bg-base-100 shadow-md mt-10">
+              <p className="text-sm text-gray-700">{disclaimer}</p>
+            </section>
           </div>
-        </section>
+        ) : (
+          <div className="flex h-[30rem] flex-col items-center justify-center bg-base-100 text-base-content">
+            <span className="loading loading-spinner loading-lg text-rose-400"></span>
+            <p className="mt-4">Generating Your Finacial Reading...</p>
+          </div>
+        )}
 
-        {/* <section className="border-t border-batik-text/20 pt-4">
-          <h2 className="text-xl font-semibold text-left">
-            Your Inner Compass & Life&apos;s Journey
-          </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            These elements describe your fundamental character, how you approach
-            life, and the innate energies that guide your path.
-          </p>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">Laku</div>
-              <p className="text-[10px] text-gray-700 italic">
-                Laku describes the overarching &quot;manner&quot; or
-                &quot;way&quot; your life tends to unfold, like a specific
-                archetype or behavioral pattern.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.laku?.name} (
-                  {profileData.weton?.laku?.meaning})
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.laku?.description}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Pancasuda
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Pancasuda types define your innate &quot;character essence&quot;
-                or life&apos;s guiding archetype, revealing the unique talents
-                and potential path intricately woven into your birth Weton.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.saptawara?.name}
-                </div>
-                <div className="text-[10px] text-gray-700 italic ">
-                  {profileData.weton?.saptawara?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.saptawara?.description}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {!isNative && (
+          <section>
+            <div className="flex flex-col gap-4">
+              <button
+                className="btn border-batik-border text-batik-text rounded-2xl"
+                onClick={handleGenerateReading}
+              >
+                Generate Reading
+              </button>
+              {reading && (
+                <div className="flex flex-col">
+                  <div className="text-sm font-semibold  text-batik-text">
+                    Your Financial
+                  </div>
 
-        <section className="border-t border-batik-text/20 pt-4">
-          <h2 className="text-xl font-semibold text-left">
-            Karmic Tides & Cyclical Patterns
-          </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            These aspects point to underlying patterns, cyclical influences from
-            different day counts, and potential karmic themes that shape your
-            experiences.
-          </p>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Rakam
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Rakam suggests a significant life theme or a pattern of
-                experiences that may repeat or define distinct periods of your
-                life.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.rakam?.name}
+                  <ReactJsonView
+                    src={reading}
+                    theme="bright:inverted"
+                    displayObjectSize={false}
+                    className="rounded-2xl"
+                    displayDataTypes={false}
+                  />
                 </div>
-                <div className="text-[10px] text-gray-700 italic">
-                  {profileData.weton?.rakam?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.rakam?.description}
-                </div>
-              </div>
+              )}
             </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Sadwara
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Part of a six-day Pawukon cycle (Sadwara), this highlights
-                subtle behavioral tendencies, your approach to responsibility,
-                or social interaction styles.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.sadwara?.name} (
-                  {profileData.weton?.sadwara?.meaning})
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.sadwara?.description}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Hastawara
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                An eight-day Pawukon cycle influence (Hastawara), this can point
-                towards areas of specific luck, potential challenges, or types
-                of activities favored or to be cautious about.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.hastawara?.name}
-                </div>
-                <div className="text-[10px] text-gray-700 italic">
-                  {profileData.weton?.hastawara?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.hastawara?.description}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section> */}
+          </section>
+        )}
       </main>
     </div>
   );

@@ -20,6 +20,24 @@
   --color-batik-text: #bd834a;
 }
 
+/* This sets a different background and item background in light mode on ios */
+.ios body {
+  --ion-background-color: #f2f2f6;
+}
+
+/* This sets a different background and item background in light mode on md */
+.md body {
+  --ion-background-color: #f9f9f9;
+}
+
+.ios body.dark {
+  --ion-background-color: #000000;
+}
+
+.md body.dark {
+  --ion-background-color: #121212;
+}
+
 /* Onboarding Carousel Styles */
 .onboarding-slider {
   margin-bottom: 30px;

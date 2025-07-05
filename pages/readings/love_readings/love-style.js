@@ -191,7 +191,7 @@ export default function LoveStylePage() {
         </div>
         {showTitleInNavbar && profileData && (
           <div className="navbar-center flex-col">
-            <div className="text-xs text-batik-text font-semibold uppercase">
+            <div className="text-sm text-batik-text font-semibold uppercase">
               Love Style
             </div>
           </div>
@@ -201,7 +201,7 @@ export default function LoveStylePage() {
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         <div>
-          <h2 className="text-xl font-semibold text-left">Love Style</h2>
+          <h2 className="text-xl font-semibold text-left">🎨 Love Style</h2>
           <p className="text-sm text-gray-700 mb-2">
             Discover your natural way of expressing and receiving affection in
             relationships.
@@ -214,7 +214,7 @@ export default function LoveStylePage() {
             className="w-full flex justify-between items-center text-left focus:outline-none"
           >
             <h2 className="text-xl font-semibold">
-              Primary Expression of Affection
+              🎁 Primary Expression of Affection
             </h2>
             <ChevronDown
               className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
@@ -245,7 +245,7 @@ export default function LoveStylePage() {
             className="w-full flex justify-between items-center text-left focus:outline-none"
           >
             <h2 className="text-xl font-semibold">
-              Desired Received Affection
+              🤲 Desired Received Affection
             </h2>
             <ChevronDown
               className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
@@ -275,7 +275,9 @@ export default function LoveStylePage() {
             onClick={() => setIsRomanticSectionOpen(!isRomanticSectionOpen)}
             className="w-full flex justify-between items-center text-left focus:outline-none"
           >
-            <h2 className="text-xl font-semibold">Romantic Ideal & Pursuits</h2>
+            <h2 className="text-xl font-semibold">
+              🔭 Romantic Ideal & Pursuits
+            </h2>
             <ChevronDown
               className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
                 isRomanticSectionOpen ? "rotate-180" : ""
@@ -306,7 +308,9 @@ export default function LoveStylePage() {
             }
             className="w-full flex justify-between items-center text-left focus:outline-none"
           >
-            <h2 className="text-xl font-semibold">Demonstration of Passion</h2>
+            <h2 className="text-xl font-semibold">
+              ❤️‍🔥 Demonstration of Passion
+            </h2>
             <ChevronDown
               className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
                 isDemonstrationSectionOpen ? "rotate-180" : ""
@@ -335,7 +339,9 @@ export default function LoveStylePage() {
             onClick={() => setIsCultureSectionOpen(!isCultureSectionOpen)}
             className="w-full flex justify-between items-center text-left focus:outline-none"
           >
-            <h2 className="text-xl font-semibold">Javanese Cultural Nuance</h2>
+            <h2 className="text-xl font-semibold">
+              🧘 Javanese Cultural Nuance
+            </h2>
             <ChevronDown
               className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
                 isCultureSectionOpen ? "rotate-180" : ""

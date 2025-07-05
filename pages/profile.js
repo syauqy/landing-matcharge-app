@@ -9,6 +9,8 @@ import { NavbarProfile } from "@/components/layouts/navbar-profile";
 import { Menubar } from "@/components/layouts/menubar";
 import { SunIcon, MoonStarIcon, Users2Icon } from "lucide-react";
 import { openBrowser, closeBrowser } from "@/utils/native-browser";
+import { getWeton, getWuku } from "@/utils";
+import { Toaster, toast } from "sonner";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
 
 export default function ProfilePage() {
@@ -26,6 +28,7 @@ export default function ProfilePage() {
   const [loadingReadings, setLoadingReadings] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("weton");
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   // --- Fetch Profile Data ---
   const fetchProfile = async () => {
@@ -61,6 +64,49 @@ export default function ProfilePage() {
 
   const handleSupportButton = async (link) => {
     await openBrowser(link);
+  };
+
+  const handleRegenerateProfile = async () => {
+    if (!profileData || !profileData.birth_date) {
+      toast.error("Profile data is incomplete. Cannot regenerate.");
+      return;
+    }
+
+    if (
+      !window.confirm(
+        "Are you sure you want to regenerate your profile data? This will re-calculate your Weton and Wuku based on your birth date."
+      )
+    ) {
+      return;
+    }
+
+    setIsRegenerating(true);
+    setError(null);
+
+    try {
+      const wetonDetails = getWeton(profileData.birth_date);
+      const wukuDetails = getWuku(profileData.birth_date);
+
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({
+          weton: wetonDetails,
+          wuku: wukuDetails,
+          dina_pasaran: wetonDetails?.weton_en,
+        })
+        .eq("id", user.id);
+
+      if (updateError) throw updateError;
+
+      toast.success("Profile data regenerated successfully!");
+      await fetchProfile(); // Refetch profile to show updated data
+    } catch (err) {
+      console.error("Error regenerating profile:", err);
+      toast.error(`Failed to regenerate profile: ${err.message}`);
+      setError("Failed to regenerate profile data.");
+    } finally {
+      setIsRegenerating(false);
+    }
   };
 
   // --- Fetch Readings Data ---
@@ -133,6 +179,7 @@ export default function ProfilePage() {
 
       {/* --- Main Layout Container --- */}
       <div className="h-[100svh] flex flex-col bg-base relative">
+        <Toaster position="top-center" richColors />
         <NavbarProfile title="Profile" />
         <div className="flex-grow overflow-y-auto pt-4 sm:pt-6 pb-20">
           {profileData && (
@@ -646,6 +693,21 @@ export default function ProfilePage() {
                         >
                           Terms of Service
                         </button>
+                        <div className="pt-5 mt-5 border-t border-gray-200">
+                          <button
+                            onClick={handleRegenerateProfile}
+                            disabled={isRegenerating}
+                            className="text-left text-blue-600 hover:underline disabled:text-gray-400 disabled:cursor-not-allowed font-semibold"
+                          >
+                            {isRegenerating
+                              ? "Regenerating..."
+                              : "Regenerate Profile Data"}
+                          </button>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Use this if you believe your Weton/Wuku data is
+                            incorrect.
+                          </p>
+                        </div>
                         <button
                           onClick={handleLogout}
                           className="w-full sm:w-auto text-red-600 hover:underline text-left font-semibold mt-5"
