@@ -131,10 +131,8 @@ export default function ConciousCoinPage() {
   useEffect(() => {
     if (profileData && user) {
       if (isNative) {
-        // If the app is native, we can directly generate the reading
         handleGenerateReading();
       }
-      // handleGenerateReading();
     }
   }, [profileData]);
 
@@ -250,7 +248,7 @@ export default function ConciousCoinPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.introduction}
+                      {reading?.reading?.introduction.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
@@ -280,7 +278,7 @@ export default function ConciousCoinPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.values}
+                      {reading?.reading?.values.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
@@ -310,7 +308,7 @@ export default function ConciousCoinPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.budget}
+                      {reading?.reading?.budget.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
@@ -340,7 +338,7 @@ export default function ConciousCoinPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.mindful}
+                      {reading?.reading?.mindful.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
@@ -372,7 +370,7 @@ export default function ConciousCoinPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.philosophy}
+                      {reading?.reading?.philosophy.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>

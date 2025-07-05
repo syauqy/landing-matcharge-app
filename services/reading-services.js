@@ -1678,7 +1678,8 @@ export async function generateCareerProReading(profile) {
     attempt++;
     try {
       const response = await generateObject({
-        model: google("gemini-2.5-flash-preview-05-20"),
+        // model: google("gemini-2.5-flash-preview-05-20"),
+        model: google("gemini-2.5-pro"),
         providerOptions: {
           google: {
             thinkingConfig: {
@@ -1691,37 +1692,31 @@ export async function generateCareerProReading(profile) {
             strengths: z
               .string()
               .describe(
-                "Detail 3-5 specific qualities that make you effective in a professional setting (e.g., natural leadership, meticulous attention to detail, strong collaborative spirit, innovative thinking, resilience under pressure, excellent communication). Provide examples of how these might manifest."
+                "Begin by identifying and naming their single greatest professional strength based on their core Weton character. Provide examples of how these might manifest."
               )
               .catch(() => ""),
             ideal_work: z
               .string()
               .describe(
-                "Describe the types of professional settings or industries where your Weton suggests you would feel most aligned and productive (e.g., independent work, team-based projects, creative fields, structured corporate environments, service-oriented roles, entrepreneurial ventures)."
+                "Analyze their Laku (Elemental Nature). Describe the types of professional settings or industries where your Weton suggests you would feel most aligned and productive. Describe the type of work environment (e.g., fast-paced startup, stable corporate, independent freelance) where they will feel most natural and effective."
               )
               .catch(() => ""),
             leadership: z
               .string()
               .describe(
-                "How do you naturally approach leadership and working with others? Are you a visionary leader, a supportive team player, a meticulous manager, or an inspiring mentor?"
+                "Based on their Weton, assign them a clear collaborative archetype (e.g., Leader, Mentor, Innovator, Anchor) and explain how this shows up in team projects."
               )
               .catch(() => ""),
             challenges: z
               .string()
               .describe(
-                "Identify any inherent tendencies that might present obstacles in your career path (e.g., impatience, aversion to routine, difficulty with authority, sensitivity to criticism). Offer guidance on how to navigate these."
-              )
-              .catch(() => ""),
-            financial_approach: z
-              .string()
-              .describe(
-                "Briefly touch upon your Weton's influence on your general approach to earning and managing wealth."
+                `Analyze their Rakam or the challenging aspects of their Weton. Identify their key professional challenge and frame it as their "growth edge"—the one area where intentional effort will bring the most reward. Offer guidance on how to navigate these.`
               )
               .catch(() => ""),
             makarya: z
               .string()
               .describe(
-                "Connect your career insights to the Javanese concept of makarya or jembar rejeki (abundant sustenance), emphasizing the importance of effort and alignment with your inherent nature."
+                "Explain the Javanese concept of *makarya* (working with diligence and purpose). Connect this to their path to success, emphasizing that their greatest rewards will come from applying their professional superpower with integrity and effort."
               )
               .catch(() => ""),
           }),
@@ -1729,31 +1724,31 @@ export async function generateCareerProReading(profile) {
             fulfillment: z
               .string()
               .describe(
-                "Describe what constitutes your unique vision of a fulfilling life. Is it rooted in spiritual growth, strong family bonds, creative expression, community service, adventurous experiences, intellectual mastery, or financial freedom?"
+                "Analyze their Wuku to describe what a fulfilling life looks like for them, moving beyond material wealth. Describe what constitutes your unique vision of a fulfilling life. Is it rooted in spiritual growth, strong family bonds, creative expression, community service, adventurous experiences, intellectual mastery, or financial freedom?"
               )
               .catch(() => ""),
             peace: z
               .string()
               .describe(
-                "Based on your Weton, identify the key elements or practices that are essential for you to achieve and maintain ayem tentrem (peace and tranquility) in your daily existence."
+                "Briefly define this Javanese concept of deep inner peace. Then, based on their Weton's core energy, offer personalized advice on how they can cultivate this state."
               )
               .catch(() => ""),
             priorities: z
               .string()
               .describe(
-                "What are the fundamental areas of life (e.g., family, self-development, community, spiritual practice, work, leisure) that your Weton suggests should be prioritized for your overall well-being and sense of meaning?"
+                `What are the fundamental areas of life (e.g., family, self-development, community, spiritual practice, work, leisure) that your Weton suggests should be prioritized for your overall well-being and sense of meaning? Present these as their core values and "true north" for making life decisions.`
               )
               .catch(() => ""),
             authentic: z
               .string()
               .describe(
-                "Discuss how living in alignment with your inherent Weton traits is crucial for realizing your ideal life, perhaps linking to concepts like urip kang murub (a life that glows) or mikul dhuwur mendhem jero (upholding virtues, burying flaws)."
+                "Provide simple, practical, daily advice for how to live in harmony with their elemental nature (*Laku*)."
               )
               .catch(() => ""),
-            auspicious: z
+            environment: z
               .string()
               .describe(
-                "Suggest types of environments or pursuits that would naturally support your journey towards your ideal life."
+                "Describe the types of physical places and social dynamics where their soul will feel most at home and able to grow, using their Wuku's Tree (*Pohon*) as a guiding metaphor."
               )
               .catch(() => ""),
           }),
@@ -1764,34 +1759,28 @@ export async function generateCareerProReading(profile) {
                 "Describe the general 'flavor' or dominant journey theme of your life path (e.g., a journey of continuous learning, consistent growth, navigating frequent changes, finding stability, or experiencing profound transformations)."
               )
               .catch(() => ""),
-            predominant: z
-              .string()
-              .describe(
-                "Identify the kinds of significant events or challenges you may recurrently encounter (e.g., opportunities for major career shifts, significant relationship milestones, periods requiring deep introspection, unexpected travel, tests of resilience, periods of abundant harvest, or calls to spiritual deepening)."
-              )
-              .catch(() => ""),
             cycles: z
               .string()
               .describe(
-                "Based on the interplay of your Weton and Wuku cycles, suggest periods that might naturally be more conducive to active pursuit (growth) versus those better suited for reflection and consolidation (rest)."
+                "Explain that their life has natural cycles of action and reflection, using the Pasaran cycle as a simple model. Based on the interplay of your Weton and Wuku cycles, suggest periods that might naturally be more conducive to active pursuit (growth) versus those better suited for reflection and consolidation (rest)."
               )
               .catch(() => ""),
             lessons: z
               .string()
               .describe(
-                "Discuss the potential lessons or transformations that often accompany these key life themes, highlighting how they contribute to your overall development."
+                `Clearly state the primary lesson their soul is here to learn, framing it as the central theme of their "character arc. Discuss the potential lessons or transformations that often accompany these key life themes, highlighting how they contribute to your overall development.`
               )
               .catch(() => ""),
             destiny: z
               .string()
               .describe(
-                "Frame these insights within the Javanese philosophical understanding of takdir (what is given) and usaha (what is cultivated through effort), empowering the user to actively engage with their life path."
+                "This is the most important section. Explain this core Javanese philosophy using a clear metaphor (like a map vs. the walker). Emphasize that while their life has energetic themes, their choices and efforts (*usaha*) are what create the actual story."
               )
               .catch(() => ""),
             transitions: z
               .string()
               .describe(
-                "Offer general guidance on how to approach major life transitions with awareness and wisdom, drawing from the resilience or adaptability suggested by your Weton elements."
+                "Offer brief, wise advice for how their specific character can best navigate moments of major life change."
               )
               .catch(() => ""),
           }),

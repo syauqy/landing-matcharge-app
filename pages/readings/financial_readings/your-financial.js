@@ -251,7 +251,7 @@ export default function FinancialPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.mindset}
+                      {reading?.reading?.mindset.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
@@ -283,7 +283,7 @@ export default function FinancialPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.tendencies}
+                      {reading?.reading?.tendencies.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
@@ -315,7 +315,7 @@ export default function FinancialPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.opportunities}
+                      {reading?.reading?.opportunities.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
@@ -345,7 +345,7 @@ export default function FinancialPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.pitfalls}
+                      {reading?.reading?.pitfalls.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
@@ -375,7 +375,7 @@ export default function FinancialPage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.karmic}
+                      {reading?.reading?.karmic.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>

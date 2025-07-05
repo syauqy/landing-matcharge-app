@@ -221,11 +221,11 @@ export default function WealthPurposePage() {
             {/* <section>
               <Markdown className="text-gray-700">{introduction}</Markdown>
             </section> */}
-            <section className="pt-4 ">
+            {/* <section className="pt-4 ">
               <h2 className="text-sm font-semibold underline underline-offset-3 text-batik-text">
                 {reading?.reading?.proverb}
               </h2>
-            </section>
+            </section> */}
             <section className="pt-4">
               <button
                 onClick={() =>
@@ -252,7 +252,7 @@ export default function WealthPurposePage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.talents}
+                      {reading?.reading?.talents.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
@@ -284,7 +284,7 @@ export default function WealthPurposePage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.values}
+                      {reading?.reading?.values.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
@@ -314,7 +314,7 @@ export default function WealthPurposePage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.contribution}
+                      {reading?.reading?.contribution.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
@@ -344,7 +344,7 @@ export default function WealthPurposePage() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col">
                     <Markdown className="text-gray-700">
-                      {reading?.reading?.nurturing}
+                      {reading?.reading?.nurturing.replace(/—/gi, ", ")}
                     </Markdown>
                   </div>
                 </div>
