@@ -128,15 +128,7 @@ export const CardData = {
       category: "love_readings",
       type: "free",
     },
-    {
-      id: 13,
-      title: "Attachement Style",
-      description:
-        "Gain insight into how you form bonds and connect emotionally with partners.",
-      slug: "attachment-style",
-      category: "love_readings",
-      type: "pro",
-    },
+
     {
       id: 14,
       title: "What You Can Offer",
@@ -161,6 +153,15 @@ export const CardData = {
       description:
         "Understand potential energetic clashes and challenges with other Wetons in relationships.",
       slug: "love-incompatibility",
+      category: "love_readings",
+      type: "pro",
+    },
+    {
+      id: 13,
+      title: "Attachement Style",
+      description:
+        "Gain insight into how you form bonds and connect emotionally with partners.",
+      slug: "attachment-style",
       category: "love_readings",
       type: "pro",
     },

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { ArrowLeft } from "lucide-react";
 import { fetchProfileData } from "@/utils/fetch";
 import { config } from "@/utils/config";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
@@ -100,7 +99,7 @@ export default function AttachmentStylePage() {
           try {
             // Generate new reading if none exists
             const response = await axios.post(
-              `${config.api.url}/readings/love/love-pro`,
+              `${config.api.url}/readings/love/love-pro-2`,
               { profile: profileData },
               {
                 headers: { "Content-Type": "application/json" },
@@ -194,16 +193,6 @@ export default function AttachmentStylePage() {
 
         {reading?.status === "completed" ? (
           <div className="space-y-6">
-            <section className="pt-4">
-              <h2 className="text-sm text-batik-text font-semibold">
-                Your Financial Archetype
-              </h2>
-              <div className="flex flex-col">
-                <p className="text-batik-black text-lg font-semibold">
-                  {reading?.reading?.archetype}
-                </p>
-              </div>
-            </section>
             <ContentSection
               reading={reading?.reading?.core_bonding}
               setIsSectionOpen={setIsSectionOneOpen}
@@ -219,7 +208,7 @@ export default function AttachmentStylePage() {
               // firstSection={false}
             />
             <ContentSection
-              reading={reading?.reading?.response}
+              reading={reading?.reading?.space}
               setIsSectionOpen={setIsSectionThreeOpen}
               isSectionOpen={isSectionThreeOpen}
               title="🎯 Response to Distance & Space"
@@ -233,7 +222,7 @@ export default function AttachmentStylePage() {
               // firstSection={false}
             />
             <ContentSection
-              reading={reading?.reading?.mutual_completion}
+              reading={reading?.reading?.jodoh}
               setIsSectionOpen={setIsSectionFiveOpen}
               isSectionOpen={isSectionFiveOpen}
               title="🧘 Mutual Completion"
@@ -260,7 +249,7 @@ export default function AttachmentStylePage() {
                 Generate Reading
               </button>
               {reading && (
-                <div className="flex flex-col">
+                <div className="flex flex-col text-wrap">
                   <div className="text-sm font-semibold  text-batik-text">
                     Attachement Style
                   </div>
@@ -269,7 +258,7 @@ export default function AttachmentStylePage() {
                     src={reading}
                     theme="bright:inverted"
                     displayObjectSize={false}
-                    className="rounded-2xl"
+                    className="rounded-2xl text-wrap"
                     displayDataTypes={false}
                   />
                 </div>
