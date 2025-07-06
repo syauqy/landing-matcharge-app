@@ -2,6 +2,13 @@ import { generateLoveProReading } from "@/services/reading-services";
 import { waitUntil } from "@vercel/functions";
 
 export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    res.setHeader("Allow", ["POST"]);
+    return res
+      .status(405)
+      .json({ error: "Method Not Allowed. Only POST requests are accepted." });
+  }
+
   if (req.method === "POST") {
     if (!req.body || !req.body.profile) {
       return res.status(400).json({
@@ -9,8 +16,13 @@ export default async function handler(req, res) {
       });
     }
 
-    const { profile } = req.body;
     try {
+      const { profile } = req.body;
+
+      if (!profile) {
+        return res.status(400).json({ error: "Profile is required" });
+      }
+
       waitUntil(generateLoveProReading(profile));
       // Send a 202 Accepted response immediately as the task is offloaded
       return res

@@ -3,16 +3,13 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { fetchProfileData } from "@/utils/fetch";
 import { config } from "@/utils/config";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
-import Markdown from "markdown-to-jsx";
 import { Capacitor } from "@capacitor/core";
-// import ReactMarkdown from "react-markdown";
-// import axios from "axios";
-// import { PromotionBanner } from "@/components/readings/promotion-banner";
+import { ReadingNavbar } from "@/components/readings/reading-navbar";
+import { ContentSection } from "@/components/readings/content-section";
 import dynamic from "next/dynamic";
 const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
   ssr: false,
@@ -186,28 +183,11 @@ export default function FinancialPage() {
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
-      <div
-        className={`navbar px-5 bg-base-100 sticky top-0 z-50 transition-all duration-300 ${
-          showTitleInNavbar ? "border-b border-batik-border" : ""
-        }`}
-      >
-        <div className="navbar-start">
-          <button
-            onClick={() => router.back()}
-            className="p-2 rounded-full text-xl border border-batik-text hover:bg-base-200"
-          >
-            <ArrowLeft size={20} className="text-batik-text" />
-          </button>
-        </div>
-        {showTitleInNavbar && profileData && (
-          <div className="navbar-center flex-col">
-            <div className="text-sm text-batik-text font-semibold uppercase">
-              Your Financial
-            </div>
-          </div>
-        )}
-        <div className="navbar-end"></div>
-      </div>
+      <ReadingNavbar
+        title="Your Financial"
+        profileData={profileData}
+        showTitleInNavbar={showTitleInNavbar}
+      />
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         <div>
@@ -229,158 +209,41 @@ export default function FinancialPage() {
                 </p>
               </div>
             </section>
-            <section className="pt-4">
-              <button
-                onClick={() => setIsMindsetSectionOpen(!isMindsetSectionOpen)}
-                className="w-full flex justify-between items-center text-left focus:outline-none"
-              >
-                <h2 className="text-xl font-semibold">🤔 Financial Mindset</h2>
-                <ChevronDown
-                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
-                    isMindsetSectionOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <div
-                className={`grid transition-all duration-500 ease-in-out ${
-                  isMindsetSectionOpen
-                    ? "grid-rows-[1fr] opacity-100 mt-4"
-                    : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="flex flex-col">
-                    <Markdown className="text-gray-700">
-                      {reading?.reading?.mindset.replace(/—/gi, ", ")}
-                    </Markdown>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section className="border-t border-batik-border pt-4">
-              <button
-                onClick={() =>
-                  setIsTendeciesSectionOpen(!isTendeciesSectionOpen)
-                }
-                className="w-full flex justify-between items-center text-left focus:outline-none"
-              >
-                <h2 className="text-xl font-semibold">
-                  📈 General Wealth Tendencies
-                </h2>
-                <ChevronDown
-                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
-                    isTendeciesSectionOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <div
-                className={`grid transition-all duration-500 ease-in-out ${
-                  isTendeciesSectionOpen
-                    ? "grid-rows-[1fr] opacity-100 mt-4"
-                    : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="flex flex-col">
-                    <Markdown className="text-gray-700">
-                      {reading?.reading?.tendencies.replace(/—/gi, ", ")}
-                    </Markdown>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section className="border-t border-batik-border pt-4">
-              <button
-                onClick={() =>
-                  setIsOpportunitiesSectionOpen(!isOpportunitiesSectionOpen)
-                }
-                className="w-full flex justify-between items-center text-left focus:outline-none"
-              >
-                <h2 className="text-xl font-semibold">
-                  🎯 Opportunities for Attracting Wealth
-                </h2>
-                <ChevronDown
-                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
-                    isOpportunitiesSectionOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <div
-                className={`grid transition-all duration-500 ease-in-out ${
-                  isOpportunitiesSectionOpen
-                    ? "grid-rows-[1fr] opacity-100 mt-4"
-                    : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="flex flex-col">
-                    <Markdown className="text-gray-700">
-                      {reading?.reading?.opportunities.replace(/—/gi, ", ")}
-                    </Markdown>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section className="border-t border-batik-border pt-4">
-              <button
-                onClick={() => setIsPitfallSectionOpen(!isPitfallSectionOpen)}
-                className="w-full flex justify-between items-center text-left focus:outline-none"
-              >
-                <h2 className="text-xl font-semibold">
-                  🚧 Pontential Financial Pitfalls
-                </h2>
-                <ChevronDown
-                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
-                    isPitfallSectionOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <div
-                className={`grid transition-all duration-500 ease-in-out ${
-                  isPitfallSectionOpen
-                    ? "grid-rows-[1fr] opacity-100 mt-4"
-                    : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="flex flex-col">
-                    <Markdown className="text-gray-700">
-                      {reading?.reading?.pitfalls.replace(/—/gi, ", ")}
-                    </Markdown>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section className="border-t border-batik-border pt-4">
-              <button
-                onClick={() => setIsAbundantSectionOpen(!isAbundantSectionOpen)}
-                className="w-full flex justify-between items-center text-left focus:outline-none"
-              >
-                <h2 className="text-xl font-semibold">
-                  🧘 Hidden Strength & Karmic Lesson
-                </h2>
-                <ChevronDown
-                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
-                    isAbundantSectionOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <div
-                className={`grid transition-all duration-500 ease-in-out ${
-                  isAbundantSectionOpen
-                    ? "grid-rows-[1fr] opacity-100 mt-4"
-                    : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="flex flex-col">
-                    <Markdown className="text-gray-700">
-                      {reading?.reading?.karmic.replace(/—/gi, ", ")}
-                    </Markdown>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <ContentSection
+              reading={reading?.reading?.mindset}
+              setIsSectionOpen={setIsMindsetSectionOpen}
+              isSectionOpen={isMindsetSectionOpen}
+              title="🤔 Financial Mindset"
+              firstSection={true}
+            />
+            <ContentSection
+              reading={reading?.reading?.tendencies}
+              setIsSectionOpen={setIsTendeciesSectionOpen}
+              isSectionOpen={isTendeciesSectionOpen}
+              title="📈 General Wealth Tendencies"
+              // firstSection={false}
+            />
+            <ContentSection
+              reading={reading?.reading?.opportunities}
+              setIsSectionOpen={setIsOpportunitiesSectionOpen}
+              isSectionOpen={isOpportunitiesSectionOpen}
+              title="🎯 Opportunities for Attracting Wealth"
+              // firstSection={false}
+            />
+            <ContentSection
+              reading={reading?.reading?.pitfalls}
+              setIsSectionOpen={setIsPitfallSectionOpen}
+              isSectionOpen={isPitfallSectionOpen}
+              title="🚧 Pontential Financial Pitfalls"
+              // firstSection={false}
+            />
+            <ContentSection
+              reading={reading?.reading?.karmic}
+              setIsSectionOpen={setIsAbundantSectionOpen}
+              isSectionOpen={isAbundantSectionOpen}
+              title="🧘 Hidden Strength & Karmic Lesson"
+              // firstSection={false}
+            />
             <section className="p-4 border-slate-100 border rounded-2xl bg-base-100 shadow-md mt-10">
               <p className="text-sm text-gray-700">{disclaimer}</p>
             </section>

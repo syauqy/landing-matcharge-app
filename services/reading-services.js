@@ -702,28 +702,28 @@ export async function generateLoveBasicReading(profile) {
 }
 
 export async function generateLoveProReading(profile) {
-  const { data: newLoveAttachmentReading, error } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "love_readings",
-      title: "Attachment Style",
-      subtitle:
-        "Gain insight into how you form bonds and connect emotionally with partners",
-      username: profile.username,
-      status: "loading",
-      slug: "attachment-style",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
+  // const { data: newLoveAttachmentReading, error } = await supabase
+  //   .from("readings")
+  //   .insert({
+  //     reading_type: "pro",
+  //     reading_category: "love_readings",
+  //     title: "Attachment Style",
+  //     subtitle:
+  //       "Gain insight into how you form bonds and connect emotionally with partners",
+  //     username: profile.username,
+  //     status: "loading",
+  //     slug: "attachment-style",
+  //     user_id: profile.id,
+  //   })
+  //   .select()
+  //   .maybeSingle();
 
-  if (error) {
-    console.error("Error inserting new reading:", error);
-    throw error;
-  }
+  // if (error) {
+  //   console.error("Error inserting new reading:", error);
+  //   throw error;
+  // }
 
-  console.log("new reading generated on supabase", newLoveAttachmentReading);
+  // console.log("new reading generated on supabase", newLoveAttachmentReading);
 
   const { data: newLoveOfferReading, errorOffer } = await supabase
     .from("readings")
@@ -771,28 +771,28 @@ export async function generateLoveProReading(profile) {
 
   console.log("new reading generated on supabase", newLoveCompatibleReading);
 
-  const { data: newLoveIncompatibleReading, errorIncompatible } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "love_readings",
-      title: "Incompatible With",
-      subtitle:
-        "Understand potential energetic clashes and challenges with other Wetons in relationships",
-      username: profile.username,
-      status: "loading",
-      slug: "love-incompatibility",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
+  // const { data: newLoveIncompatibleReading, errorIncompatible } = await supabase
+  //   .from("readings")
+  //   .insert({
+  //     reading_type: "pro",
+  //     reading_category: "love_readings",
+  //     title: "Incompatible With",
+  //     subtitle:
+  //       "Understand potential energetic clashes and challenges with other Wetons in relationships",
+  //     username: profile.username,
+  //     status: "loading",
+  //     slug: "love-incompatibility",
+  //     user_id: profile.id,
+  //   })
+  //   .select()
+  //   .maybeSingle();
 
-  if (errorIncompatible) {
-    console.error("Error inserting new reading:", errorIncompatible);
-    throw error;
-  }
+  // if (errorIncompatible) {
+  //   console.error("Error inserting new reading:", errorIncompatible);
+  //   throw error;
+  // }
 
-  console.log("new reading generated on supabase", newLoveIncompatibleReading);
+  // console.log("new reading generated on supabase", newLoveIncompatibleReading);
 
   const maxAttempts = 2;
   let attempt = 0;
@@ -801,7 +801,12 @@ export async function generateLoveProReading(profile) {
     attempt++;
     try {
       const response = await generateObject({
-        model: google("gemini-2.5-flash-preview-05-20"),
+        // model: google("gemini-2.5-flash-preview-05-20"),
+        model: google("gemini-2.5-pro", {
+          fetchOptions: {
+            timeout: 120000,
+          },
+        }),
         providerOptions: {
           google: {
             thinkingConfig: {
@@ -809,68 +814,71 @@ export async function generateLoveProReading(profile) {
             },
           },
         },
+        maxRetries: 2,
+        retryDelay: 1000,
+        maxTokens: 5000,
         schema: z.object({
-          attachment_style: z.object({
-            core_bonding: z
-              .string()
-              .describe(
-                "Based on your Weton and Laku, what is your primary disposition towards closeness and emotional connection? Do you naturally lean towards seeking deep fusion, valuing independence, needing reassurance, or balancing both? Describe this tendency."
-              )
-              .catch(() => ""),
-            comfort: z
-              .string()
-              .describe(
-                "How does your Weton influence your comfort levels with deep intimacy, emotional sharing, and vulnerability in a relationship? Are you naturally open, cautious, or do you prefer a more guarded approach?"
-              )
-              .catch(() => ""),
-            response: z
-              .string()
-              .describe(
-                "How do you typically react when a partner needs space or when there's a perceived distance in the relationship? (e.g., do you seek more connection, withdraw, or use the time for personal reflection?)"
-              )
-              .catch(() => ""),
-            dependency: z
-              .string()
-              .describe(
-                "Describe your natural leanings regarding dependency within a partnership. Do you tend to be more independent, deeply interdependent, or do you find yourself needing reassurance or space?"
-              )
-              .catch(() => ""),
-            mutual_completion: z
-              .string()
-              .describe(
-                "Connect your attachment style to the Javanese concept of saling melengkapi, explaining how your specific bonding tendencies contribute to or seek this sense of mutual completion in a partnership."
-              )
-              .catch(() => ""),
-          }),
+          // attachment_style: z.object({
+          //   core_bonding: z
+          //     .string()
+          //     .describe(
+          //       `Based on their Weton and Laku, assign them a relatable attachment archetype (e.g., "The Steady Anchor," "The Eager Wave"). Describe this core tendency.`
+          //     )
+          //     .catch(() => ""),
+          //   comfort: z
+          //     .string()
+          //     .describe(
+          //       `Explain their natural comfort level with intimacy and vulnerability. Ask a reflective question like, "When someone gets truly close, do you feel a sense of peace or an instinct to protect yourself?`
+          //     )
+          //     .catch(() => ""),
+          //   response: z
+          //     .string()
+          //     .describe(
+          //       "Describe their likely emotional reaction to distance in a relationship, linking it to their core Weton character."
+          //     )
+          //     .catch(() => ""),
+          //   dependency: z
+          //     .string()
+          //     .describe(
+          //       "Discuss their natural inclination towards independence or interdependence. Frame this as a unique balance, not a flaw. Describe your natural leanings regarding dependency within a partnership?"
+          //     )
+          //     .catch(() => ""),
+          //   mutual_completion: z
+          //     .string()
+          //     .describe(
+          //       "Conclude by explaining this beautiful Javanese philosophy. Describe how their specific attachment style can contribute to creating a relationship that feels mutual, or complete in its own universe."
+          //     )
+          //     .catch(() => ""),
+          // }),
           your_offer: z.object({
             key_positive: z
               .string()
               .describe(
-                "List and describe 3-5 of your most significant innate gifts or strengths that you bring to a partnership. These should be framed as valuable assets (e.g., unwavering loyalty, deep emotional support, intellectual stimulation, practical stability, adventurous spirit, spiritual depth, calming presence, keen discernment)."
+                "Based on their Weton and Rakam, identify and describe 2-3 of their most powerful, positive qualities as a partner."
               )
               .catch(() => ""),
             impact: z
               .string()
               .describe(
-                "Explain how these specific Weton-derived qualities positively influence your partner's life or the overall relationship dynamic. How do you enrich the connection?"
+                "Describe the overall feeling or energy they bring to a relationship, linking it to their Laku."
               )
               .catch(() => ""),
             tendency: z
               .string()
               .describe(
-                "How does your Weton shape your capacity for nurturing, supporting, and caring for a partner? What kind of care do you instinctively provide?"
+                "Explain their primary method of nurturing a partner, drawing from the nuances of their Weton."
               )
               .catch(() => ""),
             approach: z
               .string()
               .describe(
-                "What unique approach or quality do you bring when facing challenges or problems within the relationship? (e.g., calm analysis, fiery determination, diplomatic mediation, patient endurance)."
+                "Describe their key strength in navigating relationship challenges, positioning them as a capable and valuable teammate."
               )
               .catch(() => ""),
             responsibility: z
               .string()
               .describe(
-                "Relate your contributions to the Javanese concept of responsibility in relationships, showing how your innate traits empower you to uphold your responsibilities and commitments."
+                "Conclude by explaining the concept of responsibility as the honor of holding space for a partner, linking this to their innate character."
               )
               .catch(() => ""),
           }),
@@ -878,7 +886,7 @@ export async function generateLoveProReading(profile) {
             harmony: z
               .string()
               .describe(
-                "Describe the general characteristics of Weton types that naturally create a harmonious energetic dynamic with your own. This might involve similar or complementary elemental energies, neptu balances, or Laku styles."
+                "Describe the general types of Weton energies (e.g., those with a complementary Laku, or a similar Neptu energy) that align well with the user's."
               )
               .catch(() => ""),
             values: z
@@ -902,66 +910,69 @@ export async function generateLoveProReading(profile) {
             soulmate: z
               .string()
               .describe(
-                "Briefly touch upon how these compatible Weton patterns might align with the traditional Javanese understanding of soulmate, emphasizing that it's about alignment and effort, not just fate."
+                "Conclude by explaining the Javanese concept of soulmate as an energetically destined match that often feels like coming home."
               )
               .catch(() => ""),
           }),
-          incompatible: z.object({
-            clashes: z
-              .string()
-              .describe(
-                "Describe the general characteristics of Weton types that might create inherent energetic friction or significant differences with your own. This could involve opposing elemental energies, neptu imbalances, or Laku styles that lead to natural friction."
-              )
-              .catch(() => ""),
-            dissimilarities: z
-              .string()
-              .describe(
-                "Identify broader Weton categories or qualities that suggest a likelihood of conflicting values, vastly different life approaches, or opposing communication styles, which could lead to misunderstandings."
-              )
-              .catch(() => ""),
-            challenges: z
-              .string()
-              .describe(
-                'Briefly explain why these potential incompatibilities exist (e.g., "Their independent nature might clash with your need for constant connection," "Their directness could be abrasive to your sensitive disposition," "You might find their approach to finances too different from your own").'
-              )
-              .catch(() => ""),
-            guidance: z
-              .string()
-              .describe(
-                'For these challenging pairings, offer constructive advice on how to navigate potential difficulties with awareness, patience, communication, and conscious effort, emphasizing that "incompatible" does not mean "impossible."'
-              )
-              .catch(() => ""),
-            mindfulness: z
-              .string()
-              .describe(
-                "Connect this section to the Javanese wisdom of eling lan waspada, suggesting that awareness of potential challenges allows for proactive and mindful relationship building."
-              )
-              .catch(() => ""),
-          }),
+          // incompatible: z.object({
+          //   clashes: z
+          //     .string()
+          //     .describe(
+          //       `Gently identify the types of Weton energies that may present challenges for the user, and explain *why* (e.g., "Your fiery, direct nature may clash with a Weton that is highly sensitive and indirect.").`
+          //     )
+          //     .catch(() => ""),
+          //   dissimilarities: z
+          //     .string()
+          //     .describe(
+          //       "Identify broader Weton categories or qualities that suggest a likelihood of conflicting values, vastly different life approaches, or opposing communication styles, which could lead to misunderstandings."
+          //     )
+          //     .catch(() => ""),
+          //   challenges: z
+          //     .string()
+          //     .describe(
+          //       'For each friction point, reframe it as a learning opportunity. "This clash teaches you the art of patience. Their sensitivity teaches you the power of gentle words."'
+          //     )
+          //     .catch(() => ""),
+          //   guidance: z
+          //     .string()
+          //     .describe(
+          //       'Provide concrete, actionable advice. "When this disagreement arises, your best strategy is to pause before speaking and consciously soften your approach. Ask questions instead of making statements."'
+          //     )
+          //     .catch(() => ""),
+          //   mindfulness: z
+          //     .string()
+          //     .describe(
+          //       `Conclude by explaining this Javanese principle of "Mindfulness and Vigilance." Emphasize that this is the master key to making any relationship thrive, especially one with built-in growth opportunities.`
+          //     )
+          //     .catch(() => ""),
+          // }),
         }),
         messages: [{ role: "user", content: proLovePrompt(profile) }],
       });
       const resObj = response.object;
 
-      // console.log("resObj", resObj);
+      console.log("resObj", resObj);
 
-      await supabase
-        .from("readings")
-        .update({
-          status: "completed",
-          reading: resObj.attachment_style,
-          input_token: response.usage.promptTokens,
-          output_token: response.usage.completionTokens,
-          total_token: response.usage.totalTokens,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", newLoveAttachmentReading.id);
+      // await supabase
+      //   .from("readings")
+      //   .update({
+      //     status: "completed",
+      //     reading: resObj.attachment_style,
+      //     input_token: response.usage.promptTokens,
+      //     output_token: response.usage.completionTokens,
+      //     total_token: response.usage.totalTokens,
+      //     updated_at: new Date().toISOString(),
+      //   })
+      //   .eq("id", newLoveAttachmentReading.id);
 
       await supabase
         .from("readings")
         .update({
           status: "completed",
           reading: resObj.your_offer,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
           updated_at: new Date().toISOString(),
         })
         .eq("id", newLoveOfferReading.id);
@@ -971,23 +982,37 @@ export async function generateLoveProReading(profile) {
         .update({
           status: "completed",
           reading: resObj.compatible,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
           updated_at: new Date().toISOString(),
         })
         .eq("id", newLoveCompatibleReading.id);
 
-      await supabase
-        .from("readings")
-        .update({
-          status: "completed",
-          reading: resObj.incompatible,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", newLoveIncompatibleReading.id);
+      // await supabase
+      //   .from("readings")
+      //   .update({
+      //     status: "completed",
+      //     reading: resObj.incompatible,
+      //     input_token: response.usage.promptTokens,
+      //     output_token: response.usage.completionTokens,
+      //     total_token: response.usage.totalTokens,
+      //     updated_at: new Date().toISOString(),
+      //   })
+      //   .eq("id", newLoveIncompatibleReading.id);
       break;
     } catch (error) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
+        // await supabase
+        //   .from("readings")
+        //   .update({
+        //     status: "error",
+        //     reading: { error: lastErrorMsg },
+        //     updated_at: new Date().toISOString(),
+        //   })
+        //   .eq("id", newLoveAttachmentReading.id);
         await supabase
           .from("readings")
           .update({
@@ -995,7 +1020,15 @@ export async function generateLoveProReading(profile) {
             reading: { error: lastErrorMsg },
             updated_at: new Date().toISOString(),
           })
-          .eq("id", newLoveAttachmentReading.id);
+          .eq("id", newLoveOfferReading.id);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newLoveCompatibleReading.id);
       }
     }
   } while (attempt < maxAttempts);

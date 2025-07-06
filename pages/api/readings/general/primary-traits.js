@@ -1,13 +1,7 @@
 import { generatePrimaryTraitsReading } from "@/services/reading-services";
 import { waitUntil } from "@vercel/functions";
 
-// export const config = {
-//   runtime: "edge",
-// };
-
 export default async function handler(req, res) {
-  console.log("req method", req.method);
-
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     return res
@@ -22,7 +16,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // console.log(profile);
     try {
       const { profile } = req.body;
 
