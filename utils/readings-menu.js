@@ -47,7 +47,7 @@ export const CardData = {
     // },
     {
       id: 6,
-      title: "Character and Traits",
+      title: "Saptawara",
       description:
         "Reveal the core pillar of your inner foundation and its potential influenced by the seven-day Pawukon cycle.",
       slug: "saptawara",
