@@ -66,7 +66,7 @@ export default function SaptawaraPage() {
           .eq("reading_type", "pro")
           .eq("user_id", user.id)
           .eq("reading_category", "general_readings")
-          .eq("slug", "saptawara")
+          .eq("slug", "pancasuda")
           .maybeSingle();
 
         console.log("Existing Reading:", existingReading, user.id);

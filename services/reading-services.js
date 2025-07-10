@@ -1,6 +1,7 @@
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { createClient } from "@/utils/supabase/server-props";
+import { openai } from "@ai-sdk/openai";
 import {
   dailyReadingPrompt,
   monthlyReadingPrompt,
@@ -760,6 +761,7 @@ export async function generateLoveProReading(profile) {
             timeout: 120000,
           },
         }),
+        // model: openai("o3"),
         providerOptions: {
           google: {
             thinkingConfig: {
@@ -769,71 +771,61 @@ export async function generateLoveProReading(profile) {
         },
         maxRetries: 2,
         retryDelay: 1000,
-        maxTokens: 5000,
+        maxTokens: 10000,
         schema: z.object({
           your_offer: z.object({
             key_positive: z
               .string()
               .describe(
                 "Based on their Weton and Rakam, identify and describe 2-3 of their most powerful, positive qualities as a partner."
-              )
-              .catch(() => ""),
+              ),
             impact: z
               .string()
               .describe(
                 "Describe the overall feeling or energy they bring to a relationship, linking it to their Laku."
-              )
-              .catch(() => ""),
+              ),
             tendency: z
               .string()
               .describe(
                 "Explain their primary method of nurturing a partner, drawing from the nuances of their Weton."
-              )
-              .catch(() => ""),
+              ),
             approach: z
               .string()
               .describe(
                 "Describe their key strength in navigating relationship challenges, positioning them as a capable and valuable teammate."
-              )
-              .catch(() => ""),
+              ),
             responsibility: z
               .string()
               .describe(
                 "Conclude by explaining the concept of responsibility as the honor of holding space for a partner, linking this to their innate character."
-              )
-              .catch(() => ""),
+              ),
           }),
           compatible: z.object({
             harmony: z
               .string()
               .describe(
                 "Describe the general types of Weton energies (e.g., those with a complementary Laku, or a similar Neptu energy) that align well with the user's."
-              )
-              .catch(() => ""),
+              ),
             values: z
               .string()
               .describe(
                 "Identify broader Weton categories or qualities that suggest a shared outlook on life, similar core values, or a comparable approach to relationships, which foster compatibility."
-              )
-              .catch(() => ""),
+              ),
             growth: z
               .string()
               .describe(
                 "Mention Weton types that, while not necessarily 'easy,' offer opportunities for significant mutual growth and balance through complementary energies."
-              )
-              .catch(() => ""),
+              ),
             dynamic: z
               .string()
               .describe(
                 'Briefly explain why these compatibilities exist (e.g., "They offer stability to your adventurous spirit," "Their calm nature balances your fiery passion," "You both value spiritual growth").'
-              )
-              .catch(() => ""),
+              ),
             soulmate: z
               .string()
               .describe(
                 "Conclude by explaining the Javanese concept of soulmate as an energetically destined match that often feels like coming home."
-              )
-              .catch(() => ""),
+              ),
           }),
         }),
         messages: [{ role: "user", content: proLovePrompt(profile) }],
@@ -946,6 +938,8 @@ export async function generateLoveProReading2(profile) {
     try {
       const response = await generateObject({
         model: google("gemini-2.5-pro"),
+        // model: openai("o4-mini-2025-04-16"),
+        // model: openai("o3"),
         providerOptions: {
           google: {
             thinkingConfig: {
@@ -960,64 +954,54 @@ export async function generateLoveProReading2(profile) {
               .string()
               .describe(
                 'Based on their Weton and Laku, assign them a relatable attachment archetype (e.g., "The Steady Anchor," "The Eager Wave"). Describe this core tendency.'
-              )
-              .catch(() => ""),
+              ),
             comfort: z
               .string()
               .describe(
                 "How does your Weton influence your comfort levels with deep intimacy, emotional sharing, and vulnerability in a relationship? Are you naturally open, cautious, or do you prefer a more guarded approach?"
-              )
-              .catch(() => ""),
+              ),
             space: z
               .string()
               .describe(
                 "Based on their Weton and Rakam, describe their likely emotional reaction to distance in a relationship."
-              )
-              .catch(() => ""),
+              ),
             dependency: z
               .string()
               .describe(
                 "Discuss their natural inclination towards independence or interdependence. Frame this as a unique balance, not a flaw. Describe your natural leanings regarding dependency within a partnership?"
-              )
-              .catch(() => ""),
+              ),
             jodoh: z
               .string()
               .describe(
                 "Explaining Javanese concept of jodoh and describe how their specific attachment style can contribute to creating a relationship that feels mutual."
-              )
-              .catch(() => ""),
+              ),
           }),
           incompatible: z.object({
             clashes: z
               .string()
               .describe(
                 `Gently identify the types of Weton energies that may present challenges for the user, and explain *why* (e.g., "Your fiery, direct nature may clash with a Weton that is highly sensitive and indirect.").`
-              )
-              .catch(() => ""),
+              ),
             differences: z
               .string()
               .describe(
                 "Identify broader Weton categories or qualities that suggest a likelihood of conflicting values, vastly different life approaches, or opposing communication styles, which could lead to misunderstandings."
-              )
-              .catch(() => ""),
+              ),
             guidance: z
               .string()
               .describe(
                 'Provide concrete, actionable advice. "When this disagreement arises, your best strategy is to pause before speaking and consciously soften your approach. Ask questions instead of making statements."'
-              )
-              .catch(() => ""),
+              ),
             mindfulness: z
               .string()
               .describe(
                 `Conclude by explaining this Javanese principle of "Mindfulness and Vigilance." Emphasize that this is the master key to making any relationship thrive, especially one with built-in growth opportunities.`
-              )
-              .catch(() => ""),
+              ),
             challenges: z
               .string()
               .describe(
                 'Frames the difficulties not as failures, but as powerful opportunities for personal development. (like "This clash teaches you the art of patience. Their sensitivity teaches you the power of gentle words.").'
-              )
-              .catch(() => ""),
+              ),
           }),
         }),
         messages: [{ role: "user", content: proLovePrompt2(profile) }],
@@ -1049,6 +1033,7 @@ export async function generateLoveProReading2(profile) {
           updated_at: new Date().toISOString(),
         })
         .eq("id", newLoveIncompatibleReading.id);
+
       break;
     } catch (error) {
       lastErrorMsg = error.message;
@@ -1099,40 +1084,17 @@ export async function generateGeneralProReading(profile) {
 
   console.log("new reading generated on supabase", newRakamReading);
 
-  const { data: newSadwaraReading, errorSadwara } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "general_readings",
-      title: "Sadwara",
-      subtitle:
-        "Explore the subtle behavioral tendencies influenced by the six-day Pawukon cycle",
-      username: profile.username,
-      status: "loading",
-      slug: "sadwara",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
-
-  if (errorSadwara) {
-    console.error("Error inserting new reading:", errorSadwara);
-    throw error;
-  }
-
-  console.log("new reading generated on supabase", newSadwaraReading);
-
   const { data: newSaptawaraReading, errorSaptawara } = await supabase
     .from("readings")
     .insert({
       reading_type: "pro",
       reading_category: "general_readings",
-      title: "Character & Traits",
+      title: "Pancasuda",
       subtitle:
         "Reveal the core pillar of your inner foundation and its potential influenced by the seven-day Pawukon cycle",
       username: profile.username,
       status: "loading",
-      slug: "saptawara",
+      slug: "pancasuda",
       user_id: profile.id,
     })
     .select()
@@ -1145,28 +1107,28 @@ export async function generateGeneralProReading(profile) {
 
   console.log("new reading generated on supabase", newSaptawaraReading);
 
-  const { data: newHastawaraReading, errorHastawara } = await supabase
+  const { data: newLakuReading, errorLaku } = await supabase
     .from("readings")
     .insert({
       reading_type: "pro",
       reading_category: "general_readings",
-      title: "Hastawara",
+      title: "Laku",
       subtitle:
-        "Understand the specific fortunes and challenges guided by the eight-day cycle influence",
+        "Discover the archetype and behavioral pattern that guides your life's journey.",
       username: profile.username,
       status: "loading",
-      slug: "hastawara",
+      slug: "laku",
       user_id: profile.id,
     })
     .select()
     .maybeSingle();
 
-  if (errorHastawara) {
-    console.error("Error inserting new reading:", errorHastawara);
-    throw error;
+  if (errorLaku) {
+    console.error("Error inserting new reading:", errorLaku);
+    throw errorLaku;
   }
 
-  console.log("new reading generated on supabase", newHastawaraReading);
+  console.log("new reading generated on supabase", newLakuReading);
 
   const maxAttempts = 2;
   let attempt = 0;
@@ -1175,118 +1137,88 @@ export async function generateGeneralProReading(profile) {
     attempt++;
     try {
       const response = await generateObject({
-        model: google("gemini-2.5-flash-preview-05-20"),
+        // model: google("gemini-2.5-flash"),
+        // model: openai("o4-mini-2025-04-16"),
+        model: google("gemini-2.5-pro"),
         providerOptions: {
           google: {
             thinkingConfig: {
-              thinkingBudget: 2000,
+              thinkingBudget: 1000,
             },
           },
         },
+        maxTokens: 10000,
         schema: z.object({
           rakam: z.object({
-            core_meaning: z
+            story: z
               .string()
               .describe(
-                'Explain the literal or metaphorical meaning of this Rakam (e.g., "Macan Ketawan" meaning "Caught Tiger," and its symbolic implications).'
-              )
-              .catch(() => ""),
-            character: z
+                "Briefly explain the core meaning and symbolism of their Rakam."
+              ),
+            theme: z
               .string()
               .describe(
-                "Detail the inherent strengths and potential challenges/areas for self-awareness associated with this Rakam. Provide specific personality traits."
-              )
-              .catch(() => ""),
-            influence: z
+                "Describe how this narrative influences their character, their reactions, and their view of the world."
+              ),
+            plot: z
               .string()
               .describe(
-                "Describe how this Rakam impacts your general fortune, social interactions, and public perception or reputation."
-              )
-              .catch(() => ""),
-            wisdom: z
+                "Explain how this theme affects their social standing and the flow of fortune in their life."
+              ),
+            moral: z
               .string()
               .describe(
-                "Offer a relevant Javanese proverb (pepali) or traditional wisdom specifically associated with this Rakam, followed by actionable guidance on how to embrace its strengths and navigate its complexities for a more harmonious life."
-              )
-              .catch(() => ""),
-          }),
-          sadwara: z.object({
-            core_meaning: z
-              .string()
-              .describe(
-                'Explain the symbolic meaning or core characteristic associated with this Sadwara (e.g., "Tungle" meaning "Leaf," and its practical implications).'
-              )
-              .catch(() => ""),
-            character: z
-              .string()
-              .describe(
-                "Detail your practical tendencies, general energy levels, and any specific spiritual inclinations or needs associated with this Sadwara."
-              )
-              .catch(() => ""),
-            influence: z
-              .string()
-              .describe(
-                "Describe how this Sadwara subtly influences your routine, work ethic, and everyday interactions with others."
-              )
-              .catch(() => ""),
-            wisdom: z
-              .string()
-              .describe(
-                "Suggest a traditional Javanese practice or a contemplative approach that resonates with the energy of this Sadwara, offering actionable advice for optimizing daily living and spiritual connection."
-              )
-              .catch(() => ""),
+                `Offer clear guidance. "As 'The Challenger of Fate,' your path requires you to consciously choose courage over fear. Your greatest rewards lie on the other side of the challenges you are destined to face.`
+              ),
           }),
           saptawara: z.object({
             character: z
               .string()
               .describe(
                 'Detail the fundamental temperament and key symbolic associations (e.g., "Bumi Kapetak" or "Cultivated Earth")'
-              )
-              .catch(() => ""),
-            strenghts: z
+              ),
+            innate_gift: z
               .string()
               .describe(
-                "Outline the primary positive traits and potential areas for growth or caution that are characteristic of individual."
-              )
-              .catch(() => ""),
+                "Describe the strengths and positive opportunities this trait brings into their life."
+              ),
+            shadow: z
+              .string()
+              .describe(
+                `Gently explain the potential challenges or misuse of this gift. Ask a reflective question: "As someone with the generosity of *Wasesa Segara*, how can you give freely while also honoring your own needs?"`
+              ),
+            gift_to_work: z
+              .string()
+              .describe(
+                "Provide clear, actionable advice on how to lean into the positive side of this trait to build a better life."
+              ),
+          }),
+          laku: z.object({
+            core_meaning: z
+              .string()
+              .describe(
+                "Explain the metaphorical meaning of this specific Laku and its core characteristics. Describe the core characteristics."
+              ),
+            strengths: z
+              .string()
+              .describe(
+                "Detail the natural positive qualities that stem from this Laku (e.g., resilience, deep thought, independence, charisma, adaptability, diligence)."
+              ),
+            challenges: z
+              .string()
+              .describe(
+                "Explain their instinctual approach to overcoming challenges, using the metaphor of their element."
+              ),
             influence: z
               .string()
               .describe(
-                "Describe how this traits generally influences your life path, ambition, or overarching sense of purpose."
-              )
-              .catch(() => ""),
-            wisdom: z
+                "How does this Laku shape your general approach to daily life, decision-making, and facing adversity?"
+              ),
+            ritual: z
               .string()
               .describe(
-                "Offer actionable advice on how you can align with and best leverage the inherent energies of your character for personal well-being, success, and fulfilling your life's path."
-              )
-              .catch(() => ""),
-          }),
-          hastawara: z.object({
-            core_attributes: z
-              .string()
-              .describe(
-                "Describe the general characteristics of Weton types that might create inherent energetic friction or significant differences with your own. This could involve opposing elemental energies, neptu imbalances, or Laku styles that lead to natural friction."
-              )
-              .catch(() => ""),
-            impact: z
-              .string()
-              .describe(
-                "Describe the general auspicious or inauspicious qualities associated with this Hastawara, providing examples of activities that are traditionally favored or disfavored under its influence."
-              )
-              .catch(() => ""),
-            connection: z
-              .string()
-              .describe(
-                "Offer any relevant traditional Primbon interpretations, warnings, or blessings tied to this particular Hastawara."
-              )
-              .catch(() => ""),
-            wisdom: z
-              .string()
-              .describe(
-                "Provide actionable advice on how you can leverage awareness of your Hastawara's influence to make more conscious choices, navigate subtle life energies, and optimize your actions."
-              )
-              .catch(() => ""),
+                "Suggest a simple, tangible activity they can do to reconnect with their core Laku energy when they feel out of balance."
+              ),
           }),
         }),
         messages: [
@@ -1311,18 +1243,6 @@ export async function generateGeneralProReading(profile) {
         .from("readings")
         .update({
           status: "completed",
-          reading: resObj.sadwara,
-          input_token: response.usage.promptTokens,
-          output_token: response.usage.completionTokens,
-          total_token: response.usage.totalTokens,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", newSadwaraReading.id);
-
-      await supabase
-        .from("readings")
-        .update({
-          status: "completed",
           reading: resObj.saptawara,
           input_token: response.usage.promptTokens,
           output_token: response.usage.completionTokens,
@@ -1335,13 +1255,14 @@ export async function generateGeneralProReading(profile) {
         .from("readings")
         .update({
           status: "completed",
-          reading: resObj.hastawara,
+          reading: resObj.laku,
           input_token: response.usage.promptTokens,
           output_token: response.usage.completionTokens,
           total_token: response.usage.totalTokens,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", newHastawaraReading.id);
+        .eq("id", newLakuReading.id);
+
       break;
     } catch (error) {
       lastErrorMsg = error.message;
@@ -1355,35 +1276,28 @@ export async function generateGeneralProReading(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newRakamReading.id);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newSaptawaraReading.id);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newLakuReading.id);
       }
     }
   } while (attempt < maxAttempts);
 }
 
 export async function generateGeneralProReading2(profile) {
-  const { data: newLakuReading, error } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "general_readings",
-      title: "Laku",
-      subtitle:
-        "Discover the archetype and behavioral pattern that guides your life's journey.",
-      username: profile.username,
-      status: "loading",
-      slug: "laku",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
-
-  if (error) {
-    console.error("Error inserting new reading:", error);
-    throw error;
-  }
-
-  console.log("new reading generated on supabase", newLakuReading);
-
   const { data: newValuesReading, errorValues } = await supabase
     .from("readings")
     .insert({
@@ -1460,148 +1374,130 @@ export async function generateGeneralProReading2(profile) {
     attempt++;
     try {
       const response = await generateObject({
-        model: google("gemini-2.5-flash-preview-05-20"),
+        // model: google("gemini-2.5-flash-preview-05-20"),
+        // model: openai("o4-mini-2025-04-16"),
+        model: google("gemini-2.5-pro"),
         providerOptions: {
           google: {
             thinkingConfig: {
-              thinkingBudget: 2000,
+              thinkingBudget: 1000,
             },
           },
         },
+        maxTokens: 10000,
         schema: z.object({
-          laku: z.object({
-            core_meaning: z
-              .string()
-              .describe(
-                'Explain the metaphorical meaning of this specific Laku and its core characteristics. For "Lakune Lintang," for example, describe qualities like a tendency towards solitude or quiet strength, often admired but not always socially outgoing.'
-              )
-              .catch(() => ""),
-            strengths: z
-              .string()
-              .describe(
-                "Detail the natural positive qualities that stem from this Laku (e.g., resilience, deep thought, independence, charisma, adaptability, diligence)."
-              )
-              .catch(() => ""),
-            challenges: z
-              .string()
-              .describe(
-                "Outline the potential pitfalls or areas where awareness and conscious effort are needed (e.g., tendency towards isolation, impatience, moodiness, too much reliance on self)."
-              )
-              .catch(() => ""),
-            influence: z
-              .string()
-              .describe(
-                "How does this Laku shape your general approach to daily life, decision-making, and facing adversity?"
-              )
-              .catch(() => ""),
-            wisdom: z
-              .string()
-              .describe(
-                "Offer actionable guidance on how to best embody the positive aspects of your Laku and mitigate its challenges, perhaps with a relevant Javanese proverb or a spiritual reflection."
-              )
-              .catch(() => ""),
-          }),
+          // laku: z.object({
+          //   core_meaning: z
+          //     .string()
+          //     .describe(
+          //       'Explain the metaphorical meaning of this specific Laku and its core characteristics. For "Lakune Lintang," for example, describe qualities like a tendency towards solitude or quiet strength, often admired but not always socially outgoing.'
+          //     ),
+          //   strengths: z
+          //     .string()
+          //     .describe(
+          //       "Detail the natural positive qualities that stem from this Laku (e.g., resilience, deep thought, independence, charisma, adaptability, diligence)."
+          //     ),
+          //   challenges: z
+          //     .string()
+          //     .describe(
+          //       "Outline the potential pitfalls or areas where awareness and conscious effort are needed (e.g., tendency towards isolation, impatience, moodiness, too much reliance on self)."
+          //     ),
+          //   influence: z
+          //     .string()
+          //     .describe(
+          //       "How does this Laku shape your general approach to daily life, decision-making, and facing adversity?"
+          //     ),
+          //   wisdom: z
+          //     .string()
+          //     .describe(
+          //       "Offer actionable guidance on how to best embody the positive aspects of your Laku and mitigate its challenges, perhaps with a relevant Javanese proverb or a spiritual reflection."
+          //     ),
+          // }),
           values: z.object({
             primary_value: z
               .string()
               .describe(
                 "Identify and describe the dominant 2-3 core values that are most pronounced in your Weton combination (e.g., harmony (keselarasan), responsibility (tanggung jawab), sincerity (ikhlas), humility (andhap asor), collective well-being (memayu hayuning bawana), honesty (kejujuran), perseverance (tekun), wisdom (kawicaksanan))."
-              )
-              .catch(() => ""),
+              ),
             manifest: z
               .string()
               .describe(
                 "Explain how these values are likely to manifest in your daily behavior, relationships, and professional life. Provide concrete examples."
-              )
-              .catch(() => ""),
+              ),
             motivation: z
               .string()
               .describe(
                 "What truly drives your actions and aspirations, according to your Weton influences?"
-              )
-              .catch(() => ""),
+              ),
             conflicts: z
               .string()
               .describe(
                 "Briefly touch upon any inherent tensions between different values or how external pressures might challenge your core principles, and how your Weton suggests navigating these."
-              )
-              .catch(() => ""),
+              ),
             philosophy: z
               .string()
               .describe(
                 "Connect your core values to broader Javanese philosophical concepts or ethical guidelines, explaining their significance in a traditional context."
-              )
-              .catch(() => ""),
+              ),
           }),
           interaction_style: z.object({
             social_tendency: z
               .string()
               .describe(
                 "Are you naturally more introverted or extroverted? Direct or indirect in communication? Preferring harmony over confrontation, or vice-versa? Describe your overarching social tendency."
-              )
-              .catch(() => ""),
+              ),
             communication: z
               .string()
               .describe(
                 "Detail your typical communication style (e.g., articulate, reserved, expressive, pragmatic, empathetic, logical). How do you tend to convey your thoughts and feelings?"
-              )
-              .catch(() => ""),
+              ),
             relationship: z
               .string()
               .describe(
                 "How do you typically initiate, maintain, and navigate friendships, professional connections, and community ties? Are you a leader, a supportive follower, a mediator, or an independent contributor?"
-              )
-              .catch(() => ""),
+              ),
             social_dynamics: z
               .string()
               .describe(
                 "How do you typically react to social challenges, group pressures, or differing opinions?"
-              )
-              .catch(() => ""),
+              ),
             social_etiquette: z
               .string()
               .describe(
                 "Connect aspects of your interaction style to relevant Javanese tata krama (etiquette) or social norms, explaining how your Weton might naturally align with or challenge these traditions."
-              )
-              .catch(() => ""),
+              ),
           }),
           life_path: z.object({
             fortune: z
               .string()
               .describe(
                 'Describe the general "flavor" of your life path. Is it one of steady growth, unexpected turns, a focus on spiritual development, material abundance, or perhaps a path of service?'
-              )
-              .catch(() => ""),
+              ),
             theme: z
               .string()
               .describe(
                 "Identify recurring themes or lessons that may appear throughout your life (e.g., learning resilience, cultivating wisdom, building community, navigating change, finding balance, pursuing creative expression, overcoming adversity)."
-              )
-              .catch(() => ""),
+              ),
             flow: z
               .string()
               .describe(
                 "Where might you find life tends to unfold more easily or where opportunities naturally arise?"
-              )
-              .catch(() => ""),
+              ),
             challenge: z
               .string()
               .describe(
                 "Where might you encounter recurring lessons or challenges that serve as catalysts for personal development?"
-              )
-              .catch(() => ""),
+              ),
             wheel_of_life: z
               .string()
               .describe(
                 "Frame your life path within the Javanese concept of Cakra Manggilingan (the turning wheel of life), suggesting that understanding your Weton offers insight into the rhythm and nature of your unique journey."
-              )
-              .catch(() => ""),
+              ),
             outlook: z
               .string()
               .describe(
                 "Conclude with an empowering message, emphasizing that while your Weton provides a map, your conscious choices and actions ultimately shape your destiny."
-              )
-              .catch(() => ""),
+              ),
           }),
         }),
         messages: [
@@ -1609,18 +1505,6 @@ export async function generateGeneralProReading2(profile) {
         ],
       });
       const resObj = response.object;
-
-      await supabase
-        .from("readings")
-        .update({
-          status: "completed",
-          reading: resObj.laku,
-          input_token: response.usage.promptTokens,
-          output_token: response.usage.completionTokens,
-          total_token: response.usage.totalTokens,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", newLakuReading.id);
 
       await supabase
         .from("readings")
@@ -1669,7 +1553,23 @@ export async function generateGeneralProReading2(profile) {
             reading: { error: lastErrorMsg },
             updated_at: new Date().toISOString(),
           })
-          .eq("id", newLakuReading.id);
+          .eq("id", newValuesReading.id);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newInteractionStyle.id);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newLifePathReading.id);
       }
     }
   } while (attempt < maxAttempts);

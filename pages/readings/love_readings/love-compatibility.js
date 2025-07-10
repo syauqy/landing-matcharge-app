@@ -200,7 +200,7 @@ export default function LoveCompatibilityPage() {
               reading={reading?.reading?.harmony}
               setIsSectionOpen={setIsSectionOneOpen}
               isSectionOpen={isSectionOneOpen}
-              title="🌿 Energeic Harmony"
+              title="🌿 Energetic Harmony"
               firstSection={true}
             />
             <ContentSection

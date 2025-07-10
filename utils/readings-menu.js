@@ -47,10 +47,10 @@ export const CardData = {
     // },
     {
       id: 6,
-      title: "Saptawara",
+      title: "Pancasuda",
       description:
         "Reveal the core pillar of your inner foundation and its potential influenced by the seven-day Pawukon cycle.",
-      slug: "saptawara",
+      slug: "pancasuda",
       category: "general_readings",
       type: "pro",
     },

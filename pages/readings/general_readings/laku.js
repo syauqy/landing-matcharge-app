@@ -88,7 +88,7 @@ export default function LakuPage() {
           try {
             // Generate new reading if none exists
             const response = await fetch(
-              `${config.api.url}/readings/general/general-pro-2`,
+              `${config.api.url}/readings/general/general-pro-1`,
               {
                 method: "POST",
                 headers: {
