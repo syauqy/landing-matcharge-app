@@ -596,7 +596,6 @@ export const proGeneralCalculationPrompt = (profile) => {
 
   1. Your Rakam Profile
   This reading delves into the essence of your Rakam, a key determinant of your spiritual disposition, social interactions, and underlying fortune in life.
-  * Your Karmic Headline
   * The Story of Your Rakam
   * How This Theme Shapes You
   * How the Plot Affects Your World
@@ -604,7 +603,6 @@ export const proGeneralCalculationPrompt = (profile) => {
 
   2. Your Pancasuda/Saptawara - Character and Traits Profile
   This reading explores your Pancasuda/Saptawara, which reveals fundamental aspects of your personality, general temperament, and overarching life purpose.
-  * Your Fortune Factor  
   * Core Character & Symbolism
   * Your Innate Gift
   * Its Shadow Side
@@ -612,7 +610,6 @@ export const proGeneralCalculationPrompt = (profile) => {
   
   3. Your Laku Profile
   This reading delves into your inherent 'Laku', revealing a fundamental aspect of your personality, destiny, and how you naturally navigate life's challenges and opportunities.
-  * Your Elemental Persona
   * Core Meaning & Symbolism
   * Inherent Strengths
   * Potential Challenges & Areas for Growth

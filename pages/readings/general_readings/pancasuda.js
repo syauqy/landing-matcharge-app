@@ -3,9 +3,13 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { ArrowLeft } from "lucide-react";
 import { fetchProfileData } from "@/utils/fetch";
 import { config } from "@/utils/config";
+import { LoadingProfile } from "@/components/layouts/loading-profile";
+import { ErrorLayout } from "@/components/layouts/error-page";
+import { Capacitor } from "@capacitor/core";
+import { ReadingNavbar } from "@/components/readings/reading-navbar";
+import { ContentSection } from "@/components/readings/content-section";
 import dynamic from "next/dynamic";
 const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
   ssr: false,
@@ -19,6 +23,12 @@ export default function SaptawaraPage() {
   const [error, setError] = useState(null);
   const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
+  const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
+  const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
+  const [isSectionThreeOpen, setIsSectionThreeOpen] = useState(false);
+  const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
+  const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
+  const isNative = Capacitor.isNativePlatform();
 
   const disclaimer =
     "While Weton provides valuable insights into inherent tendencies and energetic dynamics, it does not dictate absolute destinies or outcomes in relationships. These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure. Human agency, conscious effort, open communication, and genuine love are paramount. Every relationship is a unique journey of two individuals, and challenges can always be overcome with dedication.";
@@ -121,58 +131,20 @@ export default function SaptawaraPage() {
 
   useEffect(() => {
     if (profileData && user) {
-      // Only run if profileData and user exist
-      //   handleMonthlyReading();
-      //   handleDailyReading();
+      if (isNative) {
+        handleGenerateReading();
+      }
     }
   }, [profileData]);
 
   console.log("Profile Data:", profileData);
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
-        <p className="mt-4">Loading your profile...</p>
-      </div>
-    );
-  }
-
-  if (loading && !error) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
-        <p className="mt-4">Loading your reading...</p>
-      </div>
-    );
+  if (authLoading || (loading && !error)) {
+    return <LoadingProfile />;
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <div className="alert alert-error shadow-lg max-w-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2 2m2-2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>Error! {error}</span>
-          </div>
-        </div>
-        <button onClick={() => router.back()} className="btn btn-neutral mt-6">
-          Go Back
-        </button>
-      </div>
-    );
+    return <ErrorLayout error={error} router={router} />;
   }
 
   if (!profileData) {
@@ -207,62 +179,86 @@ export default function SaptawaraPage() {
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
-      <div
-        className={`navbar px-5 bg-base-100 sticky top-0 z-50 transition-all duration-300 ${
-          showTitleInNavbar ? "border-b border-batik-border" : ""
-        }`}
-      >
-        <div className="navbar-start">
-          <button
-            onClick={() => router.back()}
-            className="p-2 rounded-full text-xl border border-batik-text hover:bg-base-200"
-          >
-            <ArrowLeft size={20} className="text-batik-text" />
-          </button>
-        </div>
-        {showTitleInNavbar && profileData && (
-          <div className="navbar-center flex-col">
-            <div className="text-xs text-batik-text font-semibold uppercase">
-              Saptawara
-            </div>
-          </div>
-        )}
-        <div className="navbar-end"></div>
-      </div>
+      <ReadingNavbar
+        title="Pancasuda"
+        profileData={profileData}
+        showTitleInNavbar={showTitleInNavbar}
+      />
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         <div>
-          <h2 className="text-xl font-semibold text-left">Saptawara</h2>
+          <h2 className="text-xl font-semibold text-left">Pancasuda</h2>
           <p className="text-sm text-gray-700 mb-2">
             Reveal the core pillar of your inner foundation and its potential
             influenced by the seven-day Pawukon cycle.
           </p>
         </div>
-        <section>
-          <div className="flex flex-col gap-4">
-            <button
-              className="btn border-batik-border text-batik-text rounded-2xl"
-              onClick={handleGenerateReading}
-            >
-              Generate Reading
-            </button>
-            {reading && (
-              <div className="flex flex-col">
-                <div className="text-sm font-semibold  text-batik-text">
-                  Saptawara
-                </div>
 
-                <ReactJsonView
-                  src={reading}
-                  theme="bright:inverted"
-                  displayObjectSize={false}
-                  className="rounded-2xl"
-                  displayDataTypes={false}
-                />
-              </div>
-            )}
+        {reading?.status === "completed" ? (
+          <div className="space-y-6">
+            <ContentSection
+              reading={reading?.reading?.character}
+              setIsSectionOpen={setIsSectionOneOpen}
+              isSectionOpen={isSectionOneOpen}
+              title="🦹‍♂️ Core Character & Symbolism"
+              firstSection={true}
+            />
+            <ContentSection
+              reading={reading?.reading?.innate_gift}
+              setIsSectionOpen={setIsSectionTwoOpen}
+              isSectionOpen={isSectionTwoOpen}
+              title="🎁 Your Innate Gift"
+              // firstSection={false}
+            />
+            <ContentSection
+              reading={reading?.reading?.shadow}
+              setIsSectionOpen={setIsSectionThreeOpen}
+              isSectionOpen={isSectionThreeOpen}
+              title="🌓 Its Shadow Side"
+              // firstSection={false}
+            />
+            <ContentSection
+              reading={reading?.reading?.gift_to_work}
+              setIsSectionOpen={setIsSectionFourOpen}
+              isSectionOpen={isSectionFourOpen}
+              title="💪 Putting Your Gift to Work"
+              // firstSection={false}
+            />
           </div>
-        </section>
+        ) : (
+          <div className="flex h-[30rem] flex-col items-center justify-center bg-base-100 text-base-content">
+            <span className="loading loading-spinner loading-lg text-rose-400"></span>
+            <p className="mt-4">Generating Your Personal Reading...</p>
+          </div>
+        )}
+
+        {!isNative && (
+          <section>
+            <div className="flex flex-col gap-4">
+              <button
+                className="btn border-batik-border text-batik-text rounded-2xl"
+                onClick={handleGenerateReading}
+              >
+                Generate Reading
+              </button>
+              {reading && (
+                <div className="flex flex-col">
+                  <div className="text-sm font-semibold  text-batik-text">
+                    Saptawara
+                  </div>
+
+                  <ReactJsonView
+                    src={reading}
+                    theme="bright:inverted"
+                    displayObjectSize={false}
+                    className="rounded-2xl"
+                    displayDataTypes={false}
+                  />
+                </div>
+              )}
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );

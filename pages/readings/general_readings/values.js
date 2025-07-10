@@ -6,6 +6,11 @@ import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
 import { fetchProfileData } from "@/utils/fetch";
 import { config } from "@/utils/config";
+import { LoadingProfile } from "@/components/layouts/loading-profile";
+import { ErrorLayout } from "@/components/layouts/error-page";
+import { Capacitor } from "@capacitor/core";
+import { ReadingNavbar } from "@/components/readings/reading-navbar";
+import { ContentSection } from "@/components/readings/content-section";
 import dynamic from "next/dynamic";
 const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
   ssr: false,
@@ -19,6 +24,12 @@ export default function ValuesPage() {
   const [error, setError] = useState(null);
   const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
+  const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
+  const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
+  const [isSectionThreeOpen, setIsSectionThreeOpen] = useState(false);
+  const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
+  const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
+  const isNative = Capacitor.isNativePlatform();
 
   const disclaimer =
     "While Weton provides valuable insights into inherent tendencies and energetic dynamics, it does not dictate absolute destinies or outcomes in relationships. These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure. Human agency, conscious effort, open communication, and genuine love are paramount. Every relationship is a unique journey of two individuals, and challenges can always be overcome with dedication.";
@@ -121,58 +132,20 @@ export default function ValuesPage() {
 
   useEffect(() => {
     if (profileData && user) {
-      // Only run if profileData and user exist
-      //   handleMonthlyReading();
-      //   handleDailyReading();
+      if (isNative) {
+        handleGenerateReading();
+      }
     }
   }, [profileData]);
 
   console.log("Profile Data:", profileData);
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
-        <p className="mt-4">Loading your profile...</p>
-      </div>
-    );
-  }
-
-  if (loading && !error) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
-        <p className="mt-4">Loading your reading...</p>
-      </div>
-    );
+  if (authLoading || (loading && !error)) {
+    return <LoadingProfile />;
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <div className="alert alert-error shadow-lg max-w-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2 2m2-2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>Error! {error}</span>
-          </div>
-        </div>
-        <button onClick={() => router.back()} className="btn btn-neutral mt-6">
-          Go Back
-        </button>
-      </div>
-    );
+    return <ErrorLayout error={error} router={router} />;
   }
 
   if (!profileData) {
@@ -207,186 +180,93 @@ export default function ValuesPage() {
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
-      <div
-        className={`navbar px-5 bg-base-100 sticky top-0 z-50 transition-all duration-300 ${
-          showTitleInNavbar ? "border-b border-batik-border" : ""
-        }`}
-      >
-        <div className="navbar-start">
-          <button
-            onClick={() => router.back()}
-            className="p-2 rounded-full text-xl border border-batik-text hover:bg-base-200"
-          >
-            <ArrowLeft size={20} className="text-batik-text" />
-          </button>
-        </div>
-        {showTitleInNavbar && profileData && (
-          <div className="navbar-center flex-col">
-            <div className="text-xs text-batik-text font-semibold uppercase">
-              Values
-            </div>
-          </div>
-        )}
-        <div className="navbar-end"></div>
-      </div>
+      <ReadingNavbar
+        title="Values"
+        profileData={profileData}
+        showTitleInNavbar={showTitleInNavbar}
+      />
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         <div>
           <h2 className="text-xl font-semibold text-left">Values</h2>
-          <p className="text-[10px] text-gray-700 mb-2">
+          <p className="text-sm text-gray-700 mb-2">
             Pinpoint the core principles that drive your decisions and
             motivations.
           </p>
         </div>
-        <section>
-          <div className="flex flex-col gap-4">
-            <button
-              className="btn border-batik-border text-batik-text rounded-2xl"
-              onClick={handleGenerateReading}
-            >
-              Generate Reading
-            </button>
-            {reading && (
-              <div className="flex flex-col">
-                <div className="text-sm font-semibold  text-batik-text">
-                  Values
-                </div>
 
-                <ReactJsonView
-                  src={reading}
-                  theme="bright:inverted"
-                  displayObjectSize={false}
-                  className="rounded-2xl"
-                  displayDataTypes={false}
-                />
-              </div>
-            )}
+        {reading?.status === "completed" ? (
+          <div className="space-y-6">
+            <ContentSection
+              reading={reading?.reading?.primary_value}
+              setIsSectionOpen={setIsSectionOneOpen}
+              isSectionOpen={isSectionOneOpen}
+              title="💎 Primary Value"
+              firstSection={true}
+            />
+            <ContentSection
+              reading={reading?.reading?.manifest}
+              setIsSectionOpen={setIsSectionTwoOpen}
+              isSectionOpen={isSectionTwoOpen}
+              title="🤞 How Values Manifest"
+              // firstSection={false}
+            />
+            <ContentSection
+              reading={reading?.reading?.motivation}
+              setIsSectionOpen={setIsSectionThreeOpen}
+              isSectionOpen={isSectionThreeOpen}
+              title="🔥 Source of Motivation"
+              // firstSection={false}
+            />
+            <ContentSection
+              reading={reading?.reading?.conflicts}
+              setIsSectionOpen={setIsSectionFourOpen}
+              isSectionOpen={isSectionFourOpen}
+              title="🤬 Potential Value Conflicts"
+              // firstSection={false}
+            />
+            <ContentSection
+              reading={reading?.reading?.philosophy}
+              setIsSectionOpen={setIsSectionFiveOpen}
+              isSectionOpen={isSectionFiveOpen}
+              title="💭 Philosophical Connection"
+              // firstSection={false}
+            />
           </div>
-        </section>
+        ) : (
+          <div className="flex h-[30rem] flex-col items-center justify-center bg-base-100 text-base-content">
+            <span className="loading loading-spinner loading-lg text-rose-400"></span>
+            <p className="mt-4">Generating Your Personal Reading...</p>
+          </div>
+        )}
 
-        {/* <section className="border-t border-batik-text/20 pt-4">
-          <h2 className="text-xl font-semibold text-left">
-            Your Inner Compass & Life&apos;s Journey
-          </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            These elements describe your fundamental character, how you approach
-            life, and the innate energies that guide your path.
-          </p>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">Laku</div>
-              <p className="text-[10px] text-gray-700 italic">
-                Laku describes the overarching &quot;manner&quot; or
-                &quot;way&quot; your life tends to unfold, like a specific
-                archetype or behavioral pattern.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.laku?.name} (
-                  {profileData.weton?.laku?.meaning})
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.laku?.description}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Pancasuda
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Pancasuda types define your innate &quot;character essence&quot;
-                or life&apos;s guiding archetype, revealing the unique talents
-                and potential path intricately woven into your birth Weton.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.saptawara?.name}
-                </div>
-                <div className="text-[10px] text-gray-700 italic ">
-                  {profileData.weton?.saptawara?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.saptawara?.description}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {!isNative && (
+          <section>
+            <div className="flex flex-col gap-4">
+              <button
+                className="btn border-batik-border text-batik-text rounded-2xl"
+                onClick={handleGenerateReading}
+              >
+                Generate Reading
+              </button>
+              {reading && (
+                <div className="flex flex-col">
+                  <div className="text-sm font-semibold  text-batik-text">
+                    Values
+                  </div>
 
-        <section className="border-t border-batik-text/20 pt-4">
-          <h2 className="text-xl font-semibold text-left">
-            Karmic Tides & Cyclical Patterns
-          </h2>
-          <p className="text-[10px] text-gray-700 mb-2">
-            These aspects point to underlying patterns, cyclical influences from
-            different day counts, and potential karmic themes that shape your
-            experiences.
-          </p>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Rakam
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Rakam suggests a significant life theme or a pattern of
-                experiences that may repeat or define distinct periods of your
-                life.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.rakam?.name}
+                  <ReactJsonView
+                    src={reading}
+                    theme="bright:inverted"
+                    displayObjectSize={false}
+                    className="rounded-2xl"
+                    displayDataTypes={false}
+                  />
                 </div>
-                <div className="text-[10px] text-gray-700 italic">
-                  {profileData.weton?.rakam?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.rakam?.description}
-                </div>
-              </div>
+              )}
             </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Sadwara
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                Part of a six-day Pawukon cycle (Sadwara), this highlights
-                subtle behavioral tendencies, your approach to responsibility,
-                or social interaction styles.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.sadwara?.name} (
-                  {profileData.weton?.sadwara?.meaning})
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.sadwara?.description}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="text-sm font-semibold  text-batik-text">
-                Hastawara
-              </div>
-              <p className="text-[10px] text-gray-700 italic">
-                An eight-day Pawukon cycle influence (Hastawara), this can point
-                towards areas of specific luck, potential challenges, or types
-                of activities favored or to be cautious about.
-              </p>
-              <div>
-                <div className="font-semibold">
-                  {profileData.weton?.hastawara?.name}
-                </div>
-                <div className="text-[10px] text-gray-700 italic">
-                  {profileData.weton?.hastawara?.meaning}
-                </div>
-                <div className="text-sm text-gray-700">
-                  {profileData.weton?.hastawara?.description}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section> */}
+          </section>
+        )}
       </main>
     </div>
   );
