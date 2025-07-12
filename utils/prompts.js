@@ -317,7 +317,7 @@ export const basicLovePrompt = (profile) => {
     - Laku: ${wetonDetails.laku.name}
     - Rakam: ${wetonDetails.rakam.name}
     - Wuku: ${wuku}
-    - Saptawara: ${wetonDetails.saptawara.name}
+    - Pancasuda/Saptawara: ${wetonDetails.saptawara.name}
     `;
 
   const prompt = `
@@ -406,14 +406,14 @@ export const proLovePrompt = (profile) => {
     - Neptu Total: ${wetonDetails.total_neptu}
     - Rakam: ${wetonDetails.rakam?.name}
     - Wuku: ${wuku?.name}
-    - Saptawara: ${wetonDetails.saptawara?.name}
+    - Pancasuda/Saptawara: ${wetonDetails.saptawara?.name}
     - Laku: ${wetonDetails.laku?.name}
     `;
 
   const prompt = `
   ## Agent Role:
   You are an AI-powered Weton expert, deeply knowledgeable in Javanese Weton calculations, Primbon interpretations, and the spiritual and practical wisdom embedded within Javanese philosophy. 
-  Your purpose is to provide insightful, holistic, and actionable guidance on love and partnership, drawing from the intricate influences of Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara. 
+  Your purpose is to provide insightful, holistic, and actionable guidance on love and partnership, drawing from the intricate influences of Weton, Wuku, Rakam, Laku, and Pancasuda/Saptawara. 
   You understand the nuances of these systems and their permutations across relational dynamics, always with a culturally sensitive and empowering approach.
   
   ## Input:
@@ -456,7 +456,7 @@ export const proLovePrompt = (profile) => {
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
   - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
-  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
+  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, and the power of free will in navigating one's life path.
   - No Redundancy: While the overall input data is the same, each section must focus exclusively on the specific character aspect it addresses, avoiding unnecessary repetition of insights from other sections.
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
@@ -541,7 +541,7 @@ export const proLovePrompt2 = (profile) => {
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
   - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
-  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
+  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, and the power of free will in navigating one's life path.
   - No Redundancy: While the overall input data is the same, each section must focus exclusively on the specific character aspect it addresses, avoiding unnecessary repetition of insights from other sections.
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
@@ -696,7 +696,7 @@ export const proGeneralCalculationPrompt2 = (profile) => {
   * Javanese Philosophical Connection
 
   2. Your Interaction Style Profile
-  This reading explores your natural approach to social engagement and communication, shaped by the nuanced interplay of your Weton, Rakam, Sadwara, and Saptawara.
+  This reading explores your natural approach to social engagement and communication, shaped by the nuanced interplay of your Weton, Rakam, and Saptawara.
   * Dominant Social Tendency
   * Communication Patterns
   * Approach to Relationships (General)
@@ -831,7 +831,7 @@ export const proCareerPrompt = (profile) => {
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
   - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
-  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
+  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, and the power of free will in navigating one's life path.
   - No Redundancy: While the overall input data is the same, each section must focus exclusively on the specific character aspect it addresses, avoiding unnecessary repetition of insights from other sections.
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
@@ -932,7 +932,7 @@ export const proFinancialPrompt = (profile) => {
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi). Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
-  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
+  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, due diligence, and the power of free will in managing one's financial path. Explicitly state that these are not financial advice.
   - No Redundancy: While the overall input data is the same, each section must focus exclusively on the specific character aspect it addresses, avoiding unnecessary repetition of insights from other sections.
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
@@ -971,7 +971,6 @@ export const proLoveCompatibilityPrompt = (profile1, profile2, wetonJodoh) => {
   })
     - Rakam: ${wetonDetails1.rakam.name}
     - Wuku: ${wuku1}
-    - Sadwara: ${wetonDetails1.sadwara.name}
     - Saptawara/Pancasuda: ${wetonDetails1.saptawara.name}
     - Laku: ${wetonDetails1.laku.name}
 
@@ -986,7 +985,6 @@ export const proLoveCompatibilityPrompt = (profile1, profile2, wetonJodoh) => {
   })
     - Rakam: ${wetonDetails2.rakam.name}
     - Wuku: ${wuku2}
-    - Sadwara: ${wetonDetails2.sadwara.name}
     - Saptawara/Pancasuda: ${wetonDetails2.saptawara.name}
     - Laku: ${wetonDetails2.laku.name}
 
@@ -1053,7 +1051,7 @@ export const proLoveCompatibilityPrompt = (profile1, profile2, wetonJodoh) => {
   - Avoid em dashes. Avoid underscores.
   - For text formatting, write in markdown.
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
-  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
+  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, due diligence, and the power of free will in managing one's financial path. Explicitly state that these are not financial advice.
   - No Redundancy: While the overall input data is the same, each section must focus exclusively on the specific character aspect it addresses, avoiding unnecessary repetition of insights from other sections.
   - Make it relevant to the modern life and generation
@@ -1099,7 +1097,6 @@ export const proCoupleCompatibilityPrompt = (
   })
     - Rakam: ${wetonDetails1.rakam.name}
     - Wuku: ${wuku1}
-    - Sadwara: ${wetonDetails1.sadwara.name}
     - Saptawara/Pancasuda: ${wetonDetails1.saptawara.name}
     - Laku: ${wetonDetails1.laku.name}
 
@@ -1114,7 +1111,6 @@ export const proCoupleCompatibilityPrompt = (
   })
     - Rakam: ${wetonDetails2.rakam.name}
     - Wuku: ${wuku2}
-    - Sadwara: ${wetonDetails2.sadwara.name}
     - Saptawara/Pancasuda: ${wetonDetails2.saptawara.name}
     - Laku: ${wetonDetails2.laku.name}
 
@@ -1224,7 +1220,7 @@ export const proCoupleCompatibilityPrompt = (
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi). Write the Indonesian and Javanese words in italic.
   - Avoid em dashes. 
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
-  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
+  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, due diligence, and the power of free will in managing one's financial path. Explicitly state that these are not financial advice.
   - No Redundancy: While the overall input data is the same, each section must focus exclusively on the specific character aspect it addresses, avoiding unnecessary repetition of insights from other sections.
   - Make it relevant to the modern life and generation
@@ -1329,7 +1325,7 @@ export const proLovePromptExtended = (profile) => {
   const prompt = `
   ## Agent Role:
   You are an AI-powered Weton expert, deeply knowledgeable in Javanese Weton calculations, Primbon interpretations, and the spiritual and practical wisdom embedded within Javanese philosophy. 
-  Your purpose is to provide insightful, holistic, and actionable guidance on love and partnership, drawing from the intricate influences of Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara. 
+  Your purpose is to provide insightful, holistic, and actionable guidance on love and partnership, drawing from the intricate influences of Weton, Wuku, Rakam, Laku, and Saptawara. 
   You understand the nuances of these systems and their permutations across relational dynamics, always with a culturally sensitive and empowering approach.
   
   ## Input:
@@ -1389,7 +1385,7 @@ export const proLovePromptExtended = (profile) => {
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
   - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
-  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, Sadwara, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
+  - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, and the power of free will in navigating one's life path.
   - No Redundancy: While the overall input data is the same, each section must focus exclusively on the specific character aspect it addresses, avoiding unnecessary repetition of insights from other sections.
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.

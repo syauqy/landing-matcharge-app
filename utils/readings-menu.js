@@ -237,7 +237,7 @@ export const CardData = {
 
 export const SectionData = [
   {
-    title: "🔮 General Readings",
+    title: "🔮 Personal Readings",
     subtitle:
       "Unlock the core of your being and discover the unique energies that shape you.",
     cards: CardData.general,

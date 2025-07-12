@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { supabase } from "./supabaseClient";
+import { config } from "./config";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -105,5 +106,137 @@ export const fetchProfileData = async ({
     );
   } finally {
     setLoading(false);
+  }
+};
+
+export const fetchReading = async ({
+  profileData,
+  user,
+  setReading,
+  setLoading,
+  setError,
+  slug,
+  reading_category,
+  reading_type,
+}) => {
+  setError(null);
+  setLoading(true);
+
+  if (!profileData || !user) {
+    setError("Profile data or user not available.");
+    setLoading(false);
+    return;
+  } else {
+    try {
+      // Check if primary-traits reading exists
+      const { data: existingReading, error: fetchError } = await supabase
+        .from("readings")
+        .select("reading, status, id")
+        .eq("reading_type", reading_type)
+        .eq("user_id", user.id)
+        .eq("reading_category", reading_category)
+        .eq("slug", slug)
+        .maybeSingle();
+
+      // console.log("Existing Reading:", existingReading, user.id);
+
+      console.log(existingReading);
+
+      if (fetchError && fetchError.code !== "PGRST116") {
+        throw fetchError;
+      }
+
+      // If reading exists, show it
+      if (existingReading) {
+        setReading(existingReading);
+        setLoading(false);
+        return;
+      } else if (!existingReading && !fetchError) {
+        console.log("No existing reading found, generating new one...");
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      setError(err.message || "Failed to generate reading");
+      setLoading(false);
+    }
+  }
+};
+
+export const handleGenerateReading = async ({
+  profileData,
+  user,
+  setReading,
+  setLoading,
+  setError,
+  slug,
+  reading_category,
+  reading_type,
+  api_url,
+}) => {
+  setError(null);
+  setLoading(true);
+
+  if (!profileData || !user) {
+    setError("Profile data or user not available.");
+    setLoading(false);
+    return;
+  } else {
+    try {
+      // Check if primary-traits reading exists
+      const { data: existingReading, error: fetchError } = await supabase
+        .from("readings")
+        .select("reading, status, id")
+        .eq("reading_type", reading_type)
+        .eq("user_id", user.id)
+        .eq("reading_category", reading_category)
+        .eq("slug", slug)
+        .maybeSingle();
+
+      // console.log("Existing Reading:", existingReading, user.id);
+
+      console.log(existingReading);
+
+      if (fetchError && fetchError.code !== "PGRST116") {
+        throw fetchError;
+      }
+
+      // If reading exists, show it
+      if (existingReading) {
+        setReading(existingReading);
+        setLoading(false);
+        return;
+      } else if (!existingReading && !fetchError) {
+        console.log("No existing reading found, generating new one...");
+        setLoading(false);
+        // try {
+        //   // Generate new reading if none exists
+        //   const response = await fetch(`${config.api.url}/${api_url}`, {
+        //     method: "POST",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({ profile: profileData }),
+        //     credentials: "include",
+        //   });
+
+        //   const readingData = await response.json();
+        //   // console.log(readingData);
+        //   setReading(readingData);
+        // } catch (err) {
+        //   console.error(
+        //     "Error in fetch or processing response for daily reading:",
+        //     err
+        //   );
+        //   setError(err.message || "Failed to generate daily reading.");
+        // } finally {
+        //   setLoading(false);
+        // }
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      setError(err.message || "Failed to generate reading");
+      setLoading(false);
+    }
   }
 };

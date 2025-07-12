@@ -3,17 +3,20 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { fetchProfileData } from "@/utils/fetch";
-import { config } from "@/utils/config";
+import {
+  fetchProfileData,
+  handleGenerateReading,
+  fetchReading,
+} from "@/utils/fetch";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
+import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { Capacitor } from "@capacitor/core";
+import { ReadingLoading } from "@/components/readings/reading-loading";
+import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
+import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
-import dynamic from "next/dynamic";
-const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
-  ssr: false,
-});
 
 export default function SaptawaraPage() {
   const { user, loading: authLoading } = useAuth();
@@ -30,8 +33,31 @@ export default function SaptawaraPage() {
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
 
-  const disclaimer =
-    "While Weton provides valuable insights into inherent tendencies and energetic dynamics, it does not dictate absolute destinies or outcomes in relationships. These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure. Human agency, conscious effort, open communication, and genuine love are paramount. Every relationship is a unique journey of two individuals, and challenges can always be overcome with dedication.";
+  const topics = [
+    {
+      icon: "🦹‍♂️",
+      title: "Core Character & Symbolism",
+      description:
+        "Detail the fundamental temperament and key symbolic associations linked to this Pancasuda.",
+    },
+    {
+      icon: "🎁",
+      title: "Your Innate Gift",
+      description: `Outline the primary positive traits and potential areas for growth or caution that are characteristic of this Pancasuda.`,
+    },
+    {
+      icon: "🌓",
+      title: "Your Shadow Side",
+      description:
+        "Describe how this Pancasuda generally influences your life path, ambition, or overarching sense of purpose.",
+    },
+    {
+      icon: "💪",
+      title: "Putting Your Gift to Work",
+      description:
+        "Actionable advice on how you can align with and best leverage for personal well-being, success, and fulfilling your life's path.",
+    },
+  ];
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -59,121 +85,107 @@ export default function SaptawaraPage() {
     };
   }, []);
 
-  const handleGenerateReading = async () => {
-    setError(null);
-    setLoading(true);
+  // const handleGenerateReading = async () => {
+  //   setError(null);
+  //   setLoading(true);
 
-    if (!profileData || !user) {
-      setError("Profile data or user not available.");
-      setLoading(false);
-      return;
-    } else {
-      try {
-        // Check if primary-traits reading exists
-        const { data: existingReading, error: fetchError } = await supabase
-          .from("readings")
-          .select("reading, status")
-          .eq("reading_type", "pro")
-          .eq("user_id", user.id)
-          .eq("reading_category", "general_readings")
-          .eq("slug", "pancasuda")
-          .maybeSingle();
+  //   if (!profileData || !user) {
+  //     setError("Profile data or user not available.");
+  //     setLoading(false);
+  //     return;
+  //   } else {
+  //     try {
+  //       // Check if primary-traits reading exists
+  //       const { data: existingReading, error: fetchError } = await supabase
+  //         .from("readings")
+  //         .select("reading, status")
+  //         .eq("reading_type", "pro")
+  //         .eq("user_id", user.id)
+  //         .eq("reading_category", "general_readings")
+  //         .eq("slug", "pancasuda")
+  //         .maybeSingle();
 
-        console.log("Existing Reading:", existingReading, user.id);
+  //       console.log("Existing Reading:", existingReading, user.id);
 
-        console.log(existingReading);
+  //       console.log(existingReading);
 
-        if (fetchError && fetchError.code !== "PGRST116") {
-          throw fetchError;
-        }
+  //       if (fetchError && fetchError.code !== "PGRST116") {
+  //         throw fetchError;
+  //       }
 
-        // If reading exists, show it
-        if (existingReading) {
-          setReading(existingReading);
-          setLoading(false);
-          return;
-        } else if (!existingReading && !fetchError) {
-          console.log("No existing reading found, generating new one...");
-          setLoading(false);
-          try {
-            // Generate new reading if none exists
-            const response = await fetch(
-              `${config.api.url}/readings/general/general-pro-1`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ profile: profileData }),
-                credentials: "include",
-              }
-            );
+  //       // If reading exists, show it
+  //       if (existingReading) {
+  //         setReading(existingReading);
+  //         setLoading(false);
+  //         return;
+  //       } else if (!existingReading && !fetchError) {
+  //         console.log("No existing reading found, generating new one...");
+  //         setLoading(false);
+  //         try {
+  //           // Generate new reading if none exists
+  //           const response = await fetch(
+  //             `${config.api.url}/readings/general/general-pro-1`,
+  //             {
+  //               method: "POST",
+  //               headers: {
+  //                 "Content-Type": "application/json",
+  //               },
+  //               body: JSON.stringify({ profile: profileData }),
+  //               credentials: "include",
+  //             }
+  //           );
 
-            const readingData = await response.json();
-            setReading(readingData);
-          } catch (err) {
-            console.error(
-              "Error in fetch or processing response for daily reading:",
-              err
-            );
-            setError(err.message || "Failed to generate daily reading.");
-          } finally {
-            setLoading(false);
-          }
-        }
-      } catch (err) {
-        console.error("Error:", err);
-        setError(err.message || "Failed to generate reading");
-        setLoading(false);
-      }
-    }
-  };
+  //           const readingData = await response.json();
+  //           setReading(readingData);
+  //         } catch (err) {
+  //           console.error(
+  //             "Error in fetch or processing response for daily reading:",
+  //             err
+  //           );
+  //           setError(err.message || "Failed to generate daily reading.");
+  //         } finally {
+  //           setLoading(false);
+  //         }
+  //       }
+  //     } catch (err) {
+  //       console.error("Error:", err);
+  //       setError(err.message || "Failed to generate reading");
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     if (profileData && user) {
       if (isNative) {
-        handleGenerateReading();
+        fetchReading({
+          profileData,
+          user,
+          setReading,
+          setLoading,
+          setError,
+          slug: "pancasuda",
+          reading_category: "general_readings",
+          reading_type: "pro",
+          api_url: "readings/general/general-pro-1",
+        });
       }
     }
   }, [profileData]);
 
-  console.log("Profile Data:", profileData);
+  // console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
     return <LoadingProfile />;
   }
 
-  if (error) {
-    return <ErrorLayout error={error} router={router} />;
-  }
-
   if (!profileData) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <div className="alert alert-warning shadow-lg max-w-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <span>
-              Could not load profile data. It might be incomplete or missing.
-            </span>
-          </div>
-        </div>
-        <button onClick={() => router.back()} className="btn btn-neutral mt-6">
-          Go Back
-        </button>
-      </div>
+      <NoProfileLayout
+        router={router}
+        profileData={profileData}
+        showTitleInNavbar={showTitleInNavbar}
+      />
     );
   }
 
@@ -185,17 +197,18 @@ export default function SaptawaraPage() {
         showTitleInNavbar={showTitleInNavbar}
       />
 
-      <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        <div>
-          <h2 className="text-xl font-semibold text-left">Pancasuda</h2>
-          <p className="text-sm text-gray-700 mb-2">
-            Reveal the core pillar of your inner foundation and its potential
-            influenced by the seven-day Pawukon cycle.
-          </p>
-        </div>
+      {error && <ErrorLayout error={error} router={router} />}
 
+      <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         {reading?.status === "completed" ? (
           <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold text-left">Pancasuda</h2>
+              <p className="text-sm text-gray-700 mb-2">
+                Reveal the core pillar of your inner foundation and its
+                potential influenced by the seven-day Pawukon cycle.
+              </p>
+            </div>
             <ContentSection
               reading={reading?.reading?.character}
               setIsSectionOpen={setIsSectionOneOpen}
@@ -208,31 +221,34 @@ export default function SaptawaraPage() {
               setIsSectionOpen={setIsSectionTwoOpen}
               isSectionOpen={isSectionTwoOpen}
               title="🎁 Your Innate Gift"
-              // firstSection={false}
             />
             <ContentSection
               reading={reading?.reading?.shadow}
               setIsSectionOpen={setIsSectionThreeOpen}
               isSectionOpen={isSectionThreeOpen}
-              title="🌓 Its Shadow Side"
-              // firstSection={false}
+              title="🌓 Your Shadow Side"
             />
             <ContentSection
               reading={reading?.reading?.gift_to_work}
               setIsSectionOpen={setIsSectionFourOpen}
               isSectionOpen={isSectionFourOpen}
               title="💪 Putting Your Gift to Work"
-              // firstSection={false}
             />
           </div>
+        ) : reading?.status === "pending" ? (
+          <ReadingLoading />
         ) : (
-          <div className="flex h-[30rem] flex-col items-center justify-center bg-base-100 text-base-content">
-            <span className="loading loading-spinner loading-lg text-rose-400"></span>
-            <p className="mt-4">Generating Your Personal Reading...</p>
-          </div>
+          !reading && (
+            <ReadingDescription
+              reading_category={"🔮 Personal"}
+              title={"Pancasuda"}
+              topics={topics}
+              description={`Explores your Pancasuda (the seven-day cycle), which reveals fundamental aspects of your personality, general temperament, and overarching life purpose.`}
+            />
+          )
         )}
 
-        {!isNative && (
+        {/* {!isNative && (
           <section>
             <div className="flex flex-col gap-4">
               <button
@@ -258,8 +274,39 @@ export default function SaptawaraPage() {
               )}
             </div>
           </section>
-        )}
+        )} */}
       </main>
+      {!reading && (
+        <div className="fixed bottom-0 w-full p-2 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
+          {profileData?.subscription == "pro" ? (
+            <button
+              className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+              onClick={() =>
+                handleGenerateReading({
+                  profileData,
+                  user,
+                  setReading,
+                  setLoading,
+                  setError,
+                  slug: "pancasuda",
+                  reading_category: "general_readings",
+                  reading_type: "pro",
+                  api_url: "readings/general/general-pro-1",
+                })
+              }
+            >
+              Generate Reading
+            </button>
+          ) : (
+            <button
+              className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
+              onClick={() => {}}
+            >
+              🔓 Unlock With Pro
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

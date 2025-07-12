@@ -1,27 +1,28 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { ArrowLeft } from "lucide-react";
-import { fetchProfileData } from "@/utils/fetch";
-import { config } from "@/utils/config";
+import {
+  fetchProfileData,
+  handleGenerateReading,
+  fetchReading,
+} from "@/utils/fetch";
+import { ReadingDescription } from "@/components/readings/reading-description";
+import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { Capacitor } from "@capacitor/core";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
+import { FeedbackSession } from "@/components/readings/feedback-section";
+import { ReadingLoading } from "@/components/readings/reading-loading";
 import { ContentSection } from "@/components/readings/content-section";
-import dynamic from "next/dynamic";
-const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
-  ssr: false,
-});
 
 export default function InteractionPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("error banget");
   const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
@@ -30,6 +31,37 @@ export default function InteractionPage() {
   const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+
+  const topics = [
+    {
+      icon: "🥂",
+      title: "Dominant Social Tendency",
+      description: "Are you naturally more introverted or extroverted?",
+    },
+    {
+      icon: "📣",
+      title: "Communication Patterns",
+      description: "How do you tend to convey your thoughts and feelings?",
+    },
+    {
+      icon: "🤝",
+      title: "Approach to Partnership",
+      description:
+        "How do you typically initiate, maintain, and navigate friendships, professional connections, and community ties?",
+    },
+    {
+      icon: "🤹",
+      title: "Handling Social Dynamics",
+      description:
+        "How do you typically react to social challenges, group pressures, or differing opinions?",
+    },
+    {
+      icon: "🙏",
+      title: "Social Etiquette",
+      description:
+        "Connect aspects of your interaction style to relevant Javanese tata krama (etiquette) or social norms.",
+    },
+  ];
 
   const disclaimer =
     "While Weton provides valuable insights into inherent tendencies and energetic dynamics, it does not dictate absolute destinies or outcomes in relationships. These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure. Human agency, conscious effort, open communication, and genuine love are paramount. Every relationship is a unique journey of two individuals, and challenges can always be overcome with dedication.";
@@ -48,6 +80,24 @@ export default function InteractionPage() {
     fetchProfileData({ user, setLoading, setError, setProfileData });
   }, []);
 
+  useEffect(() => {
+    if (profileData && user) {
+      if (isNative) {
+        fetchReading({
+          profileData,
+          user,
+          setReading,
+          setLoading,
+          setError,
+          slug: "interaction-style",
+          reading_category: "general_readings",
+          reading_type: "pro",
+          api_url: "readings/general/general-pro-2",
+        });
+      }
+    }
+  }, [profileData]);
+
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
     setShowTitleInNavbar(scrollPosition > 100);
@@ -60,121 +110,28 @@ export default function InteractionPage() {
     };
   }, []);
 
-  const handleGenerateReading = async () => {
-    setError(null);
-    setLoading(true);
-
-    if (!profileData || !user) {
-      setError("Profile data or user not available.");
-      setLoading(false);
-      return;
-    } else {
-      try {
-        // Check if primary-traits reading exists
-        const { data: existingReading, error: fetchError } = await supabase
-          .from("readings")
-          .select("reading, status")
-          .eq("reading_type", "pro")
-          .eq("user_id", user.id)
-          .eq("reading_category", "general_readings")
-          .eq("slug", "interaction-style")
-          .maybeSingle();
-
-        console.log("Existing Reading:", existingReading, user.id);
-
-        console.log(existingReading);
-
-        if (fetchError && fetchError.code !== "PGRST116") {
-          throw fetchError;
-        }
-
-        // If reading exists, show it
-        if (existingReading) {
-          setReading(existingReading);
-          setLoading(false);
-          return;
-        } else if (!existingReading && !fetchError) {
-          console.log("No existing reading found, generating new one...");
-          setLoading(false);
-          try {
-            // Generate new reading if none exists
-            const response = await fetch(
-              `${config.api.url}/readings/general/general-pro-2`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ profile: profileData }),
-                credentials: "include",
-              }
-            );
-
-            const readingData = await response.json();
-            setReading(readingData);
-          } catch (err) {
-            console.error(
-              "Error in fetch or processing response for daily reading:",
-              err
-            );
-            setError(err.message || "Failed to generate daily reading.");
-          } finally {
-            setLoading(false);
-          }
-        }
-      } catch (err) {
-        console.error("Error:", err);
-        setError(err.message || "Failed to generate reading");
-        setLoading(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        handleGenerateReading();
-      }
-    }
-  }, [profileData]);
-
-  console.log("Profile Data:", profileData);
+  // console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
-    return <LoadingProfile />;
-  }
-
-  if (error) {
-    return <ErrorLayout error={error} router={router} />;
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content">
+        <ReadingNavbar
+          title="Interaction Style"
+          profileData={profileData}
+          showTitleInNavbar={showTitleInNavbar}
+        />
+        <LoadingProfile />
+      </div>
+    );
   }
 
   if (!profileData) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <div className="alert alert-warning shadow-lg max-w-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <span>
-              Could not load profile data. It might be incomplete or missing.
-            </span>
-          </div>
-        </div>
-        <button onClick={() => router.back()} className="btn btn-neutral mt-6">
-          Go Back
-        </button>
-      </div>
+      <NoProfileLayout
+        router={router}
+        profileData={profileData}
+        showTitleInNavbar={showTitleInNavbar}
+      />
     );
   }
 
@@ -186,21 +143,25 @@ export default function InteractionPage() {
         showTitleInNavbar={showTitleInNavbar}
       />
 
+      {error && <ErrorLayout error={error} router={router} />}
+
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        <div>
-          <h2 className="text-xl font-semibold text-left">Interaction Style</h2>
-          <p className="text-sm text-gray-700 mb-2">
-            Learn how you naturally connect and communicate with the world
-            around you.
-          </p>
-        </div>
         {reading?.status === "completed" ? (
           <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold text-left">
+                Interaction Style
+              </h2>
+              <p className="text-sm text-gray-700 mb-2">
+                Learn how you naturally connect and communicate with the world
+                around you.
+              </p>
+            </div>
             <ContentSection
               reading={reading?.reading?.social_tendency}
               setIsSectionOpen={setIsSectionOneOpen}
               isSectionOpen={isSectionOneOpen}
-              title="🤝 Dominant Social Tendency"
+              title="🥂 Dominant Social Tendency"
               firstSection={true}
             />
             <ContentSection
@@ -208,64 +169,71 @@ export default function InteractionPage() {
               setIsSectionOpen={setIsSectionTwoOpen}
               isSectionOpen={isSectionTwoOpen}
               title="📣 Communication Patterns"
-              // firstSection={false}
             />
             <ContentSection
               reading={reading?.reading?.relationship}
               setIsSectionOpen={setIsSectionThreeOpen}
               isSectionOpen={isSectionThreeOpen}
-              title="💕 Approach to Relationships"
-              // firstSection={false}
+              title="🤝 Approach to Partnership"
             />
             <ContentSection
               reading={reading?.reading?.social_dynamics}
               setIsSectionOpen={setIsSectionFourOpen}
               isSectionOpen={isSectionFourOpen}
               title="🤹 Handling Social Dynamics"
-              // firstSection={false}
             />
             <ContentSection
               reading={reading?.reading?.social_etiquette}
               setIsSectionOpen={setIsSectionFiveOpen}
               isSectionOpen={isSectionFiveOpen}
               title="🙏 Social Etiquette"
-              // firstSection={false}
             />
           </div>
+        ) : reading?.status === "pending" ? (
+          <ReadingLoading />
         ) : (
-          <div className="flex h-[30rem] flex-col items-center justify-center bg-base-100 text-base-content">
-            <span className="loading loading-spinner loading-lg text-rose-400"></span>
-            <p className="mt-4">Generating Your Personal Reading...</p>
-          </div>
+          !reading && (
+            <ReadingDescription
+              reading_category={"🔮 Personal"}
+              title={"Interaction Style"}
+              topics={topics}
+              description={`This reading is your social "user manual." It's a practical guide to how you show up in social situations and how to build better connections by understanding your own communication patterns.`}
+            />
+          )
         )}
-        {!isNative && (
-          <section>
-            <div className="flex flex-col gap-4">
-              <button
-                className="btn border-batik-border text-batik-text rounded-2xl"
-                onClick={handleGenerateReading}
-              >
-                Generate Reading
-              </button>
-              {reading && (
-                <div className="flex flex-col">
-                  <div className="text-sm font-semibold  text-batik-text">
-                    Interaction Style
-                  </div>
-
-                  <ReactJsonView
-                    src={reading}
-                    theme="bright:inverted"
-                    displayObjectSize={false}
-                    className="rounded-2xl"
-                    displayDataTypes={false}
-                  />
-                </div>
-              )}
-            </div>
-          </section>
-        )}
+        {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
+      {!reading && (
+        <div className="fixed bottom-0 w-full p-2 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
+          {profileData?.subscription == "pro" ? (
+            <button
+              className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+              onClick={() =>
+                handleGenerateReading({
+                  profileData,
+                  user,
+                  setReading,
+                  setLoading,
+                  setError,
+                  slug: "interaction-style",
+                  reading_category: "general_readings",
+                  reading_type: "pro",
+                  api_url: "readings/general/general-pro-2",
+                })
+              }
+            >
+              Generate Reading
+            </button>
+          ) : (
+            <button
+              className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
+              onClick={() => {}}
+            >
+              🔓 Unlock With Pro
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
