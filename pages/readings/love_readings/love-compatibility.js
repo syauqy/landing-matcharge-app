@@ -3,17 +3,20 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { fetchProfileData } from "@/utils/fetch";
-import { config } from "@/utils/config";
-import { LoadingProfile } from "@/components/layouts/loading-profile";
+import {
+  fetchProfileData,
+  handleGenerateReading,
+  fetchReading,
+} from "@/utils/fetch";
 import { ErrorLayout } from "@/components/layouts/error-page";
+import { NoProfileLayout } from "@/components/readings/no-profile-layout";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { Capacitor } from "@capacitor/core";
+import { ReadingLoading } from "@/components/readings/reading-loading";
+import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
+import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
-import dynamic from "next/dynamic";
-const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
-  ssr: false,
-});
 
 export default function LoveCompatibilityPage() {
   const { user, loading: authLoading } = useAuth();
@@ -30,8 +33,39 @@ export default function LoveCompatibilityPage() {
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
 
+  const topics = [
+    {
+      icon: "🌿",
+      title: "Energetic Harmony",
+      description:
+        "The general characteristics of Weton types that naturally create a harmonious energetic dynamic with your own.",
+    },
+    {
+      icon: "🎯",
+      title: "The Shared Values & Outlook",
+      description: `Weton categories or qualities that suggest a shared outlook on life, similar core values, or a comparable approach to relationships.`,
+    },
+    {
+      icon: "🌱",
+      title: "Growth-Oriented Pairings",
+      description:
+        "Weton types that offer opportunities for significant mutual growth and balance through complementary energies.",
+    },
+    {
+      icon: "🌊",
+      title: "Positive Dynamics to Expect",
+      description: "Explanation on how the compatibility exist.",
+    },
+    {
+      icon: "🫶🏼",
+      title: "Wisdom of Soulmate",
+      description:
+        "how these compatible Weton patterns might align with the traditional Javanese understanding of mutual compatibility.",
+    },
+  ];
+
   const disclaimer =
-    "While Weton provides valuable insights into inherent tendencies and energetic dynamics, it does not dictate absolute destinies or outcomes in relationships. These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure. Human agency, conscious effort, open communication, and genuine love are paramount. Every relationship is a unique journey of two individuals, and challenges can always be overcome with dedication.";
+    "These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure.";
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -59,121 +93,107 @@ export default function LoveCompatibilityPage() {
     };
   }, []);
 
-  const handleGenerateReading = async () => {
-    setError(null);
-    setLoading(true);
+  // const handleGenerateReading = async () => {
+  //   setError(null);
+  //   setLoading(true);
 
-    if (!profileData || !user) {
-      setError("Profile data or user not available.");
-      setLoading(false);
-      return;
-    } else {
-      try {
-        // Check if primary-traits reading exists
-        const { data: existingReading, error: fetchError } = await supabase
-          .from("readings")
-          .select("reading, status")
-          .eq("reading_type", "pro")
-          .eq("user_id", user.id)
-          .eq("reading_category", "love_readings")
-          .eq("slug", "love-compatibility")
-          .maybeSingle();
+  //   if (!profileData || !user) {
+  //     setError("Profile data or user not available.");
+  //     setLoading(false);
+  //     return;
+  //   } else {
+  //     try {
+  //       // Check if primary-traits reading exists
+  //       const { data: existingReading, error: fetchError } = await supabase
+  //         .from("readings")
+  //         .select("reading, status")
+  //         .eq("reading_type", "pro")
+  //         .eq("user_id", user.id)
+  //         .eq("reading_category", "love_readings")
+  //         .eq("slug", "love-compatibility")
+  //         .maybeSingle();
 
-        console.log("Existing Reading:", existingReading, user.id);
+  //       console.log("Existing Reading:", existingReading, user.id);
 
-        console.log(existingReading);
+  //       console.log(existingReading);
 
-        if (fetchError && fetchError.code !== "PGRST116") {
-          throw fetchError;
-        }
+  //       if (fetchError && fetchError.code !== "PGRST116") {
+  //         throw fetchError;
+  //       }
 
-        // If reading exists, show it
-        if (existingReading) {
-          setReading(existingReading);
-          setLoading(false);
-          return;
-        } else if (!existingReading && !fetchError) {
-          console.log("No existing reading found, generating new one...");
-          setLoading(false);
-          try {
-            // Generate new reading if none exists
-            const response = await fetch(
-              `${config.api.url}/readings/love/love-pro`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ profile: profileData }),
-                credentials: "include",
-              }
-            );
+  //       // If reading exists, show it
+  //       if (existingReading) {
+  //         setReading(existingReading);
+  //         setLoading(false);
+  //         return;
+  //       } else if (!existingReading && !fetchError) {
+  //         console.log("No existing reading found, generating new one...");
+  //         setLoading(false);
+  //         try {
+  //           // Generate new reading if none exists
+  //           const response = await fetch(
+  //             `${config.api.url}/readings/love/love-pro`,
+  //             {
+  //               method: "POST",
+  //               headers: {
+  //                 "Content-Type": "application/json",
+  //               },
+  //               body: JSON.stringify({ profile: profileData }),
+  //               credentials: "include",
+  //             }
+  //           );
 
-            const readingData = await response.json();
-            setReading(readingData);
-          } catch (err) {
-            console.error(
-              "Error in fetch or processing response for daily reading:",
-              err
-            );
-            setError(err.message || "Failed to generate daily reading.");
-          } finally {
-            setLoading(false);
-          }
-        }
-      } catch (err) {
-        console.error("Error:", err);
-        setError(err.message || "Failed to generate reading");
-        setLoading(false);
-      }
-    }
-  };
+  //           const readingData = await response.json();
+  //           setReading(readingData);
+  //         } catch (err) {
+  //           console.error(
+  //             "Error in fetch or processing response for daily reading:",
+  //             err
+  //           );
+  //           setError(err.message || "Failed to generate daily reading.");
+  //         } finally {
+  //           setLoading(false);
+  //         }
+  //       }
+  //     } catch (err) {
+  //       console.error("Error:", err);
+  //       setError(err.message || "Failed to generate reading");
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     if (profileData && user) {
       if (isNative) {
-        handleGenerateReading();
+        fetchReading({
+          profileData,
+          user,
+          setReading,
+          setLoading,
+          setError,
+          slug: "love-compatibility",
+          reading_category: "love_readings",
+          reading_type: "pro",
+          api_url: "readings/love/love-pro",
+        });
       }
     }
   }, [profileData]);
 
-  console.log("Profile Data:", profileData);
+  // console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
-    return <LoadingProfile />;
-  }
-
-  if (error) {
-    return <ErrorLayout error={error} router={router} />;
+    return <PageLoadingLayout />;
   }
 
   if (!profileData) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <div className="alert alert-warning shadow-lg max-w-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <span>
-              Could not load profile data. It might be incomplete or missing.
-            </span>
-          </div>
-        </div>
-        <button onClick={() => router.back()} className="btn btn-neutral mt-6">
-          Go Back
-        </button>
-      </div>
+      <NoProfileLayout
+        router={router}
+        profileData={profileData}
+        showTitleInNavbar={showTitleInNavbar}
+      />
     );
   }
 
@@ -185,17 +205,20 @@ export default function LoveCompatibilityPage() {
         showTitleInNavbar={showTitleInNavbar}
       />
 
-      <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        <div>
-          <h2 className="text-xl font-semibold text-left">Compatible With</h2>
-          <p className="text-sm text-gray-700 mb-2">
-            Learn about Weton energies that naturally harmonize with your own in
-            love.
-          </p>
-        </div>
+      {error && <ErrorLayout error={error} router={router} />}
 
+      <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
         {reading?.status === "completed" ? (
           <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold text-left">
+                Compatible With
+              </h2>
+              <p className="text-sm text-gray-700 mb-2">
+                Learn about Weton energies that naturally harmonize with your
+                own in love.
+              </p>
+            </div>
             <ContentSection
               reading={reading?.reading?.harmony}
               setIsSectionOpen={setIsSectionOneOpen}
@@ -208,68 +231,75 @@ export default function LoveCompatibilityPage() {
               setIsSectionOpen={setIsSectionTwoOpen}
               isSectionOpen={isSectionTwoOpen}
               title="🎯 The Shared Values & Outlook"
-              // firstSection={false}
             />
             <ContentSection
               reading={reading?.reading?.growth}
               setIsSectionOpen={setIsSectionThreeOpen}
               isSectionOpen={isSectionThreeOpen}
               title="🌱 Growth-Oriented Pairings"
-              // firstSection={false}
             />
             <ContentSection
               reading={reading?.reading?.dynamic}
               setIsSectionOpen={setIsSectionFourOpen}
               isSectionOpen={isSectionFourOpen}
               title="🌊 Positive Dynamics to Expect"
-              // firstSection={false}
             />
             <ContentSection
               reading={reading?.reading?.soulmate}
               setIsSectionOpen={setIsSectionFiveOpen}
               isSectionOpen={isSectionFiveOpen}
               title="🫶🏼 Wisdom of Soulmate"
-              // firstSection={false}
             />
             <section className="p-4 border-slate-100 border rounded-2xl bg-base-100 shadow-md mt-10">
               <p className="text-sm text-gray-700">{disclaimer}</p>
             </section>
           </div>
+        ) : reading?.status === "pending" ? (
+          <ReadingLoading />
         ) : (
-          <div className="flex h-[30rem] flex-col items-center justify-center bg-base-100 text-base-content">
-            <span className="loading loading-spinner loading-lg text-rose-400"></span>
-            <p className="mt-4">Generating Your Love Reading...</p>
-          </div>
+          !reading && (
+            <ReadingDescription
+              reading_category={"💖 Love and Relationship"}
+              title={"Compatible With"}
+              topics={topics}
+              description={`This reading offers general insights into Weton patterns that tend to create harmonious or complementary relationships for you.`}
+            />
+          )
         )}
 
-        {!isNative && (
-          <section>
-            <div className="flex flex-col gap-4">
-              <button
-                className="btn border-batik-border text-batik-text rounded-2xl"
-                onClick={handleGenerateReading}
-              >
-                Generate Reading
-              </button>
-              {reading && (
-                <div className="flex flex-col">
-                  <div className="text-sm font-semibold  text-batik-text">
-                    Love Compatibility
-                  </div>
-
-                  <ReactJsonView
-                    src={reading}
-                    theme="bright:inverted"
-                    displayObjectSize={false}
-                    className="rounded-2xl"
-                    displayDataTypes={false}
-                  />
-                </div>
-              )}
-            </div>
-          </section>
-        )}
+        {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
+      {!reading && (
+        <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
+          {profileData?.subscription == "pro" ? (
+            <button
+              className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+              onClick={() =>
+                handleGenerateReading({
+                  profileData,
+                  user,
+                  setReading,
+                  setLoading,
+                  setError,
+                  slug: "love-compatibility",
+                  reading_category: "love_readings",
+                  reading_type: "pro",
+                  api_url: "readings/love/love-pro",
+                })
+              }
+            >
+              Generate Reading
+            </button>
+          ) : (
+            <button
+              className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
+              onClick={() => {}}
+            >
+              🔓 Unlock With Pro
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

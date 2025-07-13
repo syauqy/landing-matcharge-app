@@ -8,6 +8,7 @@ import {
   fetchReading,
 } from "@/utils/fetch";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { Capacitor } from "@capacitor/core";
@@ -105,7 +106,7 @@ export default function RakamPage() {
   // console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
-    return <LoadingProfile />;
+    return <PageLoadingLayout />;
   }
 
   if (!profileData) {
@@ -179,7 +180,7 @@ export default function RakamPage() {
         {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
       {!reading && (
-        <div className="fixed bottom-0 w-full p-2 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
+        <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           {profileData?.subscription == "pro" ? (
             <button
               className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"

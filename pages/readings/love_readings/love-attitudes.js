@@ -8,9 +8,9 @@ import {
   handleGenerateReading,
   fetchReading,
 } from "@/utils/fetch";
-import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { Capacitor } from "@capacitor/core";
 import { ReadingLoading } from "@/components/readings/reading-loading";
 import { ReadingDescription } from "@/components/readings/reading-description";
@@ -182,7 +182,7 @@ export default function LoveAttitudesPage() {
   // console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
-    return <LoadingProfile />;
+    return <PageLoadingLayout />;
   }
 
   if (!profileData) {
@@ -257,14 +257,14 @@ export default function LoveAttitudesPage() {
               reading_category={"💖 Love and Relationship"}
               title={"Love Attitudes"}
               topics={topics}
-              description={`This section examines your inherent beliefs and perspectives on love, commitment, and relationships, shaped by your Weton and Rakam.`}
+              description={`This reading examines your inherent beliefs and perspectives on love, commitment, and relationships, shaped by your Weton and Rakam.`}
             />
           )
         )}
         {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
       {!reading && (
-        <div className="fixed bottom-0 w-full p-2 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
+        <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
             className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
             onClick={() =>

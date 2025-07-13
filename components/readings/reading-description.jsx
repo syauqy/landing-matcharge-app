@@ -7,7 +7,7 @@ export function ReadingDescription({
   topics,
 }) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 pb-10">
       <div className="px-4 py-2 rounded-full text-xs bg-rose-50 w-fit font-medium">
         {reading_category}
       </div>

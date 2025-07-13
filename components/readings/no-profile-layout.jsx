@@ -5,7 +5,7 @@ export function NoProfileLayout({ profileData, showTitleInNavbar, router }) {
   return (
     <div className="min-h-screen bg-base-100 text-base-content">
       <ReadingNavbar
-        title="Interaction Style"
+        title=""
         profileData={profileData}
         showTitleInNavbar={showTitleInNavbar}
       />

@@ -143,6 +143,8 @@ export const fetchReading = async ({
       console.log(existingReading);
 
       if (fetchError && fetchError.code !== "PGRST116") {
+        console.log("Fetch Reading Error:", fetchError);
+        setLoading(false);
         throw fetchError;
       }
 
@@ -158,6 +160,8 @@ export const fetchReading = async ({
     } catch (err) {
       console.error("Error:", err);
       setError(err.message || "Failed to generate reading");
+      setLoading(false);
+    } finally {
       setLoading(false);
     }
   }
