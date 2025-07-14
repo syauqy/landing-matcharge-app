@@ -3,17 +3,20 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
-import { fetchProfileData } from "@/utils/fetch";
-import { config } from "@/utils/config";
-import { LoadingProfile } from "@/components/layouts/loading-profile";
+import {
+  fetchProfileData,
+  handleGenerateReading,
+  fetchReading,
+} from "@/utils/fetch";
 import { ErrorLayout } from "@/components/layouts/error-page";
-import Markdown from "markdown-to-jsx";
-import dynamic from "next/dynamic";
-const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
-  ssr: false,
-});
+import { NoProfileLayout } from "@/components/readings/no-profile-layout";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { Capacitor } from "@capacitor/core";
+import { ReadingLoading } from "@/components/readings/reading-loading";
+import { ReadingDescription } from "@/components/readings/reading-description";
+import { ReadingNavbar } from "@/components/readings/reading-navbar";
+import { FeedbackSession } from "@/components/readings/feedback-section";
+import { ContentSection } from "@/components/readings/content-section";
 
 export default function LakuPage() {
   const { user, loading: authLoading } = useAuth();
@@ -23,13 +26,43 @@ export default function LakuPage() {
   const [error, setError] = useState(null);
   const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
-  const [isFinancialCyclesSectionOpen, setIsFinancialCyclesSectionOpen] =
-    useState(true);
-  const [isAuspiciousSectionOpen, setIsAuspiciousSectionOpen] = useState(false);
-  const [isCautionSectionOpen, setIsCautionSectionOpen] = useState(false);
-  const [isAligningSectionOpen, setIsAligningSectionOpen] = useState(false);
-  const [isPhilosophySectionOpen, setIsPhilosophySectionOpen] = useState(false);
+  const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
+  const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
+  const [isSectionThreeOpen, setIsSectionThreeOpen] = useState(false);
+  const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
+  const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+
+  const topics = [
+    {
+      icon: "💪",
+      title: "Professional Strength & Aptitudes",
+      description:
+        "How your Weton provide insights into your natural talents, professional predispositions, and the working environment.",
+    },
+    {
+      icon: "🏕️",
+      title: "Ideat Work Environment",
+      description: `Specific qualities that make you effective in a professional setting.`,
+    },
+    {
+      icon: "📣",
+      title: "Leadership & Collaboration Style",
+      description:
+        "Types of professional settings or industries where your Weton suggests you would feel most aligned and productive.",
+    },
+    {
+      icon: "⚠️",
+      title: "Potential Career Challenges",
+      description:
+        "How do you naturally approach leadership and working with others.",
+    },
+    {
+      icon: "✍🏼",
+      title: "The Path of Working Diligently",
+      description: `Your career insights to the Javanese concept of 'makarya' or working diligently.`,
+    },
+  ];
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -57,355 +90,207 @@ export default function LakuPage() {
     };
   }, []);
 
-  const handleGenerateReading = async () => {
-    setError(null);
-    setLoading(true);
+  // const handleGenerateReading = async () => {
+  //   setError(null);
+  //   setLoading(true);
 
-    if (!profileData || !user) {
-      setError("Profile data or user not available.");
-      setLoading(false);
-      return;
-    } else {
-      try {
-        // Check if primary-traits reading exists
-        const { data: existingReading, error: fetchError } = await supabase
-          .from("readings")
-          .select("reading, status")
-          .eq("reading_type", "pro")
-          .eq("user_id", user.id)
-          .eq("reading_category", "work_readings")
-          .eq("slug", "your-career")
-          .maybeSingle();
+  //   if (!profileData || !user) {
+  //     setError("Profile data or user not available.");
+  //     setLoading(false);
+  //     return;
+  //   } else {
+  //     try {
+  //       // Check if primary-traits reading exists
+  //       const { data: existingReading, error: fetchError } = await supabase
+  //         .from("readings")
+  //         .select("reading, status")
+  //         .eq("reading_type", "pro")
+  //         .eq("user_id", user.id)
+  //         .eq("reading_category", "work_readings")
+  //         .eq("slug", "your-career")
+  //         .maybeSingle();
 
-        console.log("Existing Reading:", existingReading, user.id);
+  //       console.log("Existing Reading:", existingReading, user.id);
 
-        console.log(existingReading);
+  //       console.log(existingReading);
 
-        if (fetchError && fetchError.code !== "PGRST116") {
-          throw fetchError;
-        }
+  //       if (fetchError && fetchError.code !== "PGRST116") {
+  //         throw fetchError;
+  //       }
 
-        // If reading exists, show it
-        if (existingReading) {
-          setReading(existingReading);
-          setLoading(false);
-          return;
-        } else if (!existingReading && !fetchError) {
-          console.log("No existing reading found, generating new one...");
-          setLoading(false);
-          try {
-            // Generate new reading if none exists
-            const response = await fetch(
-              `${config.api.url}/readings/work/work-pro`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ profile: profileData }),
-                credentials: "include",
-              }
-            );
+  //       // If reading exists, show it
+  //       if (existingReading) {
+  //         setReading(existingReading);
+  //         setLoading(false);
+  //         return;
+  //       } else if (!existingReading && !fetchError) {
+  //         console.log("No existing reading found, generating new one...");
+  //         setLoading(false);
+  //         try {
+  //           // Generate new reading if none exists
+  //           const response = await fetch(
+  //             `${config.api.url}/readings/work/work-pro`,
+  //             {
+  //               method: "POST",
+  //               headers: {
+  //                 "Content-Type": "application/json",
+  //               },
+  //               body: JSON.stringify({ profile: profileData }),
+  //               credentials: "include",
+  //             }
+  //           );
 
-            const readingData = await response.json();
-            setReading(readingData);
-          } catch (err) {
-            console.error(
-              "Error in fetch or processing response for daily reading:",
-              err
-            );
-            setError(err.message || "Failed to generate daily reading.");
-          } finally {
-            setLoading(false);
-          }
-        }
-      } catch (err) {
-        console.error("Error:", err);
-        setError(err.message || "Failed to generate reading");
-        setLoading(false);
-      }
-    }
-  };
+  //           const readingData = await response.json();
+  //           setReading(readingData);
+  //         } catch (err) {
+  //           console.error(
+  //             "Error in fetch or processing response for daily reading:",
+  //             err
+  //           );
+  //           setError(err.message || "Failed to generate daily reading.");
+  //         } finally {
+  //           setLoading(false);
+  //         }
+  //       }
+  //     } catch (err) {
+  //       console.error("Error:", err);
+  //       setError(err.message || "Failed to generate reading");
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     if (profileData && user) {
       if (isNative) {
-        handleGenerateReading();
+        fetchReading({
+          profileData,
+          user,
+          setReading,
+          setLoading,
+          setError,
+          slug: "your-career",
+          reading_category: "work_readings",
+          reading_type: "pro",
+          api_url: "readings/work/work-pro",
+        });
       }
     }
   }, [profileData]);
 
-  console.log("Profile Data:", profileData);
+  // console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
-    return <LoadingProfile />;
-  }
-
-  if (error) {
-    return <ErrorLayout error={error} router={router} />;
+    return <PageLoadingLayout />;
   }
 
   if (!profileData) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <div className="alert alert-warning shadow-lg max-w-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <span>
-              Could not load profile data. It might be incomplete or missing.
-            </span>
-          </div>
-        </div>
-        <button onClick={() => router.back()} className="btn btn-neutral mt-6">
-          Go Back
-        </button>
-      </div>
+      <NoProfileLayout
+        router={router}
+        profileData={profileData}
+        showTitleInNavbar={showTitleInNavbar}
+      />
     );
   }
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
-      <div
-        className={`navbar px-5 bg-base-100 sticky top-0 z-50 transition-all duration-300 ${
-          showTitleInNavbar ? "border-b border-batik-border" : ""
-        }`}
-      >
-        <div className="navbar-start">
-          <button
-            onClick={() => router.back()}
-            className="p-2 rounded-full text-xl border border-batik-text hover:bg-base-200"
-          >
-            <ArrowLeft size={20} className="text-batik-text" />
-          </button>
-        </div>
-        {showTitleInNavbar && profileData && (
-          <div className="navbar-center flex-col">
-            <div className="text-sm text-batik-text font-semibold uppercase">
-              Your Career
-            </div>
-          </div>
-        )}
-        <div className="navbar-end"></div>
-      </div>
+      <ReadingNavbar
+        title="Your Career"
+        profileData={profileData}
+        showTitleInNavbar={showTitleInNavbar}
+      />
+
+      {error && <ErrorLayout error={error} router={router} />}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        <div>
-          <h2 className="text-xl font-semibold text-left">Your Career</h2>
-          <p className="text-sm text-gray-700 mb-2">
-            Explore professions and work styles that resonate with your
-            Weton&apos;s energy.
-          </p>
-        </div>
-
         {reading?.status === "completed" ? (
           <div className="space-y-6">
-            {/* <section>
-              <Markdown className="text-gray-700">{introduction}</Markdown>
-            </section> */}
-            <section className="pt-4">
-              <button
-                onClick={() =>
-                  setIsFinancialCyclesSectionOpen(!isFinancialCyclesSectionOpen)
-                }
-                className="w-full flex justify-between items-center text-left focus:outline-none"
-              >
-                <h2 className="text-xl font-semibold">
-                  💪 Professional Strength & Aptitudes
-                </h2>
-                <ChevronDown
-                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
-                    isFinancialCyclesSectionOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <div
-                className={`grid transition-all duration-500 ease-in-out ${
-                  isFinancialCyclesSectionOpen
-                    ? "grid-rows-[1fr] opacity-100 mt-4"
-                    : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="flex flex-col">
-                    <Markdown className="text-gray-700">
-                      {reading?.reading?.strengths.replace(/—/gi, ", ")}
-                    </Markdown>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section className="border-t border-batik-border pt-4">
-              <button
-                onClick={() =>
-                  setIsAuspiciousSectionOpen(!isAuspiciousSectionOpen)
-                }
-                className="w-full flex justify-between items-center text-left focus:outline-none"
-              >
-                <h2 className="text-xl font-semibold">
-                  🏕️ Ideat Work Environment
-                </h2>
-                <ChevronDown
-                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
-                    isAuspiciousSectionOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <div
-                className={`grid transition-all duration-500 ease-in-out ${
-                  isAuspiciousSectionOpen
-                    ? "grid-rows-[1fr] opacity-100 mt-4"
-                    : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="flex flex-col">
-                    <Markdown className="text-gray-700">
-                      {reading?.reading?.ideal_work.replace(/—/gi, ", ")}
-                    </Markdown>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section className="border-t border-batik-border pt-4">
-              <button
-                onClick={() => setIsCautionSectionOpen(!isCautionSectionOpen)}
-                className="w-full flex justify-between items-center text-left focus:outline-none"
-              >
-                <h2 className="text-xl font-semibold">
-                  📣 Leadership & Collaboration Style
-                </h2>
-                <ChevronDown
-                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
-                    isCautionSectionOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <div
-                className={`grid transition-all duration-500 ease-in-out ${
-                  isCautionSectionOpen
-                    ? "grid-rows-[1fr] opacity-100 mt-4"
-                    : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="flex flex-col">
-                    <Markdown className="text-gray-700">
-                      {reading?.reading?.leadership.replace(/—/gi, ", ")}
-                    </Markdown>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section className="border-t border-batik-border pt-4">
-              <button
-                onClick={() => setIsAligningSectionOpen(!isAligningSectionOpen)}
-                className="w-full flex justify-between items-center text-left focus:outline-none"
-              >
-                <h2 className="text-xl font-semibold">
-                  ⚠️ Potential Career Challenges
-                </h2>
-                <ChevronDown
-                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
-                    isAligningSectionOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <div
-                className={`grid transition-all duration-500 ease-in-out ${
-                  isAligningSectionOpen
-                    ? "grid-rows-[1fr] opacity-100 mt-4"
-                    : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="flex flex-col">
-                    <Markdown className="text-gray-700">
-                      {reading?.reading?.challenges.replace(/—/gi, ", ")}
-                    </Markdown>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section className="border-t border-batik-border pt-4">
-              <button
-                onClick={() =>
-                  setIsPhilosophySectionOpen(!isPhilosophySectionOpen)
-                }
-                className="w-full flex justify-between items-center text-left focus:outline-none"
-              >
-                <h2 className="text-xl font-semibold">
-                  ✍🏼 The Path of Working Diligently
-                </h2>
-                <ChevronDown
-                  className={`w-6 h-6 transform transition-transform duration-300 text-batik-text ${
-                    isPhilosophySectionOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <div
-                className={`grid transition-all duration-500 ease-in-out ${
-                  isPhilosophySectionOpen
-                    ? "grid-rows-[1fr] opacity-100 mt-4"
-                    : "grid-rows-[0fr] opacity-0"
-                }`}
-              >
-                <div className="overflow-hidden">
-                  <div className="flex flex-col">
-                    <Markdown className="text-gray-700">
-                      {reading?.reading?.makarya.replace(/—/gi, ", ")}
-                    </Markdown>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        ) : (
-          <div className="flex h-[30rem] flex-col items-center justify-center bg-base-100 text-base-content">
-            <span className="loading loading-spinner loading-lg text-rose-400"></span>
-            <p className="mt-4">Generating Your Career Reading...</p>
-          </div>
-        )}
-
-        {!isNative && (
-          <section>
-            <div className="flex flex-col gap-4">
-              <button
-                className="btn border-batik-border text-batik-text rounded-2xl"
-                onClick={handleGenerateReading}
-              >
-                Generate Reading
-              </button>
-              {reading && (
-                <div className="flex flex-col">
-                  <div className="text-sm font-semibold  text-batik-text">
-                    Your Career
-                  </div>
-
-                  <ReactJsonView
-                    src={reading}
-                    theme="bright:inverted"
-                    displayObjectSize={false}
-                    className="rounded-2xl"
-                    displayDataTypes={false}
-                  />
-                </div>
-              )}
+            <div>
+              <h2 className="text-xl font-semibold text-left">Your Career</h2>
+              <p className="text-sm text-gray-700 mb-2">
+                Explore professions and work styles that resonate with your
+                Weton&apos;s energy.
+              </p>
             </div>
-          </section>
+            <ContentSection
+              reading={reading?.reading?.strengths}
+              setIsSectionOpen={setIsSectionOneOpen}
+              isSectionOpen={isSectionOneOpen}
+              title="💪 Professional Strength & Aptitudes"
+              firstSection={true}
+            />
+            <ContentSection
+              reading={reading?.reading?.ideal_work}
+              setIsSectionOpen={setIsSectionTwoOpen}
+              isSectionOpen={isSectionTwoOpen}
+              title="🏕️ Ideat Work Environment"
+            />
+            <ContentSection
+              reading={reading?.reading?.leadership}
+              setIsSectionOpen={setIsSectionThreeOpen}
+              isSectionOpen={isSectionThreeOpen}
+              title="📣 Leadership & Collaboration Style"
+            />
+            <ContentSection
+              reading={reading?.reading?.challenges}
+              setIsSectionOpen={setIsSectionFourOpen}
+              isSectionOpen={isSectionFourOpen}
+              title="⚠️ Potential Career Challenges"
+            />
+            <ContentSection
+              reading={reading?.reading?.makarya}
+              setIsSectionOpen={setIsSectionFiveOpen}
+              isSectionOpen={isSectionFiveOpen}
+              title="✍🏼 The Path of Working Diligently"
+            />
+          </div>
+        ) : reading?.status === "pending" ? (
+          <ReadingLoading />
+        ) : (
+          !reading && (
+            <ReadingDescription
+              reading_category={"💼 Work, Career, and Purpose"}
+              title={"Your Career"}
+              topics={topics}
+              description={`This reading delves into your inherent professional aptitudes, work ethic, leadership style, and potential for success, as shaped by your birth Weton, Laku, and Rakam.`}
+            />
+          )
         )}
+        {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
+      {!reading && (
+        <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
+          {profileData?.subscription == "pro" ? (
+            <button
+              className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+              onClick={() =>
+                handleGenerateReading({
+                  profileData,
+                  user,
+                  setReading,
+                  setLoading,
+                  setError,
+                  slug: "your-career",
+                  reading_category: "work_readings",
+                  reading_type: "pro",
+                  api_url: "readings/work/work-pro",
+                })
+              }
+            >
+              Generate Reading
+            </button>
+          ) : (
+            <button
+              className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
+              onClick={() => {}}
+            >
+              🔓 Unlock With Pro
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
