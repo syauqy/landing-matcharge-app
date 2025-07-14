@@ -218,7 +218,7 @@ export default function LoveStylePage() {
               reading={reading?.reading?.primary_expression}
               setIsSectionOpen={setIsSectionOneOpen}
               isSectionOpen={isSectionOneOpen}
-              title="🌹 Romantic Archetype"
+              title="🎁 Primary Expression of Affection"
               firstSection={true}
             />
             <ContentSection

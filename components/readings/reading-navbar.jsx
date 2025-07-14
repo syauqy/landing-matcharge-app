@@ -16,7 +16,7 @@ export function ReadingNavbar({
       <div className="navbar-start">
         <button
           onClick={() => router.back()}
-          className="p-2 rounded-full text-xl border border-batik-text hover:bg-base-200"
+          className="p-2 rounded-full text-xl border border-batik-text hover:bg-base-200 active:bg-batik"
         >
           <ArrowLeft size={20} className="text-batik-text" />
         </button>

@@ -213,29 +213,29 @@ export const handleGenerateReading = async ({
       } else if (!existingReading && !fetchError) {
         console.log("No existing reading found, generating new one...");
         setLoading(false);
-        // try {
-        //   // Generate new reading if none exists
-        //   const response = await fetch(`${config.api.url}/${api_url}`, {
-        //     method: "POST",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({ profile: profileData }),
-        //     credentials: "include",
-        //   });
+        try {
+          // Generate new reading if none exists
+          const response = await fetch(`${config.api.url}/${api_url}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ profile: profileData }),
+            credentials: "include",
+          });
 
-        //   const readingData = await response.json();
-        //   // console.log(readingData);
-        //   setReading(readingData);
-        // } catch (err) {
-        //   console.error(
-        //     "Error in fetch or processing response for daily reading:",
-        //     err
-        //   );
-        //   setError(err.message || "Failed to generate daily reading.");
-        // } finally {
-        //   setLoading(false);
-        // }
+          const readingData = await response.json();
+          // console.log(readingData);
+          setReading(readingData);
+        } catch (err) {
+          console.error(
+            "Error in fetch or processing response for daily reading:",
+            err
+          );
+          setError(err.message || "Failed to generate daily reading.");
+        } finally {
+          setLoading(false);
+        }
       }
     } catch (err) {
       console.error("Error:", err);

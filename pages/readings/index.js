@@ -14,7 +14,7 @@ import Link from "next/link";
 const ReadingCard = ({ title, description, slug, category, type }) => (
   <Link
     href={"/readings/" + category + "/" + slug}
-    className="relative snap-center snap-always flex-shrink-0 w-40 sm:w-64 bg-white rounded-2xl shadow-xs p-4 border border-batik-border hover:shadow-lg transition-shadow duration-200 h-32 flex flex-col justify-between"
+    className="relative snap-center active:bg-batik focus:bg-batik snap-always flex-shrink-0 w-40 sm:w-64 bg-white rounded-2xl shadow-xs p-4 border border-batik-border hover:shadow-lg transition-shadow duration-200 h-32 flex flex-col justify-between"
   >
     <div className="mt-2">
       <h3 className="text-sm font-semibold mb-1 leading-5 text-gray-800">

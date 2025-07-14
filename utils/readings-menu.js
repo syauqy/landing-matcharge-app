@@ -131,7 +131,7 @@ export const CardData = {
 
     {
       id: 14,
-      title: "What You Can Offer",
+      title: "What You Offer",
       description:
         "Identify the unique strengths and gifts you bring to a loving relationship.",
       slug: "your-offer",
