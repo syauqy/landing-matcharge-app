@@ -9,9 +9,9 @@ export default async function handler(req, res) {
       });
     }
 
-    const { profile } = req.body;
+    const { profile, today } = req.body;
     try {
-      waitUntil(generateDailyReading(profile));
+      waitUntil(generateDailyReading(profile, today));
       // Send a 202 Accepted response immediately as the task is offloaded
       return res
         .status(202)

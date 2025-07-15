@@ -7,6 +7,7 @@ import { Menubar } from "@/components/layouts/menubar";
 import { SectionData } from "@/utils/readings-menu";
 import { Navbar } from "@/components/layouts/navbar";
 import Link from "next/link";
+import clsx from "clsx";
 
 // Placeholder data for cards (replace with your actual data source)
 
@@ -14,7 +15,7 @@ import Link from "next/link";
 const ReadingCard = ({ title, description, slug, category, type }) => (
   <Link
     href={"/readings/" + category + "/" + slug}
-    className="relative snap-center active:bg-batik focus:bg-batik snap-always flex-shrink-0 w-40 sm:w-64 bg-white rounded-2xl shadow-xs p-4 border border-batik-border hover:shadow-lg transition-shadow duration-200 h-32 flex flex-col justify-between"
+    className="relative snap-center active:bg-batik focus:bg-batik snap-always flex-shrink-0 w-40 sm:w-64 bg-white rounded-2xl shadow p-4 border border-batik-border transition-shadow duration-200 h-32 flex flex-col justify-between"
   >
     <div className="mt-2">
       <h3 className="text-sm font-semibold mb-1 leading-5 text-gray-800">
@@ -31,8 +32,8 @@ const ReadingCard = ({ title, description, slug, category, type }) => (
 );
 
 // Reusable Section Component - Updated Styling
-const ReadingSection = ({ title, cards, subtitle }) => (
-  <section className="mb-6">
+const ReadingSection = ({ title, cards, subtitle, tag }) => (
+  <section className="mb-6 scroll-mt-30" id={tag}>
     <div className="mb-3 px-5">
       <h2 className="text-xl font-semibold  text-batik-black">{title}</h2>
       <h3 className="font-light text-batik-black text-sm">{subtitle}</h3>
@@ -61,6 +62,9 @@ export default function ReadingsPage() {
     }
   }, [user, authLoading, router]);
 
+  const hashValue = window?.location?.hash?.substring(1);
+  console.log(hashValue);
+
   // --- Loading States ---
   if (authLoading) {
     return (
@@ -81,6 +85,22 @@ export default function ReadingsPage() {
       </Head>
       <div className="min-h-screen flex flex-col bg-base relative select-none">
         <Navbar title="Readings" />
+        <div className="flex flex-row gap-3 flex-nowrap overflow-scroll sticky top-15 left-0 z-30 py-2">
+          {SectionData?.map((section, i) => (
+            <Link
+              href={`#${section?.tag}`}
+              className={clsx(
+                "py-2.5 first:ml-3 last:mr-3 p-5 shrink-0 rounded-full text-sm shadow",
+                hashValue == section?.tag
+                  ? "bg-rose-50 border border-rose-100"
+                  : "bg-base-100 border border-batik-border"
+              )}
+              key={i}
+            >
+              {section?.title}
+            </Link>
+          ))}
+        </div>
         <div className="px-safe flex flex-col bg-base pt-4 sm:pt-6 pb-20">
           <div className="py- sm:py-6">
             <div className="space-y-6">
@@ -90,6 +110,7 @@ export default function ReadingsPage() {
                   title={section.title}
                   subtitle={section.subtitle}
                   cards={section.cards}
+                  tag={section.tag}
                 />
               ))}
             </div>

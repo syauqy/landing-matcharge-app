@@ -107,6 +107,8 @@ export default function Home() {
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
 
+      // console.log(today, tomorrow);
+
       // Check if today's daily reading already exists
       const { data: existingReadings, error: fetchError } = await supabase
         .from("readings")
@@ -139,7 +141,7 @@ export default function Home() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ profile: profileData }),
+          body: JSON.stringify({ profile: profileData, today: today }),
           credentials: "include",
         });
 
@@ -336,28 +338,9 @@ export default function Home() {
         <div className="card bg-base-100 border border-[var(--color-batik-border)]">
           <div className="card-body p-4">
             <p className="text-sm font-semibold">
-              {formattedDate} ({reading?.weton})
+              🗓️ {formattedDate} ({reading?.weton})
             </p>
-            <p className="mt-2 text-base-content">{reading?.today}</p>
-            {/* {reading?.do && (
-              <div className="mt-3">
-                <p className="font-semibold ">Do:</p>
-                <p className="text-sm text-base-content/90">{reading?.do}</p>
-              </div>
-            )}
-            {reading?.dont && (
-              <div className="mt-2">
-                <p className="font-semibold ">Don&apos;t:</p>
-                <p className="text-sm text-base-content/90">{reading?.dont}</p>
-              </div>
-            )}
-            {reading?.fact && (
-              <div className="mt-2">
-                <p className="text-xs italic text-base-content/90">
-                  {reading?.fact}
-                </p>
-              </div>
-            )} */}
+            <p className="text-base mt-2 text-base-content">{reading?.today}</p>
           </div>
         </div>
       );
@@ -366,11 +349,11 @@ export default function Home() {
 
   const renderLatestReadings = () => {
     return (
-      <ul className="flex flex-row flex-nowrap overflow-x-scroll overflow-y-hidden">
+      <ul className="flex flex-row flex-nowrap overflow-x-scroll overflow-y-hidden pb-3">
         {latestReadings.map((r) => (
-          <li key={r.id} className="w-fit ml-4 last:mr-4">
+          <li key={r.id} className="w-fit ml-4 last:mr-4 ">
             <Link href={`/readings/${r?.reading_category}/${r.slug}`}>
-              <div className="rounded-2xl flex flex-col gap-2 p-4 bg-base-100   shadow-sm border border-[var(--color-batik-border)] h-[8rem] w-[10rem]">
+              <div className="rounded-2xl flex flex-col gap-2 p-4 bg-base-100 active:bg-batik focus:bg-batik shadow-md border border-[var(--color-batik-border)] h-[8rem] w-[10rem]">
                 <p className="text-base-content font-semibold text-sm">
                   {r.title}
                 </p>{" "}
@@ -401,7 +384,7 @@ export default function Home() {
 
     if (monthlyReading?.status === "loading") {
       return (
-        <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+        <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-md">
           <div className="card-body p-4 flex items-center justify-center">
             <span className="loading loading-spinner loading-md"></span>
             <p className="ml-2">Generating your monthly reading...</p>
@@ -412,19 +395,19 @@ export default function Home() {
 
     if (monthlyReading?.status === "completed") {
       return (
-        <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+        <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-md">
           <div className="card-body p-4">
-            <p className="text-lg font-semibold text-center">
-              Monthly Reading - {formattedDate}
+            <p className="text-lg font-semibold">
+              🌙 Monthly Reading - {formattedDate}
             </p>
-            <p className="font-semibold text-center">
+            <p className="text-xl font-semibold leading-7">
               {reading?.summary?.core_theme}
             </p>
-            <p className="text-sm text-base-content">
+            <p className="text-base mb-3 mt-2">
               {reading?.summary?.description}
             </p>
             <Link
-              className="text-batik-text font-semibold inline-flex items-center"
+              className="btn bg-rose-500 text-white  font-semibold rounded-2xl"
               href={`/readings/${monthlyReading?.reading_category}/${monthlyReading?.slug}`}
             >
               Read More
@@ -436,16 +419,6 @@ export default function Home() {
     }
   };
 
-  // const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  // const todayWeton = getWeton(format(new Date(), "yyyy-MM-dd"))?.weton_en;
-  // const localDate = utcToZonedTime(new Date(), deviceTimeZone);
-
-  // console.log(deviceTimeZone, new Date(), todayWeton);
-
-  // console.log(dailyReading);
-
-  // console.log(user);
-
   return (
     <div className="min-h-screen flex flex-col bg-base-100">
       <DashboardNavbar user={user} showTitleInNavbar={showTitleInNavbar} />
@@ -456,26 +429,48 @@ export default function Home() {
             👋
           </p>
         </div>
-        {/* <Link href={"/intro"}>See Intro</Link> */}
         <div className="flex flex-col gap-2 p-4">
           <div className="">{renderTodayReading()}</div>
+        </div>
+        <div className="p-4 flex flex-col gap-2">
+          <div className="card bg-base-100 border border-rose-200 shadow">
+            <div className="flex flex-row items-center gap-2 p-4">
+              <div className="text-4xl">🔓</div>
+              <div>
+                <div className="text-sm font-semibold">
+                  Unlock My Weton's Power
+                </div>
+                <div className="text-slate-700 text-xs">
+                  Move beyond the surface and harness the true energetic power
+                  of your Weton.
+                </div>
+              </div>
+
+              <Link
+                className="  text-rose-400 font-semibold rounded-2xl"
+                href={`/connections`}
+              >
+                <ArrowRight />
+              </Link>
+            </div>
+          </div>
         </div>
         <div className="flex flex-col gap-2 p-4">
           <div className="">{renderMonthlyReading()}</div>
         </div>
         <div className="p-4 flex flex-col gap-2">
-          <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+          <div className="card bg-base-100 border border-slate-200 bg-gradient-to-br from-rose-500 via-rose-400 to-rose-500 relative overflow-hidden shadow-md">
             <div className="flex flex-col gap-2 p-4">
-              <div className="text-lg font-semibold">
-                The Heart&apos;s True Compass
+              <div className="text-xl text-white font-semibold">
+                💞 The Heart&apos;s True Compass
               </div>
-              <div>
+              <div className="text-white mb-3">
                 Some connections feel like destiny. Javanese wisdom offers a
                 unique key to unlock the secrets of your union.
               </div>
               <Link
                 href={"/compatibility"}
-                className="btn border-batik-border text-batik-text rounded-2xl"
+                className="btn bg-white text-rose-500 font-semibold rounded-2xl"
               >
                 Reveal Your Compatibility
               </Link>
@@ -483,17 +478,17 @@ export default function Home() {
           </div>
         </div>
         <div className="p-4 flex flex-col gap-2">
-          <div className="card bg-base-100 border border-[var(--color-batik-border)]">
+          <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-md">
             <div className="flex flex-col gap-2 p-4">
-              <div className="text-lg font-semibold">
-                Understand Your Connections
+              <div className="text-xl font-semibold">
+                🤝 Understand Your Connections
               </div>
-              <div>
+              <div className="text-slate-700 mb-3">
                 Discover the unique Weton and Wuku blueprint of your friends to
                 foster deeper understanding and stronger bonds
               </div>
               <Link
-                className="btn border-batik-border text-batik-text rounded-2xl"
+                className="btn border-batik-border text-batik-text font-semibold rounded-2xl"
                 href={`/connections`}
               >
                 Add Your Friends
@@ -509,16 +504,6 @@ export default function Home() {
             {renderLatestReadings()}
           </div>
         </div>
-
-        {/* <div className="mt-4 flex flex-col gap-2">
-          <div className="px-4 text-lg font-medium text-batik-black">
-            Compatibility Reading
-          </div>
-          <div className="p-4 rounded-2xl text-batik-black">
-            <div></div>
-            <div></div>
-          </div>
-        </div> */}
         <Menubar page={"home"} />
       </div>
     </div>

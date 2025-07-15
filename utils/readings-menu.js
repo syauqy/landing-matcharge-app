@@ -241,23 +241,27 @@ export const SectionData = [
     subtitle:
       "Unlock the core of your being and discover the unique energies that shape you.",
     cards: CardData.general,
+    tag: "personal",
   },
   {
     title: "💖 Love and Relationship",
     subtitle:
       "Navigate the world of love by understanding your unique romantic tendencies and connection styles.",
     cards: CardData.love,
+    tag: "love",
   },
   {
     title: "💼 Work, Career, and Purpose",
     subtitle:
       "Align your professional path with your innate talents and discover your true calling.",
     cards: CardData.work,
+    tag: "work",
   },
   {
     title: "💰 Financial Fortune",
     subtitle:
       "Gain insights into your financial tendencies to better manage and grow your resources.",
     cards: CardData.financial,
+    tag: "financial",
   },
 ];

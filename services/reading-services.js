@@ -19,7 +19,7 @@ import {
 import { z } from "zod";
 import { supabase } from "@/utils/supabaseClient";
 
-export async function generateDailyReading(profile) {
+export async function generateDailyReading({ profile, today }) {
   // supabase client is now an argument
   console.log(profile.id, profile.username);
   const { data: newReading, error } = await supabase
@@ -52,7 +52,8 @@ export async function generateDailyReading(profile) {
         // model: google("gemini-2.5-flash-preview-04-17"),
         // model: openai("gpt-4.1-mini-2025-04-14"),
         // model: openai("gpt-4.1-nano-2025-04-14"),
-        model: google("gemini-2.5-flash-preview-05-20"),
+        // model: google("gemini-2.5-flash-preview-05-20"),
+        model: google("gemini-2.5-flash"),
         providerOptions: {
           google: {
             thinkingConfig: {
@@ -90,7 +91,9 @@ export async function generateDailyReading(profile) {
             .describe("Today's weton in english based on local timezone")
             .catch(() => ""),
         }),
-        messages: [{ role: "user", content: dailyReadingPrompt(profile) }],
+        messages: [
+          { role: "user", content: dailyReadingPrompt(profile, today) },
+        ],
       });
       const resObj = response.object;
 
