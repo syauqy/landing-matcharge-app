@@ -18,10 +18,13 @@ import {
 } from "@/utils/prompts";
 import { z } from "zod";
 import { supabase } from "@/utils/supabaseClient";
+import { getWeton, getWuku, getDayInformation } from "@/utils";
+import { format } from "date-fns";
 
-export async function generateDailyReading({ profile, today }) {
+export async function generateDailyReading(profile, today) {
   // supabase client is now an argument
-  console.log(profile.id, profile.username);
+  // console.log("today date", today);
+  // console.log(profile.id, profile.username, today);
   const { data: newReading, error } = await supabase
     .from("readings")
     .insert({
@@ -40,7 +43,14 @@ export async function generateDailyReading({ profile, today }) {
     throw error;
   }
 
-  console.log("new reading generated on supabase", newReading);
+  // console.log("new reading generated on supabase", newReading);
+  // const todayWeton = getWeton(format(today, "yyyy-MM-dd"))?.weton_en;
+  // const todayWuku = getWuku(format(today, "yyyy-MM-dd"))?.name;
+  const dayInfo = getDayInformation(format(today, "yyyy-MM-dd"));
+  const todayWeton = dayInfo?.todayWeton;
+  const todayWuku = dayInfo?.todayWuku;
+
+  // console.log(dayInfo, todayWeton, todayWuku);
 
   const maxAttempts = 2;
   let attempt = 0;
@@ -49,50 +59,44 @@ export async function generateDailyReading({ profile, today }) {
     attempt++;
     try {
       const response = await generateObject({
-        // model: google("gemini-2.5-flash-preview-04-17"),
-        // model: openai("gpt-4.1-mini-2025-04-14"),
-        // model: openai("gpt-4.1-nano-2025-04-14"),
+        model: google("gemini-2.5-flash-preview-05-20"),
+        // model: google("gemini-2.5-pro"),
         // model: google("gemini-2.5-flash-preview-05-20"),
-        model: google("gemini-2.5-flash"),
+        // model: google("gemini-2.5-flash"),
         providerOptions: {
           google: {
             thinkingConfig: {
-              thinkingBudget: 100,
+              thinkingBudget: 300,
             },
           },
         },
         schema: z.object({
-          today: z
+          energy: z.object({
+            weton: z.string().describe("Today's Weton"),
+            vibe: z.string().describe("Today's vibe"),
+          }),
+          focus: z
             .string()
             .describe(
-              "Describes and summarize the daily reading of the user weton to today's weton in one sentence based on local timezone"
-            )
-            .catch(() => ""),
-          do: z
-            .string()
-            .describe(
-              "Suggestion on what the user needs to do today in one sentence"
-            )
-            .catch(() => ""),
-          dont: z
-            .string()
-            .describe(
-              "Suggestion on what the user needs to avoid today in one sentence"
-            )
-            .catch(() => ""),
-          fact: z
-            .string()
-            .describe(
-              "A short, interesting fact about the today Weton. Stated in English"
-            )
-            .catch(() => ""),
-          weton: z
-            .string()
-            .describe("Today's weton in english based on local timezone")
-            .catch(() => ""),
+              `In one or two sentences, synthesize today's energy with the user's Weton based on Today's weton, overall day character, day character for wealth/work, and day cautions (only if it's Taliwangke or Samparwangke day).`
+            ),
+          guidance: z.object({
+            do: z.string().describe("One thing to do today"),
+            dont: z.string().describe("One thing to avoid today"),
+          }),
+          wisdom: z.string().describe("Today's Javanese insight"),
+          // model: z.string().describe("model used for this object generation"),
         }),
         messages: [
-          { role: "user", content: dailyReadingPrompt(profile, today) },
+          {
+            role: "user",
+            content: dailyReadingPrompt(
+              profile,
+              todayWeton,
+              todayWuku,
+              dayInfo
+            ),
+          },
         ],
       });
       const resObj = response.object;

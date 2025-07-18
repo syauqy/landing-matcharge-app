@@ -21,6 +21,7 @@ import {
   neptuCombination,
   dinaCombination,
 } from "@/lib/jodoh";
+import { dayCharacters, taliwangkeDays, samparwangkeDays } from "@/lib/daily";
 
 function getSaptawara(date) {
   try {
@@ -523,4 +524,28 @@ function getWatakWeton(wetonName) {
 
   // Return the description if found, otherwise return a message
   return wetonObject ? wetonObject : "Weton not found";
+}
+
+export function getDayInformation(today) {
+  const todayWeton = getWeton(today)?.weton_en;
+  const todayWuku = getWuku(today)?.name;
+
+  // Get the basic day information
+  const dayInfo = dayCharacters.find((item) => item.day === todayWeton) || {};
+  const taliwangkeDay =
+    taliwangkeDays.find(
+      (item) => item.day == todayWeton && item.wuku == todayWuku
+    ) || {};
+  const samparwangkeDay =
+    samparwangkeDays.find(
+      (item) => item.day == todayWeton && item.wuku == todayWuku
+    ) || {};
+  // Combine the information
+  return {
+    todayWeton: todayWeton,
+    todayWuku: todayWuku,
+    dayInfo: dayInfo,
+    taliwangkeDay: taliwangkeDay,
+    samparwangkeDay: samparwangkeDay,
+  };
 }

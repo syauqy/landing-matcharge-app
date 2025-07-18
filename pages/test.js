@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { getWuku, getWeton, getWetonPrimbon } from "@/utils";
+import { getWuku, getWeton, getWetonPrimbon, getDayInformation } from "@/utils";
 
 export default function TestPage() {
   const { user, loading: authLoading } = useAuth();
@@ -14,6 +14,7 @@ export default function TestPage() {
   const [birthDate, setBirthDate] = useState("");
   const [wuku, setWuku] = useState({});
   const [weton, setWeton] = useState({});
+  const [dayInfo, setDayInfo] = useState({});
   const [wetonPrimbon, setWetonPrimbon] = useState({});
 
   useEffect(() => {
@@ -75,10 +76,17 @@ export default function TestPage() {
   const handleTest = () => {
     const wuku_data = getWuku(birthDate);
     const weton_data = getWeton(birthDate);
+
     // const saptawara = getWetonPrimbon(birthDate);
     setWeton(weton_data);
     setWuku(wuku_data);
+
     // setWetonPrimbon(saptawara);
+  };
+
+  const handleDailyReading = () => {
+    const dayInfo = getDayInformation(birthDate);
+    setDayInfo(dayInfo);
   };
 
   if (authLoading) {
@@ -151,6 +159,13 @@ export default function TestPage() {
       >
         {loading ? "Testing Models..." : "Test AI SDK"}
       </button>
+      <button
+        onClick={handleDailyReading}
+        disabled={loading}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 disabled:opacity-50"
+      >
+        {loading ? "Handle Daily Reading..." : "Get Daily Reading"}
+      </button>
 
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
@@ -190,30 +205,12 @@ export default function TestPage() {
         </div>
       )}
 
-      {/* {Object.keys(results).length > 0 && (
-        <div className="space-y-4">
-          {Object.entries(results).map(([model, data]) => (
-            <div key={model} className="border p-4 rounded-md">
-              <h2 className="font-bold">{model}</h2>
-              {data.wetonDetails && (
-                <div className="mt-2">
-                  <p>
-                    <strong>Weton:</strong> {data.wetonDetails.weton}
-                  </p>
-                  <p>
-                    <strong>Total Neptu:</strong> {data.wetonDetails.totalNeptu}
-                  </p>
-                </div>
-              )}
-              <div className="prose prose-sm mt-2">
-                {data.analysis.split("\n").map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
-                ))}
-              </div>
-            </div>
-          ))}
+      {dayInfo?.dayInfo && (
+        <div className="border p-4 rounded-md mt-4">
+          <h2 className="font-bold">Daily Reading</h2>
+          <pre>{JSON.stringify(dayInfo, null, 2)}</pre>
         </div>
-      )} */}
+      )}
     </div>
   );
 }

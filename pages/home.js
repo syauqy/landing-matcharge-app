@@ -122,6 +122,8 @@ export default function Home() {
 
       if (fetchError) throw fetchError;
 
+      // console.log(existingReadings);
+
       if (existingReadings && existingReadings.length > 0) {
         setDailyReading(existingReadings[0]);
         setMessage("You already have a daily reading for today.");
