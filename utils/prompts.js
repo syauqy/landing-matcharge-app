@@ -50,14 +50,14 @@ export const dailyReadingPrompt = (profile, todayWeton, todayWuku, dayInfo) => {
   
   **1. Today's Energy Signature:**
   - State **Today's Weton** - ${todayWeton}
-  - Define **Today's Vibe** based on the ${dayInfo?.dayInfo?.pasaranDescription} in two or three words.
+  - Define **Today's Vibe** based on the ${dayInfo?.dayInfo?.pasaranDescription} in one sentence.
    
   **2. Your Personalized Focus:**
 
   **3. Today's Guidance:**
-  - **Randomly select ONE focus area:** Health, Work, or Relationships. If you choose work focus, using the interpretation of ${dayInfo?.dayInfo?.values}.
+  - **Randomly select ONE focus area:** Health, Work, Career, Financial, Friendship, Love, Family, or Relationships. If you choose work or financial focus, using the interpretation of ${dayInfo?.dayInfo?.values}.
   - **One Thing to Do Today:** Based on the chosen focus, provide one clear, actionable "do." 
-  - **One Thing to Avoid Today:** Based on the same or different focus on one thing to do today, provide one clear "don't."
+  - **One Thing to Avoid Today:** Based on the chosen focus, provide one clear, actionable "don't."
 
   **4. Wisdom:**
   - **Today's Javanese Insight:** Provide one interesting fact about today's Weton, its symbolism, or a related Javanese proverb.
@@ -75,9 +75,9 @@ export const dailyReadingPrompt = (profile, todayWeton, todayWuku, dayInfo) => {
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
+  - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
   - Avoid em dashes.
-  - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
   - Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section. Ensuring richness over brevity.
   - Accuracy: Ensure all interpretation for Weton and Wuku are precise and align accurately with traditional Javanese Primbon knowledge.

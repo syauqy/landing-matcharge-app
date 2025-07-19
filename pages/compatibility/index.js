@@ -646,23 +646,6 @@ export default function CompatibilityPage() {
                   CLOSE
                 </button>
               </div>
-              {/* <div className="mb-4">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search by name or username..."
-                    value={partnerSearchTerm}
-                    onChange={(e) =>
-                      setPartnerSearchTerm(e.target.value.toLowerCase())
-                    }
-                    className="input input-bordered w-full pl-10 input-sm"
-                  />
-                  <Search
-                    size={18}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                  />
-                </div>
-              </div> */}
               <div className="flex-grow overflow-y-auto space-y-4">
                 <div className="overflow-y-scroll max-h-[75%]">
                   {(loadingFriends || loadingCustomProfiles) && (

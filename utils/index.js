@@ -270,7 +270,7 @@ export function getWeton(birthDate) {
     const sadwara = getSadwara(birthDate);
     const watakWeton = getWatakWeton(`${hari} ${pasaran}`);
 
-    console.log(day, pasaran);
+    // console.log(day, pasaran);
 
     return {
       dina: hari,

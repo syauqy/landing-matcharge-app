@@ -1,7 +1,6 @@
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { createClient } from "@/utils/supabase/server-props";
-import { openai } from "@ai-sdk/openai";
 import {
   dailyReadingPrompt,
   monthlyReadingPrompt,
@@ -43,9 +42,6 @@ export async function generateDailyReading(profile, today) {
     throw error;
   }
 
-  // console.log("new reading generated on supabase", newReading);
-  // const todayWeton = getWeton(format(today, "yyyy-MM-dd"))?.weton_en;
-  // const todayWuku = getWuku(format(today, "yyyy-MM-dd"))?.name;
   const dayInfo = getDayInformation(format(today, "yyyy-MM-dd"));
   const todayWeton = dayInfo?.todayWeton;
   const todayWuku = dayInfo?.todayWuku;
