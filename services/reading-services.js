@@ -69,7 +69,7 @@ export async function generateDailyReading(profile, today) {
         schema: z.object({
           energy: z.object({
             weton: z.string().describe("Today's Weton"),
-            vibe: z.string().describe("Today's vibe"),
+            vibe: z.string().describe("Today's vibe in 2-3 words"),
           }),
           focus: z
             .string()
@@ -107,7 +107,7 @@ export async function generateDailyReading(profile, today) {
           input_token: response.usage.promptTokens,
           output_token: response.usage.completionTokens,
           total_token: response.usage.totalTokens,
-          subtitle: resObj?.today,
+          subtitle: resObj?.focus,
           updated_at: new Date().toISOString(),
         })
         .eq("id", newReading.id);

@@ -35,6 +35,7 @@ export default function Home() {
   const [latestReadings, setLatestReadings] = useState([]);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [showDailyReadingSheet, setShowDailyReadingSheet] = useState(false);
+  const dailyReadingRequestedRef = useRef(false);
   const scrollContainerRef = useRef(null);
 
   // console.log(user, authLoading);
@@ -99,6 +100,9 @@ export default function Home() {
   };
 
   const handleDailyReading = async () => {
+    if (dailyReadingRequestedRef.current) return;
+    dailyReadingRequestedRef.current = true;
+
     setError(null);
     setMessage(null);
     setRequestDailyReading(true);
@@ -110,9 +114,6 @@ export default function Home() {
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
 
-      // console.log(today, tomorrow);
-
-      // Check if today's daily reading already exists
       const { data: existingReadings, error: fetchError } = await supabase
         .from("readings")
         .select("reading, created_at, status")
@@ -124,8 +125,6 @@ export default function Home() {
         .limit(1);
 
       if (fetchError) throw fetchError;
-
-      // console.log(existingReadings);
 
       if (existingReadings && existingReadings.length > 0) {
         setDailyReading(existingReadings[0]);
@@ -139,7 +138,6 @@ export default function Home() {
 
       console.log("generate new daily reading");
       let readingData;
-
       try {
         const response = await fetch(`${config.api.url}/readings/daily`, {
           method: "POST",
@@ -239,12 +237,6 @@ export default function Home() {
     }
   };
 
-  // useEffect(() => {
-  //   if (profileData && user) {
-  //     closeBrowser().catch(() => {});
-  //   }
-  // }, []);
-
   // Effect for fetching initial user-dependent data
   useEffect(() => {
     if (!authLoading && user) {
@@ -258,13 +250,12 @@ export default function Home() {
 
   // Effect to handle daily reading once profileData is available
   useEffect(() => {
-    if (profileData && user) {
+    if (profileData && user && !dailyReadingRequestedRef.current) {
       closeBrowser().catch(() => {});
-      // Only run if profileData and user exist
       handleMonthlyReading();
       handleDailyReading();
     }
-  }, [profileData]);
+  }, [profileData, user]);
 
   useEffect(() => {
     if (!user) return;
@@ -300,6 +291,17 @@ export default function Home() {
   };
 
   useEffect(() => {
+    if (showDailyReadingSheet) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [showDailyReadingSheet]);
+
+  useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -327,7 +329,7 @@ export default function Home() {
     // console.log(dailyData);
     const energyLevel =
       (dailyData?.dayInfo?.dayEnergy + dailyData?.dayInfo?.dayFinancialEnergy) /
-      2;
+        2 || 0;
 
     let formattedDate = "Date unavailable";
     try {
@@ -361,15 +363,15 @@ export default function Home() {
             <div className="flex flex-col gap-2">
               <div className="flex flex-row items-center gap-2">
                 <div className="w-8 shrink-0 flex flex-col text-2xl">✅</div>
-                <div className="leading-5 text-slate-800">
-                  {reading?.guidance?.do}
-                </div>
+                <Markdown className="leading-5 text-gray-800">
+                  {reading?.guidance?.do?.replace(/—/gi, ", ")}
+                </Markdown>
               </div>
               <div className="flex flex-row items-center gap-2">
                 <div className="w-8 shrink-0 text-2xl">❌</div>
-                <div className="leading-5 text-slate-800">
-                  {reading?.guidance?.dont}
-                </div>
+                <Markdown className="leading-5 text-gray-800">
+                  {reading?.guidance?.dont?.replace(/—/gi, ", ")}
+                </Markdown>
               </div>
             </div>
             <button
@@ -382,9 +384,15 @@ export default function Home() {
               <div className="fixed inset-0 bg-slate-500/40 bg-opacity-10 z-40 flex items-end justify-center">
                 <div className="bg-base-100 rounded-t-lg p-4 w-full max-w-md shadow-lg h-[90vh] flex flex-col">
                   <div className="flex justify-between items-center mb-4 pb-2 border-b border-base-300">
-                    <h3 className="text-lg font-bold text-batik-black">
-                      Daily Reading
-                    </h3>
+                    <div className="flex flex-col">
+                      <h3 className="text-lg font-bold text-batik-black">
+                        Daily Reading
+                      </h3>
+                      <p className="text-sm font-semibold">
+                        🗓️ {formattedDate} ({reading?.energy?.weton})
+                      </p>
+                    </div>
+
                     <button
                       onClick={() => setShowDailyReadingSheet(false)}
                       className="btn btn-sm btn-circle btn-ghost"
@@ -395,11 +403,8 @@ export default function Home() {
                   <div className="flex-grow overflow-y-auto space-y-4">
                     <div className="overflow-y-scroll flex flex-col gap-2">
                       <div className="flex flex-row justify-between items-start">
-                        <div className="flex flex-col">
-                          <p className="text-sm font-semibold">
-                            🗓️ {formattedDate} ({reading?.energy?.weton})
-                          </p>
-                          <p className="text-lg font-semibold mb-2 text-base-content">
+                        <div className="flex flex-col w-[75%]">
+                          <p className="text-lg font-semibold mb-2">
                             {reading?.energy?.vibe}
                           </p>
                         </div>
@@ -428,21 +433,23 @@ export default function Home() {
                           {reading?.focus?.replace(/—/gi, ", ")}
                         </Markdown>
                       </div>
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col my-3 gap-2">
                         <div className="flex flex-row items-center gap-2">
-                          <div className="w-8 shrink-0 text-2xl">✅</div>
-                          <div className="leading-5 text-slate-800">
-                            {reading?.guidance?.do}
+                          <div className="w-8 shrink-0 flex flex-col text-2xl">
+                            ✅
                           </div>
+                          <Markdown className="leading-5 text-gray-800">
+                            {reading?.guidance?.do?.replace(/—/gi, ", ")}
+                          </Markdown>
                         </div>
                         <div className="flex flex-row items-center gap-2">
                           <div className="w-8 shrink-0 text-2xl">❌</div>
-                          <div className="leading-5 text-slate-800">
-                            {reading?.guidance?.dont}
-                          </div>
+                          <Markdown className="leading-5 text-gray-800">
+                            {reading?.guidance?.dont?.replace(/—/gi, ", ")}
+                          </Markdown>
                         </div>
                       </div>
-                      <div className="flex flex-col my-2 gap-2">
+                      <div className="flex flex-col my-3 gap-2">
                         <div className="text-lg font-semibold">
                           💌 Message for You
                         </div>

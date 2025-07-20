@@ -4,6 +4,18 @@ import { format } from "date-fns";
 export const dailyReadingPrompt = (profile, todayWeton, todayWuku, dayInfo) => {
   const wetonDetails = profile?.weton;
   const wuku = profile?.wuku?.name || "Unknown Wuku";
+  // Randomly pick one focus area
+  const focusAreas = [
+    "Health",
+    "Work",
+    "Career",
+    "Financial",
+    "Friendship",
+    "Family",
+    "Relationships",
+  ];
+  const randomFocus = focusAreas[Math.floor(Math.random() * focusAreas.length)];
+
   const wetonData = `
     User's Data:
     - Gender: ${profile.gender}
@@ -43,21 +55,19 @@ export const dailyReadingPrompt = (profile, todayWeton, todayWuku, dayInfo) => {
 
   ${wetonData}
 
-  
-
   ## Output Structure & Content Requirements:
   Generate a comprehensive daily energy reading for the specified user and today weton, structured as follows:
   
   **1. Today's Energy Signature:**
   - State **Today's Weton** - ${todayWeton}
-  - Define **Today's Vibe** based on the ${dayInfo?.dayInfo?.pasaranDescription} in one sentence.
+  - Define **Today's Vibe** based on the ${dayInfo?.dayInfo?.pasaranDescription} in 2-3 words.
    
   **2. Your Personalized Focus:**
 
   **3. Today's Guidance:**
-  - **Randomly select ONE focus area:** Health, Work, Career, Financial, Friendship, Love, Family, or Relationships. If you choose work or financial focus, using the interpretation of ${dayInfo?.dayInfo?.values}.
+  - **Randomly select ONE focus area:** Health, Work, Career, Financial, Friendship, Family, or Relationships. If you choose work or financial focus, using the interpretation of ${dayInfo?.dayInfo?.values}.
   - **One Thing to Do Today:** Based on the chosen focus, provide one clear, actionable "do." 
-  - **One Thing to Avoid Today:** Based on the chosen focus, provide one clear, actionable "don't."
+  - **One Thing to Avoid Today:** Based on the ${randomFocus} focus, provide one clear, actionable "don't."
 
   **4. Wisdom:**
   - **Today's Javanese Insight:** Provide one interesting fact about today's Weton, its symbolism, or a related Javanese proverb.
