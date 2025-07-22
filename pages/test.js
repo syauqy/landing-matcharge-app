@@ -1,9 +1,17 @@
 // pages/test.js
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { getWuku, getWeton, getWetonPrimbon, getDayInformation } from "@/utils";
+import {
+  getWuku,
+  getWeton,
+  getWetonPrimbon,
+  getDayInformation,
+  getJavaneseDate,
+  checkWeddingFavorability,
+  checkDayFavorability,
+} from "@/utils";
 
 export default function TestPage() {
   const { user, loading: authLoading } = useAuth();
@@ -15,6 +23,9 @@ export default function TestPage() {
   const [wuku, setWuku] = useState({});
   const [weton, setWeton] = useState({});
   const [dayInfo, setDayInfo] = useState({});
+  const [javaneseDate, setJavaneseDate] = useState({});
+  const [weddingFavorability, setWeddingFavorability] = useState({});
+  const [favoriteDayofMonth, setFavoriteDayofMonth] = useState({});
   const [wetonPrimbon, setWetonPrimbon] = useState({});
 
   useEffect(() => {
@@ -87,6 +98,29 @@ export default function TestPage() {
   const handleDailyReading = () => {
     const dayInfo = getDayInformation(birthDate);
     setDayInfo(dayInfo);
+  };
+
+  const handleJavaneseDate = () => {
+    const javaneseDate = getJavaneseDate(birthDate);
+    const dayInfo = getDayInformation(birthDate);
+    const weddingFavorability = checkWeddingFavorability(
+      dayInfo?.todayWeton,
+      javaneseDate?.day,
+      javaneseDate?.monthName,
+      javaneseDate?.yearNumber,
+      javaneseDate?.yearName
+    );
+    const favoriteDayofMonth = checkDayFavorability(
+      dayInfo?.todayWeton,
+      javaneseDate?.day,
+      javaneseDate?.monthName,
+      javaneseDate?.yearNumber,
+      javaneseDate?.yearName
+    );
+    setJavaneseDate(javaneseDate);
+    setDayInfo(dayInfo);
+    setWeddingFavorability(weddingFavorability);
+    setFavoriteDayofMonth(favoriteDayofMonth);
   };
 
   if (authLoading) {
@@ -166,6 +200,13 @@ export default function TestPage() {
       >
         {loading ? "Handle Daily Reading..." : "Get Daily Reading"}
       </button>
+      <button
+        onClick={handleJavaneseDate}
+        disabled={loading}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 disabled:opacity-50"
+      >
+        {loading ? "Handle Javanese Date..." : "Get Javanese Date"}
+      </button>
 
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
@@ -209,6 +250,22 @@ export default function TestPage() {
         <div className="border p-4 rounded-md mt-4">
           <h2 className="font-bold">Daily Reading</h2>
           <pre>{JSON.stringify(dayInfo, null, 2)}</pre>
+        </div>
+      )}
+
+      {javaneseDate && (
+        <div className="border p-4 rounded-md mt-4">
+          <h2 className="font-bold">Javanese Date</h2>
+          <pre>{JSON.stringify(javaneseDate, null, 2)}</pre>
+        </div>
+      )}
+      {weddingFavorability && (
+        <div className="border p-4 rounded-md mt-4">
+          <h2 className="font-bold">
+            Favorite Months in this year and Day of Months
+          </h2>
+          <pre>{JSON.stringify(weddingFavorability, null, 2)}</pre>
+          <pre>{JSON.stringify(favoriteDayofMonth, null, 2)}</pre>
         </div>
       )}
     </div>

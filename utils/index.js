@@ -21,7 +21,163 @@ import {
   neptuCombination,
   dinaCombination,
 } from "@/lib/jodoh";
+import {
+  javaneseMonths,
+  javaneseYears,
+  leapYearDays,
+  normalYearDays,
+} from "@/lib/javanese-calendar";
 import { dayCharacters, taliwangkeDays, samparwangkeDays } from "@/lib/daily";
+import { weddingFavorableMonths, favorableDaysofMonths } from "@/lib/monthly";
+
+export function getJavaneseDate(inputDate) {
+  let date;
+  if (typeof inputDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(inputDate)) {
+    date = new Date(`${inputDate}T12:00:00Z`);
+  } else if (inputDate instanceof Date) {
+    date = inputDate;
+  } else {
+    throw new Error("Invalid date format for getJavaneseDate");
+  }
+
+  const epoch = new Date(1936, 2, 24).getTime();
+  let unix = new Date(date);
+  let dateConv = unix.getTime();
+
+  let Rentang = Math.floor((dateConv - epoch) / 1000 / 3600 / 24);
+
+  const JAVANESE_EPOCH_YEAR_1936 = 1867;
+
+  const yearLengths = [354, 355, 354, 354, 355, 354, 354, 355];
+
+  let A = Rentang % 2835;
+  let monthIndex = 0;
+  let yearIndex = 0;
+  let x = A - yearLengths[yearIndex] + 1;
+
+  while (x > 0) {
+    yearIndex += 1;
+    x -= yearLengths[yearIndex];
+  }
+
+  let D = x + yearLengths[yearIndex] - 30;
+  let dayInMonth = D + 30;
+
+  if (yearLengths[yearIndex] == 355) {
+    while (D > 0) {
+      dayInMonth = D;
+      monthIndex += 1;
+      D -= leapYearDays[monthIndex];
+    }
+  }
+
+  if (yearLengths[yearIndex] == 354) {
+    while (D > 0) {
+      dayInMonth = D;
+      monthIndex += 1;
+      D -= normalYearDays[monthIndex];
+    }
+  }
+
+  // const warsa = windu * 8 * JAVANESE_EPOCH_YEAR_1936 + I;
+
+  // Calculate Javanese year number
+  const javaneseYearNumber =
+    JAVANESE_EPOCH_YEAR_1936 + Math.floor(Rentang / 2835) * 8 + yearIndex;
+  const windu = Math.floor((Rentang % 11340) / 2835);
+
+  return {
+    windu: windu,
+    day: dayInMonth,
+    monthName: javaneseMonths[monthIndex],
+    yearName: javaneseYears[yearIndex],
+    yearNumber: javaneseYearNumber,
+  };
+}
+
+export function checkWeddingFavorability(
+  javaneseDayName,
+  javaneseDate,
+  javaneseMonth,
+  javaneseYear,
+  javaneseYearName
+) {
+  const yearData = weddingFavorableMonths?.find(
+    (y) => y.year === javaneseYearName
+  );
+
+  if (!yearData) {
+    return {
+      status: "unknown",
+      message: `Could not find data for Javanese year ${javaneseYearName}`,
+    };
+  }
+
+  // Check if the month is favorable
+  const isFavorable = yearData.favorableMonths.includes(javaneseMonth);
+
+  // Check if the month is unfavorable
+  const isUnfavorable = yearData.unfavorableMonths.includes(javaneseMonth);
+
+  let status, message;
+
+  if (isFavorable) {
+    status = "favorable";
+    message = `${javaneseMonth} is a favorable month for weddings and big events in the year of ${javaneseYearName}`;
+  } else if (isUnfavorable) {
+    status = "unfavorable";
+    message = `${javaneseMonth} is an unfavorable month for weddings and big events in the year of ${javaneseYearName}. Consider choosing a different month.`;
+  } else {
+    status = "neutral";
+    message = `${javaneseMonth} is neither explicitly favorable nor unfavorable for weddings and big events in the year of ${javaneseYearName}.`;
+  }
+
+  return {
+    date: `${javaneseDayName}, ${javaneseDate} ${javaneseMonth} ${javaneseYear} (${javaneseYearName})`,
+    status: status,
+    message: message,
+    favorableMonths: yearData.favorableMonths,
+    unfavorableMonths: yearData.unfavorableMonths,
+  };
+}
+
+export function checkDayFavorability(dayName, date, month, year, yearName) {
+  let dayOfWeek = dayName.split(" ")[0];
+
+  // Find the month data
+  const monthData = favorableDaysofMonths?.find(
+    (m) => m.month.toLowerCase() === month.toLowerCase()
+  );
+
+  if (!monthData) {
+    return {
+      status: "unknown",
+      message: `Could not find data for month ${month}`,
+    };
+  }
+
+  let status;
+
+  const rahayuList = monthData.rahayuDays.join(", ");
+  const sarjuList = monthData.sarjuDays.join(", ");
+  const rahayuCount = monthData.rahayuDays.length;
+  const sarjuCount = monthData.sarjuDays.length;
+
+  const summarySentence = `For ${month} month, the very favorable (rahayu) day${
+    rahayuCount > 1 ? "s are" : " is"
+  } ${rahayuList} and reasonably favorable (sarju) day${
+    sarjuCount > 1 ? "s are" : " is"
+  } ${sarjuList}. These days are good for important activities, ceremonies, or starting new ventures.`;
+
+  return {
+    date: `${dayName}, ${date} ${month} ${year} (${yearName})`,
+    status: status,
+    message: summarySentence,
+    rahayuDays: monthData.rahayuDays,
+    sarjuDays: monthData.sarjuDays,
+    dayOfWeek: dayOfWeek,
+  };
+}
 
 function getSaptawara(date) {
   try {
