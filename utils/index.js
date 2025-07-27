@@ -28,7 +28,11 @@ import {
   normalYearDays,
 } from "@/lib/javanese-calendar";
 import { dayCharacters, taliwangkeDays, samparwangkeDays } from "@/lib/daily";
-import { weddingFavorableMonths, favorableDaysofMonths } from "@/lib/monthly";
+import {
+  weddingFavorableMonths,
+  favorableDaysofMonths,
+  inauspiciousDatesinMonth,
+} from "@/lib/monthly";
 
 export function getJavaneseDate(inputDate) {
   let date;
@@ -39,6 +43,26 @@ export function getJavaneseDate(inputDate) {
   } else {
     throw new Error("Invalid date format for getJavaneseDate");
   }
+
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const gregorianDate = {
+    date: date.getUTCDate(),
+    month: monthNames[date.getUTCMonth()],
+    year: date.getUTCFullYear(),
+  };
 
   const epoch = new Date(1936, 2, 24).getTime();
   let unix = new Date(date);
@@ -89,6 +113,13 @@ export function getJavaneseDate(inputDate) {
   return {
     windu: windu,
     day: dayInMonth,
+    gregorianDate: {
+      fullDate: `${gregorianDate.date} ${gregorianDate.month} ${gregorianDate.year}`,
+      date: gregorianDate.date,
+      month: gregorianDate.month,
+      year: gregorianDate.year,
+    },
+    date: `${dayInMonth} ${javaneseMonths[monthIndex]} ${javaneseYearNumber} (${javaneseYears[yearIndex]})`,
     monthName: javaneseMonths[monthIndex],
     yearName: javaneseYears[yearIndex],
     yearNumber: javaneseYearNumber,
@@ -156,8 +187,6 @@ export function checkDayFavorability(dayName, date, month, year, yearName) {
     };
   }
 
-  let status;
-
   const rahayuList = monthData.rahayuDays.join(", ");
   const sarjuList = monthData.sarjuDays.join(", ");
   const rahayuCount = monthData.rahayuDays.length;
@@ -171,11 +200,35 @@ export function checkDayFavorability(dayName, date, month, year, yearName) {
 
   return {
     date: `${dayName}, ${date} ${month} ${year} (${yearName})`,
-    status: status,
     message: summarySentence,
     rahayuDays: monthData.rahayuDays,
     sarjuDays: monthData.sarjuDays,
     dayOfWeek: dayOfWeek,
+  };
+}
+
+export function checkMonthAuspiciousness(monthName) {
+  const monthData = inauspiciousDatesinMonth?.find(
+    (m) => m.month.toLowerCase() === monthName.toLowerCase()
+  );
+
+  if (!monthData) {
+    return {
+      status: "error",
+      message: `Month "${monthName}" not found in the Javanese calendar data.`,
+    };
+  }
+
+  return {
+    month: monthData.month,
+    inauspiciousDates: monthData.dates,
+    taliwangkeDay: monthData.taliwangkeDay,
+    consequence: monthData.consequence,
+    message: `In the month of ${
+      monthData.month
+    }, you should avoid dates ${monthData.dates.join(", ")} and the day of ${
+      monthData.taliwangkeDay
+    }. Ignoring these warnings may result in "${monthData.consequence}".`,
   };
 }
 

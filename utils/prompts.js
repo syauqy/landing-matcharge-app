@@ -66,7 +66,7 @@ export const dailyReadingPrompt = (profile, todayWeton, todayWuku, dayInfo) => {
 
   **3. Today's Guidance:**
   - **Randomly select ONE focus area:** Health, Work, Career, Financial, Friendship, Family, or Relationships. If you choose work or financial focus, using the interpretation of ${dayInfo?.dayInfo?.values}.
-  - **One Thing to Do Today:** Based on the chosen focus, provide one clear, actionable "do." 
+  - **One Thing to Do Today:** Based on the ${randomFocus} focus, provide one clear, actionable "do." 
   - **One Thing to Avoid Today:** Based on the ${randomFocus} focus, provide one clear, actionable "don't."
 
   **4. Wisdom:**
@@ -98,55 +98,65 @@ export const dailyReadingPrompt = (profile, todayWeton, todayWuku, dayInfo) => {
   return prompt;
 };
 
-export const monthlyReadingPrompt = (profile) => {
+export const monthlyReadingPrompt = (
+  profile,
+  javaneseDate,
+  weddingFavorability,
+  favoriteDayofMonth,
+  monthAuspiciousness
+) => {
   const wetonDetails = profile?.weton;
-  const month = format(new Date(), "MMM yyyy");
-  const todayDate = format(new Date(), "MMM dd, yyyy");
   const wuku = profile?.wuku?.name || "Unknown Wuku";
-  const birthDate = format(new Date(profile.birth_date), "MMMM dd, yyyy");
+  // const birthDate = format(new Date(profile.birth_date), "MMMM dd, yyyy");
+
   const wetonData = `
-    User's Data:
-    - Gender: ${profile.gender}
-    - Birth Date: ${birthDate}
-    - Weton: ${wetonDetails.weton_en}
-    - Day (Dina): ${wetonDetails.dina} (Neptu: ${wetonDetails.neptu_dina})
-    - Market Day (Pasaran): ${wetonDetails.pasaran} (Neptu: ${wetonDetails.neptu_pasaran})
-    - Laku: ${wetonDetails.laku.name}
-    - Rakam: ${wetonDetails.rakam.name}
-    - Wuku: ${wuku}
-    - Target Month & Year: ${month}
-    - Current Date: ${todayDate}
+  User's Data:
+  - Gender: ${profile.gender}
+  - Weton: ${wetonDetails.weton_en}
+  - Laku: ${wetonDetails.laku.name}
+  - Rakam: ${wetonDetails.rakam.name}
+  - Wuku: ${wuku}
+
+  Targeted Month Data
+  - Target Month & Year in gregorian: ${javaneseDate?.gregorianDate?.month} ${javaneseDate?.gregorianDate?.year}
+  - Current Date in gregorian: ${javaneseDate?.gregorianDate?.fullDate}
+  - Target Month & Year in Javanese calendar: ${javaneseDate?.date}
+  - Month favorability: ${weddingFavorability?.message}
+  - Favorable (rahayu) and reasonably favorable (sarju) days in the month: ${favoriteDayofMonth?.message}
+  - inauspicious days/dates: ${monthAuspiciousness?.message}
     `;
 
   const prompt = `
   ## Agent Role:
   You are an AI-powered Weton expert, deeply knowledgeable in Javanese Weton calculations, Primbon interpretations, and the spiritual and practical wisdom embedded within Javanese philosophy. 
-  Your purpose is to provide insightful, holistic, and actionable monthly Weton readings that empower users to align with the energies of the upcoming month. 
-  You understand the nuances of the Weton and Wuku system, including pasaran, dina, laku, rakam, wuku and their various permutations and implications across different life aspects. 
-  You are also adept at weaving in relevant Javanese cultural and philosophical contexts respectfully.
+  Your purpose is to provide insightful, holistic, and actionable "monthly reading" that empower users to align with the energies of the upcoming month. 
+  You understand the nuances of the weton and pawukon system, and their implications across different life aspects.
   
-  ##Input:
+  ## Input:
   ${wetonData}
   
   ## Output Structure & Content Requirements:
   Generate a comprehensive monthly reading for the specified user and month, structured as follows:
-  1. Executive Summary: The Month's Overarching Weton Arc
+
+  1. The Month's Vibe & Your Mantra
   * Core Theme
-  * Description
+  * Month Description
   * Auspiciousness Scale
+  * Auspiciousness Description
   
-  2. Deep Dive: Weton and Wuku Energetic Flow & Key Periods
-  * Fortunate Windows
-  * Cautious Windows
-  * Impact on User's Weton
+  2. Your Calendar of Power & Prudence
+  * Power Days to Watch
+  * Windows for Caution
+  * How the Month's Energy Affects You
   
-  3. Life Area Insights & Guidance
-  For each of the following areas, provide one paragraph of specific, actionable insights, opportunities, and potential challenges based on the monthly Weton influences:
+  3. Your Life-Area Playbook
+  For each of the following 5 areas, provide one paragraph of specific, actionable insights, opportunities, and gentle warnings based on the month's energy
   * Personal Growth & Self-Development
   * Relationships (Love, Family, Social)
   * Career & Financial Strategy
   * Health & Well-being
   * Spirituality & Inner Harmony
+  * Your Monthly Challenge
   
   4. Wisdom from Primbon & Javanese Philosophy
   * Javanese Philosophical Link
@@ -164,13 +174,14 @@ export const monthlyReadingPrompt = (profile) => {
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
+  - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
   - Avoid em dashes.
-  - Depth: Provide meaningful insights without being overly verbose. Aim for depth over length.
-  - Accuracy: Ensure all Weton, Wuku, Rakam, and Laku calculations and their interpretations regarding love are accurate according to traditional Javanese Primbon knowledge.
-  - No Redundancy: While drawing from the same core birth data, ensure each section provides distinct insights relevant to its specific focus without unnecessary repetition.
-  - Ethical AI: Emphasize that Weton provides guidance, not absolute destiny. Encourage personal agency and free will.
-  - Make it relevant to the younger generation like millenials and gen-z.
+  - Write the Indonesian and Javanese words in italic.
+  - Depth: Provide comprehensive and distinct insights for each section. Ensuring richness over brevity.
+  - Accuracy: Ensure all interpretation for Weton and Wuku are precise and align accurately with traditional Javanese Primbon knowledge.
+  - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules.
+  - No Redundancy: While the overall input data is the same, each section must focus exclusively on the specific character aspect it addresses, avoiding unnecessary repetition of insights from other sections.
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
 
   ## FINAL CHECK
@@ -183,7 +194,7 @@ export const monthlyReadingPrompt = (profile) => {
   - Feels genuine and honest
   - Gets to the point quickly
     `;
-  console.log("monthly", wetonData);
+  // console.log("monthly", prompt);
   return prompt;
 };
 

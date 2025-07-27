@@ -17,7 +17,15 @@ import {
 } from "@/utils/prompts";
 import { z } from "zod";
 import { supabase } from "@/utils/supabaseClient";
-import { getWeton, getWuku, getDayInformation } from "@/utils";
+import {
+  getWeton,
+  getWuku,
+  getDayInformation,
+  getJavaneseDate,
+  checkWeddingFavorability,
+  checkDayFavorability,
+  checkMonthAuspiciousness,
+} from "@/utils";
 import { format } from "date-fns";
 
 export async function generateDailyReading(profile, today) {
@@ -129,7 +137,7 @@ export async function generateDailyReading(profile, today) {
   } while (attempt < maxAttempts);
 }
 
-export async function generateMonthlyReading(profile) {
+export async function generateMonthlyReading(profile, today) {
   const { data: newReading, error } = await supabase
     .from("readings")
     .insert({
@@ -151,6 +159,24 @@ export async function generateMonthlyReading(profile) {
 
   console.log("new reading generated on supabase", newReading);
 
+  const javaneseDate = getJavaneseDate(format(today, "yyyy-MM-dd"));
+  const dayInfo = getDayInformation(format(today, "yyyy-MM-dd"));
+  const weddingFavorability = checkWeddingFavorability(
+    dayInfo?.todayWeton,
+    javaneseDate?.day,
+    javaneseDate?.monthName,
+    javaneseDate?.yearNumber,
+    javaneseDate?.yearName
+  );
+  const favoriteDayofMonth = checkDayFavorability(
+    dayInfo?.todayWeton,
+    javaneseDate?.day,
+    javaneseDate?.monthName,
+    javaneseDate?.yearNumber,
+    javaneseDate?.yearName
+  );
+  const monthAuspiciousness = checkMonthAuspiciousness(javaneseDate?.monthName);
+
   const maxAttempts = 2;
   let attempt = 0;
   let lastErrorMsg = "";
@@ -160,7 +186,8 @@ export async function generateMonthlyReading(profile) {
       const response = await generateObject({
         // model: openai("gpt-4.1-mini-2025-04-14"),
         // model: openai("gpt-4.1-nano-2025-04-14"),
-        model: google("gemini-2.5-flash-preview-05-20"),
+        model: google("gemini-2.5-pro"),
+        // model: google("gemini-2.5-flash-preview-05-20"),
         providerOptions: {
           google: {
             thinkingConfig: {
@@ -173,39 +200,45 @@ export async function generateMonthlyReading(profile) {
             core_theme: z
               .string()
               .describe(
-                "What is the dominant, overarching energy or theme of the month based on the prevailing Weton influences? (e.g., A Month of Growth and New Beginnings, A Period of Introspection and Consolidation, Navigating Social Dynamics)."
+                "What is the dominant theme, based on the month's general favorability and energy, create a core theme."
               )
               .catch(() => ""),
             description: z
               .string()
               .describe(
-                "Brief description of that summarize the energy of the month"
+                "Write a brief, evocative paragraph summarizing the energy of the target month."
               )
               .catch(() => ""),
             auspicious_scale: z
               .string()
               .describe(
-                "A general numerical rating of the month's overall favorability for the user's birth Weton (1=Challenging, 5=Highly Auspicious), with a brief explanation."
+                "Calculate a personalized auspiciousness score (1-5) by comparing the month's general favorability with the user's Weton. Return only single number."
+              )
+              .catch(() => ""),
+            auspicious_description: z
+              .string()
+              .describe(
+                `Describe the auspiciousness score creatively (e.g., for 1 is "Requires Patience", for 5 is "Open Doors").`
               )
               .catch(() => ""),
           }),
           analysis: z.object({
-            fortunate_windows: z
+            power_days: z
               .string()
               .describe(
-                "Highlight 2-3 specific date ranges or individual days within the month that are particularly auspicious for general activities, based on the Weton flow. Briefly explain why they are favorable."
+                `Clearly list the general favorable days of the week for the month (e.g., "Wednesdays and Thursdays are generally supportive days for you this month."). Then, identify and list 1-2 specific "Personal Power Days" - dates where the daily Weton creates a harmonious combination with the user's own Weton.`
               )
               .catch(() => ""),
             cautious_windows: z
               .string()
               .describe(
-                "Identify 2-3 specific date ranges or individual days that may present challenges or require extra caution. Briefly explain why these periods might be difficult."
+                `Clearly list the specific inauspicious dates to be mindful of (e.g., "Be extra mindful on the 11th, 14th, and 27th of the month."). Mention any specific challenging Weton combinations if they occur.`
               )
               .catch(() => ""),
-            impact: z
+            effect: z
               .string()
               .describe(
-                "How do these monthly Weton energies specifically interact with the user's Birth Weton? Are there harmonies, clashes, or unique opportunities presented by this interaction? Reference neptu calculations where relevant."
+                `Write a paragraph explaining the dynamic. For example: "This month's watery, introspective energy harmonizes well with your earthy, patient Weton, creating a wonderful opportunity for deep personal growth."`
               )
               .catch(() => ""),
           }),
@@ -240,17 +273,34 @@ export async function generateMonthlyReading(profile) {
                 "Insights into spiritual reflection, connection to the divine, or finding inner peace according to Javanese principles."
               )
               .catch(() => ""),
+            month_challenge: z
+              .string()
+              .describe(
+                "Create a single, simple, actionable challenge for the user that aligns with the month's core theme."
+              )
+              .catch(() => ""),
           }),
           wisdom: z.object({
             philosophy: z
               .string()
               .describe(
-                "Connect the month's Weton and Wuku energy to a core Javanese philosophical concept (e.g., harmoni, keselarasan, tata krama, memayu hayuning bawana, eling lan waspada). Explain how the user can embody this concept during the month."
+                "Identify a relevant Javanese philosophical concept (like *keselarasan* (harmony) or *eling lan waspada* (mindfulness & vigilance)). Explain the concept simply and connect it to the month's energy, offering it as a guiding principle for the user."
               )
               .catch(() => ""),
           }),
         }),
-        messages: [{ role: "user", content: monthlyReadingPrompt(profile) }],
+        messages: [
+          {
+            role: "user",
+            content: monthlyReadingPrompt(
+              profile,
+              javaneseDate,
+              weddingFavorability,
+              favoriteDayofMonth,
+              monthAuspiciousness
+            ),
+          },
+        ],
       });
       const resObj = response.object;
 

@@ -11,6 +11,7 @@ import {
   getJavaneseDate,
   checkWeddingFavorability,
   checkDayFavorability,
+  checkMonthAuspiciousness,
 } from "@/utils";
 
 export default function TestPage() {
@@ -26,6 +27,7 @@ export default function TestPage() {
   const [javaneseDate, setJavaneseDate] = useState({});
   const [weddingFavorability, setWeddingFavorability] = useState({});
   const [favoriteDayofMonth, setFavoriteDayofMonth] = useState({});
+  const [monthDatesProfile, setMonthDateProfile] = useState({});
   const [wetonPrimbon, setWetonPrimbon] = useState({});
 
   useEffect(() => {
@@ -117,6 +119,10 @@ export default function TestPage() {
       javaneseDate?.yearNumber,
       javaneseDate?.yearName
     );
+    const monthAuspiciousness = checkMonthAuspiciousness(
+      javaneseDate?.monthName
+    );
+    setMonthDateProfile(monthAuspiciousness);
     setJavaneseDate(javaneseDate);
     setDayInfo(dayInfo);
     setWeddingFavorability(weddingFavorability);
@@ -266,6 +272,7 @@ export default function TestPage() {
           </h2>
           <pre>{JSON.stringify(weddingFavorability, null, 2)}</pre>
           <pre>{JSON.stringify(favoriteDayofMonth, null, 2)}</pre>
+          <pre>{JSON.stringify(monthDatesProfile, null, 2)}</pre>
         </div>
       )}
     </div>
