@@ -13,6 +13,7 @@ export const dailyReadingPrompt = (profile, todayWeton, todayWuku, dayInfo) => {
     "Friendship",
     "Family",
     "Relationships",
+    "Travel",
   ];
   const randomFocus = focusAreas[Math.floor(Math.random() * focusAreas.length)];
 
@@ -86,7 +87,7 @@ export const dailyReadingPrompt = (profile, todayWeton, todayWuku, dayInfo) => {
   
   ## Mandatory Instructions
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
+  - **CRITICAL INSTRUCTION:** Mention the dina or day in English (eg. Monday Kliwon, Thursday Legi).
   - Avoid em dashes.
   - Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section. Ensuring richness over brevity.
