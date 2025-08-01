@@ -165,7 +165,7 @@ export default function RakamPage() {
               title="😇 The Moral of Your Story"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

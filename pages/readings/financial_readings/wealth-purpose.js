@@ -240,7 +240,7 @@ export default function WealthPurposePage() {
               title="🪴 Nuruturing Your Financial Ecosystem"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

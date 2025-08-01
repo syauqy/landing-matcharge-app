@@ -234,7 +234,7 @@ export default function DetailCompatibilityReading() {
                 title="💡 Advice for You"
               />
             </div>
-          ) : reading.status === "pending" ? (
+          ) : reading.status === "loading" ? (
             <div className="flex flex-col items-center justify-center text-center p-8 bg-base-200 rounded-lg">
               <Loader2 className="animate-spin h-12 w-12 text-batik-black mb-4" />
               <p className="text-lg font-semibold text-batik-black">

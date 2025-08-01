@@ -246,7 +246,7 @@ export default function LoveStylePage() {
               title="🧘 Javanese Cultural Nuance"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

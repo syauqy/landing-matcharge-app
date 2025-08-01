@@ -246,7 +246,7 @@ export default function LakuPage() {
               title="✍🏼 The Path of Working Diligently"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

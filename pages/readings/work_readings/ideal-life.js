@@ -246,7 +246,7 @@ export default function LakuPage() {
               title="🏕️ Environments for Growth"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

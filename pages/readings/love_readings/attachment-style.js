@@ -250,7 +250,7 @@ export default function AttachmentStylePage() {
               <p className="text-sm text-gray-700">{disclaimer}</p>
             </section>
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

@@ -246,7 +246,7 @@ export default function LoveCorePage() {
               title="🧘 Javanese Philosophical Connection"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

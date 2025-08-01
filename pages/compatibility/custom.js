@@ -444,7 +444,7 @@ export default function CompatibilityPage() {
                     <h2 className="font-bold text-lg mb-2">
                       Love Compatibility Reading
                     </h2>
-                    {compatibilityReading.status === "pending" ? (
+                    {compatibilityReading.status === "loading" ? (
                       <div className="text-center p-4">
                         <span className="loading loading-dots loading-md"></span>
                         <p className="text-sm text-gray-500 mt-2">
@@ -464,7 +464,7 @@ export default function CompatibilityPage() {
                     <h2 className="font-bold text-lg mb-2">
                       Couple Dynamics Reading
                     </h2>
-                    {coupleReading.status === "pending" ? (
+                    {coupleReading.status === "loading" ? (
                       <div className="text-center p-4">
                         <span className="loading loading-dots loading-md"></span>
                         <p className="text-sm text-gray-500 mt-2">

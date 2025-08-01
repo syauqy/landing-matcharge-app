@@ -2117,30 +2117,10 @@ export async function generateFinancialProReading(profile) {
 export async function generateCoupleCompatibilityReading(
   profile1,
   profile2,
-  wetonJodoh
+  wetonJodoh,
+  readingId
 ) {
-  const { data: newCompatibilityReading, error } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "compatibility",
-      title: `${profile1.full_name.split(" ")[0]} and ${
-        profile2.full_name.split(" ")[0]
-      }'s Love`,
-      username: profile1.username,
-      status: "loading",
-      slug: `${profile1.username}-${profile2.username}-couple`,
-      user_id: profile1.id,
-    })
-    .select()
-    .maybeSingle();
-
-  if (error) {
-    console.error("Error inserting new reading:", error);
-    throw error;
-  }
-
-  console.log("new reading generated on supabase", newCompatibilityReading);
+  console.log("updating reading on supabase", readingId);
 
   const maxAttempts = 2;
   let attempt = 0;
@@ -2366,7 +2346,7 @@ export async function generateCoupleCompatibilityReading(
           subtitle: resObj?.header,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", newCompatibilityReading.id);
+        .eq("id", readingId);
     } catch (error) {
       console.log(error);
       lastErrorMsg = error.message;
@@ -2379,7 +2359,7 @@ export async function generateCoupleCompatibilityReading(
             reading: { error: lastErrorMsg },
             updated_at: new Date().toISOString(),
           })
-          .eq("id", newCompatibilityReading.id);
+          .eq("id", readingId);
       }
     }
   } while (attempt < maxAttempts);

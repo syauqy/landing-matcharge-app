@@ -249,7 +249,7 @@ export default function LoveAttitudesPage() {
               title="🧘 Javanese Cultural Nuance"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

@@ -67,46 +67,6 @@ export default function HomePage() {
       router.push("/home");
     }
   }, [user, authLoading, router]);
-  //     console.log("App opened with URL:", event.url);
-
-  //     if (event.url.includes("#access_token=")) {
-  //       // Supabase helper to parse the fragment and set the session
-  //       supabase.auth
-  //         .getSessionFromUrl({ url: event.url })
-  //         .then(({ data, error }) => {
-  //           if (error) {
-  //             console.error("Error getting session from URL:", error);
-  //             setError("Failed to process login callback.");
-  //           } else if (data.session) {
-  //             console.log(
-  //               "Session successfully established from URL:",
-  //               data.session
-  //             );
-  //             // Session is set automatically by getSessionFromUrl if successful.
-  //             // You might want to trigger a state update or navigation here
-  //             // For example, using a global state manager or router.push('/dashboard')
-  //             router.push("/home");
-  //             alert("Login successful via deep link!"); // Placeholder feedback
-  //           } else {
-  //             console.log(
-  //               "No session found in URL, or session already handled."
-  //             );
-  //           }
-  //         });
-  //     }
-  //   });
-  //   // Clean up listener on component unmount
-  //   return () => {
-  //     // listener.remove();
-  //     // Note: Capacitor listeners might behave differently on cleanup depending on version/platform.
-  //     // Consider managing listeners more globally if needed (_app.js).
-  //     // CapacitorApp.removeAllListeners(); // Use with caution if other listeners exist
-  //   };
-  // }, [router]);
-
-  // const goToLogin = () => {
-  //   router.push("/login");
-  // };
 
   const sliderSettings = {
     dots: true,

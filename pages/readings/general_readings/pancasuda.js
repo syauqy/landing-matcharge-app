@@ -235,7 +235,7 @@ export default function SaptawaraPage() {
               title="💪 Putting Your Gift to Work"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

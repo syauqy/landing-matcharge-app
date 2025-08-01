@@ -245,7 +245,7 @@ export default function LakuPage() {
               title="📖 Turning the Page"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

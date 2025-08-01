@@ -4,10 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext"; // Import useAuth
 import Link from "next/link";
-import ReactMarkdown from "react-markdown";
 import { useQueryState } from "nuqs";
 import { Navbar } from "@/components/layouts/navbar";
 import { LoveCompatibilityCard } from "@/components/readings/love-compatibility-card";
+import { FriendshipCompatibilityCard } from "@/components/readings/friendship-compatibility-card";
 import clsx from "clsx";
 import {
   SunIcon,
@@ -18,6 +18,8 @@ import {
   Loader2,
   LockIcon,
 } from "lucide-react";
+import { NoProfileLayout } from "@/components/readings/no-profile-layout";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 
 function DetailProfilePage() {
   const router = useRouter();
@@ -26,14 +28,13 @@ function DetailProfilePage() {
   const [username, setUsername] = useQueryState("username");
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [serializedInsight, setSerializedInsight] = useState(null);
-  const [loadingSerializedInsight, setLoadingSerializedInsight] =
-    useState(false);
   const [friendshipStatus, setFriendshipStatus] = useState(null); // 'not_friends', 'pending_sent', 'pending_received', 'friends', null (loading)
   const [isFriendActionLoading, setIsFriendActionLoading] = useState(false);
+  const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [friendshipError, setFriendshipError] = useState("");
   const [compatibilityReadingData, setCompatibilityReadingData] =
     useState(null);
+  const [friendshipReadingData, setFriendshipReadingData] = useState(null);
   const [loadingCompatibilityReading, setLoadingCompatibilityReading] =
     useState(false);
 
@@ -65,7 +66,55 @@ function DetailProfilePage() {
     }
   }, [username]);
 
+  const fetchStatus = async () => {
+    setIsFriendActionLoading(true);
+    setFriendshipError("");
+    try {
+      // Check if a friendship record exists
+      const { data, error } = await supabase
+        .from("friendships")
+        .select("requester_id, addressee_id, status")
+        .or(
+          `and(requester_id.eq.${user.id},addressee_id.eq.${profile.id}),and(requester_id.eq.${profile.id},addressee_id.eq.${user.id})`
+        )
+        .maybeSingle(); // Use maybeSingle as there might be no record
+
+      if (error) throw error;
+
+      if (data) {
+        if (data.status === "accepted") {
+          setFriendshipStatus("friends");
+        } else if (data.status === "pending") {
+          if (data.requester_id === user.id) {
+            setFriendshipStatus("pending_sent");
+          } else {
+            setFriendshipStatus("pending_received");
+          }
+          setCompatibilityReadingData(null); // Reset if status changes from friends
+        }
+      } else {
+        setFriendshipStatus("not_friends");
+      }
+    } catch (err) {
+      console.error("Error fetching friendship status:", err);
+      setFriendshipError("Could not load friendship status.");
+      setFriendshipStatus("not_friends"); // Fallback
+    } finally {
+      setIsFriendActionLoading(false);
+    }
+  };
+
   useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/"); // Or your app's login page
+      return;
+    }
+
+    if (!router.isReady || !user) {
+      setLoading(true);
+      return;
+    }
+
     fetchProfile();
   }, [fetchProfile]);
 
@@ -75,117 +124,138 @@ function DetailProfilePage() {
       // Don't fetch if no logged-in user, no profile, or viewing own profile
       setFriendshipStatus(null); // Or 'self' if you want to indicate it's the user's own profile
       setCompatibilityReadingData(null);
+      setFriendshipReadingData(null);
       return;
     }
-
-    const fetchStatus = async () => {
-      setIsFriendActionLoading(true);
-      setFriendshipError("");
-      try {
-        // Check if a friendship record exists
-        const { data, error } = await supabase
-          .from("friendships")
-          .select("requester_id, addressee_id, status")
-          .or(
-            `and(requester_id.eq.${user.id},addressee_id.eq.${profile.id}),and(requester_id.eq.${profile.id},addressee_id.eq.${user.id})`
-          )
-          .maybeSingle(); // Use maybeSingle as there might be no record
-
-        if (error) throw error;
-
-        if (data) {
-          if (data.status === "accepted") {
-            setFriendshipStatus("friends");
-          } else if (data.status === "pending") {
-            if (data.requester_id === user.id) {
-              setFriendshipStatus("pending_sent");
-            } else {
-              setFriendshipStatus("pending_received");
-            }
-            setCompatibilityReadingData(null); // Reset if status changes from friends
-          }
-        } else {
-          setFriendshipStatus("not_friends");
-        }
-      } catch (err) {
-        console.error("Error fetching friendship status:", err);
-        setFriendshipError("Could not load friendship status.");
-        setFriendshipStatus("not_friends"); // Fallback
-      } finally {
-        setIsFriendActionLoading(false);
-      }
-    };
 
     fetchStatus();
   }, [user, profile, router]);
 
-  //compatibility check
-  useEffect(() => {
-    const fetchCompatibilityReading = async () => {
-      if (friendshipStatus !== "friends" || !user || !profile) {
+  const fetchLoveCompatibilityReading = async () => {
+    if (friendshipStatus !== "friends" || !user || !profile) {
+      setCompatibilityReadingData(null);
+      setLoadingCompatibilityReading(false);
+      return;
+    }
+    setLoadingCompatibilityReading(true);
+    let loggedInUsername = null;
+    try {
+      const { data: loggedInUserData, error: loggedInUserError } =
+        await supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", user.id)
+          .single();
+
+      if (loggedInUserError) {
+        console.error(
+          "Error fetching logged-in user's username:",
+          loggedInUserError
+        );
+        throw loggedInUserError;
+      }
+      if (!loggedInUserData || !loggedInUserData.username) {
+        console.error("Logged-in user's username not found.");
         setCompatibilityReadingData(null);
         setLoadingCompatibilityReading(false);
         return;
       }
-      setLoadingCompatibilityReading(true);
-      let loggedInUsername = null;
-      try {
-        const { data: loggedInUserData, error: loggedInUserError } =
-          await supabase
-            .from("profiles")
-            .select("username")
-            .eq("id", user.id)
-            .single();
 
-        if (loggedInUserError) {
-          console.error(
-            "Error fetching logged-in user's username:",
-            loggedInUserError
-          );
-          throw loggedInUserError;
-        }
-        if (!loggedInUserData || !loggedInUserData.username) {
-          console.error("Logged-in user's username not found.");
-          setCompatibilityReadingData(null);
-          setLoadingCompatibilityReading(false);
-          return;
-        }
+      loggedInUsername = loggedInUserData.username;
 
-        loggedInUsername = loggedInUserData.username;
+      const slug1Base = `${loggedInUsername}-${profile.username}`;
+      const slug2Base = `${profile.username}-${loggedInUsername}`;
 
-        const slug1Base = `${loggedInUsername}-${profile.username}`;
-        const slug2Base = `${profile.username}-${loggedInUsername}`;
+      const orConditions = [
+        `and(user_id.eq.${user.id},slug.eq.${slug1Base}-couple))`,
+        `and(user_id.eq.${profile.id},slug.eq.${slug2Base}-couple))`,
+      ].join(",");
 
-        const orConditions = [
-          `and(user_id.eq.${user.id},or(slug.eq.${slug1Base}-friendship,slug.eq.${slug1Base}-couple))`,
-          `and(user_id.eq.${profile.id},or(slug.eq.${slug2Base}-friendship,slug.eq.${slug2Base}-couple))`,
-        ].join(",");
+      const { data, error } = await supabase
+        .from("readings")
+        .select("reading, created_at, slug, title, reading_category, status")
+        .eq("reading_category", "compatibility")
+        .or(orConditions)
+        .order("created_at", { ascending: false })
+        .maybeSingle();
 
-        // console.log(user);
-        // console.log(orConditions);
+      if (error) throw error;
+      setCompatibilityReadingData(data);
+    } catch (err) {
+      console.error("Error fetching compatibility reading:", err);
+      // Optionally set an error state for compatibility reading
+    } finally {
+      setLoadingCompatibilityReading(false);
+    }
+  };
 
-        const { data, error } = await supabase
-          .from("readings")
-          .select("reading, created_at, slug, title, reading_category, status")
-          .eq("reading_category", "compatibility")
-          .or(orConditions)
-          .order("created_at", { ascending: false })
-          .maybeSingle();
+  const fetchFriendshipCompatibilityReading = async () => {
+    if (friendshipStatus !== "friends" || !user || !profile) {
+      setFriendshipReadingData(null);
+      setLoadingCompatibilityReading(false);
+      return;
+    }
+    setLoadingCompatibilityReading(true);
+    let loggedInUsername = null;
+    try {
+      const { data: loggedInUserData, error: loggedInUserError } =
+        await supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", user.id)
+          .single();
 
-        if (error) throw error;
-        setCompatibilityReadingData(data);
-      } catch (err) {
-        console.error("Error fetching compatibility reading:", err);
-        // Optionally set an error state for compatibility reading
-      } finally {
-        setLoadingCompatibilityReading(false);
+      if (loggedInUserError) {
+        console.error(
+          "Error fetching logged-in user's username:",
+          loggedInUserError
+        );
+        throw loggedInUserError;
       }
-    };
+      if (!loggedInUserData || !loggedInUserData.username) {
+        console.error("Logged-in user's username not found.");
 
+        setFriendshipReadingData(null);
+        setLoadingCompatibilityReading(false);
+        return;
+      }
+
+      loggedInUsername = loggedInUserData.username;
+
+      const slug1Base = `${loggedInUsername}-${profile.username}`;
+      const slug2Base = `${profile.username}-${loggedInUsername}`;
+
+      const orConditions = [
+        `and(user_id.eq.${user.id},or(slug.eq.${slug1Base}-friendship))`,
+        `and(user_id.eq.${profile.id},or(slug.eq.${slug2Base}-friendship))`,
+      ].join(",");
+
+      const { data, error } = await supabase
+        .from("readings")
+        .select("reading, created_at, slug, title, reading_category, status")
+        .eq("reading_category", "compatibility")
+        .or(orConditions)
+        .order("created_at", { ascending: false })
+        .maybeSingle();
+
+      if (error) throw error;
+      setFriendshipReadingData(data);
+    } catch (err) {
+      console.error("Error fetching compatibility reading:", err);
+      // Optionally set an error state for compatibility reading
+    } finally {
+      setLoadingCompatibilityReading(false);
+    }
+  };
+
+  //compatibility check
+  useEffect(() => {
     if (friendshipStatus === "friends") {
-      fetchCompatibilityReading();
+      fetchLoveCompatibilityReading();
+      fetchFriendshipCompatibilityReading();
     } else {
-      setCompatibilityReadingData(null); // Clear if not friends
+      setCompatibilityReadingData(null);
+      setFriendshipReadingData(null);
     }
   }, [friendshipStatus, user, profile]);
 
@@ -252,30 +322,21 @@ function DetailProfilePage() {
     (user && profile && user.id === profile.id) ||
     friendshipStatus === "friends";
 
-  if (loading || authLoading) {
+  if (authLoading || (loading && !friendshipError)) {
+    return <PageLoadingLayout />;
+  }
+
+  if (!profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-batik-border"></div>
-      </div>
+      <NoProfileLayout
+        router={router}
+        profileData={profile}
+        showTitleInNavbar={showTitleInNavbar}
+      />
     );
   }
 
-  if (user.id && !loading && !authLoading && !profile) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-700">
-            Profile not found
-          </h2>
-          <p className="text-gray-500 mt-2">
-            The requested profile could not be found.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  console.log(profile);
+  // console.log(profile);
 
   // Avatar logic: use profile.avatar_url or generate with ui-avatars
   const displayAvatarUrl =
@@ -305,7 +366,6 @@ function DetailProfilePage() {
       <div className="h-[100svh] flex flex-col bg-base relative">
         <Navbar title={profile.full_name} isBack={true} />
         <div className="flex-grow overflow-y-auto overflow-x-clip pt-4 sm:pt-6 pb-20">
-          {/* Profile Header */}
           <div className="px-5 mb-6 flex items-center gap-4">
             <div className="avatar">
               <div className="w-16 rounded-full ring-3 ring-offset-2 ring-batik-border">
@@ -317,10 +377,10 @@ function DetailProfilePage() {
             </div>
             <div className="flex flex-col gap-2 max-w-[80%]">
               <div className="flex flex-col">
-                <div className="text-xl font-bold text-batik-black overflow-x-clip text-nowrap text-ellipsis">
+                <div className="text-xl font-bold text-batik-black overflow-x-clip text-nowrap text-ellipsis line-clamp-1">
                   {profile?.full_name || "Full Name"}
                 </div>
-                <div className="leading-3 text-sm text-gray-500 overflow-x-clip text-nowrap text-ellipsis">
+                <div className="text-sm text-gray-500 overflow-x-clip text-nowrap text-ellipsis line-clamp-1">
                   {profile?.username || "username"}
                 </div>
               </div>
@@ -335,13 +395,6 @@ function DetailProfilePage() {
                   {profile?.wuku?.name}
                 </div>
               </div>
-              {/* <Link
-                href="/connections"
-                className="py-1.5 px-3 text-xs inline-flex items-center w-fit rounded-full border text-batik-text border-batik-text hover:bg-batik/80 hover:cursor-pointer"
-              >
-                <Users2Icon size={13} className=" mr-2" />
-                <span>View Connections</span>
-              </Link> */}
             </div>
           </div>
 
@@ -360,7 +413,7 @@ function DetailProfilePage() {
                 )}
               >
                 {friendshipStatus === "friends" &&
-                  !compatibilityReadingData && (
+                  (!compatibilityReadingData || !friendshipReadingData) && (
                     <Link
                       href="/compatibility"
                       className="btn rounded-2xl w-full bg-batik/50 border-batik-border text-batik-black"
@@ -412,44 +465,29 @@ function DetailProfilePage() {
             </div>
           )}
 
-          {/* Compatibility Reading Section */}
-          {canViewDetails && loadingCompatibilityReading && (
-            <div className="px-5 mb-6 text-center">
-              <Loader2
-                size={24}
-                className="animate-spin mx-auto text-batik-black"
-              />
-              <p className="text-sm text-gray-500 mt-2">
-                Loading compatibility insights...
-              </p>
-            </div>
-          )}
-          {canViewDetails &&
-            compatibilityReadingData &&
-            compatibilityReadingData.status === "completed" && (
-              <div className="px-5 mb-6">
-                <LoveCompatibilityCard reading={compatibilityReadingData} />
-              </div>
-            )}
-          {canViewDetails &&
-            compatibilityReadingData &&
-            compatibilityReadingData.status === "pending" && (
-              <div className="px-5 mb-6 text-center">
-                <Loader2
-                  size={24}
-                  className="animate-spin mx-auto text-batik-black"
-                />
-                <p className="text-sm text-gray-500 mt-2">
-                  Compatibility reading is being generated...
-                </p>
-              </div>
-            )}
-
           {/* Tabs */}
           {canViewDetails ? (
             <div className="px-5">
-              <div className="mb-4 border-2 rounded-2xl border-gray-100 bg-gray-100">
-                <nav className="grid grid-cols-2" aria-label="Tabs">
+              <div className="mb-4 border-2 rounded-2xl border-gray-100 bg-gray-100 sticky -top-3 z-50 shadow-sm">
+                <nav
+                  className={clsx(
+                    compatibilityReadingData || friendshipReadingData
+                      ? "grid-cols-3"
+                      : "grid-cols-2",
+                    "grid"
+                  )}
+                  aria-label="Tabs"
+                >
+                  <button
+                    onClick={() => setActiveTab("compatibility")}
+                    className={`${
+                      activeTab === "compatibility"
+                        ? "border-batik-text text-batik-black bg-batik-border font-semibold"
+                        : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
+                    } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
+                  >
+                    Synergy
+                  </button>
                   <button
                     onClick={() => setActiveTab("weton")}
                     className={`${
@@ -475,6 +513,52 @@ function DetailProfilePage() {
 
               {/* Tab Content */}
               <div>
+                {activeTab === "compatibility" &&
+                  (compatibilityReadingData || friendshipReadingData) && (
+                    <div className="flex flex-col gap-5">
+                      {/* Compatibility Reading Section */}
+                      {canViewDetails && loadingCompatibilityReading && (
+                        <div className="px-5 mb-6 text-center">
+                          <Loader2
+                            size={24}
+                            className="animate-spin mx-auto text-batik-black"
+                          />
+                          <p className="text-sm text-gray-500 mt-2">
+                            Loading compatibility insights...
+                          </p>
+                        </div>
+                      )}
+                      {canViewDetails &&
+                        (compatibilityReadingData?.status ||
+                          friendshipReadingData?.status) === "completed" && (
+                          <div className="flex flex-col gap-5">
+                            {compatibilityReadingData && (
+                              <LoveCompatibilityCard
+                                reading={compatibilityReadingData}
+                              />
+                            )}
+                            {friendshipReadingData && (
+                              <FriendshipCompatibilityCard
+                                reading={friendshipReadingData}
+                              />
+                            )}
+                          </div>
+                        )}
+                      {canViewDetails &&
+                        (compatibilityReadingData?.status ||
+                          friendshipReadingData?.status) === "pending" && (
+                          <div className="px-5 mb-6 text-center">
+                            <Loader2
+                              size={24}
+                              className="animate-spin mx-auto text-batik-black"
+                            />
+                            <p className="text-sm text-gray-500 mt-2">
+                              Compatibility reading is being generated...
+                            </p>
+                          </div>
+                        )}
+                    </div>
+                  )}
                 {activeTab === "weton" &&
                   profile.weton && ( // Check if weton data exists
                     <div className="flex flex-col gap-5">

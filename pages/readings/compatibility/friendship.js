@@ -4,8 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useQueryState } from "nuqs";
-import Link from "next/link";
-import { ArrowLeft, Loader2 } from "lucide-react"; // For GitHub Flavored Markdown
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { convertToMarkdownList, getWetonEmojiScore } from "@/utils";
 import { fetchProfileData } from "@/utils/fetch";
 import { ErrorLayout } from "@/components/layouts/error-page";
@@ -13,6 +12,7 @@ import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { Capacitor } from "@capacitor/core";
 import { ReadingLoading } from "@/components/readings/reading-loading";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
 
@@ -172,26 +172,8 @@ export default function DetailCompatibilityReading() {
     );
   }
 
-  // The reading prop is guaranteed by getServerSideProps if no error/notFound
-  if (!reading) {
-    // This should ideally not be reached if getServerSideProps is correct
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <p>Reading not found.</p>
-      </div>
-    );
-  }
-
-  const readingContent = reading.reading?.reading || reading.reading; // Handle if reading.reading is an object or string
-  //   console.log(reading.reading);
-  //   console.log(user);
-  // console.log(profileData, partnerProfile);
-
-  const dayCombinationContent = `${readingContent?.blend?.dina?.vibe}
-
-${readingContent?.blend?.dina?.weton_essence}
-
-${readingContent?.blend?.dina?.interpretation}`;
+  const readingContent = reading?.reading?.reading || reading?.reading;
+  console.log(profileData, partnerProfile);
 
   return (
     <>
@@ -380,6 +362,15 @@ ${readingContent?.blend?.dina?.interpretation}`;
               )}
               {activeTab === "dynamics" && (
                 <div className="space-y-6">
+                  <div>
+                    <div className="font-semibold">
+                      The Friendship Playbook, How You Thrive in Real Life
+                    </div>
+                    <div className=" text-slate-600">
+                      This section provides highly practical advice and act as
+                      the "playbook" for navigating key life scenarios together.
+                    </div>
+                  </div>
                   <ContentSection
                     reading={readingContent?.playbook?.support}
                     setIsSectionOpen={setIsSectionEightOpen}
@@ -416,7 +407,9 @@ ${readingContent?.blend?.dina?.interpretation}`;
               {activeTab === "challenges" && (
                 <div className="space-y-6">
                   <ContentSection
-                    reading={readingContent?.challenges?.friction}
+                    reading={convertToMarkdownList(
+                      readingContent?.challenges?.friction
+                    )}
                     setIsSectionOpen={setIsSectionFourteenOpen}
                     isSectionOpen={isSectionFourteenOpen}
                     title="⚡️ Growth Hotspots"
@@ -445,20 +438,48 @@ ${readingContent?.blend?.dina?.interpretation}`;
                 </div>
               )}
             </div>
-          ) : reading?.status === "pending" ? (
-            <ReadingLoading />
-          ) : (
-            <div>
-              <p className="text-gray-500">
-                No reading content available for this entry.
-              </p>
-              <button
-                onClick={() => router.back()}
-                className="btn btn-neutral mt-6"
-              >
-                Go Back
-              </button>
+          ) : reading?.status === "loading" ? (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-semibold text-left">
+                  {profileData?.full_name.split(" ")[0]} &{" "}
+                  {partnerProfile?.full_name.split(" ")[0]}'s Friendship
+                </h2>
+              </div>
+              <div className="mb-2">
+                <div className="avatar">
+                  <div className="size-12 ring-2 ring-offset-2 ring-batik-border rounded-full overflow-hidden">
+                    <img
+                      src={userAvatar}
+                      alt={profileData?.full_name || "User"}
+                    />
+                  </div>
+                </div>
+                <div className="avatar">
+                  <div className="size-12 ring-2 ring-offset-2 ring-batik-border rounded-full overflow-hidden">
+                    <img
+                      src={partnerAvatar}
+                      alt={partnerProfile?.full_name || "Partner"}
+                    />
+                  </div>
+                </div>
+              </div>
+              <ReadingLoadingSkeleton />
             </div>
+          ) : (
+            !reading && (
+              <div>
+                <p className="text-gray-500">
+                  No reading content available for this entry.
+                </p>
+                <button
+                  onClick={() => router.back()}
+                  className="btn btn-neutral mt-6"
+                >
+                  Go Back
+                </button>
+              </div>
+            )
           )}
           {reading?.id && (
             <div>

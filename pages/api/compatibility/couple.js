@@ -19,11 +19,16 @@ export default async function handler(req, res) {
       });
     }
 
-    const { profile1, profile2, wetonJodoh } = req.body;
+    const { profile1, profile2, wetonJodoh, readingId } = req.body;
     // console.log(profile1, profile2, wetonJodoh);
     try {
       waitUntil(
-        generateCoupleCompatibilityReading(profile1, profile2, wetonJodoh)
+        generateCoupleCompatibilityReading(
+          profile1,
+          profile2,
+          wetonJodoh,
+          readingId
+        )
       );
       // Send a 202 Accepted response immediately as the task is offloaded
       return res

@@ -188,7 +188,7 @@ export default function LifePathPage() {
               title="🔭 Empowering Outlook"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

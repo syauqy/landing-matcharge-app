@@ -263,7 +263,7 @@ export default function FinancialPage() {
               title="🧘 Hidden Strength & Karmic Lesson"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

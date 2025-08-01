@@ -425,7 +425,7 @@ export default function MonthlyReadingPage() {
               </div>
             </section>
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           profileData?.subscription == "free" && (

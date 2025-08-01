@@ -361,7 +361,7 @@ export default function PrimaryTraitsPage() {
               />
             )}
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

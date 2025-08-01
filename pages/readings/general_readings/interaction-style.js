@@ -189,7 +189,7 @@ export default function InteractionPage() {
               title="🙏 Social Etiquette"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (

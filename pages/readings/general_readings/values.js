@@ -175,7 +175,7 @@ export default function ValuesPage() {
               title="💭 Philosophical Connection"
             />
           </div>
-        ) : reading?.status === "pending" ? (
+        ) : reading?.status === "loading" ? (
           <ReadingLoading />
         ) : (
           !reading && (
