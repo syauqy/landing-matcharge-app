@@ -712,7 +712,7 @@ const getJodohDay = (dina1, dina2) => {
   );
   const key = `${sortedDina[0]}-${sortedDina[1]}`;
 
-  console.log(sortedDina, key);
+  // console.log(sortedDina, key);
 
   if (dinaCombination[key]) {
     return {
@@ -757,4 +757,39 @@ export function getDayInformation(today) {
     taliwangkeDay: taliwangkeDay,
     samparwangkeDay: samparwangkeDay,
   };
+}
+
+export function convertToMarkdownList(text) {
+  let formatted = text.replace(/(\s+)(\d+\.)/g, "\n$2");
+
+  if (!/^\d+\./.test(formatted)) {
+    formatted = formatted.replace(/^\n/, "");
+  }
+
+  return formatted;
+}
+
+export function getCompatibilitySlug(hyphenatedString) {
+  const words = hyphenatedString.split("-");
+  return words.length >= 3 ? words[2] : null;
+}
+
+export function getWetonEmojiScore(score) {
+  if (typeof score !== "number" || score < 0 || score > 100) {
+    return "❓";
+  }
+  if (score >= 0 && score <= 20) {
+    return "💔"; // Incompatible
+  } else if (score <= 50) {
+    return "🤔"; // Challenging
+  } else if (score <= 70) {
+    return "🙂"; // Average
+  } else if (score <= 85) {
+    return "😊"; // Good
+  } else if (score <= 95) {
+    return "🥰"; // Excellent
+  } else {
+    // The only remaining possibility is 96-100
+    return "💎"; // Perfect
+  }
 }

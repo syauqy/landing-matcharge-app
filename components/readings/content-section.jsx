@@ -8,6 +8,7 @@ export function ContentSection({
   setIsSectionOpen,
   isSectionOpen,
   title,
+  subtitle,
   firstSection,
 }) {
   if (reading) {
@@ -38,7 +39,28 @@ export function ContentSection({
         >
           <div className="overflow-hidden">
             <div className="flex flex-col">
-              <Markdown className="text-gray-700">
+              {subtitle && (
+                <div className="font-semibold text-lg text-batik-text">
+                  {subtitle}
+                </div>
+              )}
+              <Markdown
+                className="text-gray-700"
+                options={{
+                  overrides: {
+                    p: {
+                      props: {
+                        className: "pb-4 last:pb-0",
+                      },
+                    },
+                    li: {
+                      props: {
+                        className: "pb-2 last:pb-0",
+                      },
+                    },
+                  },
+                }}
+              >
                 {reading?.replace(/—/gi, ", ")}
               </Markdown>
             </div>

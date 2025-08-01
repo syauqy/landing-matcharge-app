@@ -7,15 +7,53 @@ import { useQueryState } from "nuqs";
 import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import Markdown from "markdown-to-jsx";
 import remarkGfm from "remark-gfm"; // For GitHub Flavored Markdown
+import {
+  fetchProfileData,
+  handleGenerateReading,
+  fetchReading,
+} from "@/utils/fetch";
+import { ErrorLayout } from "@/components/layouts/error-page";
+import { NoProfileLayout } from "@/components/readings/no-profile-layout";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
+import { Capacitor } from "@capacitor/core";
+import { ReadingLoading } from "@/components/readings/reading-loading";
+import { ReadingDescription } from "@/components/readings/reading-description";
+import { ReadingNavbar } from "@/components/readings/reading-navbar";
+import { FeedbackSession } from "@/components/readings/feedback-section";
+import { ContentSection } from "@/components/readings/content-section";
+import { DisclaimerSection } from "@/components/readings/disclaimer-section";
 
 export default function DetailCompatibilityReading() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [slug, setSlug] = useQueryState("slug");
   const [reading, setReading] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
+  const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
+  const [isSectionThreeOpen, setIsSectionThreeOpen] = useState(false);
+  const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
+  const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
+  const isNative = Capacitor.isNativePlatform();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/"); // Or your app's login page
+      return;
+    }
+
+    if (!router.isReady || !user) {
+      setLoading(true);
+      return;
+    }
+
+    fetchProfileData({ user, setLoading, setError, setProfileData });
+  }, []);
 
   const fetchReading = useCallback(async () => {
     if (!slug) return;
@@ -43,16 +81,21 @@ export default function DetailCompatibilityReading() {
     }
   }, [slug]);
 
+  function convertToMarkdownList(text) {
+    // Replace numbers with newline + number if not at the beginning
+    let formatted = text.replace(/(\s+)(\d+\.)/g, "\n$2");
+
+    // If the text doesn't start with a number, clean up any initial newline
+    if (!/^\d+\./.test(formatted)) {
+      formatted = formatted.replace(/^\n/, "");
+    }
+
+    return formatted;
+  }
+
   useEffect(() => {
     fetchReading();
   }, [fetchReading]);
-
-  // Redirect if not authenticated (though data is fetched server-side, good for consistency)
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
-    }
-  }, [user, authLoading, router]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -67,12 +110,17 @@ export default function DetailCompatibilityReading() {
     };
   }, []);
 
-  if (authLoading) {
+  if (authLoading || (loading && !error)) {
+    return <PageLoadingLayout />;
+  }
+
+  if (!profileData) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg"></span>
-        <p className="mt-4">Loading...</p>
-      </div>
+      <NoProfileLayout
+        router={router}
+        profileData={profileData}
+        showTitleInNavbar={showTitleInNavbar}
+      />
     );
   }
 
@@ -91,6 +139,7 @@ export default function DetailCompatibilityReading() {
 
   const readingContent = reading.reading?.reading || reading.reading; // Handle if reading.reading is an object or string
   console.log(reading.reading);
+  console.log(user);
 
   return (
     <>
@@ -124,24 +173,68 @@ export default function DetailCompatibilityReading() {
                 Compatibility
               </div>
               <span className="text-batik-black font-semibold text-sm truncate max-w-xs">
-                {reading.title}
+                {reading.title.replace(/'s Compatibility$/, "")}
               </span>
             </div>
           )}
           <div className="navbar-end"></div>
         </div>
 
+        {error && <ErrorLayout error={error} router={router} />}
+
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-          <header className="mb-6">
+          {/* <header className="mb-6">
             <h1 className="text-2xl md:text-3xl font-bold text-batik-black mb-2">
               {reading.title || "Compatibility Reading"}
             </h1>
-            {reading.subtitle && (
-              <p className="text-md text-gray-600">{reading.subtitle}</p>
+            {reading.header && (
+              <p className="text-md text-gray-600">{reading.header}</p>
             )}
-          </header>
+          </header> */}
 
-          {reading.status === "pending" ? (
+          {reading.status === "completed" ? (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-semibold text-left">
+                  {reading.title || "Compatibility Reading"}
+                </h2>
+              </div>
+              <section className={"pt-4 flex flex-col"}>
+                <div className="font-semibold text-batik-text">
+                  Couple Archetype
+                </div>
+                <h2 className="text-lg font-semibold">
+                  {readingContent?.summary?.archetype}
+                </h2>
+                <div className="text-gray-700">
+                  {readingContent?.summary?.essence}
+                </div>
+              </section>
+              <ContentSection
+                reading={convertToMarkdownList(
+                  readingContent?.summary?.strengths
+                )}
+                setIsSectionOpen={setIsSectionOneOpen}
+                isSectionOpen={isSectionOneOpen}
+                title="🟢 Your Green Flags"
+                firstSection={true}
+              />
+              <ContentSection
+                reading={convertToMarkdownList(
+                  readingContent?.summary?.challenges
+                )}
+                setIsSectionOpen={setIsSectionTwoOpen}
+                isSectionOpen={isSectionTwoOpen}
+                title="💪 Your Growth Edges"
+              />
+              <ContentSection
+                reading={readingContent?.insight}
+                setIsSectionOpen={setIsSectionThreeOpen}
+                isSectionOpen={isSectionThreeOpen}
+                title="💡 Advice for You"
+              />
+            </div>
+          ) : reading.status === "pending" ? (
             <div className="flex flex-col items-center justify-center text-center p-8 bg-base-200 rounded-lg">
               <Loader2 className="animate-spin h-12 w-12 text-batik-black mb-4" />
               <p className="text-lg font-semibold text-batik-black">
@@ -155,37 +248,37 @@ export default function DetailCompatibilityReading() {
             <div className="flex flex-col gap-4">
               <article className="prose prose-sm sm:prose-base max-w-none text-gray-700">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {readingContent.insight}
+                  {readingContent?.header}
                 </ReactMarkdown>
               </article>
               <article className="prose prose-sm sm:prose-base max-w-none text-gray-700">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {readingContent.analysis.foundational}
+                  {readingContent?.insight}
                 </ReactMarkdown>
               </article>
               <article className="prose prose-sm sm:prose-base max-w-none text-gray-700">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {readingContent.analysis.dynamics}
+                  {readingContent?.analysis?.dynamics}
                 </ReactMarkdown>
               </article>
               <article className="prose prose-sm sm:prose-base max-w-none text-gray-700">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {readingContent.analysis.home}
+                  {readingContent?.analysis?.home}
                 </ReactMarkdown>
               </article>
               <article className="prose prose-sm sm:prose-base max-w-none text-gray-700">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {readingContent.analysis.passion}
+                  {readingContent?.analysis?.passion}
                 </ReactMarkdown>
               </article>
               <article className="prose prose-sm sm:prose-base max-w-none text-gray-700">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {readingContent.analysis.challenges}
+                  {readingContent?.analysis?.challenges}
                 </ReactMarkdown>
               </article>
               <article className="prose prose-sm sm:prose-base max-w-none text-gray-700">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {readingContent.analysis.advice}
+                  {readingContent?.analysis?.advice}
                 </ReactMarkdown>
               </article>
             </div>

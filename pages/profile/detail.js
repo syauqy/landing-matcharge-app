@@ -7,6 +7,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { useQueryState } from "nuqs";
 import { Navbar } from "@/components/layouts/navbar";
+import { LoveCompatibilityCard } from "@/components/readings/love-compatibility-card";
 import clsx from "clsx";
 import {
   SunIcon,
@@ -156,8 +157,8 @@ function DetailProfilePage() {
         const slug2Base = `${profile.username}-${loggedInUsername}`;
 
         const orConditions = [
-          `and(user_id.eq.${user.id},or(slug.eq.${slug1Base}-compatibility,slug.eq.${slug1Base}-couple))`,
-          `and(user_id.eq.${profile.id},or(slug.eq.${slug2Base}-compatibility,slug.eq.${slug2Base}-couple))`,
+          `and(user_id.eq.${user.id},or(slug.eq.${slug1Base}-friendship,slug.eq.${slug1Base}-couple))`,
+          `and(user_id.eq.${profile.id},or(slug.eq.${slug2Base}-friendship,slug.eq.${slug2Base}-couple))`,
         ].join(",");
 
         // console.log(user);
@@ -358,14 +359,15 @@ function DetailProfilePage() {
                     : "grid-cols-1"
                 )}
               >
-                {friendshipStatus === "friends" && (
-                  <Link
-                    href="/compatibility"
-                    className="btn rounded-2xl w-full bg-batik/50 border-batik-border text-batik-black"
-                  >
-                    Get Compatibility
-                  </Link>
-                )}
+                {friendshipStatus === "friends" &&
+                  !compatibilityReadingData && (
+                    <Link
+                      href="/compatibility"
+                      className="btn rounded-2xl w-full bg-batik/50 border-batik-border text-batik-black"
+                    >
+                      Get Compatibility
+                    </Link>
+                  )}
                 <button
                   onClick={handleFriendAction}
                   disabled={isFriendActionLoading || !friendshipStatus}
@@ -426,40 +428,7 @@ function DetailProfilePage() {
             compatibilityReadingData &&
             compatibilityReadingData.status === "completed" && (
               <div className="px-5 mb-6">
-                <Link
-                  href={`/readings/${compatibilityReadingData.reading_category}?slug=${compatibilityReadingData.slug}`}
-                  passHref
-                  className="block bg-base-100 rounded-lg p-4 md:p-6 border border-[var(--color-batik-border)] hover:shadow-lg transition-shadow duration-150 ease-in-out cursor-pointer"
-                >
-                  <div className="flex flex-row gap-2 items-center">
-                    <div
-                      className="radial-progress text-2xl shrink-0 text-batik-border"
-                      style={{
-                        "--value": compatibilityReadingData?.reading?.score,
-                        "--thickness": "7px",
-                      }}
-                      aria-valuenow={compatibilityReadingData?.reading?.score}
-                      role="progressbar"
-                    >
-                      {compatibilityReadingData?.reading?.score}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <div className="text-lg font-bold text-slate-600">
-                        Love Compatibility
-                      </div>
-                      <div className="prose prose-xs max-w-none text-xs text-ellipsis overflow-hidden">
-                        <ReactMarkdown>
-                          {compatibilityReadingData?.reading?.header || ""}
-                        </ReactMarkdown>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right mt-3">
-                    <span className="text-sm text-batik-text hover:underline">
-                      Read More &rarr;
-                    </span>
-                  </div>
-                </Link>
+                <LoveCompatibilityCard reading={compatibilityReadingData} />
               </div>
             )}
           {canViewDetails &&

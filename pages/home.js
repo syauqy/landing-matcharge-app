@@ -10,7 +10,7 @@ import Link from "next/link";
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
 import { format } from "date-fns";
 import { Menubar } from "@/components/layouts/menubar";
-import { getDayInformation, getWeton } from "@/utils";
+import { getDayInformation, getWeton, getCompatibilitySlug } from "@/utils";
 import { closeBrowser } from "@/utils/native-browser";
 import { DailyReadingSection } from "@/components/readings/daily-reading-section";
 import { MonthlyReadingSection } from "@/components/readings/monthly-reading-section";
@@ -88,8 +88,9 @@ export default function Home() {
         .from("readings")
         .select("*")
         .eq("user_id", user.id)
-        .neq("reading_category", "compatibility")
+        // .neq("reading_category", "compatibility")
         .neq("reading_category", "daily")
+        // .neq("reading_category", "monthly")
         .order("created_at", { ascending: false })
         .limit(5);
 
@@ -484,20 +485,41 @@ export default function Home() {
   const renderLatestReadings = () => {
     return (
       <ul className="flex flex-row flex-nowrap overflow-x-scroll overflow-y-hidden pb-3">
-        {latestReadings.map((r) => (
-          <li key={r.id} className="w-fit ml-4 last:mr-4 ">
-            <Link href={`/readings/${r?.reading_category}/${r.slug}`}>
-              <div className="rounded-2xl flex flex-col gap-2 p-4 bg-base-100 active:bg-batik focus:bg-batik shadow-md border border-[var(--color-batik-border)] h-[8rem] w-[10rem]">
-                <p className="text-base-content font-semibold text-sm">
-                  {r.title}
-                </p>{" "}
-                <div className="text-xs text-base-content/80 text-balance truncate">
-                  {r.subtitle}
-                </div>
-              </div>
-            </Link>
-          </li>
-        ))}
+        {latestReadings?.map((r) => {
+          const compatibilitySlug = getCompatibilitySlug(r.slug);
+          if (r?.reading_category === "compatibility") {
+            return (
+              <li key={r.id} className="w-fit ml-4 last:mr-4 ">
+                <Link
+                  href={`/readings/${r?.reading_category}/${compatibilitySlug}?slug=${r.slug}`}
+                >
+                  <div className="rounded-2xl flex flex-col gap-2 p-4 bg-base-100 active:bg-batik focus:bg-batik shadow-md border border-[var(--color-batik-border)] h-[8rem] w-[10rem]">
+                    <p className="line-clamp-2 text-base-content font-semibold text-sm ">
+                      {r.title}
+                    </p>{" "}
+                    <div className="text-xs text-base-content/80 text-balance line-clamp-3">
+                      {r.subtitle}
+                    </div>
+                  </div>
+                </Link>
+              </li>
+            );
+          } else
+            return (
+              <li key={r.id} className="w-fit ml-4 last:mr-4 ">
+                <Link href={`/readings/${r?.reading_category}/${r.slug}`}>
+                  <div className="rounded-2xl flex flex-col gap-2 p-4 bg-base-100 active:bg-batik focus:bg-batik shadow-md border border-[var(--color-batik-border)] h-[8rem] w-[10rem]">
+                    <p className="line-clamp-2 text-base-content font-semibold text-sm">
+                      {r.title}
+                    </p>{" "}
+                    <div className="text-xs text-base-content/80 text-balance line-clamp-3">
+                      {r.subtitle}
+                    </div>
+                  </div>
+                </Link>
+              </li>
+            );
+        })}
       </ul>
     );
   };
