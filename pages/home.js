@@ -8,7 +8,6 @@ import { ArrowRight } from "lucide-react";
 
 import Link from "next/link";
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
-import { format } from "date-fns";
 import { Menubar } from "@/components/layouts/menubar";
 import { getDayInformation, getWeton, getCompatibilitySlug } from "@/utils";
 import { closeBrowser } from "@/utils/native-browser";
@@ -16,7 +15,6 @@ import { DailyReadingSection } from "@/components/readings/daily-reading-section
 import { MonthlyReadingSection } from "@/components/readings/monthly-reading-section";
 import { Toaster, toast } from "sonner";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import Markdown from "markdown-to-jsx";
 import clsx from "clsx";
 
 export default function Home() {
@@ -31,7 +29,6 @@ export default function Home() {
   const [monthlyReading, setMonthlyReading] = useState([]);
   const [requestDailyReading, setRequestDailyReading] = useState(false);
   const [requestMonthlyReading, setRequestMonthlyReading] = useState(false);
-  const [requestingReading, setRequestingReading] = useState(false);
   const [latestReadings, setLatestReadings] = useState([]);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [showDailyReadingSheet, setShowDailyReadingSheet] = useState(false);
@@ -262,15 +259,12 @@ export default function Home() {
 
   // Effect for fetching initial user-dependent data
   useEffect(() => {
-    if (!authLoading && user) {
-      closeBrowser().catch(() => {}); // Close browser as soon as auth is confirmed
+    if (user) {
       checkProfile();
       fetchLatestReadings();
-    } else if (!authLoading && !user) {
-      // Ensure we don't redirect during initial authLoading
-      router.push("/");
     }
-  }, [user, authLoading, router]); // Added router to dependencies
+    // Auth guard and redirection is now handled by AuthContext
+  }, [user]);
 
   // Effect to handle daily reading once profileData is available
   useEffect(() => {

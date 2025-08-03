@@ -1,54 +1,40 @@
 import { useEffect } from "react";
-import Router from "next/router";
 import { App } from "@capacitor/app";
 import { supabase } from "@/utils/supabaseClient";
 import { closeBrowser } from "@/utils/native-browser";
 
 export const DeepLinkHandler = () => {
-  const router = Router;
   useEffect(() => {
-    App.addListener("appUrlOpen", (_event) => {
-      // We get the access_token and potentially the refresh_token from the url:
-      const url = new URL(_event.url);
-      const params = url.hash
-        ?.substring(1)
-        ?.split("&")
-        ?.reduce((acc, s) => {
-          acc[s.split("=")[0]] = s.split("=")[1];
-          return acc;
-        }, {});
+    const handleDeepLink = async ({ url }) => {
+      console.log("Deep link opened:", url);
 
-      const access_token = params?.["access_token"] ?? "";
-      const refresh_token = params?.["refresh_token"] ?? "";
+      // Close the in-app browser immediately
+      await closeBrowser();
 
-      // Only sign in if we got an accessToken with this request
-      if (access_token) {
-        supabase.auth.setSession({ access_token, refresh_token });
-      }
+      const hash = new URL(url).hash;
+      if (!hash) return;
 
-      // Dive deep into the app if we have a specific place we were told to go:
-      const slug = url.pathname;
-      console.log("Redirected to ", slug, "with ", url);
-      router.push(slug);
-    });
-  }, []);
+      const params = new URLSearchParams(hash.substring(1)); // remove '#'
+      const accessToken = params.get("access_token");
+      const refreshToken = params.get("refresh_token");
 
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === "SIGNED_IN" && session?.user) {
-          closeBrowser().catch(() => {
-            // nom nom nom
-          });
+      if (accessToken && refreshToken) {
+        console.log("Found tokens in URL, setting session...");
+        const { error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+
+        if (error) {
+          console.error("Error setting session from deep link:", error);
         }
       }
-    );
-
-    // Cleanup the listener on unmount
-    return () => {
-      authListener?.subscription.unsubscribe();
     };
+
+    const listener = App.addListener("appUrlOpen", handleDeepLink);
+
+    return () => listener.remove();
   }, []);
 
-  return null;
+  return null; // This component does not render anything
 };
