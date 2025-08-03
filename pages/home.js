@@ -14,6 +14,7 @@ import { getDayInformation, getWeton, getCompatibilitySlug } from "@/utils";
 import { closeBrowser } from "@/utils/native-browser";
 import { DailyReadingSection } from "@/components/readings/daily-reading-section";
 import { MonthlyReadingSection } from "@/components/readings/monthly-reading-section";
+import { Toaster, toast } from "sonner";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import Markdown from "markdown-to-jsx";
 import clsx from "clsx";
@@ -21,7 +22,6 @@ import clsx from "clsx";
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
   const router = useRouter();
-  const [readings, setReadings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(true);
   const [profileData, setProfileData] = useState(null);
@@ -32,8 +32,6 @@ export default function Home() {
   const [requestDailyReading, setRequestDailyReading] = useState(false);
   const [requestMonthlyReading, setRequestMonthlyReading] = useState(false);
   const [requestingReading, setRequestingReading] = useState(false);
-  const [fortuneResult, setFortuneResult] = useState(null);
-  const [currentReadings, setCurrentReadings] = useState(0);
   const [latestReadings, setLatestReadings] = useState([]);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [showDailyReadingSheet, setShowDailyReadingSheet] = useState(false);
@@ -42,7 +40,29 @@ export default function Home() {
 
   // console.log(user, authLoading);
 
-  const READING_LIMIT = 2;
+  const handleSubscription = async () => {
+    try {
+      const { RevenueCatUI } = await import(
+        "@revenuecat/purchases-capacitor-ui"
+      );
+      const { PAYWALL_RESULT } = await import(
+        "@revenuecat/purchases-capacitor"
+      );
+      const { result } = await RevenueCatUI.presentPaywall();
+
+      if (
+        result === PAYWALL_RESULT.PURCHASED ||
+        result === PAYWALL_RESULT.RESTORED
+      ) {
+        // Re-fetch profile data to get updated subscription status
+        await checkProfile();
+        toast.success("Success! Your subscription is active.");
+      }
+    } catch (e) {
+      console.error("Paywall presentation error:", e);
+      toast.error("An error occurred while showing the paywall.");
+    }
+  };
 
   const getTimeOfDay = () => {
     const currentHour = new Date().getHours();
@@ -243,6 +263,7 @@ export default function Home() {
   // Effect for fetching initial user-dependent data
   useEffect(() => {
     if (!authLoading && user) {
+      closeBrowser().catch(() => {}); // Close browser as soon as auth is confirmed
       checkProfile();
       fetchLatestReadings();
     } else if (!authLoading && !user) {
@@ -254,7 +275,6 @@ export default function Home() {
   // Effect to handle daily reading once profileData is available
   useEffect(() => {
     if (profileData && user && !dailyReadingRequestedRef.current) {
-      closeBrowser().catch(() => {});
       handleMonthlyReading();
       handleDailyReading();
     }
@@ -311,6 +331,20 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    (async function () {
+      const { Purchases, LOG_LEVEL } = await import(
+        "@revenuecat/purchases-capacitor"
+      );
+      await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG }); // Enable to get debug logs
+      await Purchases.configure({
+        apiKey: process.env.NEXT_PUBLIC_REVENUECAT_API_KEY,
+        appUserID: user.id,
+      });
+    })();
+  }, [user]);
+
   if (authLoading || !user || loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
@@ -319,168 +353,6 @@ export default function Home() {
       </div>
     );
   }
-
-  // const renderTodayReading = () => {
-  //   if (!dailyReading) return null;
-  //   const reading = dailyReading?.reading;
-  //   const dailyData = dailyReading?.created_at
-  //     ? getDayInformation(
-  //         format(new Date(dailyReading?.created_at), "yyyy-MM-dd")
-  //       )
-  //     : "";
-
-  //   // console.log(dailyData);
-  //   const energyLevel =
-  //     (dailyData?.dayInfo?.dayEnergy + dailyData?.dayInfo?.dayFinancialEnergy) /
-  //       2 || 0;
-
-  //   let formattedDate = "Date unavailable";
-  //   try {
-  //     formattedDate = dailyReading?.created_at
-  //       ? format(new Date(dailyReading?.created_at), "MMMM d")
-  //       : "";
-  //   } catch (e) {
-  //     console.error("Error formatting todayReading.date:", e);
-  //   }
-  //   if (dailyReading?.status === "loading") {
-  //     return (
-  //       <div className="card bg-base-100 border border-[var(--color-batik-border)]">
-  //         <div className="card-body p-4 flex items-center justify-center">
-  //           <span className="loading loading-spinner loading-md"></span>
-  //           <p className="ml-2">Generating your daily reading...</p>
-  //         </div>
-  //       </div>
-  //     );
-  //   }
-
-  //   if (dailyReading?.status === "completed") {
-  //     return (
-  //       <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-sm">
-  //         <div className="card-body p-4">
-  //           <p className="text-sm font-semibold">
-  //             🗓️ {formattedDate} ({reading?.energy?.weton})
-  //           </p>
-  //           <p className="text-lg font-semibold mb-2 text-base-content">
-  //             {reading?.energy?.vibe}
-  //           </p>
-  //           <div className="flex flex-col gap-2">
-  //             <div className="flex flex-row items-center gap-2">
-  //               <div className="w-8 shrink-0 flex flex-col text-2xl">✅</div>
-  //               <Markdown className="leading-5 text-gray-800">
-  //                 {reading?.guidance?.do?.replace(/—/gi, ", ")}
-  //               </Markdown>
-  //             </div>
-  //             <div className="flex flex-row items-center gap-2">
-  //               <div className="w-8 shrink-0 text-2xl">❌</div>
-  //               <Markdown className="leading-5 text-gray-800">
-  //                 {reading?.guidance?.dont?.replace(/—/gi, ", ")}
-  //               </Markdown>
-  //             </div>
-  //           </div>
-  //           <button
-  //             onClick={() => setShowDailyReadingSheet(true)}
-  //             className="btn border-batik-border text-batik-text font-semibold rounded-2xl mt-2"
-  //           >
-  //             Reveal Your Reading
-  //           </button>
-  //           {showDailyReadingSheet && (
-  //             <div className="fixed inset-0 bg-slate-500/40 bg-opacity-10 z-40 flex items-end justify-center">
-  //               <div className="bg-base-100 rounded-t-lg p-4 w-full max-w-md shadow-lg h-[90vh] flex flex-col">
-  //                 <div className="flex justify-between items-center mb-4 pb-2 border-b border-base-300">
-  //                   <div className="flex flex-col">
-  //                     <h3 className="text-lg font-bold text-batik-black">
-  //                       Daily Reading
-  //                     </h3>
-  //                     <p className="text-sm font-semibold">
-  //                       🗓️ {formattedDate} ({reading?.energy?.weton})
-  //                     </p>
-  //                   </div>
-
-  //                   <button
-  //                     onClick={() => setShowDailyReadingSheet(false)}
-  //                     className="btn btn-sm btn-circle btn-ghost"
-  //                   >
-  //                     CLOSE
-  //                   </button>
-  //                 </div>
-  //                 <div className="flex-grow overflow-y-auto space-y-4">
-  //                   <div className="overflow-y-scroll flex flex-col gap-2">
-  //                     <div className="flex flex-row justify-between items-start">
-  //                       <div className="flex flex-col w-[75%]">
-  //                         <p className="text-lg font-semibold mb-2">
-  //                           {reading?.energy?.vibe}
-  //                         </p>
-  //                       </div>
-  //                       <div className="flex flex-col mr-2 text-center">
-  //                         <div className="text-xs">Energy Level</div>
-  //                         <div
-  //                           className={clsx(
-  //                             "text-2xl font-bold",
-  //                             energyLevel < 5
-  //                               ? "text-rose-500"
-  //                               : energyLevel < 8
-  //                               ? "text-amber-500"
-  //                               : "text-green-500"
-  //                           )}
-  //                         >
-  //                           {energyLevel}
-  //                           <span className="text-xs font-light text-slate-800">
-  //                             /10
-  //                           </span>
-  //                         </div>
-  //                       </div>
-  //                     </div>
-
-  //                     <div className="flex flex-col mb-2">
-  //                       <Markdown className="text-gray-700">
-  //                         {reading?.focus?.replace(/—/gi, ", ")}
-  //                       </Markdown>
-  //                     </div>
-  //                     <div className="flex flex-col my-3 gap-2">
-  //                       <div className="flex flex-row items-center gap-2">
-  //                         <div className="w-8 shrink-0 flex flex-col text-2xl">
-  //                           ✅
-  //                         </div>
-  //                         <Markdown className="leading-5 text-gray-800">
-  //                           {reading?.guidance?.do?.replace(/—/gi, ", ")}
-  //                         </Markdown>
-  //                       </div>
-  //                       <div className="flex flex-row items-center gap-2">
-  //                         <div className="w-8 shrink-0 text-2xl">❌</div>
-  //                         <Markdown className="leading-5 text-gray-800">
-  //                           {reading?.guidance?.dont?.replace(/—/gi, ", ")}
-  //                         </Markdown>
-  //                       </div>
-  //                     </div>
-  //                     <div className="flex flex-col my-3 gap-2">
-  //                       <div className="text-lg font-semibold">
-  //                         💌 Message for You
-  //                       </div>
-  //                       <Markdown className="text-gray-700">
-  //                         {reading?.wisdom?.replace(/—/gi, ", ")}
-  //                       </Markdown>
-  //                     </div>
-  //                     <div className="flex flex-col mt-2 mb-5 gap-2">
-  //                       <div className="text-lg font-semibold">
-  //                         ☀️ Day Character
-  //                       </div>
-  //                       <div className="text-base font-semibold capitalize">
-  //                         {dailyData?.dayInfo?.values}
-  //                       </div>
-  //                       <div className="text-gray-700">
-  //                         {dailyData?.dayInfo?.financialDescription}
-  //                       </div>
-  //                     </div>
-  //                   </div>
-  //                 </div>
-  //               </div>
-  //             </div>
-  //           )}
-  //         </div>
-  //       </div>
-  //     );
-  //   }
-  // };
 
   const renderLatestReadings = () => {
     return (
@@ -524,59 +396,9 @@ export default function Home() {
     );
   };
 
-  // const renderMonthlyReading = () => {
-  //   if (!monthlyReading) return null;
-  //   const reading = monthlyReading?.reading;
-
-  //   let formattedDate = "Date unavailable";
-
-  //   try {
-  //     formattedDate = monthlyReading?.created_at
-  //       ? format(new Date(monthlyReading?.created_at), "MMMM")
-  //       : "";
-  //   } catch (e) {
-  //     console.error("Error formatting monthlyReading.date:", e);
-  //   }
-
-  //   if (monthlyReading?.status === "loading") {
-  //     return (
-  //       <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-md">
-  //         <div className="card-body p-4 flex items-center justify-center">
-  //           <span className="loading loading-spinner loading-md"></span>
-  //           <p className="ml-2">Generating your monthly reading...</p>
-  //         </div>
-  //       </div>
-  //     );
-  //   }
-
-  //   if (monthlyReading?.status === "completed") {
-  //     return (
-  //       <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-md">
-  //         <div className="card-body p-4">
-  //           <p className="text-lg font-semibold">
-  //             🌙 Monthly Reading - {formattedDate}
-  //           </p>
-  //           <p className="text-xl font-semibold leading-7">
-  //             {reading?.summary?.core_theme}
-  //           </p>
-  //           <p className="text-base mb-3 mt-2">
-  //             {reading?.summary?.description}
-  //           </p>
-  //           <Link
-  //             className="btn bg-rose-500 text-white  font-semibold rounded-2xl"
-  //             href={`/readings/${monthlyReading?.reading_category}/${monthlyReading?.slug}`}
-  //           >
-  //             Read More
-  //             <ArrowRight className="ml-1 w-5 h-5" />
-  //           </Link>
-  //         </div>
-  //       </div>
-  //     );
-  //   }
-  // };
-
   return (
     <div className="min-h-screen flex flex-col bg-base-100">
+      <Toaster richColors />
       <DashboardNavbar user={user} showTitleInNavbar={showTitleInNavbar} />
       <div className="py-4 pb-20 overflow-y-auto flex-grow mb-8">
         <div className="px-4">
@@ -593,10 +415,13 @@ export default function Home() {
           />
         </div>
         <div className="p-4 flex flex-col gap-2">
-          <div className="card bg-base-100 border border-rose-200 shadow">
+          <button
+            onClick={handleSubscription}
+            className="card bg-base-100 border border-rose-200 shadow w-full text-left"
+          >
             <div className="flex flex-row items-center gap-2 p-4">
               <div className="text-4xl">🔓</div>
-              <div>
+              <div className="flex-grow">
                 <div className="text-sm font-semibold">
                   Unlock My Weton's Power
                 </div>
@@ -605,15 +430,9 @@ export default function Home() {
                   of your Weton.
                 </div>
               </div>
-
-              <Link
-                className="  text-rose-400 font-semibold rounded-2xl"
-                href={`/connections`}
-              >
-                <ArrowRight />
-              </Link>
+              <ArrowRight className="text-rose-400" />
             </div>
-          </div>
+          </button>
         </div>
         <div className="flex flex-col gap-2 p-4">
           <MonthlyReadingSection monthlyReading={monthlyReading} />

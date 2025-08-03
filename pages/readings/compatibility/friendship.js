@@ -15,7 +15,9 @@ import { ReadingLoading } from "@/components/readings/reading-loading";
 import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
-import { useReading } from "@/utils/useReading";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useCompatibilityReading } from "@/utils/useReading";
+import { friendshipLoadingMessages } from "@/lib/loading-content";
 
 export default function DetailCompatibilityReading() {
   const router = useRouter();
@@ -50,7 +52,7 @@ export default function DetailCompatibilityReading() {
   const [isSectionEighteenOpen, setIsSectionEighteenOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
 
-  const { reading, isLoading, error } = useReading(slug);
+  const { reading, isLoading, error } = useCompatibilityReading(slug);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -472,6 +474,7 @@ export default function DetailCompatibilityReading() {
                   </div>
                 </div>
               </div>
+              <AnimatedLoadingText messages={friendshipLoadingMessages} />
               <ReadingLoadingSkeleton />
             </div>
           ) : (

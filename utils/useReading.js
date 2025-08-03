@@ -26,7 +26,7 @@ const fetcher = async (key) => {
   return data;
 };
 
-export const useReading = (slug) => {
+export const useCompatibilityReading = (slug) => {
   // Use the SWR hook to fetch data.
   // `data`, `error`, and `mutate` are returned from useSWR.
   const { data, error, mutate } = useSWR(slug, fetcher);

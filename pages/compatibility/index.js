@@ -30,6 +30,11 @@ import {
 } from "@/utils";
 import { format } from "date-fns";
 import clsx from "clsx";
+import {
+  coupleLoadingMessages,
+  friendshipLoadingMessages,
+} from "@/lib/loading-content";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
 
 export default function CompatibilityPage() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -397,7 +402,7 @@ export default function CompatibilityPage() {
             router.push(
               `/readings/compatibility/${readingType}?slug=${newSlug}`
             );
-            setLoading(false);
+            // setLoading(false);
           } catch (err) {
             console.error("Error:", err);
             setError(err.message || "Failed to generate reading");
@@ -424,7 +429,7 @@ export default function CompatibilityPage() {
     return <PageLoadingLayout />;
   }
 
-  if (!profileData && (!authLoading || !loading)) {
+  if (!profileData && !authLoading && !loading && !loadingProfile) {
     return (
       <NoProfileLayout
         router={router}
@@ -581,12 +586,20 @@ export default function CompatibilityPage() {
                     />
                   )
                 ) : selectedPartnerReading?.status === "loading" ? (
-                  <ReadingLoading />
+                  <div className="p-5 w-full rounded-2xl border border-slate-300">
+                    <AnimatedLoadingText
+                      messages={
+                        compatibilityType
+                          ? coupleLoadingMessages
+                          : friendshipLoadingMessages
+                      }
+                    />
+                  </div>
                 ) : (
                   <button
                     onClick={() => handleCoupleReading()}
-                    className="btn btn-secondary rounded-xl w-full border-rose-500 border disabled:bg-slate-400 mt-20"
-                    disabled={loading || !wetonJodoh.jodoh4}
+                    className="btn btn-secondary rounded-xl w-full border-rose-500 border disabled:bg-slate-400 mt-20 disabled:cursor-not-allowed"
+                    disabled={loading || !wetonJodoh.jodoh4 || !partnerProfile}
                   >
                     {loading && coupleReading.length === 0
                       ? "Generating..."

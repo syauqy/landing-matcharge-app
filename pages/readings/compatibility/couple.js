@@ -7,7 +7,6 @@ import { useQueryState } from "nuqs";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { convertToMarkdownList, getWetonEmojiScore } from "@/utils";
 import { fetchProfileData } from "@/utils/fetch";
-import useSWR from "swr";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
@@ -15,7 +14,9 @@ import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-sk
 import { Capacitor } from "@capacitor/core";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
-import { useReading } from "@/utils/useReading";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useCompatibilityReading } from "@/utils/useReading";
+import { coupleLoadingMessages } from "@/lib/loading-content";
 
 export default function DetailCompatibilityReading() {
   const router = useRouter();
@@ -48,7 +49,7 @@ export default function DetailCompatibilityReading() {
   const isNative = Capacitor.isNativePlatform();
 
   // Use SWR for data fetching. It handles caching, revalidation, and loading/error states.
-  const { reading, isLoading, error } = useReading(slug);
+  const { reading, isLoading, error } = useCompatibilityReading(slug);
 
   // console.log(reading?.title);
 
@@ -441,6 +442,7 @@ ${readingContent?.blend?.dina?.interpretation}`;
                   </div>
                 </div>
               </div>
+              <AnimatedLoadingText messages={coupleLoadingMessages} />
               <ReadingLoadingSkeleton />
             </div>
           ) : (
