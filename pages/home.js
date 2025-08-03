@@ -14,6 +14,9 @@ import { closeBrowser } from "@/utils/native-browser";
 import { DailyReadingSection } from "@/components/readings/daily-reading-section";
 import { MonthlyReadingSection } from "@/components/readings/monthly-reading-section";
 import { Toaster, toast } from "sonner";
+import { Paywall } from "@/components/subscriptions/paywall";
+import { NoProfileLayout } from "@/components/readings/no-profile-layout";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import clsx from "clsx";
 
@@ -34,32 +37,6 @@ export default function Home() {
   const [showDailyReadingSheet, setShowDailyReadingSheet] = useState(false);
   const dailyReadingRequestedRef = useRef(false);
   const scrollContainerRef = useRef(null);
-
-  // console.log(user, authLoading);
-
-  const handleSubscription = async () => {
-    try {
-      const { RevenueCatUI } = await import(
-        "@revenuecat/purchases-capacitor-ui"
-      );
-      const { PAYWALL_RESULT } = await import(
-        "@revenuecat/purchases-capacitor"
-      );
-      const { result } = await RevenueCatUI.presentPaywall();
-
-      if (
-        result === PAYWALL_RESULT.PURCHASED ||
-        result === PAYWALL_RESULT.RESTORED
-      ) {
-        // Re-fetch profile data to get updated subscription status
-        await checkProfile();
-        toast.success("Success! Your subscription is active.");
-      }
-    } catch (e) {
-      console.error("Paywall presentation error:", e);
-      toast.error("An error occurred while showing the paywall.");
-    }
-  };
 
   const getTimeOfDay = () => {
     const currentHour = new Date().getHours();
@@ -257,14 +234,16 @@ export default function Home() {
     }
   };
 
-  // Effect for fetching initial user-dependent data
   useEffect(() => {
-    if (user) {
-      checkProfile();
-      fetchLatestReadings();
+    if (!authLoading) {
+      if (!user) {
+        router.push("/");
+      } else {
+        checkProfile();
+        fetchLatestReadings();
+      }
     }
-    // Auth guard and redirection is now handled by AuthContext
-  }, [user]);
+  }, [user, authLoading, router]);
 
   // Effect to handle daily reading once profileData is available
   useEffect(() => {
@@ -325,26 +304,17 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!user) return;
-    (async function () {
-      const { Purchases, LOG_LEVEL } = await import(
-        "@revenuecat/purchases-capacitor"
-      );
-      await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG }); // Enable to get debug logs
-      await Purchases.configure({
-        apiKey: process.env.NEXT_PUBLIC_REVENUECAT_API_KEY,
-        appUserID: user.id,
-      });
-    })();
-  }, [user]);
+  if (authLoading || (loading && !error)) {
+    return <PageLoadingLayout />;
+  }
 
-  if (authLoading || !user || loading) {
+  if (!profileData && !loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content">
-        <span className="loading loading-spinner loading-lg text-batik-text"></span>
-        <p className="mt-4">Loading user data...</p>
-      </div>
+      <NoProfileLayout
+        router={router}
+        profileData={profileData}
+        showTitleInNavbar={showTitleInNavbar}
+      />
     );
   }
 
@@ -408,26 +378,7 @@ export default function Home() {
             showDailyReadingSheet={showDailyReadingSheet}
           />
         </div>
-        <div className="p-4 flex flex-col gap-2">
-          <button
-            onClick={handleSubscription}
-            className="card bg-base-100 border border-rose-200 shadow w-full text-left"
-          >
-            <div className="flex flex-row items-center gap-2 p-4">
-              <div className="text-4xl">🔓</div>
-              <div className="flex-grow">
-                <div className="text-sm font-semibold">
-                  Unlock My Weton's Power
-                </div>
-                <div className="text-slate-700 text-xs">
-                  Move beyond the surface and harness the true energetic power
-                  of your Weton.
-                </div>
-              </div>
-              <ArrowRight className="text-rose-400" />
-            </div>
-          </button>
-        </div>
+        <Paywall user={user} checkProfile={checkProfile} />
         <div className="flex flex-col gap-2 p-4">
           <MonthlyReadingSection monthlyReading={monthlyReading} />
         </div>

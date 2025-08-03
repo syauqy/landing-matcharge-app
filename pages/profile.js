@@ -143,7 +143,7 @@ export default function ProfilePage() {
         fetchReadings();
       }
     }
-  }, [user, authLoading, router]); // Dependencies
+  }, [user, authLoading, router]);
 
   // --- Logout Handler ---
   const handleLogout = async () => {
