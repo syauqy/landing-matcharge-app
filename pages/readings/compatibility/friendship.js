@@ -27,9 +27,9 @@ export default function DetailCompatibilityReading() {
   const [profileData, setProfileData] = useState(null);
   const [partnerProfile, setPartnerProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   const [slug, setSlug] = useQueryState("slug");
-  const [reading, setReading] = useState(null);
+  // const [reading, setReading] = useState(null);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
   const [isSectionThreeOpen, setIsSectionThreeOpen] = useState(false);
