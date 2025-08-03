@@ -62,7 +62,9 @@ export default function HomePage() {
     : "http://localhost:3000/home";
 
   useEffect(() => {
+    console.log("Auth loading:", authLoading, "User:", user);
     if (!authLoading && user) {
+      console.log("User is logged in:", user);
       // If not loading and user is logged in, redirect to dashboard
       router.push("/home");
     }
@@ -89,7 +91,6 @@ export default function HomePage() {
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "apple",
-        skipBrowserRedirect: true,
         options: {
           skipBrowserRedirect: true,
           redirectTo: redirectUrl,
@@ -122,9 +123,6 @@ export default function HomePage() {
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        // options: {
-        //   redirectTo: `${window.location.origin}/home`,
-        // },
         options: {
           skipBrowserRedirect: true,
           redirectTo: redirectUrl,
@@ -156,20 +154,12 @@ export default function HomePage() {
         <h1 className="text-4xl font-bold mb-4 text-center h-[10%] text-batik-black tracking-wide">
           Wetonscope
         </h1>
+        {/* <div>{JSON.stringify(user, null, 2)}</div> */}
 
         <Slider {...sliderSettings} className="onboarding-slider mb-8 h-[70%]">
           {onboardingData.map((slide) => (
             <div key={slide.id} className="text-center py-6 h-[100%]">
-              <div className="mb-10 flex justify-center">
-                {slide.imageUrl}
-                {/* <Image
-                  src={slide.imageUrl}
-                  alt={slide.title}
-                  width={180}
-                  height={180}
-                  className="mx-auto"
-                /> */}
-              </div>
+              <div className="mb-10 flex justify-center">{slide.imageUrl}</div>
               <h2 className="text-2xl font-bold mb-3">{slide.title}</h2>
               <p className="text-gray-700 mb-6 text-sm">{slide.description}</p>
             </div>

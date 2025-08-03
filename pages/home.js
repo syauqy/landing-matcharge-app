@@ -17,6 +17,7 @@ import { Toaster, toast } from "sonner";
 import { Paywall } from "@/components/subscriptions/paywall";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
+import { HomeLoadingSkeleton } from "@/components/layouts/home-loading-skeleton";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import clsx from "clsx";
 
@@ -304,9 +305,9 @@ export default function Home() {
     };
   }, []);
 
-  if (authLoading || (loading && !error)) {
-    return <PageLoadingLayout />;
-  }
+  // if (authLoading || (loading && !error)) {
+  //   return <PageLoadingLayout />;
+  // }
 
   if (!profileData && !loading) {
     return (
@@ -360,74 +361,81 @@ export default function Home() {
     );
   };
 
+  console.log(loadingData, "loadingData");
+
   return (
     <div className="min-h-screen flex flex-col bg-base-100">
       <Toaster richColors />
       <DashboardNavbar user={user} showTitleInNavbar={showTitleInNavbar} />
-      <div className="py-4 pb-20 overflow-y-auto flex-grow mb-8">
+      <div className="py-5 pb-20 overflow-y-auto flex-grow mb-8">
         <div className="px-4">
           <p className="text-2xl font-semibold text-batik-black">
-            {getTimeOfDay()}, {profileData?.full_name?.split(" ")[0] || "User"}!
-            👋
+            {getTimeOfDay()} {profileData?.full_name?.split(" ")[0]}! 👋
           </p>
         </div>
-        <div className="flex flex-col gap-2 p-4">
-          <DailyReadingSection
-            dailyReading={dailyReading}
-            setShowDailyReadingSheet={setShowDailyReadingSheet}
-            showDailyReadingSheet={showDailyReadingSheet}
-          />
-        </div>
-        <Paywall user={user} checkProfile={checkProfile} />
-        <div className="flex flex-col gap-2 p-4">
-          <MonthlyReadingSection monthlyReading={monthlyReading} />
-        </div>
-        <div className="p-4 flex flex-col gap-2">
-          <div className="card bg-base-100 border border-slate-200 bg-gradient-to-br from-rose-500 via-rose-400 to-rose-500 relative overflow-hidden shadow-md">
+        {authLoading || (loading && !error) ? (
+          <HomeLoadingSkeleton />
+        ) : (
+          <div>
             <div className="flex flex-col gap-2 p-4">
-              <div className="text-xl text-white font-semibold">
-                💞 The Heart&apos;s True Compass
+              <DailyReadingSection
+                dailyReading={dailyReading}
+                setShowDailyReadingSheet={setShowDailyReadingSheet}
+                showDailyReadingSheet={showDailyReadingSheet}
+              />
+            </div>
+            <Paywall user={user} checkProfile={checkProfile} />
+            <div className="flex flex-col gap-2 p-4">
+              <MonthlyReadingSection monthlyReading={monthlyReading} />
+            </div>
+            <div className="p-4 flex flex-col gap-2">
+              <div className="card bg-base-100 border border-slate-200 bg-gradient-to-br from-rose-500 via-rose-400 to-rose-500 relative overflow-hidden shadow-md">
+                <div className="flex flex-col gap-2 p-4">
+                  <div className="text-xl text-white font-semibold">
+                    💞 The Heart&apos;s True Compass
+                  </div>
+                  <div className="text-white mb-3">
+                    Some connections feel like destiny. Javanese wisdom offers a
+                    unique key to unlock the secrets of your union.
+                  </div>
+                  <Link
+                    href={"/compatibility"}
+                    className="btn bg-white text-rose-500 font-semibold rounded-2xl"
+                  >
+                    Reveal Your Compatibility
+                  </Link>
+                </div>
               </div>
-              <div className="text-white mb-3">
-                Some connections feel like destiny. Javanese wisdom offers a
-                unique key to unlock the secrets of your union.
+            </div>
+            <div className="p-4 flex flex-col gap-2">
+              <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-md">
+                <div className="flex flex-col gap-2 p-4">
+                  <div className="text-xl font-semibold">
+                    🤝 Understand Your Connections
+                  </div>
+                  <div className="text-slate-700 mb-3">
+                    Discover the unique Weton and Wuku blueprint of your friends
+                    to foster deeper understanding and stronger bonds
+                  </div>
+                  <Link
+                    className="btn border-batik-border text-batik-text font-semibold rounded-2xl"
+                    href={`/connections`}
+                  >
+                    Add Your Friends
+                  </Link>
+                </div>
               </div>
-              <Link
-                href={"/compatibility"}
-                className="btn bg-white text-rose-500 font-semibold rounded-2xl"
-              >
-                Reveal Your Compatibility
-              </Link>
+            </div>
+            <div className="my-4 flex flex-col gap-2">
+              <div className="px-4 text-lg font-semibold text-batik-black">
+                Latest Readings
+              </div>
+              <div className="overflow-x-auto overflow-y-clip">
+                {renderLatestReadings()}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="p-4 flex flex-col gap-2">
-          <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-md">
-            <div className="flex flex-col gap-2 p-4">
-              <div className="text-xl font-semibold">
-                🤝 Understand Your Connections
-              </div>
-              <div className="text-slate-700 mb-3">
-                Discover the unique Weton and Wuku blueprint of your friends to
-                foster deeper understanding and stronger bonds
-              </div>
-              <Link
-                className="btn border-batik-border text-batik-text font-semibold rounded-2xl"
-                href={`/connections`}
-              >
-                Add Your Friends
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="my-4 flex flex-col gap-2">
-          <div className="px-4 text-lg font-semibold text-batik-black">
-            Latest Readings
-          </div>
-          <div className="overflow-x-auto overflow-y-clip">
-            {renderLatestReadings()}
-          </div>
-        </div>
+        )}
         <Menubar page={"home"} />
       </div>
     </div>

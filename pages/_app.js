@@ -1,8 +1,8 @@
 import "@/styles/globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { NuqsAdapter } from "nuqs/adapters/next/pages";
-
-import { DeepLinkHandler } from "@/context/DeepLinkHandler";
+import { AppUrlListener } from "@/context/AppUrlListener";
+// import { DeepLinkHandler } from "@/context/DeepLinkHandler";
 import { useEffect } from "react";
 
 export default function MyApp({ Component, pageProps }) {
@@ -19,8 +19,8 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
   return (
     <AuthProvider>
-      {/* <AppUrlListener></AppUrlListener> */}
-      <DeepLinkHandler />
+      <AppUrlListener></AppUrlListener>
+      {/* <DeepLinkHandler /> */}
       {/* <DebugComponent /> */}
       <NuqsAdapter>
         <Component {...pageProps} />
