@@ -26,12 +26,10 @@ export default function DetailCompatibilityReading() {
   const [activeTab, setActiveTab] = useState("overview");
   const [profileData, setProfileData] = useState(null);
   const [partnerProfile, setPartnerProfile] = useState(null);
-  // const [loading, setLoading] = useState(true);
-  const [profileLoading, setProfileLoading] = useState(true);
-  const [profileError, setProfileError] = useState(null);
-  // const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [slug, setSlug] = useQueryState("slug");
-  // const [reading, setReading] = useState(null);
+  const [reading, setReading] = useState(null);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
   const [isSectionThreeOpen, setIsSectionThreeOpen] = useState(false);
@@ -61,58 +59,55 @@ export default function DetailCompatibilityReading() {
     }
 
     if (!router.isReady || !user) {
-      setProfileLoading(true);
+      setLoading(true);
       return;
     }
 
-    fetchProfileData({
-      user,
-      setLoading: setProfileLoading,
-      setError: setProfileError,
-      setProfileData,
-    });
+    fetchProfileData({ user, setLoading, setError, setProfileData });
   }, []);
 
   function getPartnerUsernameFromSlug(slug, currentUsername) {
+    // Example slug: "syauqy-babi-couple" or "babi-syauqy-couple"
     if (!slug || !currentUsername) return null;
-    const parts = slug.replace("-friendship", "").split("-");
+    const parts = slug.replace("-couple", "").split("-");
     // Remove current user's username
     const partner = parts.find((p) => p !== currentUsername);
     return partner || null;
   }
 
-  // const fetchReading = useCallback(async () => {
-  //   if (!slug) return;
+  const fetchReading = useCallback(async () => {
+    if (!slug) return;
 
-  //   try {
-  //     setLoading(true);
-  //     const { data, error } = await supabase
-  //       .from("readings")
-  //       .select("id, status, reading, title, subtitle, reading_category, slug") // Ensure reading_category is fetched if needed for other logic
-  //       .eq("slug", slug) // Match the username column with the slug
-  //       .single();
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("readings")
+        .select("id, status, reading, title, subtitle, reading_category, slug") // Ensure reading_category is fetched if needed for other logic
+        .eq("slug", slug) // Match the username column with the slug
+        .single();
 
-  //     if (error) {
-  //       console.error("Error fetching reading data:", error);
-  //       return;
-  //     }
+      if (error) {
+        console.error("Error fetching reading data:", error);
+        return;
+      }
 
-  //     if (data) {
-  //       setReading(data);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error in fetchReading:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }, [slug]);
+      if (data) {
+        setReading(data);
+      }
+    } catch (error) {
+      console.error("Error in fetchReading:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [slug]);
 
-  // useEffect(() => {
-  //   fetchReading();
-  // }, [fetchReading]);
+  useEffect(() => {
+    fetchReading();
+  }, [fetchReading]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
+    // Adjust the scroll threshold as needed
     setShowTitleInNavbar(scrollPosition > 50);
   };
 
@@ -168,11 +163,11 @@ export default function DetailCompatibilityReading() {
       partnerProfile?.full_name || partnerProfile?.username || "Partner"
     )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`;
 
-  if (authLoading || profileLoading || (isLoading && !error)) {
+  if (authLoading || (loading && !error)) {
     return <PageLoadingLayout />;
   }
 
-  if (!profileData && !partnerProfile) {
+  if (!profileData) {
     return (
       <NoProfileLayout
         router={router}
@@ -183,7 +178,7 @@ export default function DetailCompatibilityReading() {
   }
 
   const readingContent = reading?.reading?.reading || reading?.reading;
-  // console.log(profileData, partnerProfile);
+  console.log(profileData, partnerProfile);
 
   return (
     <>
@@ -492,7 +487,7 @@ export default function DetailCompatibilityReading() {
               </div>
             )
           )}
-          {reading?.id && reading?.status === "completed" && (
+          {reading?.id && (
             <div>
               <FeedbackSession user={user} reading={reading} />
             </div>

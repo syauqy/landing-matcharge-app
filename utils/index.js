@@ -760,10 +760,10 @@ export function getDayInformation(today) {
 }
 
 export function convertToMarkdownList(text) {
-  let formatted = text?.replace(/(\s+)(\d+\.)/g, "\n$2");
+  let formatted = text.replace(/(\s+)(\d+\.)/g, "\n$2");
 
   if (!/^\d+\./.test(formatted)) {
-    formatted = formatted?.replace(/^\n/, "");
+    formatted = formatted.replace(/^\n/, "");
   }
 
   return formatted;

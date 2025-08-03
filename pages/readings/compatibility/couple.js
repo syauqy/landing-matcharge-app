@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useQueryState } from "nuqs";
+import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { convertToMarkdownList, getWetonEmojiScore } from "@/utils";
 import { fetchProfileData } from "@/utils/fetch";
@@ -12,6 +13,7 @@ import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
 import { Capacitor } from "@capacitor/core";
+import { ReadingLoading } from "@/components/readings/reading-loading";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
 import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
@@ -25,9 +27,10 @@ export default function DetailCompatibilityReading() {
   const [activeTab, setActiveTab] = useState("overview");
   const [profileData, setProfileData] = useState(null);
   const [partnerProfile, setPartnerProfile] = useState(null);
-  const [profileLoading, setProfileLoading] = useState(true);
-  const [profileError, setProfileError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [slug, setSlug] = useQueryState("slug");
+  const [reading, setReading] = useState(null);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
   const [isSectionThreeOpen, setIsSectionThreeOpen] = useState(false);
@@ -60,16 +63,11 @@ export default function DetailCompatibilityReading() {
     }
 
     if (!router.isReady || !user) {
-      setProfileLoading(true);
+      setLoading(true);
       return;
     }
 
-    fetchProfileData({
-      user,
-      setLoading: setProfileLoading,
-      setError: setProfileError,
-      setProfileData,
-    });
+    fetchProfileData({ user, setLoading, setError, setProfileData });
   }, []);
 
   function getPartnerUsernameFromSlug(slug, currentUsername) {
@@ -80,6 +78,36 @@ export default function DetailCompatibilityReading() {
     const partner = parts.find((p) => p !== currentUsername);
     return partner || null;
   }
+
+  const fetchReading = useCallback(async () => {
+    if (!slug) return;
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("readings")
+        .select("id, status, reading, title, subtitle, reading_category, slug") // Ensure reading_category is fetched if needed for other logic
+        .eq("slug", slug) // Match the username column with the slug
+        .single();
+
+      if (error) {
+        console.error("Error fetching reading data:", error);
+        return;
+      }
+
+      if (data) {
+        setReading(data);
+      }
+    } catch (error) {
+      console.error("Error in fetchReading:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [slug]);
+
+  useEffect(() => {
+    fetchReading();
+  }, [fetchReading]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -139,24 +167,24 @@ export default function DetailCompatibilityReading() {
       partnerProfile?.full_name || partnerProfile?.username || "Partner"
     )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`;
 
-  if (authLoading || profileLoading || (isLoading && !error)) {
+  if (authLoading || (loading && !error)) {
     return <PageLoadingLayout />;
   }
 
-  if (!profileData && !partnerProfile) {
-    return (
-      <NoProfileLayout
-        router={router}
-        profileData={profileData}
-        showTitleInNavbar={showTitleInNavbar}
-      />
-    );
-  }
+  //   if (!profileData) {
+  //     return (
+  //       <NoProfileLayout
+  //         router={router}
+  //         profileData={profileData}
+  //         showTitleInNavbar={showTitleInNavbar}
+  //       />
+  //     );
+  //   }
 
   const readingContent = reading?.reading?.reading || reading?.reading; // Handle if reading.reading is an object or string
   //   console.log(reading.reading);
   //   console.log(user);
-  // console.log(profileData, partnerProfile);
+  console.log(profileData, partnerProfile);
 
   const dayCombinationContent = `${readingContent?.blend?.dina?.vibe}
 
@@ -171,8 +199,8 @@ ${readingContent?.blend?.dina?.interpretation}`;
         <meta
           name="description"
           content={
-            reading?.subtitle ||
-            `Detailed compatibility reading: ${reading?.title}`
+            reading.subtitle ||
+            `Detailed compatibility reading: ${reading.title}`
           }
         />
       </Head>
@@ -196,7 +224,7 @@ ${readingContent?.blend?.dina?.interpretation}`;
                 Compatibility
               </div>
               <span className="text-batik-black font-semibold text-sm truncate max-w-xs">
-                {reading?.title.replace(/'s Compatibility$/, "")}
+                {reading.title.replace(/'s Compatibility$/, "")}
               </span>
             </div>
           )}
@@ -206,11 +234,11 @@ ${readingContent?.blend?.dina?.interpretation}`;
         {error && <ErrorLayout error={error} router={router} />}
 
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-          {reading?.status == "completed" ? (
+          {reading.status === "completed" ? (
             <div className="space-y-6">
               <div>
                 <h2 className="text-xl font-semibold text-left">
-                  {reading?.title || "Compatibility Reading"}
+                  {reading.title || "Compatibility Reading"}
                 </h2>
               </div>
               <section className={"pt-4 flex flex-col"}>
@@ -460,7 +488,7 @@ ${readingContent?.blend?.dina?.interpretation}`;
               </div>
             )
           )}
-          {reading?.id && reading?.status == "completed" && (
+          {reading?.id && reading.status == "completed" && (
             <div>
               <FeedbackSession user={user} reading={reading} />
             </div>
