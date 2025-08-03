@@ -679,7 +679,9 @@ export default function ProfilePage() {
                         </Link>
                         <button
                           onClick={() =>
-                            handleSupportButton("https://wetonai.vercel.app")
+                            handleSupportButton(
+                              "https://wetonscope.com/privacy"
+                            )
                           }
                           className="text-left text-batik-text hover:underline"
                         >

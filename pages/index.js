@@ -56,9 +56,9 @@ export default function HomePage() {
 
   console.log("Login Page: isNative:", isNative, user);
   let redirectUrl = isNative
-    ? "https://wetonai.vercel.app/home"
+    ? "https://app.wetonscope.com/home"
     : process.env.NODE_ENV === "production"
-    ? "https://wetonai.vercel.app/home"
+    ? "https://app.wetonscope.com/home"
     : "http://localhost:3000/home";
 
   useEffect(() => {
