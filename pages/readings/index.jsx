@@ -1,6 +1,6 @@
 // pages/readings/index.js
 import Head from "next/head";
-import { useEffect } from "react"; // Import useEffect
+import { useEffect, useState } from "react"; // Import useEffect
 import { useAuth } from "@/context/AuthContext"; // Import useAuth
 import { useRouter } from "next/router"; // Import useRouter// Import Navbar
 import { Menubar } from "@/components/layouts/menubar";
@@ -56,15 +56,29 @@ const ReadingSection = ({ title, cards, subtitle, tag }) => (
 export default function ReadingsPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const [activeHash, setActiveHash] = useState("");
+
   useEffect(() => {
     if (!authLoading && !user) {
       router.push("/");
     }
   }, [user, authLoading, router]);
 
-  const hashValue = window?.location?.hash?.substring(1);
-  console.log(hashValue);
+  useEffect(() => {
+    // This code runs only on the client, where `window` is available.
+    const getHash = () => window.location.hash.substring(1);
+    setActiveHash(getHash());
 
+    const handleHashChange = () => {
+      setActiveHash(getHash());
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, []); // Empty dependency array ensures this runs only once on mount.
   // --- Loading States ---
   if (authLoading) {
     return (
@@ -91,7 +105,7 @@ export default function ReadingsPage() {
               href={`#${section?.tag}`}
               className={clsx(
                 "py-2.5 first:ml-3 last:mr-3 p-5 shrink-0 rounded-full text-sm shadow",
-                hashValue == section?.tag
+                activeHash == section?.tag
                   ? "bg-rose-50 border border-rose-100"
                   : "bg-base-100 border border-batik-border"
               )}
