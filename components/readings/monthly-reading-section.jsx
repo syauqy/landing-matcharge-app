@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import Markdown from "markdown-to-jsx";
-import clsx from "clsx";
+import React from "react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getJavaneseDate } from "@/utils";
+import { AnimatedLoadingText } from "./AnimatedLoadingText";
+import { monthlyLoadingMessages } from "@/lib/loading-content";
+import Markdown from "markdown-to-jsx";
 
 export function MonthlyReadingSection({ monthlyReading }) {
   if (!monthlyReading) return null;
@@ -29,8 +30,10 @@ export function MonthlyReadingSection({ monthlyReading }) {
     return (
       <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-md">
         <div className="card-body p-4 flex items-center justify-center">
-          <span className="loading loading-spinner loading-md"></span>
-          <p className="ml-2">Generating your monthly reading...</p>
+          <AnimatedLoadingText
+            messages={monthlyLoadingMessages}
+            className="text-center text-lg font-semibold"
+          />
         </div>
       </div>
     );
@@ -51,7 +54,11 @@ export function MonthlyReadingSection({ monthlyReading }) {
           <p className="text-xl font-semibold leading-7">
             {reading?.summary?.core_theme}
           </p>
-          <p className="text-base mb-3">{reading?.summary?.description}</p>
+          <p className="text-base mb-3">
+            <Markdown className="text-gray-700">
+              {reading?.summary?.description?.replace(/—/gi, ", ")}
+            </Markdown>
+          </p>
           <Link
             className="btn bg-rose-500 active:bg-rose-700 text-white  font-semibold rounded-2xl"
             href={`/readings/${monthlyReading?.reading_category}/${monthlyReading?.slug}`}

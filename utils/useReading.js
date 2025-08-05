@@ -5,12 +5,72 @@ import { supabase } from "./supabaseClient";
 // The key for SWR to cache and identify this data
 const SWR_KEY = "readings";
 
-// The fetcher function for SWR. It uses the Supabase client to get the data.
-// SWR fetcher function for a single reading
-const fetcher = async (key) => {
+const fetcherDaily = async ([_key, userId]) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  if (!userId) return null;
+
+  const { data, error } = await supabase
+    .from("readings")
+    .select("id, reading, created_at, status")
+    .eq("user_id", userId)
+    .gte("created_at", today.toISOString())
+    .lt("created_at", tomorrow.toISOString())
+    .eq("reading_category", "daily")
+    .order("created_at", { ascending: false })
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error fetching daily reading data:", error);
+    throw error;
+  }
+  return data;
+};
+
+export const useDailyReading = (userId) => {
+  const SWR_KEY_DAILY = userId ? ["daily-reading", userId] : null;
+  const { data, error, mutate } = useSWR(SWR_KEY_DAILY, fetcherDaily);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const channel = supabase
+      .channel(`db-readings-user-eq-${userId}-daily`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "readings",
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          const record = payload.new || payload.old;
+          if (record && record.reading_category === "daily") {
+            console.log("Daily reading change received, revalidating.");
+            mutate();
+          }
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId, mutate]);
+
+  return {
+    reading: data,
+    isLoading: !error && data === undefined,
+    error: error,
+  };
+};
+
+const fetcherCompatibility = async (key) => {
   const slug = key.split("/").pop();
 
-  // console.log("fetcher slug", slug);
   if (!slug) return null;
 
   const { data, error } = await supabase
@@ -27,21 +87,13 @@ const fetcher = async (key) => {
 };
 
 export const useCompatibilityReading = (slug) => {
-  // Use the SWR hook to fetch data.
-  // `data`, `error`, and `mutate` are returned from useSWR.
-  const { data, error, mutate } = useSWR(slug, fetcher);
-
-  // Set up the realtime subscription.
+  const { data, error, mutate } = useSWR(slug, fetcherCompatibility);
   useEffect(() => {
-    // This is the callback function that will be executed when a change happens.
     const handleDatabaseChange = (payload) => {
       console.log("Database change received!", payload);
-      // We received a change, so we tell SWR to re-fetch the data.
-      // The `mutate` function will trigger a re-validation (re-fetch).
       mutate(payload.new);
     };
 
-    // Subscribe to the 'readings' table
     const subscription = supabase
       .channel(`db-readings-slug-eq-${slug}`)
       .on(
@@ -55,16 +107,82 @@ export const useCompatibilityReading = (slug) => {
         handleDatabaseChange
       )
       .subscribe();
-    // we need to unsubscribe from the channel.
     return () => {
-      // console.log("Unsubscribing from realtime readings updates.");
       supabase.removeChannel(subscription);
     };
-  }, [slug, mutate]); // We include `mutate` in the dependency array
+  }, [slug, mutate]);
 
   return {
-    reading: data, // Rename `data` to `readings` for clarity
-    isLoading: !error && !data,
+    reading: data,
+    isLoading: !error && data === undefined,
+    error: error,
+  };
+};
+
+const fetcherMonthly = async ([_key, userId]) => {
+  if (!userId) return null;
+
+  const today = new Date();
+  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const firstDayOfNextMonth = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    1
+  );
+
+  const { data, error } = await supabase
+    .from("readings")
+    .select("id, reading, created_at, status, reading_category, slug")
+    .eq("user_id", userId)
+    .eq("reading_category", "monthly")
+    .gte("created_at", firstDayOfMonth.toISOString())
+    .lt("created_at", firstDayOfNextMonth.toISOString())
+    .order("created_at", { ascending: false })
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error fetching monthly reading data:", error);
+    throw error;
+  }
+
+  return data;
+};
+
+export const useMonthlyReading = (userId) => {
+  const SWR_KEY_MONTHLY = userId ? ["monthly-reading", userId] : null;
+  const { data, error, mutate } = useSWR(SWR_KEY_MONTHLY, fetcherMonthly);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const channel = supabase
+      .channel(`db-readings-user-eq-${userId}-monthly`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "readings",
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          const record = payload.new || payload.old;
+          if (record && record.reading_category === "monthly") {
+            console.log("Monthly reading change received, revalidating.");
+            mutate();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId, mutate]);
+
+  return {
+    reading: data,
+    isLoading: !error && data === undefined,
     error: error,
   };
 };

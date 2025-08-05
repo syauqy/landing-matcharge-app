@@ -3,11 +3,14 @@ import { format } from "date-fns";
 import { getDayInformation } from "@/utils";
 import Markdown from "markdown-to-jsx";
 import clsx from "clsx";
+import { AnimatedLoadingText } from "./AnimatedLoadingText";
+import { dailyLoadingMessages } from "@/lib/loading-content";
 
 export function DailyReadingSection({
   dailyReading,
   setShowDailyReadingSheet,
   showDailyReadingSheet,
+  loadingDailyReading,
 }) {
   if (!dailyReading) return null;
   const reading = dailyReading?.reading;
@@ -34,8 +37,10 @@ export function DailyReadingSection({
     return (
       <div className="card bg-base-100 border border-[var(--color-batik-border)]">
         <div className="card-body p-4 flex items-center justify-center">
-          <span className="loading loading-spinner loading-md"></span>
-          <p className="ml-2">Generating your daily reading...</p>
+          <AnimatedLoadingText
+            messages={dailyLoadingMessages}
+            className="text-center text-lg font-semibold"
+          />
         </div>
       </div>
     );
@@ -71,6 +76,7 @@ export function DailyReadingSection({
           >
             Reveal Your Reading
           </button>
+
           {showDailyReadingSheet && (
             <div className="fixed inset-0 bg-slate-500/40 bg-opacity-10 z-40 flex items-end justify-center">
               <div className="bg-base-100 rounded-t-lg p-4 w-full max-w-md shadow-lg h-[90vh] flex flex-col">

@@ -56,7 +56,7 @@ export default function HomePage() {
 
   console.log("Login Page: isNative:", isNative, user);
   let redirectUrl = isNative
-    ? "https://app.wetonscope.com/home"
+    ? "wetonscope://home"
     : process.env.NODE_ENV === "production"
     ? "https://app.wetonscope.com/home"
     : "http://localhost:3000/home";

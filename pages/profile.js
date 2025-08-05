@@ -12,6 +12,7 @@ import { openBrowser, closeBrowser } from "@/utils/native-browser";
 import { getWeton, getWuku } from "@/utils";
 import { Toaster, toast } from "sonner";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
+import { Purchases } from "@revenuecat/purchases-capacitor";
 
 export default function ProfilePage() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -22,6 +23,7 @@ export default function ProfilePage() {
     date: "26062025",
   };
 
+  const [isManagingSubscription, setIsManagingSubscription] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const [readingsData, setReadingsData] = useState([]);
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -130,6 +132,34 @@ export default function ProfilePage() {
       setError((prevError) => prevError || "Failed to load readings history."); // Preserve profile error if it exists
     } finally {
       setLoadingReadings(false);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    setIsManagingSubscription(true);
+    try {
+      const { isConfigured } = await Purchases.isConfigured();
+      if (!isConfigured) {
+        await Purchases.configure({
+          apiKey: process.env.NEXT_PUBLIC_REVENUECAT_API_KEY,
+          appUserID: user.id,
+        });
+      }
+
+      const { customerInfo } = await Purchases.getCustomerInfo();
+      if (customerInfo.managementURL) {
+        await openBrowser(customerInfo.managementURL);
+      } else {
+        toast.error("Subscription management URL not available.");
+      }
+    } catch (e) {
+      toast.error("Failed to get subscription information.");
+      console.error(
+        "Error getting customer info for subscription management:",
+        e
+      );
+    } finally {
+      setIsManagingSubscription(false);
     }
   };
 
@@ -664,7 +694,7 @@ export default function ProfilePage() {
                           {profileData.gender}
                         </div>
                         <div className="px-4 py-2 capitalize">
-                          {profileData.subscription_status || "Free"}
+                          {profileData.subscription || "Free"}
                         </div>
                       </div>
                     </div>
@@ -695,7 +725,21 @@ export default function ProfilePage() {
                         >
                           Terms of Service
                         </button>
-                        <div className="pt-5 mt-5 border-t border-gray-200">
+                        <div className="py-2 border-t border-gray-200">
+                          <button
+                            onClick={handleManageSubscription}
+                            disabled={isManagingSubscription}
+                            className="text-left text-blue-600 hover:underline disabled:text-gray-400 disabled:cursor-not-allowed font-semibold"
+                          >
+                            {isManagingSubscription
+                              ? "Loading..."
+                              : "Manage Subscription"}
+                          </button>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Change or cancel your subscription.
+                          </p>
+                        </div>
+                        <div className="py-2 border-t border-gray-200">
                           <button
                             onClick={handleRegenerateProfile}
                             disabled={isRegenerating}

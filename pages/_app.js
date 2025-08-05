@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { NuqsAdapter } from "nuqs/adapters/next/pages";
 import { AppUrlListener } from "@/context/AppUrlListener";
+import { NewAppUrlListener } from "@/context/NewAppUrlListener";
 // import { DeepLinkHandler } from "@/context/DeepLinkHandler";
 import { useEffect } from "react";
 
@@ -19,7 +20,8 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
   return (
     <AuthProvider>
-      <AppUrlListener></AppUrlListener>
+      {/* <AppUrlListener></AppUrlListener> */}
+      <NewAppUrlListener />
       {/* <DeepLinkHandler /> */}
       {/* <DebugComponent /> */}
       <NuqsAdapter>

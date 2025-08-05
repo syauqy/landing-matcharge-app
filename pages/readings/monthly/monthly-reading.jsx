@@ -18,6 +18,7 @@ import { DisclaimerSection } from "@/components/readings/disclaimer-section";
 import { getJavaneseDate } from "@/utils";
 import Markdown from "markdown-to-jsx";
 import clsx from "clsx";
+import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
 
 export default function MonthlyReadingPage() {
   const { user, loading: authLoading } = useAuth();
@@ -467,16 +468,7 @@ export default function MonthlyReadingPage() {
           </div>
         )}
       </main>
-      {profileData?.subscription == "free" && (
-        <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
-          <button
-            className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
-            onClick={() => {}}
-          >
-            🔓 Unlock With Pro
-          </button>
-        </div>
-      )}
+      {profileData?.subscription == "free" && <ReadingSubscriptionButton />}
     </div>
   );
 }

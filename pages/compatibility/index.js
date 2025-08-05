@@ -35,10 +35,12 @@ import {
   friendshipLoadingMessages,
 } from "@/lib/loading-content";
 import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useSubscription } from "@/utils/useSubscription";
 
 export default function CompatibilityPage() {
   const { user, loading: authLoading, logout } = useAuth();
   const router = useRouter();
+  const { presentPaywall, isProcessing } = useSubscription();
 
   const [profileData, setProfileData] = useState(null);
   const [coupleReading, setCoupleReading] = useState([]);
@@ -272,6 +274,18 @@ export default function CompatibilityPage() {
     setError(null);
 
     try {
+      const slug1Base = `${profileData.username}-${partner.username}`;
+      const slug2Base = `${partner.username}-${profileData.username}`;
+
+      const orConditions = [
+        `and(user_id.eq.${user.id},or(slug.eq.${slug1Base}-${
+          type == "love" ? "couple" : "friendship"
+        }))`,
+        `and(user_id.eq.${partner.id},or(slug.eq.${slug2Base}-${
+          type == "love" ? "couple" : "friendship"
+        }))`,
+      ].join(",");
+
       const slug =
         type === "love"
           ? `${profileData.username}-${partner.username}-couple`
@@ -281,9 +295,11 @@ export default function CompatibilityPage() {
         .from("readings")
         .select("reading, status, slug, title")
         .eq("reading_type", "pro")
-        .eq("user_id", user.id)
+        // .eq("user_id", user.id)
         .eq("reading_category", "compatibility")
-        .eq("slug", slug)
+        .or(orConditions)
+        .order("created_at", { ascending: false })
+        // .eq("slug", slug)
         .maybeSingle();
 
       if (fetchError && fetchError.code !== "PGRST116") {
@@ -597,7 +613,11 @@ export default function CompatibilityPage() {
                   </div>
                 ) : (
                   <button
-                    onClick={() => handleCoupleReading()}
+                    onClick={() =>
+                      profileData?.subscription == "pro"
+                        ? handleCoupleReading()
+                        : presentPaywall()
+                    }
                     className="btn btn-secondary rounded-xl w-full border-rose-500 border disabled:bg-slate-400 mt-20 disabled:cursor-not-allowed"
                     disabled={loading || !wetonJodoh.jodoh4 || !partnerProfile}
                   >
@@ -739,8 +759,13 @@ export default function CompatibilityPage() {
                   </Link>
                   <div className="divider text-batik-text text-sm">OR</div>
                   <button
-                    onClick={() => setShowCustomPartnerForm(true)}
+                    onClick={() =>
+                      profileData?.subscription == "pro"
+                        ? setShowCustomPartnerForm(true)
+                        : presentPaywall()
+                    }
                     className="btn btn-outline w-full rounded-2xl max-w-md border-slate-200 py-2.5 font-semibold text-slate-600"
+                    disabled={isProcessing}
                   >
                     <span className="mr-1">🎭</span>
                     Add Custom Profile
