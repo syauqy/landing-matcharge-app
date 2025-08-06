@@ -6,25 +6,29 @@ import { useRouter } from "next/router";
 import {
   fetchProfileData,
   handleGenerateReading,
-  fetchReading,
+  // fetchReading,
 } from "@/utils/fetch";
+import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
-import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { Capacitor } from "@capacitor/core";
 import { ReadingLoading } from "@/components/readings/reading-loading";
 import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useReading } from "@/utils/useReading";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 
-export default function LoveAttitudesPage() {
+export default function LoveStylePage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  const [reading, setReading] = useState(null);
+  // const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
@@ -33,52 +37,102 @@ export default function LoveAttitudesPage() {
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const [isSectionSixOpen, setIsSectionSixOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const topics = [
     {
-      icon: "💍",
-      title: "View on Commitment",
-      description:
-        "Your intrinsic perspective on commitment and long-term relationships.",
+      icon: "🎁",
+      title: "Primary Expression of Affection",
+      description: "How do you naturally show love and care to a partner?",
     },
     {
-      icon: "⚖️",
-      title: "Approach to Conflict & Disagreement",
-      description: `How do you typically tend to handle disagreements or challenges in a relationship?`,
+      icon: "🤲",
+      title: "Desired Received Affection",
+      description: `How do you primarily wish to receive love from a partner?`,
     },
     {
-      icon: "🛡️",
-      title: "Trust, Loyalty, & Fidelity",
+      icon: "🏃",
+      title: "Romantic Ideal & Pursuits",
       description:
-        "Your inherent tendencies and values regarding trust, loyalty, and fidelity within a partnership.",
+        "What kind of romantic experience or partner do you inherently yearn for or seek out?",
     },
     {
-      icon: "☯️",
-      title: "Independence vs. Interdependence",
+      icon: "❤️‍🔥",
+      title: "Demonstration of Passion",
       description:
-        "How do you naturally balance your personal autonomy and need for individual space with the desire for relational closeness and shared life?",
+        "How does your Weton influence the way you express passion or romantic intensity?",
     },
     {
       icon: "🧘",
-      title: "Javanese Philosophical Connection",
+      title: "Javanese Cultural Nuance",
       description:
-        "How the concept of keselarasan (harmony) might manifest in your attitudes towards resolving differences and maintaining peace.",
+        "Javanese cultural interpretations of love expression that might resonate with your Weton.",
     },
   ];
 
+  const loadingMessages = [
+    {
+      text: "Exploring your Primary Expression of Affection...",
+      emoji: "🎁",
+    },
+    {
+      text: "Uncovering your Desired Received Affection...",
+      emoji: "🤲",
+    },
+    {
+      text: "Analyzing your Romantic Ideal & Pursuits...",
+      emoji: "🏃",
+    },
+    {
+      text: "Revealing your Demonstration of Passion...",
+      emoji: "❤️‍🔥",
+    },
+    {
+      text: "Connecting with Javanese Cultural Nuance...",
+      emoji: "🧘",
+    },
+    {
+      text: "Reflecting on your unique love journey...",
+      emoji: "💖",
+    },
+    {
+      text: "Interpreting your Weton and Laku synergy...",
+      emoji: "🔮",
+    },
+    {
+      text: "Balancing the energies of Rakam and Laku...",
+      emoji: "⚖️",
+    },
+    {
+      text: "Synthesizing your Pancasuda traits...",
+      emoji: "🪷",
+    },
+  ];
+
+  const {
+    reading,
+    isLoading: isLoadingReading,
+    error: readingError,
+  } = useReading(user?.id, "love_readings", "love-style", "basic");
+
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
+      router.push("/");
       return;
     }
 
     if (!router.isReady || !user) {
-      setLoading(true);
+      setLoadingProfile(true);
       return;
     }
 
-    fetchProfileData({ user, setLoading, setError, setProfileData });
-  }, []);
+    fetchProfileData({
+      user,
+      setLoading: setLoadingProfile,
+      setError,
+      setProfileData,
+    });
+  }, [user, authLoading, router.isReady]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -108,7 +162,7 @@ export default function LoveAttitudesPage() {
   //         .select("reading, status")
   //         .eq("user_id", user.id)
   //         .eq("reading_category", "love_readings")
-  //         .eq("slug", "love-attitudes")
+  //         .eq("slug", "love-style")
   //         .maybeSingle();
 
   //       console.log("Existing Reading:", existingReading, user.id);
@@ -161,27 +215,27 @@ export default function LoveAttitudesPage() {
   //   }
   // };
 
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        fetchReading({
-          profileData,
-          user,
-          setReading,
-          setLoading,
-          setError,
-          slug: "love-attitudes",
-          reading_category: "love_readings",
-          reading_type: "basic",
-          api_url: "readings/love/love-core",
-        });
-      }
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     if (isNative) {
+  //       fetchReading({
+  //         profileData,
+  //         user,
+  //         setReading,
+  //         setLoading,
+  //         setError,
+  //         slug: "love-style",
+  //         reading_category: "love_readings",
+  //         reading_type: "basic",
+  //         api_url: "readings/love/love-core",
+  //       });
+  //     }
+  //   }
+  // }, [profileData]);
 
   // console.log("Profile Data:", profileData);
 
-  if (authLoading || (loading && !error)) {
+  if (authLoading || (loadingProfile && !error)) {
     return <PageLoadingLayout />;
   }
 
@@ -198,7 +252,7 @@ export default function LoveAttitudesPage() {
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
-        title="Love Attitudes"
+        title="Love Style"
         profileData={profileData}
         showTitleInNavbar={showTitleInNavbar}
       />
@@ -206,82 +260,85 @@ export default function LoveAttitudesPage() {
       {error && <ErrorLayout error={error} router={router} />}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        {reading?.status === "completed" ? (
+        {isLoadingReading ? (
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
+        ) : reading?.status === "completed" ? (
           <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-semibold text-left">
-                Love Attitudes
-              </h2>
+              <h2 className="text-xl font-semibold text-left">Love Style</h2>
               <p className="text-sm text-gray-700 mb-2">
-                Uncover your underlying beliefs and perspectives when it comes
-                to romance.
+                Discover your natural way of expressing and receiving affection
+                in relationships.
               </p>
             </div>
             <ContentSection
-              reading={reading?.reading?.commitment}
+              reading={reading?.reading?.primary_expression}
               setIsSectionOpen={setIsSectionOneOpen}
               isSectionOpen={isSectionOneOpen}
-              title="💍 View on Commitment"
+              title="🎁 Primary Expression of Affection"
               firstSection={true}
             />
             <ContentSection
-              reading={reading?.reading?.conflict}
+              reading={reading?.reading?.desired_affection}
               setIsSectionOpen={setIsSectionTwoOpen}
               isSectionOpen={isSectionTwoOpen}
-              title="⚖️ Approach to Conflict & Disagreement"
+              title="🤲 Desired Received Affection"
             />
             <ContentSection
-              reading={reading?.reading?.trust}
+              reading={reading?.reading?.romantic_ideal}
               setIsSectionOpen={setIsSectionThreeOpen}
               isSectionOpen={isSectionThreeOpen}
-              title="🛡️ Trust, Loyalty, & Fidelity"
+              title="🏃 Romantic Ideal & Pursuits"
             />
             <ContentSection
-              reading={reading?.reading?.interdependence}
+              reading={reading?.reading?.demonstration_of_passion}
               setIsSectionOpen={setIsSectionFourOpen}
               isSectionOpen={isSectionFourOpen}
-              title="☯️ Independence vs. Interdependence"
+              title="❤️‍🔥 Demonstration of Passion"
             />
             <ContentSection
-              reading={reading?.reading?.harmony}
+              reading={reading?.reading?.cultural_nuance}
               setIsSectionOpen={setIsSectionFiveOpen}
               isSectionOpen={isSectionFiveOpen}
               title="🧘 Javanese Cultural Nuance"
             />
           </div>
         ) : reading?.status === "loading" ? (
-          <ReadingLoading />
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
         ) : (
           !reading && (
             <ReadingDescription
               reading_category={"💖 Love and Relationship"}
-              title={"Love Attitudes"}
+              title={"Love Style"}
               topics={topics}
-              description={`This reading examines your inherent beliefs and perspectives on love, commitment, and relationships, shaped by your Weton and Rakam.`}
+              description={`This reading explores how you express and desire love, drawing from your Weton and Laku.`}
             />
           )
         )}
         {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
-      {!reading && (
+      {!isLoadingReading && !reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
-            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full disabled:bg-slate-300"
+            disabled={isGenerating}
             onClick={() =>
               handleGenerateReading({
                 profileData,
                 user,
-                setReading,
-                setLoading,
+                apiUrl: "readings/love/love-core",
                 setError,
-                slug: "love-attitudes",
-                reading_category: "love_readings",
-                reading_type: "basic",
-                api_url: "readings/love/love-core",
+                setIsGenerating,
               })
             }
           >
-            Generate Reading
+            {isGenerating ? "Generating..." : "Generate Reading"}
           </button>
         </div>
       )}

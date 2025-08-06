@@ -369,7 +369,8 @@ export async function generatePrimaryTraitsReading(profile) {
     attempt++;
     try {
       const response = await generateObject({
-        model: google("gemini-2.5-flash-preview-05-20"),
+        model: google("gemini-2.5-pro"),
+        // model: google("gemini-2.5-flash-preview-05-20"),
         providerOptions: {
           google: {
             thinkingConfig: {
@@ -513,6 +514,427 @@ export async function generatePrimaryTraitsReading(profile) {
   } while (attempt < maxAttempts);
 }
 
+export async function generateGeneralProReading(profile) {
+  const { data: newRakamReading, error } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Rakam",
+      subtitle:
+        "Uncover the significant life themes or karmic imprints shaping your experiences",
+      username: profile.username,
+      status: "loading",
+      slug: "rakam",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error inserting new reading:", error);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newRakamReading);
+
+  const { data: newSaptawaraReading, errorSaptawara } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Pancasuda",
+      subtitle:
+        "Reveal the core pillar of your inner foundation and its potential influenced by the seven-day Pawukon cycle",
+      username: profile.username,
+      status: "loading",
+      slug: "pancasuda",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorSaptawara) {
+    console.error("Error inserting new reading:", errorSaptawara);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newSaptawaraReading);
+
+  const { data: newLakuReading, errorLaku } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Laku",
+      subtitle:
+        "Discover the archetype and behavioral pattern that guides your life's journey.",
+      username: profile.username,
+      status: "loading",
+      slug: "laku",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorLaku) {
+    console.error("Error inserting new reading:", errorLaku);
+    throw errorLaku;
+  }
+
+  console.log("new reading generated on supabase", newLakuReading);
+
+  const maxAttempts = 2;
+  let attempt = 0;
+  let lastErrorMsg = "";
+  do {
+    attempt++;
+    try {
+      const response = await generateObject({
+        // model: google("gemini-2.5-flash"),
+        // model: openai("o4-mini-2025-04-16"),
+        model: google("gemini-2.5-pro"),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              thinkingBudget: 1000,
+            },
+          },
+        },
+        maxTokens: 10000,
+        schema: z.object({
+          rakam: z.object({
+            story: z
+              .string()
+              .describe(
+                "Briefly explain the core meaning and symbolism of their Rakam."
+              ),
+            theme: z
+              .string()
+              .describe(
+                "Describe how this narrative influences their character, their reactions, and their view of the world."
+              ),
+            plot: z
+              .string()
+              .describe(
+                "Explain how this theme affects their social standing and the flow of fortune in their life."
+              ),
+            moral: z
+              .string()
+              .describe(
+                `Offer clear guidance. "As 'The Challenger of Fate,' your path requires you to consciously choose courage over fear. Your greatest rewards lie on the other side of the challenges you are destined to face.`
+              ),
+          }),
+          saptawara: z.object({
+            character: z
+              .string()
+              .describe(
+                'Detail the fundamental temperament and key symbolic associations (e.g., "Bumi Kapetak" or "Cultivated Earth")'
+              ),
+            innate_gift: z
+              .string()
+              .describe(
+                "Describe the strengths and positive opportunities this trait brings into their life."
+              ),
+            shadow: z
+              .string()
+              .describe(
+                `Gently explain the potential challenges or misuse of this gift. Ask a reflective question: "As someone with the generosity of *Wasesa Segara*, how can you give freely while also honoring your own needs?"`
+              ),
+            gift_to_work: z
+              .string()
+              .describe(
+                "Provide clear, actionable advice on how to lean into the positive side of this trait to build a better life."
+              ),
+          }),
+          laku: z.object({
+            core_meaning: z
+              .string()
+              .describe(
+                "Explain the metaphorical meaning of this specific Laku and its core characteristics. Describe the core characteristics."
+              ),
+            strengths: z
+              .string()
+              .describe(
+                "Detail the natural positive qualities that stem from this Laku (e.g., resilience, deep thought, independence, charisma, adaptability, diligence)."
+              ),
+            challenges: z
+              .string()
+              .describe(
+                "Explain their instinctual approach to overcoming challenges, using the metaphor of their element."
+              ),
+            influence: z
+              .string()
+              .describe(
+                "How does this Laku shape your general approach to daily life, decision-making, and facing adversity?"
+              ),
+            ritual: z
+              .string()
+              .describe(
+                "Suggest a simple, tangible activity they can do to reconnect with their core Laku energy when they feel out of balance."
+              ),
+          }),
+        }),
+        messages: [
+          { role: "user", content: proGeneralCalculationPrompt(profile) },
+        ],
+      });
+      const resObj = response.object;
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.rakam,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newRakamReading.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.saptawara,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newSaptawaraReading.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.laku,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newLakuReading.id);
+
+      break;
+    } catch (error) {
+      lastErrorMsg = error.message;
+      console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
+      if (attempt >= maxAttempts) {
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newRakamReading.id);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newSaptawaraReading.id);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newLakuReading.id);
+      }
+    }
+  } while (attempt < maxAttempts);
+}
+
+export async function generateGeneralProReading2(profile) {
+  const { data: newValuesReading, errorValues } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Values",
+      subtitle:
+        "Pinpoint the core principles that drive your decisions and motivations.",
+      username: profile.username,
+      status: "loading",
+      slug: "values",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorValues) {
+    console.error("Error inserting new reading:", errorValues);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newValuesReading);
+
+  const { data: newInteractionStyle, errorInteraction } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "general_readings",
+      title: "Interaction Style",
+      subtitle:
+        "Learn how you naturally connect and communicate with the world around you.",
+      username: profile.username,
+      status: "loading",
+      slug: "interaction-style",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorInteraction) {
+    console.error("Error inserting new reading:", errorInteraction);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newInteractionStyle);
+
+  const maxAttempts = 2;
+  let attempt = 0;
+  let lastErrorMsg = "";
+  do {
+    attempt++;
+    try {
+      const response = await generateObject({
+        // model: google("gemini-2.5-flash-preview-05-20"),
+        // model: openai("o4-mini-2025-04-16"),
+        model: google("gemini-2.5-pro"),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              thinkingBudget: 1000,
+            },
+          },
+        },
+        schema: z.object({
+          values: z.object({
+            primary_value: z
+              .string()
+              .describe(
+                "Identify and describe the dominant 2-3 core values that are most pronounced in your Weton combination (e.g., harmony (keselarasan), responsibility (tanggung jawab), sincerity (ikhlas), humility (andhap asor), collective well-being (memayu hayuning bawana), honesty (kejujuran), perseverance (tekun), wisdom (kawicaksanan))."
+              ),
+            manifest: z
+              .string()
+              .describe(
+                "Explain how these values are likely to manifest in your daily behavior, relationships, and professional life. Provide concrete examples."
+              ),
+            motivation: z
+              .string()
+              .describe(
+                "What truly drives your actions and aspirations, according to your Weton influences?"
+              ),
+            conflicts: z
+              .string()
+              .describe(
+                "Briefly touch upon any inherent tensions between different values or how external pressures might challenge your core principles, and how your Weton suggests navigating these."
+              ),
+            philosophy: z
+              .string()
+              .describe(
+                "Connect your core values to broader Javanese philosophical concepts or ethical guidelines, explaining their significance in a traditional context."
+              ),
+          }),
+          interaction_style: z.object({
+            social_tendency: z
+              .string()
+              .describe(
+                "Are you naturally more introverted or extroverted? Direct or indirect in communication? Preferring harmony over confrontation, or vice-versa? Describe your overarching social tendency."
+              ),
+            communication: z
+              .string()
+              .describe(
+                "Detail your typical communication style (e.g., articulate, reserved, expressive, pragmatic, empathetic, logical). How do you tend to convey your thoughts and feelings?"
+              ),
+            relationship: z
+              .string()
+              .describe(
+                "How do you typically initiate, maintain, and navigate friendships, professional connections, and community ties? Are you a leader, a supportive follower, a mediator, or an independent contributor?"
+              ),
+            social_dynamics: z
+              .string()
+              .describe(
+                "How do you typically react to social challenges, group pressures, or differing opinions?"
+              ),
+            social_etiquette: z
+              .string()
+              .describe(
+                "Connect aspects of your interaction style to relevant Javanese tata krama (etiquette) or social norms, explaining how your Weton might naturally align with or challenge these traditions."
+              ),
+          }),
+        }),
+        messages: [
+          { role: "user", content: proGeneralCalculationPrompt2(profile) },
+        ],
+      });
+      const resObj = response.object;
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.interaction_style,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newInteractionStyle.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.interaction_style,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newValuesReading.id);
+
+      break;
+    } catch (error) {
+      lastErrorMsg = error.message;
+      console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
+      if (attempt >= maxAttempts) {
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newValuesReading.id);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newInteractionStyle.id);
+        // await supabase
+        //   .from("readings")
+        //   .update({
+        //     status: "error",
+        //     reading: { error: lastErrorMsg },
+        //     updated_at: new Date().toISOString(),
+        //   })
+        //   .eq("id", newLifePathReading.id);
+      }
+    }
+  } while (attempt < maxAttempts);
+}
+
 export async function generateLoveBasicReading(profile) {
   const { data: newLoveBasicReading, error } = await supabase
     .from("readings")
@@ -590,7 +1012,8 @@ export async function generateLoveBasicReading(profile) {
     attempt++;
     try {
       const response = await generateObject({
-        model: google("gemini-2.5-flash-preview-05-20"),
+        model: google("gemini-2.5-pro"),
+        // model: google("gemini-2.5-flash-preview-05-20"),
         providerOptions: {
           google: {
             thinkingConfig: {
@@ -750,6 +1173,22 @@ export async function generateLoveBasicReading(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newLoveBasicReading.id);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newLoveStyleReading.id);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newLoveAttitudesReading.id);
       }
     }
   } while (attempt < maxAttempts);
@@ -1109,494 +1548,6 @@ export async function generateLoveProReading2(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newLoveIncompatibleReading.id);
-      }
-    }
-  } while (attempt < maxAttempts);
-}
-
-export async function generateGeneralProReading(profile) {
-  const { data: newRakamReading, error } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "general_readings",
-      title: "Rakam",
-      subtitle:
-        "Uncover the significant life themes or karmic imprints shaping your experiences",
-      username: profile.username,
-      status: "loading",
-      slug: "rakam",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
-
-  if (error) {
-    console.error("Error inserting new reading:", error);
-    throw error;
-  }
-
-  console.log("new reading generated on supabase", newRakamReading);
-
-  const { data: newSaptawaraReading, errorSaptawara } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "general_readings",
-      title: "Pancasuda",
-      subtitle:
-        "Reveal the core pillar of your inner foundation and its potential influenced by the seven-day Pawukon cycle",
-      username: profile.username,
-      status: "loading",
-      slug: "pancasuda",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
-
-  if (errorSaptawara) {
-    console.error("Error inserting new reading:", errorSaptawara);
-    throw error;
-  }
-
-  console.log("new reading generated on supabase", newSaptawaraReading);
-
-  const { data: newLakuReading, errorLaku } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "general_readings",
-      title: "Laku",
-      subtitle:
-        "Discover the archetype and behavioral pattern that guides your life's journey.",
-      username: profile.username,
-      status: "loading",
-      slug: "laku",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
-
-  if (errorLaku) {
-    console.error("Error inserting new reading:", errorLaku);
-    throw errorLaku;
-  }
-
-  console.log("new reading generated on supabase", newLakuReading);
-
-  const maxAttempts = 2;
-  let attempt = 0;
-  let lastErrorMsg = "";
-  do {
-    attempt++;
-    try {
-      const response = await generateObject({
-        // model: google("gemini-2.5-flash"),
-        // model: openai("o4-mini-2025-04-16"),
-        model: google("gemini-2.5-pro"),
-        providerOptions: {
-          google: {
-            thinkingConfig: {
-              thinkingBudget: 1000,
-            },
-          },
-        },
-        maxTokens: 10000,
-        schema: z.object({
-          rakam: z.object({
-            story: z
-              .string()
-              .describe(
-                "Briefly explain the core meaning and symbolism of their Rakam."
-              ),
-            theme: z
-              .string()
-              .describe(
-                "Describe how this narrative influences their character, their reactions, and their view of the world."
-              ),
-            plot: z
-              .string()
-              .describe(
-                "Explain how this theme affects their social standing and the flow of fortune in their life."
-              ),
-            moral: z
-              .string()
-              .describe(
-                `Offer clear guidance. "As 'The Challenger of Fate,' your path requires you to consciously choose courage over fear. Your greatest rewards lie on the other side of the challenges you are destined to face.`
-              ),
-          }),
-          saptawara: z.object({
-            character: z
-              .string()
-              .describe(
-                'Detail the fundamental temperament and key symbolic associations (e.g., "Bumi Kapetak" or "Cultivated Earth")'
-              ),
-            innate_gift: z
-              .string()
-              .describe(
-                "Describe the strengths and positive opportunities this trait brings into their life."
-              ),
-            shadow: z
-              .string()
-              .describe(
-                `Gently explain the potential challenges or misuse of this gift. Ask a reflective question: "As someone with the generosity of *Wasesa Segara*, how can you give freely while also honoring your own needs?"`
-              ),
-            gift_to_work: z
-              .string()
-              .describe(
-                "Provide clear, actionable advice on how to lean into the positive side of this trait to build a better life."
-              ),
-          }),
-          laku: z.object({
-            core_meaning: z
-              .string()
-              .describe(
-                "Explain the metaphorical meaning of this specific Laku and its core characteristics. Describe the core characteristics."
-              ),
-            strengths: z
-              .string()
-              .describe(
-                "Detail the natural positive qualities that stem from this Laku (e.g., resilience, deep thought, independence, charisma, adaptability, diligence)."
-              ),
-            challenges: z
-              .string()
-              .describe(
-                "Explain their instinctual approach to overcoming challenges, using the metaphor of their element."
-              ),
-            influence: z
-              .string()
-              .describe(
-                "How does this Laku shape your general approach to daily life, decision-making, and facing adversity?"
-              ),
-            ritual: z
-              .string()
-              .describe(
-                "Suggest a simple, tangible activity they can do to reconnect with their core Laku energy when they feel out of balance."
-              ),
-          }),
-        }),
-        messages: [
-          { role: "user", content: proGeneralCalculationPrompt(profile) },
-        ],
-      });
-      const resObj = response.object;
-
-      await supabase
-        .from("readings")
-        .update({
-          status: "completed",
-          reading: resObj.rakam,
-          input_token: response.usage.promptTokens,
-          output_token: response.usage.completionTokens,
-          total_token: response.usage.totalTokens,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", newRakamReading.id);
-
-      await supabase
-        .from("readings")
-        .update({
-          status: "completed",
-          reading: resObj.saptawara,
-          input_token: response.usage.promptTokens,
-          output_token: response.usage.completionTokens,
-          total_token: response.usage.totalTokens,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", newSaptawaraReading.id);
-
-      await supabase
-        .from("readings")
-        .update({
-          status: "completed",
-          reading: resObj.laku,
-          input_token: response.usage.promptTokens,
-          output_token: response.usage.completionTokens,
-          total_token: response.usage.totalTokens,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", newLakuReading.id);
-
-      break;
-    } catch (error) {
-      lastErrorMsg = error.message;
-      console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
-      if (attempt >= maxAttempts) {
-        await supabase
-          .from("readings")
-          .update({
-            status: "error",
-            reading: { error: lastErrorMsg },
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", newRakamReading.id);
-        await supabase
-          .from("readings")
-          .update({
-            status: "error",
-            reading: { error: lastErrorMsg },
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", newSaptawaraReading.id);
-        await supabase
-          .from("readings")
-          .update({
-            status: "error",
-            reading: { error: lastErrorMsg },
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", newLakuReading.id);
-      }
-    }
-  } while (attempt < maxAttempts);
-}
-
-export async function generateGeneralProReading2(profile) {
-  // const { data: newValuesReading, errorValues } = await supabase
-  //   .from("readings")
-  //   .insert({
-  //     reading_type: "pro",
-  //     reading_category: "general_readings",
-  //     title: "Values",
-  //     subtitle:
-  //       "Pinpoint the core principles that drive your decisions and motivations.",
-  //     username: profile.username,
-  //     status: "loading",
-  //     slug: "values",
-  //     user_id: profile.id,
-  //   })
-  //   .select()
-  //   .maybeSingle();
-
-  // if (errorValues) {
-  //   console.error("Error inserting new reading:", errorValues);
-  //   throw error;
-  // }
-
-  // console.log("new reading generated on supabase", newValuesReading);
-
-  const { data: newInteractionStyle, errorInteraction } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "general_readings",
-      title: "Interaction Style",
-      subtitle:
-        "Learn how you naturally connect and communicate with the world around you.",
-      username: profile.username,
-      status: "loading",
-      slug: "interaction-style",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
-
-  if (errorInteraction) {
-    console.error("Error inserting new reading:", errorInteraction);
-    throw error;
-  }
-
-  console.log("new reading generated on supabase", newInteractionStyle);
-
-  // const { data: newLifePathReading, errorLifePath } = await supabase
-  //   .from("readings")
-  //   .insert({
-  //     reading_type: "pro",
-  //     reading_category: "general_readings",
-  //     title: "Life Path",
-  //     subtitle:
-  //       "Get insights into the themes and directions of your life's journey.",
-  //     username: profile.username,
-  //     status: "loading",
-  //     slug: "life-path",
-  //     user_id: profile.id,
-  //   })
-  //   .select()
-  //   .maybeSingle();
-
-  // if (errorLifePath) {
-  //   console.error("Error inserting new reading:", errorLifePath);
-  //   throw error;
-  // }
-
-  // console.log("new reading generated on supabase", newLifePathReading);
-
-  const maxAttempts = 2;
-  let attempt = 0;
-  let lastErrorMsg = "";
-  do {
-    attempt++;
-    try {
-      const response = await generateObject({
-        // model: google("gemini-2.5-flash-preview-05-20"),
-        // model: openai("o4-mini-2025-04-16"),
-        model: google("gemini-2.5-pro"),
-        providerOptions: {
-          google: {
-            thinkingConfig: {
-              thinkingBudget: 1000,
-            },
-          },
-        },
-        maxTokens: 10000,
-        schema: z.object({
-          // values: z.object({
-          //   primary_value: z
-          //     .string()
-          //     .describe(
-          //       "Identify and describe the dominant 2-3 core values that are most pronounced in your Weton combination (e.g., harmony (keselarasan), responsibility (tanggung jawab), sincerity (ikhlas), humility (andhap asor), collective well-being (memayu hayuning bawana), honesty (kejujuran), perseverance (tekun), wisdom (kawicaksanan))."
-          //     ),
-          //   manifest: z
-          //     .string()
-          //     .describe(
-          //       "Explain how these values are likely to manifest in your daily behavior, relationships, and professional life. Provide concrete examples."
-          //     ),
-          //   motivation: z
-          //     .string()
-          //     .describe(
-          //       "What truly drives your actions and aspirations, according to your Weton influences?"
-          //     ),
-          //   conflicts: z
-          //     .string()
-          //     .describe(
-          //       "Briefly touch upon any inherent tensions between different values or how external pressures might challenge your core principles, and how your Weton suggests navigating these."
-          //     ),
-          //   philosophy: z
-          //     .string()
-          //     .describe(
-          //       "Connect your core values to broader Javanese philosophical concepts or ethical guidelines, explaining their significance in a traditional context."
-          //     ),
-          // }),
-          interaction_style: z.object({
-            social_tendency: z
-              .string()
-              .describe(
-                "Are you naturally more introverted or extroverted? Direct or indirect in communication? Preferring harmony over confrontation, or vice-versa? Describe your overarching social tendency."
-              ),
-            communication: z
-              .string()
-              .describe(
-                "Detail your typical communication style (e.g., articulate, reserved, expressive, pragmatic, empathetic, logical). How do you tend to convey your thoughts and feelings?"
-              ),
-            relationship: z
-              .string()
-              .describe(
-                "How do you typically initiate, maintain, and navigate friendships, professional connections, and community ties? Are you a leader, a supportive follower, a mediator, or an independent contributor?"
-              ),
-            social_dynamics: z
-              .string()
-              .describe(
-                "How do you typically react to social challenges, group pressures, or differing opinions?"
-              ),
-            social_etiquette: z
-              .string()
-              .describe(
-                "Connect aspects of your interaction style to relevant Javanese tata krama (etiquette) or social norms, explaining how your Weton might naturally align with or challenge these traditions."
-              ),
-          }),
-          // life_path: z.object({
-          //   fortune: z
-          //     .string()
-          //     .describe(
-          //       'Describe the general "flavor" of your life path. Is it one of steady growth, unexpected turns, a focus on spiritual development, material abundance, or perhaps a path of service?'
-          //     ),
-          //   theme: z
-          //     .string()
-          //     .describe(
-          //       "Identify recurring themes or lessons that may appear throughout your life (e.g., learning resilience, cultivating wisdom, building community, navigating change, finding balance, pursuing creative expression, overcoming adversity)."
-          //     ),
-          //   flow: z
-          //     .string()
-          //     .describe(
-          //       "Where might you find life tends to unfold more easily or where opportunities naturally arise?"
-          //     ),
-          //   challenge: z
-          //     .string()
-          //     .describe(
-          //       "Where might you encounter recurring lessons or challenges that serve as catalysts for personal development?"
-          //     ),
-          //   wheel_of_life: z
-          //     .string()
-          //     .describe(
-          //       "Frame your life path within the Javanese concept of Cakra Manggilingan (the turning wheel of life), suggesting that understanding your Weton offers insight into the rhythm and nature of your unique journey."
-          //     ),
-          //   outlook: z
-          //     .string()
-          //     .describe(
-          //       "Conclude with an empowering message, emphasizing that while your Weton provides a map, your conscious choices and actions ultimately shape your destiny."
-          //     ),
-          // }),
-        }),
-        messages: [
-          { role: "user", content: proGeneralCalculationPrompt2(profile) },
-        ],
-      });
-      const resObj = response.object;
-
-      // await supabase
-      //   .from("readings")
-      //   .update({
-      //     status: "completed",
-      //     reading: resObj.values,
-      //     input_token: response.usage.promptTokens,
-      //     output_token: response.usage.completionTokens,
-      //     total_token: response.usage.totalTokens,
-      //     updated_at: new Date().toISOString(),
-      //   })
-      //   .eq("id", newValuesReading.id);
-
-      await supabase
-        .from("readings")
-        .update({
-          status: "completed",
-          reading: resObj.interaction_style,
-          input_token: response.usage.promptTokens,
-          output_token: response.usage.completionTokens,
-          total_token: response.usage.totalTokens,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", newInteractionStyle.id);
-
-      // await supabase
-      //   .from("readings")
-      //   .update({
-      //     status: "completed",
-      //     reading: resObj.life_path,
-      //     input_token: response.usage.promptTokens,
-      //     output_token: response.usage.completionTokens,
-      //     total_token: response.usage.totalTokens,
-      //     updated_at: new Date().toISOString(),
-      //   })
-      //   .eq("id", newLifePathReading.id);
-      break;
-    } catch (error) {
-      lastErrorMsg = error.message;
-      console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
-      if (attempt >= maxAttempts) {
-        // await supabase
-        //   .from("readings")
-        //   .update({
-        //     status: "error",
-        //     reading: { error: lastErrorMsg },
-        //     updated_at: new Date().toISOString(),
-        //   })
-        //   .eq("id", newValuesReading.id);
-        await supabase
-          .from("readings")
-          .update({
-            status: "error",
-            reading: { error: lastErrorMsg },
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", newInteractionStyle.id);
-        // await supabase
-        //   .from("readings")
-        //   .update({
-        //     status: "error",
-        //     reading: { error: lastErrorMsg },
-        //     updated_at: new Date().toISOString(),
-        //   })
-        //   .eq("id", newLifePathReading.id);
       }
     }
   } while (attempt < maxAttempts);

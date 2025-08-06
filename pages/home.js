@@ -4,8 +4,6 @@ import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { config } from "@/utils/config";
-import { ArrowRight } from "lucide-react";
-
 import Link from "next/link";
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
 import { Menubar } from "@/components/layouts/menubar";
@@ -19,8 +17,6 @@ import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { HomeLoadingSkeleton } from "@/components/layouts/home-loading-skeleton";
 import { useDailyReading, useMonthlyReading } from "@/utils/useReading";
-import { StatusBar, Style } from "@capacitor/status-bar";
-import clsx from "clsx";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -29,15 +25,9 @@ export default function Home() {
   const [loadingData, setLoadingData] = useState(true);
   const [profileData, setProfileData] = useState(null);
   const [error, setError] = useState(null);
-  // const [message, setMessage] = useState(null);
-  // const [dailyReading, setDailyReading] = useState([]);
-  // const [monthlyReading, setMonthlyReading] = useState([]);
-  // const [requestDailyReading, setRequestDailyReading] = useState(false);
-  // const [requestMonthlyReading, setRequestMonthlyReading] = useState(false);
   const [latestReadings, setLatestReadings] = useState([]);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [showDailyReadingSheet, setShowDailyReadingSheet] = useState(false);
-  // const dailyReadingRequestedRef = useRef(false);
   const scrollContainerRef = useRef(null);
   const dailyReadingGenerated = useRef(false);
   const monthlyReadingGenerated = useRef(false);

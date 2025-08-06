@@ -90,15 +90,15 @@ export const CardData = {
       category: "general_readings",
       type: "pro",
     },
-    {
-      id: 11,
-      title: "Life Path",
-      description:
-        "Get insights into the themes and directions of your life's journey.",
-      slug: "life-path",
-      category: "general_readings",
-      type: "pro",
-    },
+    // {
+    //   id: 11,
+    //   title: "Life Path",
+    //   description:
+    //     "Get insights into the themes and directions of your life's journey.",
+    //   slug: "life-path",
+    //   category: "general_readings",
+    //   type: "pro",
+    // },
   ],
   love: [
     {

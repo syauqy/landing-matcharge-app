@@ -1,13 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import {
-  fetchProfileData,
-  handleGenerateReading,
-  fetchReading,
-} from "@/utils/fetch";
+import { fetchProfileData, handleGenerateReading } from "@/utils/fetch";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { ErrorLayout } from "@/components/layouts/error-page";
@@ -19,14 +14,16 @@ import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
 import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useReading } from "@/utils/useReading";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
 
 export default function LifePathPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
@@ -35,6 +32,7 @@ export default function LifePathPage() {
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const [isSectionSixOpen, setIsSectionSixOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const topics = [
     {
@@ -72,19 +70,69 @@ export default function LifePathPage() {
     },
   ];
 
+  const loadingMessages = [
+    {
+      text: "Mapping your overall life trajectory and fortune...",
+      emoji: "🍀",
+    },
+    {
+      text: "Identifying key themes and lessons in your journey...",
+      emoji: "🗝️",
+    },
+    {
+      text: "Finding areas where life flows naturally for you...",
+      emoji: "🍃",
+    },
+    {
+      text: "Spotting recurring challenges and growth opportunities...",
+      emoji: "🚧",
+    },
+    {
+      text: "Connecting your path to the Wheel of Life (Cakra Manggilingan)...",
+      emoji: "🎡",
+    },
+    {
+      text: "Empowering your outlook with divination insights...",
+      emoji: "🔭",
+    },
+    {
+      text: "Synthesizing your Weton, Wuku, and Laku for deeper meaning...",
+      emoji: "🔮",
+    },
+    {
+      text: "Reflecting on how your journey shapes relationships...",
+      emoji: "🤝",
+    },
+    {
+      text: "Preparing your personalized life path reading...",
+      emoji: "📜",
+    },
+  ];
+
+  const {
+    reading,
+    isLoading: isLoadingReading,
+    error: readingError,
+  } = useReading(user?.id, "general_readings", "life-path", "pro");
+
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
+      router.push("/");
       return;
     }
 
     if (!router.isReady || !user) {
-      setLoading(true);
+      setLoadingProfile(true);
       return;
     }
 
-    fetchProfileData({ user, setLoading, setError, setProfileData });
-  }, []);
+    fetchProfileData({
+      user,
+      setLoading: setLoadingProfile,
+      setError,
+      setProfileData,
+    });
+  }, [user, authLoading, router.isReady]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -98,27 +146,27 @@ export default function LifePathPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        fetchReading({
-          profileData,
-          user,
-          setReading,
-          setLoading,
-          setError,
-          slug: "life-path",
-          reading_category: "general_readings",
-          reading_type: "pro",
-          api_url: "readings/general/general-pro-2",
-        });
-      }
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     if (isNative) {
+  //       fetchReading({
+  //         profileData,
+  //         user,
+  //         setReading,
+  //         setLoading,
+  //         setError,
+  //         slug: "life-path",
+  //         reading_category: "general_readings",
+  //         reading_type: "pro",
+  //         api_url: "readings/general/general-pro-2",
+  //       });
+  //     }
+  //   }
+  // }, [profileData]);
 
   // console.log("Profile Data:", profileData);
 
-  if (authLoading || (loading && !error)) {
+  if (authLoading || (loadingProfile && !error)) {
     return <PageLoadingLayout />;
   }
 
@@ -161,10 +209,15 @@ export default function LifePathPage() {
         showTitleInNavbar={showTitleInNavbar}
       />
 
-      {error && <ErrorLayout error={error} router={router} />}
+      {(error || readingError) && <ErrorLayout error={error} router={router} />}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        {reading?.status === "completed" ? (
+        {isLoadingReading ? (
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
+        ) : reading?.status === "completed" ? (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-semibold text-left">Life Path</h2>
@@ -213,7 +266,10 @@ export default function LifePathPage() {
             {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
-          <ReadingLoading />
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
         ) : (
           !reading && (
             <ReadingDescription
@@ -225,25 +281,22 @@ export default function LifePathPage() {
           )
         )}
       </main>
-      {!reading && (
+      {!isLoadingReading && !reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
-            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            className="btn bg-rose-400 font-semibold disabled:bg-slate-300 text-white rounded-xl w-full"
+            disabled={isGenerating}
             onClick={() =>
               handleGenerateReading({
                 profileData,
                 user,
-                setReading,
-                setLoading,
+                apiUrl: "readings/general/general-pro-2",
                 setError,
-                slug: "life-path",
-                reading_category: "general_readings",
-                reading_type: "pro",
-                api_url: "readings/general/general-pro-2",
+                setIsGenerating,
               })
             }
           >
-            Generate Reading
+            {isGenerating ? "Generating..." : "Generate Reading"}
           </button>
         </div>
       )}

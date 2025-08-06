@@ -6,7 +6,7 @@ export function FeedbackSession({ user, reading }) {
   const [feedback, setFeedback] = useState(null);
   const [feedbackLoading, setFeedbackLoading] = useState(false);
   const [feedbackError, setFeedbackError] = useState(null);
-  console.log(reading);
+  // console.log(reading);
 
   const handleFeedback = async (value) => {
     if (!user || !reading) return;

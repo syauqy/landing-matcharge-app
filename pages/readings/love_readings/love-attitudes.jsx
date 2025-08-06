@@ -1,15 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import {
-  fetchProfileData,
-  handleGenerateReading,
-  fetchReading,
-} from "@/utils/fetch";
-import { LoadingProfile } from "@/components/layouts/loading-profile";
-import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
+import { fetchProfileData, handleGenerateReading } from "@/utils/fetch";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { Capacitor } from "@capacitor/core";
@@ -18,62 +11,102 @@ import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
-import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useReading } from "@/utils/useReading";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 
-export default function SaptawaraPage() {
+export default function LoveAttitudesPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  const [reading, setReading] = useState(null);
+  // const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
   const [isSectionThreeOpen, setIsSectionThreeOpen] = useState(false);
   const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
+  const [isSectionSixOpen, setIsSectionSixOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const topics = [
     {
-      icon: "🦹‍♂️",
-      title: "Core Character & Symbolism",
+      icon: "💍",
+      title: "View on Commitment",
       description:
-        "Detail the fundamental temperament and key symbolic associations linked to this Pancasuda.",
+        "Your intrinsic perspective on commitment and long-term relationships.",
     },
     {
-      icon: "🎁",
-      title: "Your Innate Gift",
-      description: `Outline the primary positive traits and potential areas for growth or caution that are characteristic of this Pancasuda.`,
+      icon: "⚖️",
+      title: "Approach to Conflict & Disagreement",
+      description: `How do you typically tend to handle disagreements or challenges in a relationship?`,
     },
     {
-      icon: "🌓",
-      title: "Your Shadow Side",
+      icon: "🛡️",
+      title: "Trust, Loyalty, & Fidelity",
       description:
-        "Describe how this Pancasuda generally influences your life path, ambition, or overarching sense of purpose.",
+        "Your inherent tendencies and values regarding trust, loyalty, and fidelity within a partnership.",
     },
     {
-      icon: "💪",
-      title: "Putting Your Gift to Work",
+      icon: "☯️",
+      title: "Independence vs. Interdependence",
       description:
-        "Actionable advice on how you can align with and best leverage for personal well-being, success, and fulfilling your life's path.",
+        "How do you naturally balance your personal autonomy and need for individual space with the desire for relational closeness and shared life?",
+    },
+    {
+      icon: "🧘",
+      title: "Javanese Philosophical Connection",
+      description:
+        "How the concept of keselarasan (harmony) might manifest in your attitudes towards resolving differences and maintaining peace.",
     },
   ];
 
+  const loadingMessages = [
+    { text: "Exploring your view on commitment...", emoji: "💍" },
+    {
+      text: "Analyzing your approach to conflict & disagreement...",
+      emoji: "⚖️",
+    },
+    {
+      text: "Uncovering your trust, loyalty, & fidelity tendencies...",
+      emoji: "🛡️",
+    },
+    { text: "Balancing independence vs. interdependence...", emoji: "☯️" },
+    { text: "Connecting with Javanese philosophical harmony...", emoji: "🧘" },
+    { text: "Reflecting on your relationship journey...", emoji: "💖" },
+    { text: "Interpreting your Weton and Rakam synergy...", emoji: "🔮" },
+    { text: "Understanding your emotional foundation...", emoji: "⚓" },
+    { text: "Synthesizing your unique love attitudes...", emoji: "🪷" },
+  ];
+
+  const {
+    reading,
+    isLoading: isLoadingReading,
+    error: readingError,
+  } = useReading(user?.id, "love_readings", "love-attitudes", "basic");
+
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
+      router.push("/");
       return;
     }
 
     if (!router.isReady || !user) {
-      setLoading(true);
+      setLoadingProfile(true);
       return;
     }
 
-    fetchProfileData({ user, setLoading, setError, setProfileData });
-  }, []);
+    fetchProfileData({
+      user,
+      setLoading: setLoadingProfile,
+      setError,
+      setProfileData,
+    });
+  }, [user, authLoading, router.isReady]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -101,10 +134,9 @@ export default function SaptawaraPage() {
   //       const { data: existingReading, error: fetchError } = await supabase
   //         .from("readings")
   //         .select("reading, status")
-  //         .eq("reading_type", "pro")
   //         .eq("user_id", user.id)
-  //         .eq("reading_category", "general_readings")
-  //         .eq("slug", "pancasuda")
+  //         .eq("reading_category", "love_readings")
+  //         .eq("slug", "love-attitudes")
   //         .maybeSingle();
 
   //       console.log("Existing Reading:", existingReading, user.id);
@@ -126,7 +158,7 @@ export default function SaptawaraPage() {
   //         try {
   //           // Generate new reading if none exists
   //           const response = await fetch(
-  //             `${config.api.url}/readings/general/general-pro-1`,
+  //             `${config.api.url}/readings/love/love-core`,
   //             {
   //               method: "POST",
   //               headers: {
@@ -157,27 +189,27 @@ export default function SaptawaraPage() {
   //   }
   // };
 
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        fetchReading({
-          profileData,
-          user,
-          setReading,
-          setLoading,
-          setError,
-          slug: "pancasuda",
-          reading_category: "general_readings",
-          reading_type: "pro",
-          api_url: "readings/general/general-pro-1",
-        });
-      }
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     if (isNative) {
+  //       fetchReading({
+  //         profileData,
+  //         user,
+  //         setReading,
+  //         setLoading,
+  //         setError,
+  //         slug: "love-attitudes",
+  //         reading_category: "love_readings",
+  //         reading_type: "basic",
+  //         api_url: "readings/love/love-core",
+  //       });
+  //     }
+  //   }
+  // }, [profileData]);
 
   // console.log("Profile Data:", profileData);
 
-  if (authLoading || (loading && !error)) {
+  if (authLoading || (loadingProfile && !error)) {
     return <PageLoadingLayout />;
   }
 
@@ -191,105 +223,98 @@ export default function SaptawaraPage() {
     );
   }
 
-  if (profileData?.subscription !== "pro") {
-    return (
-      <div className="min-h-screen bg-base-100 text-base-content font-sans">
-        <ReadingNavbar
-          title="Pancasuda"
-          profileData={profileData}
-          showTitleInNavbar={showTitleInNavbar}
-        />
-        <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-          <ReadingDescription
-            reading_category={"🔮 Personal"}
-            title={"Pancasuda"}
-            topics={topics}
-            description={`Explores your Pancasuda (the seven-day cycle), which reveals fundamental aspects of your personality, general temperament, and overarching life purpose.`}
-          />
-        </main>
-        <ReadingSubscriptionButton />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
-        title="Pancasuda"
+        title="Love Attitudes"
         profileData={profileData}
         showTitleInNavbar={showTitleInNavbar}
       />
 
-      {error && <ErrorLayout error={error} router={router} />}
+      {error || (readingError && <ErrorLayout error={error} router={router} />)}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        {reading?.status === "completed" ? (
+        {isLoadingReading ? (
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
+        ) : reading?.status === "completed" ? (
           <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-semibold text-left">Pancasuda</h2>
+              <h2 className="text-xl font-semibold text-left">
+                Love Attitudes
+              </h2>
               <p className="text-sm text-gray-700 mb-2">
-                Reveal the core pillar of your inner foundation and its
-                potential influenced by the seven-day Pawukon cycle.
+                Uncover your underlying beliefs and perspectives when it comes
+                to romance.
               </p>
             </div>
             <ContentSection
-              reading={reading?.reading?.character}
+              reading={reading?.reading?.commitment}
               setIsSectionOpen={setIsSectionOneOpen}
               isSectionOpen={isSectionOneOpen}
-              title="🦹‍♂️ Core Character & Symbolism"
+              title="💍 View on Commitment"
               firstSection={true}
             />
             <ContentSection
-              reading={reading?.reading?.innate_gift}
+              reading={reading?.reading?.conflict}
               setIsSectionOpen={setIsSectionTwoOpen}
               isSectionOpen={isSectionTwoOpen}
-              title="🎁 Your Innate Gift"
+              title="⚖️ Approach to Conflict & Disagreement"
             />
             <ContentSection
-              reading={reading?.reading?.shadow}
+              reading={reading?.reading?.trust}
               setIsSectionOpen={setIsSectionThreeOpen}
               isSectionOpen={isSectionThreeOpen}
-              title="🌓 Your Shadow Side"
+              title="🛡️ Trust, Loyalty, & Fidelity"
             />
             <ContentSection
-              reading={reading?.reading?.gift_to_work}
+              reading={reading?.reading?.interdependence}
               setIsSectionOpen={setIsSectionFourOpen}
               isSectionOpen={isSectionFourOpen}
-              title="💪 Putting Your Gift to Work"
+              title="☯️ Independence vs. Interdependence"
             />
+            <ContentSection
+              reading={reading?.reading?.harmony}
+              setIsSectionOpen={setIsSectionFiveOpen}
+              isSectionOpen={isSectionFiveOpen}
+              title="🧘 Javanese Cultural Nuance"
+            />
+            {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
-          <ReadingLoading />
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
         ) : (
           !reading && (
             <ReadingDescription
-              reading_category={"🔮 Personal"}
-              title={"Pancasuda"}
+              reading_category={"💖 Love and Relationship"}
+              title={"Love Attitudes"}
               topics={topics}
-              description={`Explores your Pancasuda (the seven-day cycle), which reveals fundamental aspects of your personality, general temperament, and overarching life purpose.`}
+              description={`This reading examines your inherent beliefs and perspectives on love, commitment, and relationships, shaped by your Weton and Rakam.`}
             />
           )
         )}
       </main>
-      {!reading && (
+      {!isLoadingReading && !reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
-            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            className="btn bg-rose-400 disabled:bg-slate-300 font-semibold text-white rounded-xl w-full"
+            disabled={isGenerating}
             onClick={() =>
               handleGenerateReading({
                 profileData,
                 user,
-                setReading,
-                setLoading,
+                apiUrl: "readings/love/love-core",
                 setError,
-                slug: "pancasuda",
-                reading_category: "general_readings",
-                reading_type: "pro",
-                api_url: "readings/general/general-pro-1",
+                setIsGenerating,
               })
             }
           >
-            Generate Reading
+            {isGenerating ? "Generating..." : "Generate Reading"}
           </button>
         </div>
       )}

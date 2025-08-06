@@ -3,11 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import {
-  fetchProfileData,
-  handleGenerateReading,
-  fetchReading,
-} from "@/utils/fetch";
+import { fetchProfileData } from "@/utils/fetch";
 import { ChevronDown } from "lucide-react";
 import { ReadingDescription } from "@/components/readings/reading-description";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
@@ -17,20 +13,24 @@ import { Capacitor } from "@capacitor/core";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { ContentSection } from "@/components/readings/content-section";
 import { PromotionBanner } from "@/components/readings/promotion-banner";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { FeedbackSession } from "@/components/readings/feedback-section";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useReading } from "@/utils/useReading";
+import { config } from "@/utils/config";
 
 export default function PrimaryTraitsPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isTraitsSectionOpen, setIsTraitsSectionOpen] = useState(false);
   const [isInfluenceSectionOpen, setIsInfluenceSectionOpen] = useState(false);
   const [isWisdomSectionOpen, setIsWisdomSectionOpen] = useState(false);
-  const isNative = Capacitor.isNativePlatform();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const topics = [
     {
@@ -57,6 +57,30 @@ export default function PrimaryTraitsPage() {
     },
   ];
 
+  const loadingMessages = [
+    { text: "Exploring your Weton identity...", emoji: "🌀" },
+    { text: "Uncovering the elements of your Weton...", emoji: "🔎" },
+    { text: "Analyzing your personality archetype...", emoji: "🎭" },
+    { text: "Highlighting your strengths and growth areas...", emoji: "💪" },
+    { text: "Interpreting Weton's influence on your emotions...", emoji: "🌊" },
+    {
+      text: "Understanding your social and relational dynamics...",
+      emoji: "💬",
+    },
+    {
+      text: "Reviewing work, career, and financial tendencies...",
+      emoji: "💼",
+    },
+    { text: "Reflecting on your Weton's wisdom...", emoji: "🤔" },
+    { text: "Empowering your personal growth and fulfillment...", emoji: "✨" },
+  ];
+
+  const {
+    reading,
+    isLoading: isLoadingReading,
+    error: readingError,
+  } = useReading(user?.id, "general_readings", "primary-traits", "basic");
+
   useEffect(() => {
     if (!authLoading && !user) {
       router.push("/");
@@ -64,12 +88,38 @@ export default function PrimaryTraitsPage() {
     }
 
     if (!router.isReady || !user) {
-      setLoading(true);
+      setLoadingProfile(true);
       return;
     }
 
-    fetchProfileData({ user, setLoading, setError, setProfileData });
-  }, []);
+    fetchProfileData({
+      user,
+      setLoading: setLoadingProfile,
+      setError,
+      setProfileData,
+    });
+  }, [user, authLoading, router.isReady]);
+
+  const handleGenerateReading = async () => {
+    if (!profileData || !user) {
+      setError("Profile data is not available to generate a reading.");
+      return;
+    }
+    setIsGenerating(true);
+    setError(null);
+    try {
+      await fetch(`${config.api.url}/readings/general/primary-traits`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ profile: profileData }),
+      });
+    } catch (err) {
+      console.error("Error generating reading:", err);
+      setError(err.message || "An unexpected error occurred.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -83,35 +133,26 @@ export default function PrimaryTraitsPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        fetchReading({
-          profileData,
-          user,
-          setReading,
-          setLoading,
-          setError,
-          slug: "primary-traits",
-          reading_category: "general_readings",
-          reading_type: "basic",
-          api_url: "readings/general/primary-traits",
-        });
-      }
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     if (isNative) {
+  //       fetchReading({
+  //         profileData,
+  //         user,
+  //         setReading,
+  //         setLoading,
+  //         setError,
+  //         slug: "primary-traits",
+  //         reading_category: "general_readings",
+  //         reading_type: "basic",
+  //         api_url: "readings/general/primary-traits",
+  //       });
+  //     }
+  //   }
+  // }, [profileData]);
 
-  if (authLoading || (loading && !error)) {
-    return (
-      <div className="min-h-screen bg-base-100 text-base-content">
-        <ReadingNavbar
-          title="Interaction Style"
-          profileData={profileData}
-          showTitleInNavbar={showTitleInNavbar}
-        />
-        <LoadingProfile />
-      </div>
-    );
+  if (authLoading || (loadingProfile && !error)) {
+    return <PageLoadingLayout />;
   }
 
   if (!profileData) {
@@ -124,7 +165,7 @@ export default function PrimaryTraitsPage() {
     );
   }
 
-  console.log(reading);
+  // console.log(reading);
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
@@ -137,7 +178,12 @@ export default function PrimaryTraitsPage() {
       {error && <ErrorLayout error={error} router={router} />}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        {reading?.status === "completed" ? (
+        {isLoadingReading ? (
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
+        ) : reading?.status === "completed" ? (
           <div className="space-y-6">
             <div>
               <h1 className="text-xl font-semibold text-left">
@@ -291,7 +337,7 @@ export default function PrimaryTraitsPage() {
                       <PromotionBanner
                         title={`Know Financial Traits`}
                         content="Understand your natural approach to wealth, and financial opportunities."
-                        url={"/readings/financials_readings/your-financial"}
+                        url={"/readings/financial_readings/your-financial"}
                         pro={true}
                         icon={"💰"}
                       />
@@ -353,16 +399,13 @@ export default function PrimaryTraitsPage() {
                 </div>
               </div>
             </section>
-            {reading?.id && (
-              <FeedbackSession
-                user={user}
-                supabase={supabase}
-                reading={reading}
-              />
-            )}
+            {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
-          <ReadingLoading />
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
         ) : (
           !reading && (
             <ReadingDescription
@@ -374,25 +417,14 @@ export default function PrimaryTraitsPage() {
           )
         )}
       </main>
-      {!reading && (
-        <div className="fixed bottom-0 w-full p-2 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
+      {!isLoadingReading && !reading && (
+        <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100  border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
-            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
-            onClick={() =>
-              handleGenerateReading({
-                profileData,
-                user,
-                setReading,
-                setLoading,
-                setError,
-                slug: "primary-traits",
-                reading_category: "general_readings",
-                reading_type: "basic",
-                api_url: "readings/general/primary-traits",
-              })
-            }
+            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full disabled:bg-slate-300"
+            disabled={isGenerating}
+            onClick={() => handleGenerateReading()}
           >
-            Generate Reading
+            {isGenerating ? "Generating..." : "Generate Reading"}
           </button>
         </div>
       )}

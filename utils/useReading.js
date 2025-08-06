@@ -242,9 +242,9 @@ export const useReading = (userId, readingCategory, slug, readingType) => {
             record.slug === slug &&
             record.reading_category === readingCategory
           ) {
-            console.log(
-              `Reading change for slug ${slug} in category ${readingCategory} received, revalidating.`
-            );
+            // console.log(
+            //   `Reading change for slug ${slug} in category ${readingCategory} received, revalidating.`
+            // );
             mutate();
           }
         }

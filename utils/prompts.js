@@ -683,14 +683,6 @@ export const proGeneralCalculationPrompt2 = (profile) => {
   * Handling Social Dynamics
   * Javanese Social Etiquette (Tata Krama)
   
-  3. Your Life Path Profile
-  This reading provides a broad overview of your likely life trajectory, predispositions, and the overarching themes that may define your journey, as indicated by the synthesis of your Weton, Wuku, and Laku.
-  * Overall Trajectory & Fortune
-  * Key Life Themes
-  * Areas of Natural Flow
-  * Areas of Potential Challenge/Growth
-  * Connection to Cakra Manggilingan (Wheel of Life)
-  * Empowering Outlook
 
   ## Tone and Style
   - Tone: Reverent, wise, encouraging, empathetic, insightful, non-judgmental, actionable, and empowering. Avoid fatalistic language.

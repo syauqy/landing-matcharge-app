@@ -2,30 +2,27 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import {
-  fetchProfileData,
-  handleGenerateReading,
-  fetchReading,
-} from "@/utils/fetch";
-import { LoadingProfile } from "@/components/layouts/loading-profile";
+import { fetchProfileData, handleGenerateReading } from "@/utils/fetch";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { Capacitor } from "@capacitor/core";
 import { ReadingLoading } from "@/components/readings/reading-loading";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
 import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
 import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useReading } from "@/utils/useReading";
 
 export default function LakuPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
@@ -33,6 +30,7 @@ export default function LakuPage() {
   const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const topics = [
     {
@@ -66,19 +64,69 @@ export default function LakuPage() {
     },
   ];
 
+  const loadingMessages = [
+    {
+      text: "Unveiling the core meaning and symbolism of your Laku...",
+      emoji: "🎭",
+    },
+    {
+      text: "Exploring the metaphorical significance of your path...",
+      emoji: "🔮",
+    },
+    {
+      text: "Interpreting your inherent strengths and positive qualities...",
+      emoji: "💪",
+    },
+    {
+      text: "Detailing the natural gifts that shape your journey...",
+      emoji: "🎁",
+    },
+    {
+      text: "Highlighting potential challenges and areas for growth...",
+      emoji: "🚧",
+    },
+    {
+      text: "Examining pitfalls and where conscious effort is needed...",
+      emoji: "⚠️",
+    },
+    {
+      text: "Understanding how your Laku influences your life approach...",
+      emoji: "📣",
+    },
+    {
+      text: "Guiding you with a ritual to embody your element...",
+      emoji: "🧘🏻‍♀️",
+    },
+    {
+      text: "Offering actionable advice for personal well-being and success...",
+      emoji: "🌱",
+    },
+  ];
+
+  const {
+    reading,
+    isLoading: isLoadingReading,
+    error: readingError,
+  } = useReading(user?.id, "general_readings", "laku", "pro");
+
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
+      router.push("/");
       return;
     }
 
     if (!router.isReady || !user) {
-      setLoading(true);
+      setLoadingProfile(true);
       return;
     }
 
-    fetchProfileData({ user, setLoading, setError, setProfileData });
-  }, []);
+    fetchProfileData({
+      user,
+      setLoading: setLoadingProfile,
+      setError,
+      setProfileData,
+    });
+  }, [user, authLoading, router.isReady]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -92,27 +140,27 @@ export default function LakuPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        fetchReading({
-          profileData,
-          user,
-          setReading,
-          setLoading,
-          setError,
-          slug: "laku",
-          reading_category: "general_readings",
-          reading_type: "pro",
-          api_url: "readings/general/general-pro-1",
-        });
-      }
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     if (isNative) {
+  //       fetchReading({
+  //         profileData,
+  //         user,
+  //         setReading,
+  //         setLoading,
+  //         setError,
+  //         slug: "laku",
+  //         reading_category: "general_readings",
+  //         reading_type: "pro",
+  //         api_url: "readings/general/general-pro-1",
+  //       });
+  //     }
+  //   }
+  // }, [profileData]);
 
   // console.log("Profile Data:", profileData);
 
-  if (authLoading || (loading && !error)) {
+  if (authLoading || (loadingProfile && !error)) {
     return <PageLoadingLayout />;
   }
 
@@ -155,10 +203,17 @@ export default function LakuPage() {
         showTitleInNavbar={showTitleInNavbar}
       />
 
-      {error && <ErrorLayout error={error} router={router} />}
+      {(error || readingError) && (
+        <ErrorLayout error={error || readingError} router={router} />
+      )}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        {reading?.status === "completed" ? (
+        {isLoadingReading ? (
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
+        ) : reading?.status === "completed" ? (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-semibold text-left">Laku</h2>
@@ -201,7 +256,10 @@ export default function LakuPage() {
             {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
-          <ReadingLoading />
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
         ) : (
           !reading && (
             <ReadingDescription
@@ -212,27 +270,23 @@ export default function LakuPage() {
             />
           )
         )}
-        {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
-      {!reading && (
+      {!isLoadingReading && !reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
-            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            className="btn bg-rose-400 font-semibold disabled:bg-slate-300 text-white rounded-xl w-full"
+            disabled={isGenerating}
             onClick={() =>
               handleGenerateReading({
                 profileData,
                 user,
-                setReading,
-                setLoading,
+                apiUrl: "readings/general/general-pro-1",
                 setError,
-                slug: "laku",
-                reading_category: "general_readings",
-                reading_type: "pro",
-                api_url: "readings/general/general-pro-1",
+                setIsGenerating,
               })
             }
           >
-            Generate Reading
+            {isGenerating ? "Generating..." : "Generate Reading"}
           </button>
         </div>
       )}
