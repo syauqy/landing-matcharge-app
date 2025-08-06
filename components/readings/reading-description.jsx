@@ -16,7 +16,7 @@ export function ReadingDescription({
         {description}
       </div>
       <div className="flex flex-col gap-3 py-4">
-        <div className="text-lg font-semibold">Topics</div>
+        <div className="text-lg font-semibold">What You Will Get</div>
         <div className="flex flex-col gap-3">
           {topics?.map((topic, i) => (
             <div key={i} className="flex flex-row gap-4 items-center">

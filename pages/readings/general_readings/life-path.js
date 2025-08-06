@@ -9,6 +9,7 @@ import {
   fetchReading,
 } from "@/utils/fetch";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { Capacitor } from "@capacitor/core";
@@ -17,6 +18,7 @@ import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
+import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
 
 export default function LifePathPage() {
   const { user, loading: authLoading } = useAuth();
@@ -117,7 +119,7 @@ export default function LifePathPage() {
   // console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
-    return <LoadingProfile />;
+    return <PageLoadingLayout />;
   }
 
   if (!profileData) {
@@ -127,6 +129,27 @@ export default function LifePathPage() {
         profileData={profileData}
         showTitleInNavbar={showTitleInNavbar}
       />
+    );
+  }
+
+  if (profileData?.subscription !== "pro") {
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content font-sans">
+        <ReadingNavbar
+          title="Life Path"
+          profileData={profileData}
+          showTitleInNavbar={showTitleInNavbar}
+        />
+        <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
+          <ReadingDescription
+            reading_category={"🔮 Personal"}
+            title={"Life Path"}
+            topics={topics}
+            description={`This reading provides a broad overview of your likely life trajectory, predispositions, and the overarching themes that may define your journey, as indicated by the synthesis of your Weton, Wuku, and Laku.`}
+          />
+        </main>
+        <ReadingSubscriptionButton />
+      </div>
     );
   }
 
@@ -187,6 +210,7 @@ export default function LifePathPage() {
               isSectionOpen={isSectionSixOpen}
               title="🔭 Empowering Outlook"
             />
+            {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
           <ReadingLoading />
@@ -200,37 +224,27 @@ export default function LifePathPage() {
             />
           )
         )}
-        {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
       {!reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
-          {profileData?.subscription == "pro" ? (
-            <button
-              className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
-              onClick={() =>
-                handleGenerateReading({
-                  profileData,
-                  user,
-                  setReading,
-                  setLoading,
-                  setError,
-                  slug: "life-path",
-                  reading_category: "general_readings",
-                  reading_type: "pro",
-                  api_url: "readings/general/general-pro-2",
-                })
-              }
-            >
-              Generate Reading
-            </button>
-          ) : (
-            <button
-              className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
-              onClick={() => {}}
-            >
-              🔓 Unlock With Pro
-            </button>
-          )}
+          <button
+            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            onClick={() =>
+              handleGenerateReading({
+                profileData,
+                user,
+                setReading,
+                setLoading,
+                setError,
+                slug: "life-path",
+                reading_category: "general_readings",
+                reading_type: "pro",
+                api_url: "readings/general/general-pro-2",
+              })
+            }
+          >
+            Generate Reading
+          </button>
         </div>
       )}
     </div>

@@ -17,6 +17,7 @@ import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
+import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
 
 export default function LakuPage() {
   const { user, loading: authLoading } = useAuth();
@@ -87,76 +88,6 @@ export default function LakuPage() {
     };
   }, []);
 
-  // const handleGenerateReading = async () => {
-  //   setError(null);
-  //   setLoading(true);
-
-  //   if (!profileData || !user) {
-  //     setError("Profile data or user not available.");
-  //     setLoading(false);
-  //     return;
-  //   } else {
-  //     try {
-  //       // Check if primary-traits reading exists
-  //       const { data: existingReading, error: fetchError } = await supabase
-  //         .from("readings")
-  //         .select("reading, status")
-  //         .eq("reading_type", "pro")
-  //         .eq("user_id", user.id)
-  //         .eq("reading_category", "work_readings")
-  //         .eq("slug", "key-life")
-  //         .maybeSingle();
-
-  //       console.log("Existing Reading:", existingReading, user.id);
-
-  //       console.log(existingReading);
-
-  //       if (fetchError && fetchError.code !== "PGRST116") {
-  //         throw fetchError;
-  //       }
-
-  //       // If reading exists, show it
-  //       if (existingReading) {
-  //         setReading(existingReading);
-  //         setLoading(false);
-  //         return;
-  //       } else if (!existingReading && !fetchError) {
-  //         console.log("No existing reading found, generating new one...");
-  //         setLoading(false);
-  //         try {
-  //           // Generate new reading if none exists
-  //           const response = await fetch(
-  //             `${config.api.url}/readings/work/work-pro`,
-  //             {
-  //               method: "POST",
-  //               headers: {
-  //                 "Content-Type": "application/json",
-  //               },
-  //               body: JSON.stringify({ profile: profileData }),
-  //               credentials: "include",
-  //             }
-  //           );
-
-  //           const readingData = await response.json();
-  //           setReading(readingData);
-  //         } catch (err) {
-  //           console.error(
-  //             "Error in fetch or processing response for daily reading:",
-  //             err
-  //           );
-  //           setError(err.message || "Failed to generate daily reading.");
-  //         } finally {
-  //           setLoading(false);
-  //         }
-  //       }
-  //     } catch (err) {
-  //       console.error("Error:", err);
-  //       setError(err.message || "Failed to generate reading");
-  //       setLoading(false);
-  //     }
-  //   }
-  // };
-
   useEffect(() => {
     if (profileData && user) {
       if (isNative) {
@@ -188,6 +119,27 @@ export default function LakuPage() {
         profileData={profileData}
         showTitleInNavbar={showTitleInNavbar}
       />
+    );
+  }
+
+  if (profileData?.subscription !== "pro") {
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content font-sans">
+        <ReadingNavbar
+          title="Key Life Themes"
+          profileData={profileData}
+          showTitleInNavbar={showTitleInNavbar}
+        />
+        <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
+          <ReadingDescription
+            reading_category={"💼 Work, Career, and Purpose"}
+            title={"Key Life Themes"}
+            topics={topics}
+            description={`This reading provides insight into the overarching themes and types of experiences that may manifest as significant turning points or recurring patterns throughout your life, informed by your Weton, Wuku, and Laku cycles.`}
+          />
+        </main>
+        <ReadingSubscriptionButton />
+      </div>
     );
   }
 
@@ -244,6 +196,7 @@ export default function LakuPage() {
               isSectionOpen={isSectionFiveOpen}
               title="📖 Turning the Page"
             />
+            {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
           <ReadingLoading />
@@ -257,37 +210,27 @@ export default function LakuPage() {
             />
           )
         )}
-        {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
       {!reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
-          {profileData?.subscription == "pro" ? (
-            <button
-              className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
-              onClick={() =>
-                handleGenerateReading({
-                  profileData,
-                  user,
-                  setReading,
-                  setLoading,
-                  setError,
-                  slug: "key-life",
-                  reading_category: "work_readings",
-                  reading_type: "pro",
-                  api_url: "readings/work/work-pro",
-                })
-              }
-            >
-              Generate Reading
-            </button>
-          ) : (
-            <button
-              className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
-              onClick={() => {}}
-            >
-              🔓 Unlock With Pro
-            </button>
-          )}
+          <button
+            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            onClick={() =>
+              handleGenerateReading({
+                profileData,
+                user,
+                setReading,
+                setLoading,
+                setError,
+                slug: "key-life",
+                reading_category: "work_readings",
+                reading_type: "pro",
+                api_url: "readings/work/work-pro",
+              })
+            }
+          >
+            Generate Reading
+          </button>
         </div>
       )}
     </div>

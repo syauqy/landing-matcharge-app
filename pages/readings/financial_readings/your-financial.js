@@ -18,6 +18,7 @@ import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
 import { DisclaimerSection } from "@/components/readings/disclaimer-section";
+import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
 
 export default function FinancialPage() {
   const { user, loading: authLoading } = useAuth();
@@ -200,6 +201,27 @@ export default function FinancialPage() {
     );
   }
 
+  if (profileData?.subscription !== "pro") {
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content font-sans">
+        <ReadingNavbar
+          title="Your Financial"
+          profileData={profileData}
+          showTitleInNavbar={showTitleInNavbar}
+        />
+        <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
+          <ReadingDescription
+            reading_category={"💰 Financial Fortune"}
+            title={"Your Financial"}
+            topics={topics}
+            description={introduction}
+          />
+        </main>
+        <ReadingSubscriptionButton />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
@@ -217,9 +239,7 @@ export default function FinancialPage() {
               <h2 className="text-xl font-semibold text-left">
                 Your Financial
               </h2>
-              {profileData?.subscription == "free" && (
-                <p className="text-sm text-gray-700 mb-2">{introduction}</p>
-              )}
+              <p className="text-sm text-gray-700 mb-2">{introduction}</p>
             </div>
             <section className="pt-4">
               <h2 className="text-sm text-batik-text font-semibold">
@@ -262,6 +282,17 @@ export default function FinancialPage() {
               isSectionOpen={isSectionFiveOpen}
               title="🧘 Hidden Strength & Karmic Lesson"
             />
+            {reading?.id && (
+              <div>
+                <FeedbackSession user={user} reading={reading} />
+                <DisclaimerSection
+                  title={
+                    "These are energetic tendencies, not absolute predictions"
+                  }
+                  description={disclaimer}
+                />
+              </div>
+            )}
           </div>
         ) : reading?.status === "loading" ? (
           <ReadingLoading />
@@ -275,45 +306,27 @@ export default function FinancialPage() {
             />
           )
         )}
-        {reading?.id && (
-          <div>
-            <FeedbackSession user={user} reading={reading} />
-            <DisclaimerSection
-              title={"These are energetic tendencies, not absolute predictions"}
-              description={disclaimer}
-            />
-          </div>
-        )}
       </main>
       {!reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
-          {profileData?.subscription == "pro" ? (
-            <button
-              className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
-              onClick={() =>
-                handleGenerateReading({
-                  profileData,
-                  user,
-                  setReading,
-                  setLoading,
-                  setError,
-                  slug: "your-financial",
-                  reading_category: "financial_readings",
-                  reading_type: "pro",
-                  api_url: "readings/financial/financial-pro",
-                })
-              }
-            >
-              Generate Reading
-            </button>
-          ) : (
-            <button
-              className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
-              onClick={() => {}}
-            >
-              🔓 Unlock With Pro
-            </button>
-          )}
+          <button
+            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            onClick={() =>
+              handleGenerateReading({
+                profileData,
+                user,
+                setReading,
+                setLoading,
+                setError,
+                slug: "your-financial",
+                reading_category: "financial_readings",
+                reading_type: "pro",
+                api_url: "readings/financial/financial-pro",
+              })
+            }
+          >
+            Generate Reading
+          </button>
         </div>
       )}
     </div>

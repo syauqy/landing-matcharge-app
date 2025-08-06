@@ -18,6 +18,9 @@ import { ContentSection } from "@/components/readings/content-section";
 import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
 import { useCompatibilityReading } from "@/utils/useReading";
 import { friendshipLoadingMessages } from "@/lib/loading-content";
+import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
+import { ReadingNavbar } from "@/components/readings/reading-navbar";
+import { ReadingDescription } from "@/components/readings/reading-description";
 
 export default function DetailCompatibilityReading() {
   const router = useRouter();
@@ -27,7 +30,7 @@ export default function DetailCompatibilityReading() {
   const [profileData, setProfileData] = useState(null);
   const [partnerProfile, setPartnerProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const [slug, setSlug] = useQueryState("slug");
   // const [reading, setReading] = useState(null);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
@@ -50,7 +53,38 @@ export default function DetailCompatibilityReading() {
   const [isSectionEighteenOpen, setIsSectionEighteenOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
 
-  const { reading, isLoading, error } = useCompatibilityReading(slug);
+  const topics = [
+    {
+      icon: "✨",
+      title: "The Friendship Vibe",
+      description:
+        "An 'at-a-glance' summary of your friendship, including your unique archetype, core feeling in one sentence, defining keywords, and a representative song anthem.",
+    },
+    {
+      icon: "⚙️",
+      title: "The Friendship Engine",
+      description:
+        "Explores the 'why' behind your connection, detailing your combined power level, the overarching story of your bond, and your public persona as a unit, based on Javanese calculations.",
+    },
+    {
+      icon: "📖",
+      title: "The Friendship Playbook",
+      description:
+        "A practical guide for thriving in real life, covering your support system, navigating disagreements, and your dynamics in work, money, travel, and even romance.",
+    },
+    {
+      icon: "💎",
+      title: "The Core Truth",
+      description:
+        "A profound conclusion that connects your friendship to timeless Javanese wisdom, offering a core lesson and an empowering final thought for a lasting bond.",
+    },
+  ];
+
+  const {
+    reading,
+    isLoading,
+    error: readingError,
+  } = useCompatibilityReading(slug);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -75,35 +109,35 @@ export default function DetailCompatibilityReading() {
     return partner || null;
   }
 
-  const fetchReading = useCallback(async () => {
-    if (!slug) return;
+  // const fetchReading = useCallback(async () => {
+  //   if (!slug) return;
 
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("readings")
-        .select("id, status, reading, title, subtitle, reading_category, slug") // Ensure reading_category is fetched if needed for other logic
-        .eq("slug", slug) // Match the username column with the slug
-        .single();
+  //   try {
+  //     setLoading(true);
+  //     const { data, error } = await supabase
+  //       .from("readings")
+  //       .select("id, status, reading, title, subtitle, reading_category, slug") // Ensure reading_category is fetched if needed for other logic
+  //       .eq("slug", slug) // Match the username column with the slug
+  //       .single();
 
-      if (error) {
-        console.error("Error fetching reading data:", error);
-        return;
-      }
+  //     if (error) {
+  //       console.error("Error fetching reading data:", error);
+  //       return;
+  //     }
 
-      if (data) {
-        setReading(data);
-      }
-    } catch (error) {
-      console.error("Error in fetchReading:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [slug]);
+  //     if (data) {
+  //       setReading(data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error in fetchReading:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [slug]);
 
-  useEffect(() => {
-    fetchReading();
-  }, [fetchReading]);
+  // useEffect(() => {
+  //   fetchReading();
+  // }, [fetchReading]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -178,7 +212,28 @@ export default function DetailCompatibilityReading() {
   }
 
   const readingContent = reading?.reading?.reading || reading?.reading;
-  console.log(profileData, partnerProfile);
+  // console.log(profileData, partnerProfile);
+
+  if (profileData?.subscription !== "pro") {
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content font-sans">
+        <ReadingNavbar
+          title={"Friendship Compatibility"}
+          profileData={profileData}
+          showTitleInNavbar={showTitleInNavbar}
+        />
+        <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
+          <ReadingDescription
+            reading_category={"🤝 Compatibility"}
+            title={reading.title || "Compatibility Reading"}
+            topics={topics}
+            description={readingContent?.summary?.vibe}
+          />
+        </main>
+        <ReadingSubscriptionButton />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -219,7 +274,8 @@ export default function DetailCompatibilityReading() {
           <div className="navbar-end"></div>
         </div>
 
-        {error && <ErrorLayout error={error} router={router} />}
+        {error ||
+          (readingError && <ErrorLayout error={error} router={router} />)}
 
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
           {reading.status === "completed" ? (

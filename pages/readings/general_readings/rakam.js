@@ -17,6 +17,7 @@ import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
+import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
 
 export default function RakamPage() {
   const { user, loading: authLoading } = useAuth();
@@ -119,6 +120,27 @@ export default function RakamPage() {
     );
   }
 
+  if (profileData?.subscription !== "pro") {
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content font-sans">
+        <ReadingNavbar
+          title="Rakam"
+          profileData={profileData}
+          showTitleInNavbar={showTitleInNavbar}
+        />
+        <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
+          <ReadingDescription
+            reading_category={"🔮 Personal"}
+            title={"Rakam"}
+            topics={topics}
+            description={`What Rakam signifies in Javanese divination, emphasizing its influence on one's inherent spiritual nature, social dynamics, and destiny regarding fortune.`}
+          />
+        </main>
+        <ReadingSubscriptionButton />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
@@ -164,6 +186,7 @@ export default function RakamPage() {
               isSectionOpen={isSectionFourOpen}
               title="😇 The Moral of Your Story"
             />
+            {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
           <ReadingLoading />
@@ -177,37 +200,27 @@ export default function RakamPage() {
             />
           )
         )}
-        {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
       {!reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
-          {profileData?.subscription == "pro" ? (
-            <button
-              className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
-              onClick={() =>
-                handleGenerateReading({
-                  profileData,
-                  user,
-                  setReading,
-                  setLoading,
-                  setError,
-                  slug: "rakam",
-                  reading_category: "general_readings",
-                  reading_type: "pro",
-                  api_url: "readings/general/general-pro-1",
-                })
-              }
-            >
-              Generate Reading
-            </button>
-          ) : (
-            <button
-              className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
-              onClick={() => {}}
-            >
-              🔓 Unlock With Pro
-            </button>
-          )}
+          <button
+            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            onClick={() =>
+              handleGenerateReading({
+                profileData,
+                user,
+                setReading,
+                setLoading,
+                setError,
+                slug: "rakam",
+                reading_category: "general_readings",
+                reading_type: "pro",
+                api_url: "readings/general/general-pro-1",
+              })
+            }
+          >
+            Generate Reading
+          </button>
         </div>
       )}
     </div>

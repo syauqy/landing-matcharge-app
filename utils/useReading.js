@@ -186,3 +186,80 @@ export const useMonthlyReading = (userId) => {
     error: error,
   };
 };
+
+const fetcherReading = async ([
+  _key,
+  userId,
+  readingCategory,
+  slug,
+  readingType,
+]) => {
+  if (!userId || !readingCategory || !slug || !readingType) return null;
+
+  const { data, error } = await supabase
+    .from("readings")
+    .select(
+      "id, reading, created_at, status, reading_category, slug, title, subtitle"
+    )
+    .eq("user_id", userId)
+    .eq("reading_category", readingCategory)
+    .eq("slug", slug)
+    .eq("reading_type", readingType)
+    .maybeSingle();
+
+  if (error) {
+    if (error.code === "PGRST116") {
+      return null; // No reading found, not an error
+    }
+    console.error("Error fetching reading data:", error);
+    throw error;
+  }
+
+  return data;
+};
+
+export const useReading = (userId, readingCategory, slug, readingType) => {
+  const SWR_KEY =
+    userId && readingCategory && slug && readingType
+      ? ["reading", userId, readingCategory, slug, readingType]
+      : null;
+  const { data, error, mutate } = useSWR(SWR_KEY, fetcherReading);
+
+  useEffect(() => {
+    if (!userId || !slug || !readingCategory) return;
+
+    const channel = supabase
+      .channel(
+        `db-readings-user-eq-${userId}-cat-eq-${readingCategory}-slug-eq-${slug}`
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "readings" },
+        (payload) => {
+          const record = payload.new || payload.old;
+          if (
+            record &&
+            record.slug === slug &&
+            record.reading_category === readingCategory
+          ) {
+            console.log(
+              `Reading change for slug ${slug} in category ${readingCategory} received, revalidating.`
+            );
+            mutate();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId, slug, readingCategory, mutate]);
+
+  return {
+    reading: data,
+    isLoading: !error && data === undefined,
+    error: error,
+    mutate: mutate,
+  };
+};

@@ -17,6 +17,7 @@ import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
+import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
 
 export default function LakuPage() {
   const { user, loading: authLoading } = useAuth();
@@ -194,6 +195,27 @@ export default function LakuPage() {
     );
   }
 
+  if (profileData?.subscription !== "pro") {
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content font-sans">
+        <ReadingNavbar
+          title="Ideal Life"
+          profileData={profileData}
+          showTitleInNavbar={showTitleInNavbar}
+        />
+        <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
+          <ReadingDescription
+            reading_category={"💼 Work, Career, and Purpose"}
+            title={"Ideal Life"}
+            topics={topics}
+            description={`This reading delves into your inherent professional aptitudes, work ethic, leadership style, and potential for success, as shaped by your birth Weton, Laku, and Rakam.`}
+          />
+        </main>
+        <ReadingSubscriptionButton />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
@@ -245,6 +267,7 @@ export default function LakuPage() {
               isSectionOpen={isSectionFiveOpen}
               title="🏕️ Environments for Growth"
             />
+            {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
           <ReadingLoading />
@@ -258,37 +281,27 @@ export default function LakuPage() {
             />
           )
         )}
-        {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
       {!reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
-          {profileData?.subscription == "pro" ? (
-            <button
-              className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
-              onClick={() =>
-                handleGenerateReading({
-                  profileData,
-                  user,
-                  setReading,
-                  setLoading,
-                  setError,
-                  slug: "ideal-life",
-                  reading_category: "work_readings",
-                  reading_type: "pro",
-                  api_url: "readings/work/work-pro",
-                })
-              }
-            >
-              Generate Reading
-            </button>
-          ) : (
-            <button
-              className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
-              onClick={() => {}}
-            >
-              🔓 Unlock With Pro
-            </button>
-          )}
+          <button
+            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            onClick={() =>
+              handleGenerateReading({
+                profileData,
+                user,
+                setReading,
+                setLoading,
+                setError,
+                slug: "ideal-life",
+                reading_category: "work_readings",
+                reading_type: "pro",
+                api_url: "readings/work/work-pro",
+              })
+            }
+          >
+            Generate Reading
+          </button>
         </div>
       )}
     </div>

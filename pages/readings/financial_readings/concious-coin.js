@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import {
@@ -18,6 +17,7 @@ import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
 import { DisclaimerSection } from "@/components/readings/disclaimer-section";
+import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
 
 export default function ConciousCoinPage() {
   const { user, loading: authLoading } = useAuth();
@@ -125,6 +125,29 @@ export default function ConciousCoinPage() {
     );
   }
 
+  if (profileData?.subscription !== "pro") {
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content font-sans">
+        <ReadingNavbar
+          title="Conscious Coin"
+          profileData={profileData}
+          showTitleInNavbar={showTitleInNavbar}
+        />
+        <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
+          <ReadingDescription
+            reading_category={"💰 Financial Fortune"}
+            title={"Conscious Coin"}
+            topics={topics}
+            description={
+              "This reading helps you create a budget and spending plan that reflects their deepest personal values, turning financial decisions into acts of personal integrity."
+            }
+          />
+        </main>
+        <ReadingSubscriptionButton />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
@@ -178,6 +201,17 @@ export default function ConciousCoinPage() {
               isSectionOpen={isSectionFiveOpen}
               title="🧭 A Guiding Philosophy"
             />
+            {reading?.id && (
+              <div>
+                <FeedbackSession user={user} reading={reading} />
+                <DisclaimerSection
+                  title={
+                    "These are energetic tendencies, not absolute predictions"
+                  }
+                  description={disclaimer}
+                />
+              </div>
+            )}
           </div>
         ) : reading?.status === "loading" ? (
           <ReadingLoading />
@@ -193,45 +227,27 @@ export default function ConciousCoinPage() {
             />
           )
         )}
-        {reading?.id && (
-          <div>
-            <FeedbackSession user={user} reading={reading} />
-            <DisclaimerSection
-              title={"These are energetic tendencies, not absolute predictions"}
-              description={disclaimer}
-            />
-          </div>
-        )}
       </main>
       {!reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
-          {profileData?.subscription == "pro" ? (
-            <button
-              className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
-              onClick={() =>
-                handleGenerateReading({
-                  profileData,
-                  user,
-                  setReading,
-                  setLoading,
-                  setError,
-                  slug: "concious-coin",
-                  reading_category: "financial_readings",
-                  reading_type: "pro",
-                  api_url: "readings/financial/financial-pro",
-                })
-              }
-            >
-              Generate Reading
-            </button>
-          ) : (
-            <button
-              className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
-              onClick={() => {}}
-            >
-              🔓 Unlock With Pro
-            </button>
-          )}
+          <button
+            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            onClick={() =>
+              handleGenerateReading({
+                profileData,
+                user,
+                setReading,
+                setLoading,
+                setError,
+                slug: "concious-coin",
+                reading_category: "financial_readings",
+                reading_type: "pro",
+                api_url: "readings/financial/financial-pro",
+              })
+            }
+          >
+            Generate Reading
+          </button>
         </div>
       )}
     </div>

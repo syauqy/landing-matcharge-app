@@ -19,6 +19,9 @@ import { ContentSection } from "@/components/readings/content-section";
 import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
 import { useCompatibilityReading } from "@/utils/useReading";
 import { coupleLoadingMessages } from "@/lib/loading-content";
+import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
+import { ReadingNavbar } from "@/components/readings/reading-navbar";
+import { ReadingDescription } from "@/components/readings/reading-description";
 
 export default function DetailCompatibilityReading() {
   const router = useRouter();
@@ -28,7 +31,7 @@ export default function DetailCompatibilityReading() {
   const [profileData, setProfileData] = useState(null);
   const [partnerProfile, setPartnerProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const [slug, setSlug] = useQueryState("slug");
   // const [reading, setReading] = useState(null);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
@@ -51,8 +54,51 @@ export default function DetailCompatibilityReading() {
   const [isSectionEighteenOpen, setIsSectionEighteenOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
 
+  const topics = [
+    {
+      icon: "🌟",
+      title: "Your Couple's Archetype",
+      description:
+        "Defines your unique archetype, top green flags, key growth edges, and the metaphorical essence of your combined energy.",
+    },
+    {
+      icon: "📜",
+      title: "The Traditional Path: Your Jodoh Reading",
+      description:
+        "A detailed interpretation of your compatibility based on the traditional Javanese divisions, revealing the core dynamics of your Jodoh.",
+    },
+    {
+      icon: "⚡️",
+      title: "Your Energetic Blend",
+      description:
+        "Explores your shared fortune and temperament through the Couple's Neptu, and describes your day-to-day vibe based on your combined days.",
+    },
+    {
+      icon: "🤝",
+      title: "Relational Dynamics: Strengths & Opportunities",
+      description:
+        "Details your areas of natural harmony and mutual growth, explaining how to cultivate Keselarasan (Harmony) in your relationship.",
+    },
+    {
+      icon: "🌱",
+      title: "Navigating Challenges & Cultivating Growth",
+      description:
+        "Identifies potential friction points and provides actionable strategies and conversation starters to navigate challenges constructively.",
+    },
+    {
+      icon: "💎",
+      title: "Concluding Wisdom & Empowerment",
+      description:
+        "Summarizes your unique journey with empowering wisdom on Usaha (Effort) and Bhakti (Devotion), affirming your power to build a beautiful life together.",
+    },
+  ];
+
   // Use SWR for data fetching. It handles caching, revalidation, and loading/error states.
-  const { reading, isLoading, error } = useCompatibilityReading(slug);
+  const {
+    reading,
+    isLoading,
+    error: readingError,
+  } = useCompatibilityReading(slug);
 
   // console.log(reading?.title);
 
@@ -79,35 +125,35 @@ export default function DetailCompatibilityReading() {
     return partner || null;
   }
 
-  const fetchReading = useCallback(async () => {
-    if (!slug) return;
+  // const fetchReading = useCallback(async () => {
+  //   if (!slug) return;
 
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("readings")
-        .select("id, status, reading, title, subtitle, reading_category, slug") // Ensure reading_category is fetched if needed for other logic
-        .eq("slug", slug) // Match the username column with the slug
-        .single();
+  //   try {
+  //     setLoading(true);
+  //     const { data, error } = await supabase
+  //       .from("readings")
+  //       .select("id, status, reading, title, subtitle, reading_category, slug") // Ensure reading_category is fetched if needed for other logic
+  //       .eq("slug", slug) // Match the username column with the slug
+  //       .single();
 
-      if (error) {
-        console.error("Error fetching reading data:", error);
-        return;
-      }
+  //     if (error) {
+  //       console.error("Error fetching reading data:", error);
+  //       return;
+  //     }
 
-      if (data) {
-        setReading(data);
-      }
-    } catch (error) {
-      console.error("Error in fetchReading:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [slug]);
+  //     if (data) {
+  //       setReading(data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error in fetchReading:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [slug]);
 
-  useEffect(() => {
-    fetchReading();
-  }, [fetchReading]);
+  // useEffect(() => {
+  //   fetchReading();
+  // }, [fetchReading]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -184,13 +230,34 @@ export default function DetailCompatibilityReading() {
   const readingContent = reading?.reading?.reading || reading?.reading; // Handle if reading.reading is an object or string
   //   console.log(reading.reading);
   //   console.log(user);
-  console.log(profileData, partnerProfile);
+  // console.log(profileData, partnerProfile);
 
   const dayCombinationContent = `${readingContent?.blend?.dina?.vibe}
 
 ${readingContent?.blend?.dina?.weton_essence}
 
 ${readingContent?.blend?.dina?.interpretation}`;
+
+  if (profileData?.subscription !== "pro") {
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content font-sans">
+        <ReadingNavbar
+          title={"Love Compatibility"}
+          profileData={profileData}
+          showTitleInNavbar={showTitleInNavbar}
+        />
+        <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
+          <ReadingDescription
+            reading_category={"💖 Compatibility"}
+            title={reading.title || "Compatibility Reading"}
+            topics={topics}
+            description={readingContent?.summary?.essence}
+          />
+        </main>
+        <ReadingSubscriptionButton />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -231,7 +298,8 @@ ${readingContent?.blend?.dina?.interpretation}`;
           <div className="navbar-end"></div>
         </div>
 
-        {error && <ErrorLayout error={error} router={router} />}
+        {error ||
+          (readingError && <ErrorLayout error={error} router={router} />)}
 
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
           {reading.status === "completed" ? (

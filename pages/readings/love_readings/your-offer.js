@@ -17,6 +17,7 @@ import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
+import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
 
 export default function YourOfferPage() {
   const { user, loading: authLoading } = useAuth();
@@ -200,6 +201,27 @@ export default function YourOfferPage() {
     );
   }
 
+  if (profileData?.subscription !== "pro") {
+    return (
+      <div className="min-h-screen bg-base-100 text-base-content font-sans">
+        <ReadingNavbar
+          title="What You Offer"
+          profileData={profileData}
+          showTitleInNavbar={showTitleInNavbar}
+        />
+        <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
+          <ReadingDescription
+            reading_category={"💖 Love and Relationship"}
+            title={"What You Can Offer"}
+            topics={topics}
+            description={`This reading highlights the unique strengths, qualities, and contributions you bring to any relationship, directly derived from your Weton, Rakam, dan Laku.`}
+          />
+        </main>
+        <ReadingSubscriptionButton />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
@@ -255,6 +277,7 @@ export default function YourOfferPage() {
             <section className="p-4 border-slate-100 border rounded-2xl bg-base-100 shadow-md mt-10">
               <p className="text-sm text-gray-700">{disclaimer}</p>
             </section>
+            {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
           <ReadingLoading />
@@ -268,38 +291,27 @@ export default function YourOfferPage() {
             />
           )
         )}
-
-        {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
       {!reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
-          {profileData?.subscription == "pro" ? (
-            <button
-              className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
-              onClick={() =>
-                handleGenerateReading({
-                  profileData,
-                  user,
-                  setReading,
-                  setLoading,
-                  setError,
-                  slug: "your-offer",
-                  reading_category: "love_readings",
-                  reading_type: "pro",
-                  api_url: "readings/love/love-pro",
-                })
-              }
-            >
-              Generate Reading
-            </button>
-          ) : (
-            <button
-              className="btn bg-amber-600 font-semibold text-white rounded-xl w-full"
-              onClick={() => {}}
-            >
-              🔓 Unlock With Pro
-            </button>
-          )}
+          <button
+            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            onClick={() =>
+              handleGenerateReading({
+                profileData,
+                user,
+                setReading,
+                setLoading,
+                setError,
+                slug: "your-offer",
+                reading_category: "love_readings",
+                reading_type: "pro",
+                api_url: "readings/love/love-pro",
+              })
+            }
+          >
+            Generate Reading
+          </button>
         </div>
       )}
     </div>
