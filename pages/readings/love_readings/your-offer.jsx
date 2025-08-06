@@ -1,16 +1,11 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import {
-  fetchProfileData,
-  handleGenerateReading,
-  fetchReading,
-} from "@/utils/fetch";
+import { fetchProfileData, handleGenerateReading } from "@/utils/fetch";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
-import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { Capacitor } from "@capacitor/core";
 import { ReadingLoading } from "@/components/readings/reading-loading";
 import { ReadingDescription } from "@/components/readings/reading-description";
@@ -18,14 +13,16 @@ import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
 import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useReading } from "@/utils/useReading";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
 
-export default function AttachmentStylePage() {
+export default function YourOfferPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
@@ -33,54 +30,111 @@ export default function AttachmentStylePage() {
   const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const topics = [
     {
-      icon: "💖",
-      title: "Your Heart's Default Setting",
+      icon: "👩‍❤️‍👨",
+      title: "Your Relationship Superpowers",
       description:
-        "Your primary disposition towards closeness and emotional connection based on your Weton and Laku.",
+        "Your most significant innate gifts or strengths that you bring to a partnership",
     },
     {
-      icon: "💕",
-      title: "How You Handle Closeness",
-      description: `How does your Weton influence your comfort levels with deep intimacy, emotional sharing, and vulnerability in a relationship.`,
+      icon: "☁️",
+      title: "The Atmosphere You Create",
+      description: `How these specific Weton-derived qualities positively influence your partner's life or the overall relationship dynamic.`,
     },
     {
-      icon: "↔️",
-      title: "Response to Distance & Space",
+      icon: "🥰",
+      title: "How You Show You Care",
       description:
-        "How do you typically react when a partner needs space or when there's a perceived distance in the relationship.",
+        "How does your Weton shape your capacity for nurturing, supporting, and caring for a partner.",
     },
     {
-      icon: "⚖️",
-      title: "Your We vs Me Balance",
+      icon: "😮‍💨",
+      title: "When Things Get Tough",
       description:
-        "Your natural leanings regarding dependency within a partnership.",
+        "Unique approach or quality do you bring when facing challenges or problems within the relationship.",
     },
     {
-      icon: "🖇️",
-      title: "Mutual Completion",
-      description: `Connection to the Javanese wisdom of "eling lan waspada", suggesting that the potential challenges allows for proactive and mindful relationship building.`,
+      icon: "✅",
+      title: "Responsibility in Love",
+      description:
+        "How your innate traits empower you to uphold your responsibilities and commitments.",
     },
   ];
+
+  // adjust the data according to topics const above, min 9 objects. Change the emoji based on the text
+
+  const loadingMessages = [
+    {
+      text: "Identifying your relationship superpowers...",
+      emoji: "👩‍❤️‍👨",
+    },
+    {
+      text: "Exploring the atmosphere you create in love...",
+      emoji: "☁️",
+    },
+    {
+      text: "Analyzing how you show you care for your partner...",
+      emoji: "🥰",
+    },
+    {
+      text: "Understanding your approach when things get tough...",
+      emoji: "😮‍💨",
+    },
+    {
+      text: "Assessing your responsibility in love and commitment...",
+      emoji: "✅",
+    },
+    {
+      text: "Reviewing your unique strengths in relationships...",
+      emoji: "🌟",
+    },
+    {
+      text: "Examining how your qualities impact your partner's life...",
+      emoji: "💞",
+    },
+    {
+      text: "Evaluating your nurturing and supportive tendencies...",
+      emoji: "🤗",
+    },
+    {
+      text: "Connecting your innate traits to lasting love...",
+      emoji: "🔗",
+    },
+  ];
+
+  const {
+    reading,
+    isLoading: isLoadingReading,
+    error: readingError,
+  } = useReading(user?.id, "love_readings", "your-offer", "pro");
+
+  const disclaim =
+    "While Weton provides valuable insights into inherent tendencies and energetic dynamics, it does not dictate absolute destinies or outcomes in relationships. These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure. Human agency, conscious effort, open communication, and genuine love are paramount. Every relationship is a unique journey of two individuals, and challenges can always be overcome with dedication.";
 
   const disclaimer =
     "These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure.";
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
+      router.push("/");
       return;
     }
 
     if (!router.isReady || !user) {
-      setLoading(true);
+      setLoadingProfile(true);
       return;
     }
 
-    fetchProfileData({ user, setLoading, setError, setProfileData });
-  }, []);
+    fetchProfileData({
+      user,
+      setLoading: setLoadingProfile,
+      setError,
+      setProfileData,
+    });
+  }, [user, authLoading, router.isReady]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -111,7 +165,7 @@ export default function AttachmentStylePage() {
   //         .eq("reading_type", "pro")
   //         .eq("user_id", user.id)
   //         .eq("reading_category", "love_readings")
-  //         .eq("slug", "attachment-style")
+  //         .eq("slug", "your-offer")
   //         .maybeSingle();
 
   //       console.log("Existing Reading:", existingReading, user.id);
@@ -132,16 +186,20 @@ export default function AttachmentStylePage() {
   //         setLoading(false);
   //         try {
   //           // Generate new reading if none exists
-  //           const response = await axios.post(
-  //             `${config.api.url}/readings/love/love-pro-2`,
-  //             { profile: profileData },
+  //           const response = await fetch(
+  //             `${config.api.url}/readings/love/love-pro`,
   //             {
-  //               headers: { "Content-Type": "application/json" },
+  //               method: "POST",
+  //               headers: {
+  //                 "Content-Type": "application/json",
+  //               },
+  //               body: JSON.stringify({ profile: profileData }),
+  //               credentials: "include",
   //             }
   //           );
 
-  //           setReading(response);
-  //           setLoading(false);
+  //           const readingData = await response.json();
+  //           setReading(readingData);
   //         } catch (err) {
   //           console.error(
   //             "Error in fetch or processing response for daily reading:",
@@ -160,27 +218,27 @@ export default function AttachmentStylePage() {
   //   }
   // };
 
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        fetchReading({
-          profileData,
-          user,
-          setReading,
-          setLoading,
-          setError,
-          slug: "attachment-style",
-          reading_category: "love_readings",
-          reading_type: "pro",
-          api_url: "readings/love/love-pro-2",
-        });
-      }
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     if (isNative) {
+  //       fetchReading({
+  //         profileData,
+  //         user,
+  //         setReading,
+  //         setLoading,
+  //         setError,
+  //         slug: "your-offer",
+  //         reading_category: "love_readings",
+  //         reading_type: "pro",
+  //         api_url: "readings/love/love-pro",
+  //       });
+  //     }
+  //   }
+  // }, [profileData]);
 
   // console.log("Profile Data:", profileData);
 
-  if (authLoading || (loading && !error)) {
+  if (authLoading || (loadingProfile && !error)) {
     return <PageLoadingLayout />;
   }
 
@@ -198,16 +256,16 @@ export default function AttachmentStylePage() {
     return (
       <div className="min-h-screen bg-base-100 text-base-content font-sans">
         <ReadingNavbar
-          title="Attachment Style"
+          title="What You Offer"
           profileData={profileData}
           showTitleInNavbar={showTitleInNavbar}
         />
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
           <ReadingDescription
             reading_category={"💖 Love and Relationship"}
-            title={"Attachment Style"}
+            title={"What You Can Offer"}
             topics={topics}
-            description={`This reading explores your inherent tendencies in forming bonds and navigating intimacy within relationships, drawing from your Weton, Laku, and Wuku.`}
+            description={`This reading highlights the unique strengths, qualities, and contributions you bring to any relationship, directly derived from your Weton, Rakam, dan Laku.`}
           />
         </main>
         <ReadingSubscriptionButton />
@@ -218,55 +276,59 @@ export default function AttachmentStylePage() {
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
-        title="Attachment Style"
+        title="What You Offer"
         profileData={profileData}
         showTitleInNavbar={showTitleInNavbar}
       />
-
-      {error && <ErrorLayout error={error} router={router} />}
+      {(error || readingError) && <ErrorLayout error={error} router={router} />}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        {reading?.status === "completed" ? (
+        {isLoadingReading ? (
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
+        ) : reading?.status === "completed" ? (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-semibold text-left">
-                Attachment Style
+                What You Offer
               </h2>
               <p className="text-sm text-gray-700 mb-2">
-                Gain insight into how you form bonds and connect emotionally
-                with partners.
+                Identify the unique strengths and gifts you bring to a loving
+                relationship.
               </p>
             </div>
             <ContentSection
-              reading={reading?.reading?.core_bonding}
+              reading={reading?.reading?.key_positive}
               setIsSectionOpen={setIsSectionOneOpen}
               isSectionOpen={isSectionOneOpen}
-              title="💖 Your Heart's Default Setting"
+              title="👩‍❤️‍👨 Your Relationship Superpowers"
               firstSection={true}
             />
             <ContentSection
-              reading={reading?.reading?.comfort}
+              reading={reading?.reading?.impact}
               setIsSectionOpen={setIsSectionTwoOpen}
               isSectionOpen={isSectionTwoOpen}
-              title="💕 How You Handle Closeness"
+              title="☁️ The Atmosphere You Create"
             />
             <ContentSection
-              reading={reading?.reading?.space}
+              reading={reading?.reading?.tendency}
               setIsSectionOpen={setIsSectionThreeOpen}
               isSectionOpen={isSectionThreeOpen}
-              title="↔️ Response to Distance & Space"
+              title="🥰 How You Show You Care"
             />
             <ContentSection
-              reading={reading?.reading?.dependency}
+              reading={reading?.reading?.approach}
               setIsSectionOpen={setIsSectionFourOpen}
               isSectionOpen={isSectionFourOpen}
-              title="⚖️ Your We vs Me Balance"
+              title="😮‍💨 When Things Get Tough"
             />
             <ContentSection
-              reading={reading?.reading?.jodoh}
+              reading={reading?.reading?.responsibility}
               setIsSectionOpen={setIsSectionFiveOpen}
               isSectionOpen={isSectionFiveOpen}
-              title="🖇️ Mutual Completion"
+              title="✅ Responsibility in Love"
             />
             <section className="p-4 border-slate-100 border rounded-2xl bg-base-100 shadow-md mt-10">
               <p className="text-sm text-gray-700">{disclaimer}</p>
@@ -274,37 +336,37 @@ export default function AttachmentStylePage() {
             {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
-          <ReadingLoading />
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
         ) : (
           !reading && (
             <ReadingDescription
               reading_category={"💖 Love and Relationship"}
-              title={"Attachment Style"}
+              title={"What You Can Offer"}
               topics={topics}
-              description={`This reading explores your inherent tendencies in forming bonds and navigating intimacy within relationships, drawing from your Weton, Laku, and Wuku.`}
+              description={`This reading highlights the unique strengths, qualities, and contributions you bring to any relationship, directly derived from your Weton, Rakam, dan Laku.`}
             />
           )
         )}
       </main>
-      {!reading && (
+      {!isLoadingReading && !reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
-            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            className="btn bg-rose-400 font-semibold disabled:bg-slate-300 text-white rounded-xl w-full"
+            disabled={isGenerating}
             onClick={() =>
               handleGenerateReading({
                 profileData,
                 user,
-                setReading,
-                setLoading,
+                apiUrl: "readings/love/love-pro",
                 setError,
-                slug: "attachment-style",
-                reading_category: "love_readings",
-                reading_type: "pro",
-                api_url: "readings/love/love-pro-2",
+                setIsGenerating,
               })
             }
           >
-            Generate Reading
+            {isGenerating ? "Generating..." : "Generate Reading"}
           </button>
         </div>
       )}

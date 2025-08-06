@@ -2,11 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import {
-  fetchProfileData,
-  handleGenerateReading,
-  fetchReading,
-} from "@/utils/fetch";
+import { fetchProfileData, handleGenerateReading } from "@/utils/fetch";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
@@ -18,14 +14,16 @@ import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
 import { DisclaimerSection } from "@/components/readings/disclaimer-section";
 import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useReading } from "@/utils/useReading";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
 
 export default function ConciousCoinPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
@@ -33,6 +31,7 @@ export default function ConciousCoinPage() {
   const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const topics = [
     {
@@ -62,19 +61,70 @@ export default function ConciousCoinPage() {
     },
   ];
 
+  // adjust the data according to topics const above, min 9 objects. Change the emoji based on the text
+  const loadingMessages = [
+    {
+      text: "Aligning your spending with your soul’s purpose...",
+      emoji: "💸",
+    },
+    {
+      text: "Identifying your core financial values...",
+      emoji: "🌟",
+    },
+    {
+      text: "Creating a budget that honors your true self...",
+      emoji: "🎖️",
+    },
+    {
+      text: "Exploring the art of mindful giving...",
+      emoji: "🎁",
+    },
+    {
+      text: "Connecting to a guiding financial philosophy...",
+      emoji: "🧭",
+    },
+    {
+      text: "Reflecting on your financial priorities...",
+      emoji: "📝",
+    },
+    {
+      text: "Discovering your unique wealth tendencies...",
+      emoji: "🔍",
+    },
+    {
+      text: "Uncovering opportunities for soulful abundance...",
+      emoji: "🌱",
+    },
+    {
+      text: "Synthesizing your conscious coin profile...",
+      emoji: "💰",
+    },
+  ];
+
+  const {
+    reading,
+    isLoading: isLoadingReading,
+    error: readingError,
+  } = useReading(user?.id, "financial_readings", "concious-coin", "pro");
+
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
+      router.push("/");
       return;
     }
 
     if (!router.isReady || !user) {
-      setLoading(true);
+      setLoadingProfile(true);
       return;
     }
 
-    fetchProfileData({ user, setLoading, setError, setProfileData });
-  }, []);
+    fetchProfileData({
+      user,
+      setLoading: setLoadingProfile,
+      setError,
+      setProfileData,
+    });
+  }, [user, authLoading, router.isReady]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -88,30 +138,30 @@ export default function ConciousCoinPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        fetchReading({
-          profileData,
-          user,
-          setReading,
-          setLoading,
-          setError,
-          slug: "concious-coin",
-          reading_category: "financial_readings",
-          reading_type: "pro",
-          api_url: "readings/financial/financial-pro",
-        });
-      }
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     if (isNative) {
+  //       fetchReading({
+  //         profileData,
+  //         user,
+  //         setReading,
+  //         setLoading,
+  //         setError,
+  //         slug: "concious-coin",
+  //         reading_category: "financial_readings",
+  //         reading_type: "pro",
+  //         api_url: "readings/financial/financial-pro",
+  //       });
+  //     }
+  //   }
+  // }, [profileData]);
 
   const disclaimer =
     "This guidance offers insights into your inherent predispositions, but your conscious choices and actions ultimately shape your financial reality.";
 
   // console.log("Profile Data:", profileData, authLoading, loading, error);
 
-  if (authLoading || (loading && !error)) {
+  if (authLoading || (loadingProfile && !error)) {
     return <PageLoadingLayout />;
   }
 
@@ -156,10 +206,15 @@ export default function ConciousCoinPage() {
         showTitleInNavbar={showTitleInNavbar}
       />
 
-      {error && <ErrorLayout error={error} router={router} />}
+      {(error || readingError) && <ErrorLayout error={error} router={router} />}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        {reading?.status === "completed" ? (
+        {isLoadingReading ? (
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
+        ) : reading?.status === "completed" ? (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-semibold text-left">
@@ -214,7 +269,10 @@ export default function ConciousCoinPage() {
             )}
           </div>
         ) : reading?.status === "loading" ? (
-          <ReadingLoading />
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
         ) : (
           !reading && (
             <ReadingDescription
@@ -228,25 +286,22 @@ export default function ConciousCoinPage() {
           )
         )}
       </main>
-      {!reading && (
+      {!isLoadingReading && !reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
-            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            className="btn bg-rose-400 font-semibold disabled:bg-slate-300 text-white rounded-xl w-full"
+            disabled={isGenerating}
             onClick={() =>
               handleGenerateReading({
                 profileData,
                 user,
-                setReading,
-                setLoading,
+                apiUrl: "readings/financial/financial-pro",
                 setError,
-                slug: "concious-coin",
-                reading_category: "financial_readings",
-                reading_type: "pro",
-                api_url: "readings/financial/financial-pro",
+                setIsGenerating,
               })
             }
           >
-            Generate Reading
+            {isGenerating ? "Generating..." : "Generate Reading"}
           </button>
         </div>
       )}

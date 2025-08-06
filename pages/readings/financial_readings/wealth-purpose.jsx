@@ -1,31 +1,29 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import {
-  fetchProfileData,
-  handleGenerateReading,
-  fetchReading,
-} from "@/utils/fetch";
-import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
+import { fetchProfileData, handleGenerateReading } from "@/utils/fetch";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { Capacitor } from "@capacitor/core";
 import { ReadingLoading } from "@/components/readings/reading-loading";
 import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
+import { DisclaimerSection } from "@/components/readings/disclaimer-section";
 import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useReading } from "@/utils/useReading";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
 
-export default function YourOfferPage() {
+export default function WealthPurposePage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
@@ -33,57 +31,100 @@ export default function YourOfferPage() {
   const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const topics = [
     {
-      icon: "👩‍❤️‍👨",
-      title: "Your Relationship Superpowers",
+      icon: "🏆",
+      title: "Talents & Abilities for Prosperity",
       description:
-        "Your most significant innate gifts or strengths that you bring to a partnership",
+        "Your key talents, skills, and areas of intelligence that are most conducive to creating wealth through meaningful work.",
     },
     {
-      icon: "☁️",
-      title: "The Atmosphere You Create",
-      description: `How these specific Weton-derived qualities positively influence your partner's life or the overall relationship dynamic.`,
+      icon: "💎",
+      title: "Ethical & Values-Aligned Earning",
+      description: `How your core values (from your Weton and Rakam) guide your financial endeavors.`,
     },
     {
-      icon: "🥰",
-      title: "How You Show You Care",
+      icon: "💪",
+      title: "Contribution as a Source of Abundance",
       description:
-        "How does your Weton shape your capacity for nurturing, supporting, and caring for a partner.",
+        "How contributing your unique gifts to solve problems for others can naturally unlock financial opportunities.",
     },
     {
-      icon: "😮‍💨",
-      title: "When Things Get Tough",
-      description:
-        "Unique approach or quality do you bring when facing challenges or problems within the relationship.",
-    },
-    {
-      icon: "✅",
-      title: "Responsibility in Love",
-      description:
-        "How your innate traits empower you to uphold your responsibilities and commitments.",
+      icon: "🪴",
+      title: "Nuruturing Your Financial Ecosystem",
+      description: `Advice on how to cultivate a personal "ecosystem" where your work, values, and financial aspirations are harmoniously intertwined.`,
     },
   ];
 
-  const disclaim =
-    "While Weton provides valuable insights into inherent tendencies and energetic dynamics, it does not dictate absolute destinies or outcomes in relationships. These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure. Human agency, conscious effort, open communication, and genuine love are paramount. Every relationship is a unique journey of two individuals, and challenges can always be overcome with dedication.";
+  // adjust the data according to topics const above, min 9 objects. Change the emoji based on the text
+  const loadingMessages = [
+    {
+      text: "Uncovering your talents for prosperity...",
+      emoji: "🏆",
+    },
+    {
+      text: "Identifying your unique abilities for wealth creation...",
+      emoji: "🧠",
+    },
+    {
+      text: "Aligning your financial goals with your core values...",
+      emoji: "💎",
+    },
+    {
+      text: "Exploring ethical earning aligned with your purpose...",
+      emoji: "🕊️",
+    },
+    {
+      text: "Discovering how your contributions unlock abundance...",
+      emoji: "💪",
+    },
+    {
+      text: "Finding ways to solve problems for others...",
+      emoji: "🧩",
+    },
+    {
+      text: "Nurturing your personal financial ecosystem...",
+      emoji: "🪴",
+    },
+    {
+      text: "Cultivating harmony between work, values, and wealth...",
+      emoji: "🌿",
+    },
+    {
+      text: "Synthesizing your path to meaningful prosperity...",
+      emoji: "💰",
+    },
+  ];
+
+  const {
+    reading,
+    isLoading: isLoadingReading,
+    error: readingError,
+  } = useReading(user?.id, "financial_readings", "wealth-purpose", "pro");
 
   const disclaimer =
-    "These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure.";
+    "This guidance offers insights into your inherent predispositions, but your conscious choices and actions ultimately shape your financial reality.";
+
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
+      router.push("/");
       return;
     }
 
     if (!router.isReady || !user) {
-      setLoading(true);
+      setLoadingProfile(true);
       return;
     }
 
-    fetchProfileData({ user, setLoading, setError, setProfileData });
-  }, []);
+    fetchProfileData({
+      user,
+      setLoading: setLoadingProfile,
+      setError,
+      setProfileData,
+    });
+  }, [user, authLoading, router.isReady]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -113,8 +154,8 @@ export default function YourOfferPage() {
   //         .select("reading, status")
   //         .eq("reading_type", "pro")
   //         .eq("user_id", user.id)
-  //         .eq("reading_category", "love_readings")
-  //         .eq("slug", "your-offer")
+  //         .eq("reading_category", "financial_readings")
+  //         .eq("slug", "wealth-purpose")
   //         .maybeSingle();
 
   //       console.log("Existing Reading:", existingReading, user.id);
@@ -136,7 +177,7 @@ export default function YourOfferPage() {
   //         try {
   //           // Generate new reading if none exists
   //           const response = await fetch(
-  //             `${config.api.url}/readings/love/love-pro`,
+  //             `${config.api.url}/readings/financial/financial-pro`,
   //             {
   //               method: "POST",
   //               headers: {
@@ -167,27 +208,27 @@ export default function YourOfferPage() {
   //   }
   // };
 
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        fetchReading({
-          profileData,
-          user,
-          setReading,
-          setLoading,
-          setError,
-          slug: "your-offer",
-          reading_category: "love_readings",
-          reading_type: "pro",
-          api_url: "readings/love/love-pro",
-        });
-      }
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     if (isNative) {
+  //       fetchReading({
+  //         profileData,
+  //         user,
+  //         setReading,
+  //         setLoading,
+  //         setError,
+  //         slug: "wealth-purpose",
+  //         reading_category: "financial_readings",
+  //         reading_type: "pro",
+  //         api_url: "readings/financial/financial-pro",
+  //       });
+  //     }
+  //   }
+  // }, [profileData]);
 
   // console.log("Profile Data:", profileData);
 
-  if (authLoading || (loading && !error)) {
+  if (authLoading || (loadingProfile && !error)) {
     return <PageLoadingLayout />;
   }
 
@@ -205,16 +246,18 @@ export default function YourOfferPage() {
     return (
       <div className="min-h-screen bg-base-100 text-base-content font-sans">
         <ReadingNavbar
-          title="What You Offer"
+          title="Wealth Through Purpose"
           profileData={profileData}
           showTitleInNavbar={showTitleInNavbar}
         />
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
           <ReadingDescription
-            reading_category={"💖 Love and Relationship"}
-            title={"What You Can Offer"}
+            reading_category={"💰 Financial Fortune"}
+            title={"Wealth Through Purpose"}
             topics={topics}
-            description={`This reading highlights the unique strengths, qualities, and contributions you bring to any relationship, directly derived from your Weton, Rakam, dan Laku.`}
+            description={
+              "This reading explores how your unique talents, core values, and life purpose can be channeled into pathways that lead to both financial prosperity and profound personal fulfillment."
+            }
           />
         </main>
         <ReadingSubscriptionButton />
@@ -225,92 +268,101 @@ export default function YourOfferPage() {
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
-        title="What You Offer"
+        title="Wealth Through Purpose"
         profileData={profileData}
         showTitleInNavbar={showTitleInNavbar}
       />
-      {error && <ErrorLayout error={error} router={router} />}
+
+      {(error || readingError) && <ErrorLayout error={error} router={router} />}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        {reading?.status === "completed" ? (
+        {isLoadingReading ? (
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
+        ) : reading?.status === "completed" ? (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-semibold text-left">
-                What You Offer
+                Wealth Through Purpose
               </h2>
               <p className="text-sm text-gray-700 mb-2">
-                Identify the unique strengths and gifts you bring to a loving
-                relationship.
+                Explores how your Weton impacting financial prosperity and
+                personal fulfillment.
               </p>
             </div>
             <ContentSection
-              reading={reading?.reading?.key_positive}
+              reading={reading?.reading?.talents}
               setIsSectionOpen={setIsSectionOneOpen}
               isSectionOpen={isSectionOneOpen}
-              title="👩‍❤️‍👨 Your Relationship Superpowers"
+              title="🏆 Talents & Abilities for Prosperity"
               firstSection={true}
             />
             <ContentSection
-              reading={reading?.reading?.impact}
+              reading={reading?.reading?.values}
               setIsSectionOpen={setIsSectionTwoOpen}
               isSectionOpen={isSectionTwoOpen}
-              title="☁️ The Atmosphere You Create"
+              title="💎 Ethical & Values-Aligned Earning"
             />
             <ContentSection
-              reading={reading?.reading?.tendency}
+              reading={reading?.reading?.contribution}
               setIsSectionOpen={setIsSectionThreeOpen}
               isSectionOpen={isSectionThreeOpen}
-              title="🥰 How You Show You Care"
+              title="💪 Contribution as a Source of Abundance"
             />
             <ContentSection
-              reading={reading?.reading?.approach}
+              reading={reading?.reading?.nurturing}
               setIsSectionOpen={setIsSectionFourOpen}
               isSectionOpen={isSectionFourOpen}
-              title="😮‍💨 When Things Get Tough"
+              title="🪴 Nuruturing Your Financial Ecosystem"
             />
-            <ContentSection
-              reading={reading?.reading?.responsibility}
-              setIsSectionOpen={setIsSectionFiveOpen}
-              isSectionOpen={isSectionFiveOpen}
-              title="✅ Responsibility in Love"
-            />
-            <section className="p-4 border-slate-100 border rounded-2xl bg-base-100 shadow-md mt-10">
-              <p className="text-sm text-gray-700">{disclaimer}</p>
-            </section>
-            {reading?.id && <FeedbackSession user={user} reading={reading} />}
+            {reading?.id && (
+              <div>
+                <FeedbackSession user={user} reading={reading} />
+                <DisclaimerSection
+                  title={
+                    "These are energetic tendencies, not absolute predictions"
+                  }
+                  description={disclaimer}
+                />
+              </div>
+            )}
           </div>
         ) : reading?.status === "loading" ? (
-          <ReadingLoading />
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
         ) : (
           !reading && (
             <ReadingDescription
-              reading_category={"💖 Love and Relationship"}
-              title={"What You Can Offer"}
+              reading_category={"💰 Financial Fortune"}
+              title={"Wealth Through Purpose"}
               topics={topics}
-              description={`This reading highlights the unique strengths, qualities, and contributions you bring to any relationship, directly derived from your Weton, Rakam, dan Laku.`}
+              description={
+                "This reading explores how your unique talents, core values, and life purpose can be channeled into pathways that lead to both financial prosperity and profound personal fulfillment."
+              }
             />
           )
         )}
       </main>
-      {!reading && (
+      {!isLoadingReading && !reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
-            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            className="btn bg-rose-400 font-semibold disabled:bg-slate-300 text-white rounded-xl w-full"
+            disabled={isGenerating}
             onClick={() =>
               handleGenerateReading({
                 profileData,
                 user,
-                setReading,
-                setLoading,
+                apiUrl: "readings/financial/financial-pro",
                 setError,
-                slug: "your-offer",
-                reading_category: "love_readings",
-                reading_type: "pro",
-                api_url: "readings/love/love-pro",
+                setIsGenerating,
               })
             }
           >
-            Generate Reading
+            {isGenerating ? "Generating..." : "Generate Reading"}
           </button>
         </div>
       )}

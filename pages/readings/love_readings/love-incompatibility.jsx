@@ -1,13 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import {
-  fetchProfileData,
-  handleGenerateReading,
-  fetchReading,
-} from "@/utils/fetch";
+import { fetchProfileData, handleGenerateReading } from "@/utils/fetch";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
@@ -17,16 +12,17 @@ import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
-import { DisclaimerSection } from "@/components/readings/disclaimer-section";
 import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useReading } from "@/utils/useReading";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
 
-export default function FinancialPage() {
+export default function LoveIncompatibilityPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
@@ -34,53 +30,106 @@ export default function FinancialPage() {
   const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const topics = [
     {
-      icon: "🤔",
-      title: "Financial Mindset",
-      description: "Your natural approach to earning, saving, and spending.",
-    },
-    {
-      icon: "📈",
-      title: "General Wealth Tendencies",
-      description: `Overall predisposition towards attracting or managing financial resources.`,
-    },
-    {
-      icon: "🎯",
-      title: "Opportunities for Attracting Wealth",
+      icon: "💥",
+      title: "Potential Energetic Clashes",
       description:
-        "The key elements or practices that are essential for you to achieve and maintain peace and tranquility in your daily existence.",
+        "General characteristics of Weton types that might create inherent energetic friction or significant differences with your own.",
     },
     {
-      icon: "🚧",
-      title: "Pontential Financial Pitfalls",
+      icon: "🙅🏻‍♀️",
+      title: "Areas of Dissimiliarity",
+      description: `Weton categories or qualities that suggest a likelihood of conflicting values, vastly different life approaches, or opposing communication styles.`,
+    },
+    {
+      icon: "🚩",
+      title: "Common Challenges",
+      description: "Explanation onwhy these potential incompatibilities exist.",
+    },
+    {
+      icon: "♟️",
+      title: "Strategy for Harmony",
       description:
-        "Inherent tendencies that might lead to financial challenges or require careful management.",
+        "Advice on how to navigate potential difficulties with awareness, patience, communication, and conscious effort.",
     },
     {
-      icon: "🧘",
-      title: "Hidden Strength & Karmic Lesson",
-      description: `Connect your financial insights to the Javanese concept of 'jembar rejeki' or abundant sustenance.`,
+      icon: "💡",
+      title: "Wisdom of Mindfulness",
+      description: `Connection to the Javanese wisdom of "eling lan waspada", suggesting that the potential challenges allows for proactive and mindful relationship building.`,
     },
   ];
 
+  // adjust the data according to topics const above, min 9 objects. Change the emoji based on the text
+
+  const loadingMessages = [
+    {
+      text: "Analyzing potential energetic clashes in your relationships...",
+      emoji: "💥",
+    },
+    {
+      text: "Identifying areas of dissimilarity and possible friction...",
+      emoji: "🙅🏻‍♀️",
+    },
+    {
+      text: "Exploring common challenges that may arise with certain Wetons...",
+      emoji: "🚩",
+    },
+    {
+      text: "Formulating strategies for harmony and understanding...",
+      emoji: "♟️",
+    },
+    {
+      text: "Reflecting on the wisdom of mindfulness in love...",
+      emoji: "💡",
+    },
+    {
+      text: "Examining how energetic differences impact communication...",
+      emoji: "💥",
+    },
+    {
+      text: "Assessing conflicting values and life approaches...",
+      emoji: "🙅🏻‍♀️",
+    },
+    {
+      text: "Uncovering obstacles and how to overcome them together...",
+      emoji: "🚩",
+    },
+    {
+      text: "Connecting Javanese wisdom to mindful relationship building...",
+      emoji: "💡",
+    },
+  ];
+
+  const {
+    reading,
+    isLoading: isLoadingReading,
+    error: readingError,
+  } = useReading(user?.id, "love_readings", "love-incompatibility", "pro");
+
   const disclaimer =
-    "This guidance offers insights into your inherent predispositions. Your personal effort, diligent research, and understanding of market conditions remain crucial.";
+    "These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure.";
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
+      router.push("/");
       return;
     }
 
     if (!router.isReady || !user) {
-      setLoading(true);
+      setLoadingProfile(true);
       return;
     }
 
-    fetchProfileData({ user, setLoading, setError, setProfileData });
-  }, []);
+    fetchProfileData({
+      user,
+      setLoading: setLoadingProfile,
+      setError,
+      setProfileData,
+    });
+  }, [user, authLoading, router.isReady]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -104,13 +153,14 @@ export default function FinancialPage() {
   //     return;
   //   } else {
   //     try {
+  //       // Check if primary-traits reading exists
   //       const { data: existingReading, error: fetchError } = await supabase
   //         .from("readings")
   //         .select("reading, status")
   //         .eq("reading_type", "pro")
   //         .eq("user_id", user.id)
-  //         .eq("reading_category", "financial_readings")
-  //         .eq("slug", "your-financial")
+  //         .eq("reading_category", "love_readings")
+  //         .eq("slug", "love-incompatibility")
   //         .maybeSingle();
 
   //       console.log("Existing Reading:", existingReading, user.id);
@@ -132,7 +182,7 @@ export default function FinancialPage() {
   //         try {
   //           // Generate new reading if none exists
   //           const response = await fetch(
-  //             `${config.api.url}/readings/financial/financial-pro`,
+  //             `${config.api.url}/readings/love/love-pro-2`,
   //             {
   //               method: "POST",
   //               headers: {
@@ -163,31 +213,27 @@ export default function FinancialPage() {
   //   }
   // };
 
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        fetchReading({
-          profileData,
-          user,
-          setReading,
-          setLoading,
-          setError,
-          slug: "your-financial",
-          reading_category: "financial_readings",
-          reading_type: "pro",
-          api_url: "readings/financial/financial-pro",
-        });
-      }
-    }
-  }, [profileData]);
-
-  const introduction = profileData?.weton
-    ? `Your ${profileData?.weton?.weton_en} Weton, with a Neptu of ${profileData?.weton?.total_neptu}, combined with your Rakam ${profileData?.weton?.rakam?.name}, provides deep insight into your fundamental character. This combination reveals your innate relationship with money, your general tendencies towards abundance, and how you naturally approach finacial management.`
-    : "";
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     if (isNative) {
+  //       fetchReading({
+  //         profileData,
+  //         user,
+  //         setReading,
+  //         setLoading,
+  //         setError,
+  //         slug: "love-incompatibility",
+  //         reading_category: "love_readings",
+  //         reading_type: "pro",
+  //         api_url: "readings/love/love-pro-2",
+  //       });
+  //     }
+  //   }
+  // }, [profileData]);
 
   // console.log("Profile Data:", profileData);
 
-  if (authLoading || (loading && !error)) {
+  if (authLoading || (loadingProfile && !error)) {
     return <PageLoadingLayout />;
   }
 
@@ -205,16 +251,16 @@ export default function FinancialPage() {
     return (
       <div className="min-h-screen bg-base-100 text-base-content font-sans">
         <ReadingNavbar
-          title="Your Financial"
+          title="Incompatible With"
           profileData={profileData}
           showTitleInNavbar={showTitleInNavbar}
         />
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
           <ReadingDescription
-            reading_category={"💰 Financial Fortune"}
-            title={"Your Financial"}
+            reading_category={"💖 Love and Relationship"}
+            title={"Incompatible With"}
             topics={topics}
-            description={introduction}
+            description={`This reading provides general insights into Weton patterns that may present inherent challenges or areas requiring conscious effort in relationships.`}
           />
         </main>
         <ReadingSubscriptionButton />
@@ -225,107 +271,98 @@ export default function FinancialPage() {
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
-        title="Your Financial"
+        title="Incompatible With"
         profileData={profileData}
         showTitleInNavbar={showTitleInNavbar}
       />
 
-      {error && <ErrorLayout error={error} router={router} />}
+      {(error || readingError) && <ErrorLayout error={error} router={router} />}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        {reading?.status === "completed" ? (
+        {isLoadingReading ? (
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
+        ) : reading?.status === "completed" ? (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-semibold text-left">
-                Your Financial
+                Incompatible With
               </h2>
-              <p className="text-sm text-gray-700 mb-2">{introduction}</p>
+              <p className="text-sm text-gray-700 mb-2">
+                Understand potential energetic clashes and challenges with other
+                Wetons in relationships.
+              </p>
             </div>
-            <section className="pt-4">
-              <h2 className="text-sm text-batik-text font-semibold">
-                Your Financial Archetype
-              </h2>
-              <div className="flex flex-col">
-                <p className="text-batik-black text-lg font-semibold">
-                  {reading?.reading?.archetype}
-                </p>
-              </div>
-            </section>
             <ContentSection
-              reading={reading?.reading?.mindset}
+              reading={reading?.reading?.clashes}
               setIsSectionOpen={setIsSectionOneOpen}
               isSectionOpen={isSectionOneOpen}
-              title="🤔 Financial Mindset"
+              title="💥 Potential Energetic Clashes"
               firstSection={true}
             />
             <ContentSection
-              reading={reading?.reading?.tendencies}
+              reading={reading?.reading?.differences}
               setIsSectionOpen={setIsSectionTwoOpen}
               isSectionOpen={isSectionTwoOpen}
-              title="📈 General Wealth Tendencies"
+              title="🙅🏻‍♀️ Areas of Dissimiliarity"
             />
             <ContentSection
-              reading={reading?.reading?.opportunities}
+              reading={reading?.reading?.challenges}
               setIsSectionOpen={setIsSectionThreeOpen}
               isSectionOpen={isSectionThreeOpen}
-              title="🎯 Opportunities for Attracting Wealth"
+              title="🚩 Common Challenges"
             />
             <ContentSection
-              reading={reading?.reading?.pitfalls}
+              reading={reading?.reading?.guidance}
               setIsSectionOpen={setIsSectionFourOpen}
               isSectionOpen={isSectionFourOpen}
-              title="🚧 Pontential Financial Pitfalls"
+              title="♟️ Strategy for Harmony"
             />
             <ContentSection
-              reading={reading?.reading?.karmic}
+              reading={reading?.reading?.mindfulness}
               setIsSectionOpen={setIsSectionFiveOpen}
               isSectionOpen={isSectionFiveOpen}
-              title="🧘 Hidden Strength & Karmic Lesson"
+              title="💡 Wisdom of Mindfulness"
             />
-            {reading?.id && (
-              <div>
-                <FeedbackSession user={user} reading={reading} />
-                <DisclaimerSection
-                  title={
-                    "These are energetic tendencies, not absolute predictions"
-                  }
-                  description={disclaimer}
-                />
-              </div>
-            )}
+            <section className="p-4 border-slate-100 border rounded-2xl bg-base-100 shadow-md mt-10">
+              <p className="text-sm text-gray-700">{disclaimer}</p>
+            </section>
+            {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
-          <ReadingLoading />
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
         ) : (
           !reading && (
             <ReadingDescription
-              reading_category={"💰 Financial Fortune"}
-              title={"Your Financial"}
+              reading_category={"💖 Love and Relationship"}
+              title={"Incompatible With"}
               topics={topics}
-              description={introduction}
+              description={`This reading provides general insights into Weton patterns that may present inherent challenges or areas requiring conscious effort in relationships.`}
             />
           )
         )}
       </main>
-      {!reading && (
+      {!isLoadingReading && !reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
-            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            className="btn bg-rose-400 font-semibold disabled:bg-slate-300 text-white rounded-xl w-full"
+            disabled={isGenerating}
             onClick={() =>
               handleGenerateReading({
                 profileData,
                 user,
-                setReading,
-                setLoading,
+                apiUrl: "readings/love/love-pro-2",
                 setError,
-                slug: "your-financial",
-                reading_category: "financial_readings",
-                reading_type: "pro",
-                api_url: "readings/financial/financial-pro",
+                setIsGenerating,
               })
             }
           >
-            Generate Reading
+            {isGenerating ? "Generating..." : "Generate Reading"}
           </button>
         </div>
       )}

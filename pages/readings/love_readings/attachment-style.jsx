@@ -1,13 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import {
-  fetchProfileData,
-  handleGenerateReading,
-  fetchReading,
-} from "@/utils/fetch";
+import { fetchProfileData, handleGenerateReading } from "@/utils/fetch";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
@@ -18,14 +13,16 @@ import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
 import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useReading } from "@/utils/useReading";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
 
-export default function LoveCompatibilityPage() {
+export default function AttachmentStylePage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
@@ -33,54 +30,107 @@ export default function LoveCompatibilityPage() {
   const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const topics = [
     {
-      icon: "🌿",
-      title: "Energetic Harmony",
+      icon: "💖",
+      title: "Your Heart's Default Setting",
       description:
-        "The general characteristics of Weton types that naturally create a harmonious energetic dynamic with your own.",
+        "Your primary disposition towards closeness and emotional connection based on your Weton and Laku.",
     },
     {
-      icon: "🎯",
-      title: "The Shared Values & Outlook",
-      description: `Weton categories or qualities that suggest a shared outlook on life, similar core values, or a comparable approach to relationships.`,
+      icon: "💕",
+      title: "How You Handle Closeness",
+      description: `How does your Weton influence your comfort levels with deep intimacy, emotional sharing, and vulnerability in a relationship.`,
     },
     {
-      icon: "🌱",
-      title: "Growth-Oriented Pairings",
+      icon: "↔️",
+      title: "Response to Distance & Space",
       description:
-        "Weton types that offer opportunities for significant mutual growth and balance through complementary energies.",
+        "How do you typically react when a partner needs space or when there's a perceived distance in the relationship.",
     },
     {
-      icon: "🌊",
-      title: "Positive Dynamics to Expect",
-      description: "Explanation on how the compatibility exist.",
-    },
-    {
-      icon: "🫶🏼",
-      title: "Wisdom of Soulmate",
+      icon: "⚖️",
+      title: "Your We vs Me Balance",
       description:
-        "how these compatible Weton patterns might align with the traditional Javanese understanding of mutual compatibility.",
+        "Your natural leanings regarding dependency within a partnership.",
+    },
+    {
+      icon: "🖇️",
+      title: "Mutual Completion",
+      description: `Connection to the Javanese wisdom of "eling lan waspada", suggesting that the potential challenges allows for proactive and mindful relationship building.`,
     },
   ];
+
+  // adjust the data according to topics const above, min 9 objects. Change the emoji based on the text
+
+  const loadingMessages = [
+    {
+      text: "Analyzing your heart's default setting and emotional tendencies...",
+      emoji: "💖",
+    },
+    {
+      text: "Exploring how you handle closeness and intimacy in relationships...",
+      emoji: "💕",
+    },
+    {
+      text: "Assessing your response to distance and space with partners...",
+      emoji: "↔️",
+    },
+    {
+      text: "Evaluating your natural balance between 'we' and 'me' in love...",
+      emoji: "⚖️",
+    },
+    {
+      text: "Connecting Javanese wisdom for mutual completion in relationships...",
+      emoji: "🖇️",
+    },
+    {
+      text: "Reflecting on your comfort levels with emotional sharing...",
+      emoji: "💕",
+    },
+    {
+      text: "Identifying your approach to dependency within partnerships...",
+      emoji: "⚖️",
+    },
+    {
+      text: "Uncovering your reactions to perceived distance or need for space...",
+      emoji: "↔️",
+    },
+    {
+      text: "Formulating strategies for mindful and proactive relationship building...",
+      emoji: "💡",
+    },
+  ];
+
+  const {
+    reading,
+    isLoading: isLoadingReading,
+    error: readingError,
+  } = useReading(user?.id, "love_readings", "attachment-style", "pro");
 
   const disclaimer =
     "These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure.";
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
+      router.push("/");
       return;
     }
 
     if (!router.isReady || !user) {
-      setLoading(true);
+      setLoadingProfile(true);
       return;
     }
 
-    fetchProfileData({ user, setLoading, setError, setProfileData });
-  }, []);
+    fetchProfileData({
+      user,
+      setLoading: setLoadingProfile,
+      setError,
+      setProfileData,
+    });
+  }, [user, authLoading, router.isReady]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -111,7 +161,7 @@ export default function LoveCompatibilityPage() {
   //         .eq("reading_type", "pro")
   //         .eq("user_id", user.id)
   //         .eq("reading_category", "love_readings")
-  //         .eq("slug", "love-compatibility")
+  //         .eq("slug", "attachment-style")
   //         .maybeSingle();
 
   //       console.log("Existing Reading:", existingReading, user.id);
@@ -132,20 +182,16 @@ export default function LoveCompatibilityPage() {
   //         setLoading(false);
   //         try {
   //           // Generate new reading if none exists
-  //           const response = await fetch(
-  //             `${config.api.url}/readings/love/love-pro`,
+  //           const response = await axios.post(
+  //             `${config.api.url}/readings/love/love-pro-2`,
+  //             { profile: profileData },
   //             {
-  //               method: "POST",
-  //               headers: {
-  //                 "Content-Type": "application/json",
-  //               },
-  //               body: JSON.stringify({ profile: profileData }),
-  //               credentials: "include",
+  //               headers: { "Content-Type": "application/json" },
   //             }
   //           );
 
-  //           const readingData = await response.json();
-  //           setReading(readingData);
+  //           setReading(response);
+  //           setLoading(false);
   //         } catch (err) {
   //           console.error(
   //             "Error in fetch or processing response for daily reading:",
@@ -164,27 +210,27 @@ export default function LoveCompatibilityPage() {
   //   }
   // };
 
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        fetchReading({
-          profileData,
-          user,
-          setReading,
-          setLoading,
-          setError,
-          slug: "love-compatibility",
-          reading_category: "love_readings",
-          reading_type: "pro",
-          api_url: "readings/love/love-pro",
-        });
-      }
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     if (isNative) {
+  //       fetchReading({
+  //         profileData,
+  //         user,
+  //         setReading,
+  //         setLoading,
+  //         setError,
+  //         slug: "attachment-style",
+  //         reading_category: "love_readings",
+  //         reading_type: "pro",
+  //         api_url: "readings/love/love-pro-2",
+  //       });
+  //     }
+  //   }
+  // }, [profileData]);
 
   // console.log("Profile Data:", profileData);
 
-  if (authLoading || (loading && !error)) {
+  if (authLoading || (loadingProfile && !error)) {
     return <PageLoadingLayout />;
   }
 
@@ -202,16 +248,16 @@ export default function LoveCompatibilityPage() {
     return (
       <div className="min-h-screen bg-base-100 text-base-content font-sans">
         <ReadingNavbar
-          title="Compatible With"
+          title="Attachment Style"
           profileData={profileData}
           showTitleInNavbar={showTitleInNavbar}
         />
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
           <ReadingDescription
             reading_category={"💖 Love and Relationship"}
-            title={"Compatible With"}
+            title={"Attachment Style"}
             topics={topics}
-            description={`This reading offers general insights into Weton patterns that tend to create harmonious or complementary relationships for you.`}
+            description={`This reading explores your inherent tendencies in forming bonds and navigating intimacy within relationships, drawing from your Weton, Laku, and Wuku.`}
           />
         </main>
         <ReadingSubscriptionButton />
@@ -222,55 +268,60 @@ export default function LoveCompatibilityPage() {
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
-        title="Compatible With"
+        title="Attachment Style"
         profileData={profileData}
         showTitleInNavbar={showTitleInNavbar}
       />
 
-      {error && <ErrorLayout error={error} router={router} />}
+      {(error || readingError) && <ErrorLayout error={error} router={router} />}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        {reading?.status === "completed" ? (
+        {isLoadingReading ? (
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
+        ) : reading?.status === "completed" ? (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-semibold text-left">
-                Compatible With
+                Attachment Style
               </h2>
               <p className="text-sm text-gray-700 mb-2">
-                Learn about Weton energies that naturally harmonize with your
-                own in love.
+                Gain insight into how you form bonds and connect emotionally
+                with partners.
               </p>
             </div>
             <ContentSection
-              reading={reading?.reading?.harmony}
+              reading={reading?.reading?.core_bonding}
               setIsSectionOpen={setIsSectionOneOpen}
               isSectionOpen={isSectionOneOpen}
-              title="🌿 Energetic Harmony"
+              title="💖 Your Heart's Default Setting"
               firstSection={true}
             />
             <ContentSection
-              reading={reading?.reading?.values}
+              reading={reading?.reading?.comfort}
               setIsSectionOpen={setIsSectionTwoOpen}
               isSectionOpen={isSectionTwoOpen}
-              title="🎯 The Shared Values & Outlook"
+              title="💕 How You Handle Closeness"
             />
             <ContentSection
-              reading={reading?.reading?.growth}
+              reading={reading?.reading?.space}
               setIsSectionOpen={setIsSectionThreeOpen}
               isSectionOpen={isSectionThreeOpen}
-              title="🌱 Growth-Oriented Pairings"
+              title="↔️ Response to Distance & Space"
             />
             <ContentSection
-              reading={reading?.reading?.dynamic}
+              reading={reading?.reading?.dependency}
               setIsSectionOpen={setIsSectionFourOpen}
               isSectionOpen={isSectionFourOpen}
-              title="🌊 Positive Dynamics to Expect"
+              title="⚖️ Your We vs Me Balance"
             />
             <ContentSection
-              reading={reading?.reading?.soulmate}
+              reading={reading?.reading?.jodoh}
               setIsSectionOpen={setIsSectionFiveOpen}
               isSectionOpen={isSectionFiveOpen}
-              title="🫶🏼 Wisdom of Soulmate"
+              title="🖇️ Mutual Completion"
             />
             <section className="p-4 border-slate-100 border rounded-2xl bg-base-100 shadow-md mt-10">
               <p className="text-sm text-gray-700">{disclaimer}</p>
@@ -278,37 +329,37 @@ export default function LoveCompatibilityPage() {
             {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
-          <ReadingLoading />
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
         ) : (
           !reading && (
             <ReadingDescription
               reading_category={"💖 Love and Relationship"}
-              title={"Compatible With"}
+              title={"Attachment Style"}
               topics={topics}
-              description={`This reading offers general insights into Weton patterns that tend to create harmonious or complementary relationships for you.`}
+              description={`This reading explores your inherent tendencies in forming bonds and navigating intimacy within relationships, drawing from your Weton, Laku, and Wuku.`}
             />
           )
         )}
       </main>
-      {!reading && (
+      {!isLoadingReading && !reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
-            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            className="btn bg-rose-400 font-semibold disabled:bg-slate-300 text-white rounded-xl w-full"
+            disabled={isGenerating}
             onClick={() =>
               handleGenerateReading({
                 profileData,
                 user,
-                setReading,
-                setLoading,
+                apiUrl: "readings/love/love-pro-2",
                 setError,
-                slug: "love-compatibility",
-                reading_category: "love_readings",
-                reading_type: "pro",
-                api_url: "readings/love/love-pro",
+                setIsGenerating,
               })
             }
           >
-            Generate Reading
+            {isGenerating ? "Generating..." : "Generate Reading"}
           </button>
         </div>
       )}

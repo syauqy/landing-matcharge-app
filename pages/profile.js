@@ -12,7 +12,6 @@ import { openBrowser, closeBrowser } from "@/utils/native-browser";
 import { getWeton, getWuku } from "@/utils";
 import { Toaster, toast } from "sonner";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
-import { Purchases } from "@revenuecat/purchases-capacitor";
 
 export default function ProfilePage() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -138,6 +137,7 @@ export default function ProfilePage() {
   const handleManageSubscription = async () => {
     setIsManagingSubscription(true);
     try {
+      const { Purchases } = await import("@revenuecat/purchases-capacitor");
       const { isConfigured } = await Purchases.isConfigured();
       if (!isConfigured) {
         await Purchases.configure({

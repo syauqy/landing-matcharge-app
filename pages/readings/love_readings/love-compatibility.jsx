@@ -2,11 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import {
-  fetchProfileData,
-  handleGenerateReading,
-  fetchReading,
-} from "@/utils/fetch";
+import { fetchProfileData, handleGenerateReading } from "@/utils/fetch";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
@@ -16,16 +12,17 @@ import { ReadingDescription } from "@/components/readings/reading-description";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
 import { FeedbackSession } from "@/components/readings/feedback-section";
 import { ContentSection } from "@/components/readings/content-section";
-import { DisclaimerSection } from "@/components/readings/disclaimer-section";
 import { ReadingSubscriptionButton } from "@/components/subscriptions/reading-subscription-button";
+import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
+import { useReading } from "@/utils/useReading";
+import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-skeleton";
 
-export default function WealthPurposePage() {
+export default function LoveCompatibilityPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [error, setError] = useState(null);
-  const [reading, setReading] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
@@ -33,48 +30,105 @@ export default function WealthPurposePage() {
   const [isSectionFourOpen, setIsSectionFourOpen] = useState(false);
   const [isSectionFiveOpen, setIsSectionFiveOpen] = useState(false);
   const isNative = Capacitor.isNativePlatform();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const topics = [
     {
-      icon: "🏆",
-      title: "Talents & Abilities for Prosperity",
+      icon: "🌿",
+      title: "Energetic Harmony",
       description:
-        "Your key talents, skills, and areas of intelligence that are most conducive to creating wealth through meaningful work.",
+        "The general characteristics of Weton types that naturally create a harmonious energetic dynamic with your own.",
     },
     {
-      icon: "💎",
-      title: "Ethical & Values-Aligned Earning",
-      description: `How your core values (from your Weton and Rakam) guide your financial endeavors.`,
+      icon: "🎯",
+      title: "The Shared Values & Outlook",
+      description: `Weton categories or qualities that suggest a shared outlook on life, similar core values, or a comparable approach to relationships.`,
     },
     {
-      icon: "💪",
-      title: "Contribution as a Source of Abundance",
+      icon: "🌱",
+      title: "Growth-Oriented Pairings",
       description:
-        "How contributing your unique gifts to solve problems for others can naturally unlock financial opportunities.",
+        "Weton types that offer opportunities for significant mutual growth and balance through complementary energies.",
     },
     {
-      icon: "🪴",
-      title: "Nuruturing Your Financial Ecosystem",
-      description: `Advice on how to cultivate a personal "ecosystem" where your work, values, and financial aspirations are harmoniously intertwined.`,
+      icon: "🌊",
+      title: "Positive Dynamics to Expect",
+      description: "Explanation on how the compatibility exist.",
+    },
+    {
+      icon: "🫶🏼",
+      title: "Wisdom of Soulmate",
+      description:
+        "how these compatible Weton patterns might align with the traditional Javanese understanding of mutual compatibility.",
     },
   ];
 
+  const loadingMessages = [
+    {
+      text: "Exploring your energetic harmony with others...",
+      emoji: "🌿",
+    },
+    {
+      text: "Identifying shared values and outlooks in relationships...",
+      emoji: "🎯",
+    },
+    {
+      text: "Discovering growth-oriented pairings for mutual development...",
+      emoji: "🌱",
+    },
+    {
+      text: "Uncovering positive dynamics you can expect in love...",
+      emoji: "🌊",
+    },
+    {
+      text: "Revealing the wisdom of soulmate connections...",
+      emoji: "🫶🏼",
+    },
+    {
+      text: "Analyzing how harmonious energies shape your love life...",
+      emoji: "💞",
+    },
+    {
+      text: "Assessing complementary traits for relationship balance...",
+      emoji: "⚖️",
+    },
+    {
+      text: "Evaluating how shared values foster deeper bonds...",
+      emoji: "🤝",
+    },
+    {
+      text: "Connecting traditional wisdom to modern compatibility...",
+      emoji: "📜",
+    },
+  ];
+
+  const {
+    reading,
+    isLoading: isLoadingReading,
+    error: readingError,
+  } = useReading(user?.id, "love_readings", "love-compatibility", "pro");
+
   const disclaimer =
-    "This guidance offers insights into your inherent predispositions, but your conscious choices and actions ultimately shape your financial reality.";
+    "These insights serve as a guide for self-understanding and for navigating relationships with greater awareness and wisdom, not as a rigid prediction of success or failure.";
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/"); // Or your app's login page
+      router.push("/");
       return;
     }
 
     if (!router.isReady || !user) {
-      setLoading(true);
+      setLoadingProfile(true);
       return;
     }
 
-    fetchProfileData({ user, setLoading, setError, setProfileData });
-  }, []);
+    fetchProfileData({
+      user,
+      setLoading: setLoadingProfile,
+      setError,
+      setProfileData,
+    });
+  }, [user, authLoading, router.isReady]);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -104,8 +158,8 @@ export default function WealthPurposePage() {
   //         .select("reading, status")
   //         .eq("reading_type", "pro")
   //         .eq("user_id", user.id)
-  //         .eq("reading_category", "financial_readings")
-  //         .eq("slug", "wealth-purpose")
+  //         .eq("reading_category", "love_readings")
+  //         .eq("slug", "love-compatibility")
   //         .maybeSingle();
 
   //       console.log("Existing Reading:", existingReading, user.id);
@@ -127,7 +181,7 @@ export default function WealthPurposePage() {
   //         try {
   //           // Generate new reading if none exists
   //           const response = await fetch(
-  //             `${config.api.url}/readings/financial/financial-pro`,
+  //             `${config.api.url}/readings/love/love-pro`,
   //             {
   //               method: "POST",
   //               headers: {
@@ -158,27 +212,27 @@ export default function WealthPurposePage() {
   //   }
   // };
 
-  useEffect(() => {
-    if (profileData && user) {
-      if (isNative) {
-        fetchReading({
-          profileData,
-          user,
-          setReading,
-          setLoading,
-          setError,
-          slug: "wealth-purpose",
-          reading_category: "financial_readings",
-          reading_type: "pro",
-          api_url: "readings/financial/financial-pro",
-        });
-      }
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (profileData && user) {
+  //     if (isNative) {
+  //       fetchReading({
+  //         profileData,
+  //         user,
+  //         setReading,
+  //         setLoading,
+  //         setError,
+  //         slug: "love-compatibility",
+  //         reading_category: "love_readings",
+  //         reading_type: "pro",
+  //         api_url: "readings/love/love-pro",
+  //       });
+  //     }
+  //   }
+  // }, [profileData]);
 
   // console.log("Profile Data:", profileData);
 
-  if (authLoading || (loading && !error)) {
+  if (authLoading || (loadingProfile && !error)) {
     return <PageLoadingLayout />;
   }
 
@@ -196,18 +250,16 @@ export default function WealthPurposePage() {
     return (
       <div className="min-h-screen bg-base-100 text-base-content font-sans">
         <ReadingNavbar
-          title="Wealth Through Purpose"
+          title="Compatible With"
           profileData={profileData}
           showTitleInNavbar={showTitleInNavbar}
         />
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
           <ReadingDescription
-            reading_category={"💰 Financial Fortune"}
-            title={"Wealth Through Purpose"}
+            reading_category={"💖 Love and Relationship"}
+            title={"Compatible With"}
             topics={topics}
-            description={
-              "This reading explores how your unique talents, core values, and life purpose can be channeled into pathways that lead to both financial prosperity and profound personal fulfillment."
-            }
+            description={`This reading offers general insights into Weton patterns that tend to create harmonious or complementary relationships for you.`}
           />
         </main>
         <ReadingSubscriptionButton />
@@ -218,96 +270,98 @@ export default function WealthPurposePage() {
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
       <ReadingNavbar
-        title="Wealth Through Purpose"
+        title="Compatible With"
         profileData={profileData}
         showTitleInNavbar={showTitleInNavbar}
       />
 
-      {error && <ErrorLayout error={error} router={router} />}
+      {(error || readingError) && <ErrorLayout error={error} router={router} />}
 
       <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-        {reading?.status === "completed" ? (
+        {isLoadingReading ? (
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
+        ) : reading?.status === "completed" ? (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-semibold text-left">
-                Wealth Through Purpose
+                Compatible With
               </h2>
               <p className="text-sm text-gray-700 mb-2">
-                Explores how your Weton impacting financial prosperity and
-                personal fulfillment.
+                Learn about Weton energies that naturally harmonize with your
+                own in love.
               </p>
             </div>
             <ContentSection
-              reading={reading?.reading?.talents}
+              reading={reading?.reading?.harmony}
               setIsSectionOpen={setIsSectionOneOpen}
               isSectionOpen={isSectionOneOpen}
-              title="🏆 Talents & Abilities for Prosperity"
+              title="🌿 Energetic Harmony"
               firstSection={true}
             />
             <ContentSection
               reading={reading?.reading?.values}
               setIsSectionOpen={setIsSectionTwoOpen}
               isSectionOpen={isSectionTwoOpen}
-              title="💎 Ethical & Values-Aligned Earning"
+              title="🎯 The Shared Values & Outlook"
             />
             <ContentSection
-              reading={reading?.reading?.contribution}
+              reading={reading?.reading?.growth}
               setIsSectionOpen={setIsSectionThreeOpen}
               isSectionOpen={isSectionThreeOpen}
-              title="💪 Contribution as a Source of Abundance"
+              title="🌱 Growth-Oriented Pairings"
             />
             <ContentSection
-              reading={reading?.reading?.nurturing}
+              reading={reading?.reading?.dynamic}
               setIsSectionOpen={setIsSectionFourOpen}
               isSectionOpen={isSectionFourOpen}
-              title="🪴 Nuruturing Your Financial Ecosystem"
+              title="🌊 Positive Dynamics to Expect"
             />
-            {reading?.id && (
-              <div>
-                <FeedbackSession user={user} reading={reading} />
-                <DisclaimerSection
-                  title={
-                    "These are energetic tendencies, not absolute predictions"
-                  }
-                  description={disclaimer}
-                />
-              </div>
-            )}
+            <ContentSection
+              reading={reading?.reading?.soulmate}
+              setIsSectionOpen={setIsSectionFiveOpen}
+              isSectionOpen={isSectionFiveOpen}
+              title="🫶🏼 Wisdom of Soulmate"
+            />
+            <section className="p-4 border-slate-100 border rounded-2xl bg-base-100 shadow-md mt-10">
+              <p className="text-sm text-gray-700">{disclaimer}</p>
+            </section>
+            {reading?.id && <FeedbackSession user={user} reading={reading} />}
           </div>
         ) : reading?.status === "loading" ? (
-          <ReadingLoading />
+          <>
+            <AnimatedLoadingText messages={loadingMessages} />
+            <ReadingLoadingSkeleton />
+          </>
         ) : (
           !reading && (
             <ReadingDescription
-              reading_category={"💰 Financial Fortune"}
-              title={"Wealth Through Purpose"}
+              reading_category={"💖 Love and Relationship"}
+              title={"Compatible With"}
               topics={topics}
-              description={
-                "This reading explores how your unique talents, core values, and life purpose can be channeled into pathways that lead to both financial prosperity and profound personal fulfillment."
-              }
+              description={`This reading offers general insights into Weton patterns that tend to create harmonious or complementary relationships for you.`}
             />
           )
         )}
       </main>
-      {!reading && (
+      {!isLoadingReading && !reading && (
         <div className="fixed bottom-0 w-full p-2 pb-10 bg-base-100 border-batik-border shadow-[0px_-4px_12px_0px_rgba(0,_0,_0,_0.1)]">
           <button
-            className="btn bg-rose-400 font-semibold text-white rounded-xl w-full"
+            className="btn bg-rose-400 font-semibold disabled:bg-slate-300 text-white rounded-xl w-full"
+            disabled={isGenerating}
             onClick={() =>
               handleGenerateReading({
                 profileData,
                 user,
-                setReading,
-                setLoading,
+                apiUrl: "readings/love/love-pro",
                 setError,
-                slug: "wealth-purpose",
-                reading_category: "financial_readings",
-                reading_type: "pro",
-                api_url: "readings/financial/financial-pro",
+                setIsGenerating,
               })
             }
           >
-            Generate Reading
+            {isGenerating ? "Generating..." : "Generate Reading"}
           </button>
         </div>
       )}
