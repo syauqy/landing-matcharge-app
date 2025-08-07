@@ -185,15 +185,15 @@ export const CardData = {
       category: "work_readings",
       type: "pro",
     },
-    {
-      id: 19,
-      title: "Key Life Themes",
-      description:
-        "Identify potential pivotal moments and themes that may shape your journey.",
-      slug: "key-life",
-      category: "work_readings",
-      type: "pro",
-    },
+    // {
+    //   id: 19,
+    //   title: "Key Life Themes",
+    //   description:
+    //     "Identify potential pivotal moments and themes that may shape your journey.",
+    //   slug: "key-life",
+    //   category: "work_readings",
+    //   type: "pro",
+    // },
   ],
   financial: [
     {

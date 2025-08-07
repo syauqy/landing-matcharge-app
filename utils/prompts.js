@@ -260,11 +260,12 @@ export const primaryTraitsPrompt = (profile) => {
   
   ## Mandatory Instructions
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
+  - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
   - Avoid em dashes.
   - Depth: Provide meaningful insights without being overly verbose. Aim for depth over length.
+  - Write the Indonesian and Javanese words in italic.
   - Accuracy: Ensure all Weton calculations and interpretations are as precise as possible based on traditional knowledge.
   - Ethical AI: Emphasize that Weton provides guidance, not absolute destiny. Encourage personal agency and free will.
-  - Make it relevant to the modern life and generation
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
 
   ## FINAL CHECK
@@ -349,12 +350,13 @@ export const basicLovePrompt = (profile) => {
   
   ## Mandatory Instructions
   - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
+  - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
   - Avoid em dashes.
   - Depth: Provide meaningful insights without being overly verbose. Aim for depth over length.
+  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
   - Accuracy: Ensure all Weton, Wuku, Rakam, Laku, and Saptawara calculations and their interpretations regarding love are accurate according to traditional Javanese Primbon knowledge.
   - Ethical AI: Emphasize that Weton provides guidance, not absolute destiny. Encourage personal agency and free will.
   - No Redundancy: While drawing from the same core birth data, ensure each section provides distinct insights relevant to its specific focus (Core Approach, Style, Attitudes) without unnecessary repetition.
-  - Make it relevant to the younger generation like millenials and gen-z.
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
 
   ## FINAL CHECK
@@ -612,6 +614,7 @@ export const proGeneralCalculationPrompt = (profile) => {
   - Avoid em dashes.
   - Add line breaks or new line if the output response is more than 2 sentences.
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
+  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section, ensuring sufficient detail and nuance for each specific component. Aim for depth over length.
   - Accuracy: Ensure all calculations for Weton, Rakam, Saptawara, and Laku based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency and conscious effort in navigating life's energies.
@@ -700,6 +703,7 @@ export const proGeneralCalculationPrompt2 = (profile) => {
   - Avoid em dashes.
   - Add line breaks or new line if the output response is more than 2 sentences.
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
+  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section, ensuring sufficient detail and nuance for each specific component. Aim for depth over length.
   - Accuracy: Ensure all calculations for Weton, Rakam, Saptawara, and Laku based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency and conscious effort in navigating life's energies.
@@ -731,7 +735,7 @@ export const proCareerPrompt = (profile) => {
     - Weton: ${wetonDetails.weton_en}
     - Weton Character: ${wetonDetails.watak_weton?.description}
     - Neptu Character: ${wetonDetails.neptu_character?.description}
-    - Career Inclinations: ${wetonDetails.neptu_character?.career_inclinations}
+    - Career: ${wetonDetails.neptu_character?.career_inclinations}
     - Day (Dina): ${wetonDetails.dina} (Neptu: ${wetonDetails.neptu_dina})
     - Market Day (Pasaran): ${wetonDetails.pasaran} (Neptu: ${wetonDetails.neptu_pasaran})
     - Rakam: ${wetonDetails.rakam.name}
@@ -776,14 +780,6 @@ export const proCareerPrompt = (profile) => {
   * Your Soul's Compass - Life's Core Priorities
   * Embracing Your Authentic Self - Living Your *Laku*
   * Nourishing Environments for Growth
-
-  3. Key Life Events & Themes
-  This reading provides insight into the overarching themes and types of experiences that may manifest as significant turning points or recurring patterns throughout your life, informed by your Weton, Wuku, and Laku cycles.
-  * Overarching Life Trajectory - Recurring Chapters & Plot Points
-  * The Rhythm of Your Story - Cycles of Growth & Rest
-  * Your Character Development - Lessons & Transformations
-  * The Interplay of Takdir (Destiny) and Usaha (Effort)
-  * Turning the Page - Navigating Transitions
   
   ## Tone and Style
   - Tone: Reverent, wise, encouraging, empathetic, insightful, non-judgmental, actionable, and empowering. Avoid fatalistic language.

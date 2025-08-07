@@ -268,7 +268,6 @@ export const handleGenerateReading = async ({
     console.error("Error generating reading:", err);
     setError(err.message || "An unexpected error occurred.");
   } finally {
-    window.location.reload();
     setIsGenerating(false);
   }
 };

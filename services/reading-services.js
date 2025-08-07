@@ -893,7 +893,7 @@ export async function generateGeneralProReading2(profile) {
         .from("readings")
         .update({
           status: "completed",
-          reading: resObj.interaction_style,
+          reading: resObj.values,
           input_token: response.usage.promptTokens,
           output_token: response.usage.completionTokens,
           total_token: response.usage.totalTokens,
@@ -1600,28 +1600,28 @@ export async function generateCareerProReading(profile) {
 
   console.log("new reading generated on supabase", newIdealLifeReading);
 
-  const { data: newKeyLifeReading, errorKeyLife } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "work_readings",
-      title: "Key Life Themes",
-      subtitle:
-        "Identify potential pivotal moments and themes that may shape your journey.",
-      username: profile.username,
-      status: "loading",
-      slug: "key-life",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
+  // const { data: newKeyLifeReading, errorKeyLife } = await supabase
+  //   .from("readings")
+  //   .insert({
+  //     reading_type: "pro",
+  //     reading_category: "work_readings",
+  //     title: "Key Life Themes",
+  //     subtitle:
+  //       "Identify potential pivotal moments and themes that may shape your journey.",
+  //     username: profile.username,
+  //     status: "loading",
+  //     slug: "key-life",
+  //     user_id: profile.id,
+  //   })
+  //   .select()
+  //   .maybeSingle();
 
-  if (errorKeyLife) {
-    console.error("Error inserting new reading:", errorKeyLife);
-    throw error;
-  }
+  // if (errorKeyLife) {
+  //   console.error("Error inserting new reading:", errorKeyLife);
+  //   throw error;
+  // }
 
-  console.log("new reading generated on supabase", newKeyLifeReading);
+  // console.log("new reading generated on supabase", newKeyLifeReading);
 
   const maxAttempts = 2;
   let attempt = 0;
@@ -1704,38 +1704,38 @@ export async function generateCareerProReading(profile) {
               )
               .catch(() => ""),
           }),
-          key_life: z.object({
-            trajectory: z
-              .string()
-              .describe(
-                "Describe the general 'flavor' or dominant journey theme of your life path (e.g., a journey of continuous learning, consistent growth, navigating frequent changes, finding stability, or experiencing profound transformations)."
-              )
-              .catch(() => ""),
-            cycles: z
-              .string()
-              .describe(
-                "Explain that their life has natural cycles of action and reflection, using the Pasaran cycle as a simple model. Based on the interplay of your Weton and Wuku cycles, suggest periods that might naturally be more conducive to active pursuit (growth) versus those better suited for reflection and consolidation (rest)."
-              )
-              .catch(() => ""),
-            lessons: z
-              .string()
-              .describe(
-                `Clearly state the primary lesson their soul is here to learn, framing it as the central theme of their "character arc. Discuss the potential lessons or transformations that often accompany these key life themes, highlighting how they contribute to your overall development.`
-              )
-              .catch(() => ""),
-            destiny: z
-              .string()
-              .describe(
-                "This is the most important section. Explain this core Javanese philosophy using a clear metaphor (like a map vs. the walker). Emphasize that while their life has energetic themes, their choices and efforts (*usaha*) are what create the actual story."
-              )
-              .catch(() => ""),
-            transitions: z
-              .string()
-              .describe(
-                "Offer brief, wise advice for how their specific character can best navigate moments of major life change."
-              )
-              .catch(() => ""),
-          }),
+          // key_life: z.object({
+          //   trajectory: z
+          //     .string()
+          //     .describe(
+          //       "Describe the general 'flavor' or dominant journey theme of your life path (e.g., a journey of continuous learning, consistent growth, navigating frequent changes, finding stability, or experiencing profound transformations)."
+          //     )
+          //     .catch(() => ""),
+          //   cycles: z
+          //     .string()
+          //     .describe(
+          //       "Explain that their life has natural cycles of action and reflection, using the Pasaran cycle as a simple model. Based on the interplay of your Weton and Wuku cycles, suggest periods that might naturally be more conducive to active pursuit (growth) versus those better suited for reflection and consolidation (rest)."
+          //     )
+          //     .catch(() => ""),
+          //   lessons: z
+          //     .string()
+          //     .describe(
+          //       `Clearly state the primary lesson their soul is here to learn, framing it as the central theme of their "character arc. Discuss the potential lessons or transformations that often accompany these key life themes, highlighting how they contribute to your overall development.`
+          //     )
+          //     .catch(() => ""),
+          //   destiny: z
+          //     .string()
+          //     .describe(
+          //       "This is the most important section. Explain this core Javanese philosophy using a clear metaphor (like a map vs. the walker). Emphasize that while their life has energetic themes, their choices and efforts (*usaha*) are what create the actual story."
+          //     )
+          //     .catch(() => ""),
+          //   transitions: z
+          //     .string()
+          //     .describe(
+          //       "Offer brief, wise advice for how their specific character can best navigate moments of major life change."
+          //     )
+          //     .catch(() => ""),
+          // }),
         }),
         messages: [{ role: "user", content: proCareerPrompt(profile) }],
       });
@@ -1765,17 +1765,17 @@ export async function generateCareerProReading(profile) {
         })
         .eq("id", newIdealLifeReading.id);
 
-      await supabase
-        .from("readings")
-        .update({
-          status: "completed",
-          reading: resObj.key_life,
-          input_token: response.usage.promptTokens,
-          output_token: response.usage.completionTokens,
-          total_token: response.usage.totalTokens,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", newKeyLifeReading.id);
+      // await supabase
+      //   .from("readings")
+      //   .update({
+      //     status: "completed",
+      //     reading: resObj.key_life,
+      //     input_token: response.usage.promptTokens,
+      //     output_token: response.usage.completionTokens,
+      //     total_token: response.usage.totalTokens,
+      //     updated_at: new Date().toISOString(),
+      //   })
+      //   .eq("id", newKeyLifeReading.id);
     } catch (error) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
@@ -1788,6 +1788,14 @@ export async function generateCareerProReading(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newCareerReading.id);
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newIdealLifeReading.id);
       }
     }
   } while (attempt < maxAttempts);
