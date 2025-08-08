@@ -5,6 +5,9 @@ import { useRouter } from "next/router";
 import { ArrowLeft, HelpCircle } from "lucide-react";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
+import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
+import { NoProfileLayout } from "@/components/readings/no-profile-layout";
+import { FeedbackSession } from "@/components/readings/feedback-section";
 
 export default function BasicReadingPage() {
   const { user, loading: authLoading } = useAuth();
@@ -13,6 +16,9 @@ export default function BasicReadingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
+  const [reading, setReading] = useState(null);
+  const [isLoadingReading, setIsLoadingReading] = useState(true);
+  const [readingError, setReadingError] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [sheetContent, setSheetContent] = useState({
     title: "",
@@ -41,6 +47,70 @@ export default function BasicReadingPage() {
     };
   }, [isSheetOpen]);
 
+  const fetchProfileData = async () => {
+    if (!user) {
+      setError("User not authenticated.");
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      // Fetch the user's profile data from the 'profiles' table
+      const { data: userProfile, error: profileFetchError } = await supabase
+        .from("profiles")
+        .select("weton, dina_pasaran") // Fetching the objects and dina_pasaran string
+        .eq("id", user.id) // 'id' in profiles table is the user_id
+        .single(); // Assuming one profile per user
+      if (profileFetchError) throw profileFetchError;
+      if (!userProfile) throw new Error("User profile data not found.");
+      const safeProfileData = {
+        dina_pasaran: userProfile.dina_pasaran || "N/A",
+        weton: userProfile.weton || {},
+      };
+      setProfileData(safeProfileData);
+    } catch (err) {
+      console.error("Error fetching profile data:", err);
+      setError(
+        err.message || "Failed to load profile details. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchReadingData = async () => {
+    if (!user) {
+      setReadingError("User not authenticated.");
+      setIsLoadingReading(false);
+      return;
+    }
+    setIsLoadingReading(true);
+    setReadingError(null);
+    try {
+      const { data, error } = await supabase
+        .from("readings")
+        .select("id, slug, title")
+        .eq("user_id", user.id)
+        .eq("slug", "weton")
+        .single();
+
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 means no rows found, which is fine
+        throw error;
+      }
+
+      setReading(data);
+    } catch (err) {
+      console.error("Error fetching reading data:", err);
+      setReadingError(
+        err.message || "Failed to load reading details. Please try again."
+      );
+    } finally {
+      setIsLoadingReading(false);
+    }
+  };
+
   useEffect(() => {
     if (!authLoading && !user) {
       router.push("/"); // Or your app's login page
@@ -52,37 +122,9 @@ export default function BasicReadingPage() {
       return;
     }
 
-    const fetchProfileData = async () => {
-      if (!user) {
-        setError("User not authenticated.");
-        setLoading(false);
-        return;
-      }
-      setLoading(true);
-      setError(null);
-      try {
-        // Fetch the user's profile data from the 'profiles' table
-        const { data: userProfile, error: profileFetchError } = await supabase
-          .from("profiles")
-          .select("weton, dina_pasaran") // Fetching the objects and dina_pasaran string
-          .eq("id", user.id) // 'id' in profiles table is the user_id
-          .single(); // Assuming one profile per user
-        if (profileFetchError) throw profileFetchError;
-        if (!userProfile) throw new Error("User profile data not found.");
-        const safeProfileData = {
-          dina_pasaran: userProfile.dina_pasaran || "N/A",
-          weton: userProfile.weton || {},
-        };
-        setProfileData(safeProfileData);
-      } catch (err) {
-        console.error("Error fetching profile data:", err);
-        setError(
-          err.message || "Failed to load profile details. Please try again."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (user) {
+      fetchReadingData();
+    }
 
     fetchProfileData();
   }, []);
@@ -107,7 +149,7 @@ export default function BasicReadingPage() {
   // console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
-    return <LoadingProfile />;
+    return <PageLoadingLayout />;
   }
 
   if (error) {
@@ -116,33 +158,15 @@ export default function BasicReadingPage() {
 
   if (!profileData) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 text-base-content p-4">
-        <div className="alert alert-warning shadow-lg max-w-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <span>
-              Could not load profile data. It might be incomplete or missing.
-            </span>
-          </div>
-        </div>
-        <button onClick={() => router.back()} className="btn btn-neutral mt-6">
-          Go Back
-        </button>
-      </div>
+      <NoProfileLayout
+        router={router}
+        profileData={profileData}
+        showTitleInNavbar={showTitleInNavbar}
+      />
     );
   }
+
+  // console.log("Reading Data:", reading);
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
@@ -360,6 +384,7 @@ export default function BasicReadingPage() {
             </div>
           </div>
         </section>
+        {reading?.id && <FeedbackSession user={user} reading={reading} />}
       </main>
 
       {isSheetOpen && (

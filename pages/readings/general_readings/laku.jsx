@@ -140,26 +140,6 @@ export default function LakuPage() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (profileData && user) {
-  //     if (isNative) {
-  //       fetchReading({
-  //         profileData,
-  //         user,
-  //         setReading,
-  //         setLoading,
-  //         setError,
-  //         slug: "laku",
-  //         reading_category: "general_readings",
-  //         reading_type: "pro",
-  //         api_url: "readings/general/general-pro-1",
-  //       });
-  //     }
-  //   }
-  // }, [profileData]);
-
-  // console.log("Profile Data:", profileData);
-
   if (authLoading || (loadingProfile && !error)) {
     return <PageLoadingLayout />;
   }

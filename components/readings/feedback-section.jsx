@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { Toaster, toast } from "sonner";
+import { InAppReview } from "@capacitor-community/in-app-review";
 
 export function FeedbackSession({ user, reading }) {
   const [feedback, setFeedback] = useState(null);
   const [feedbackLoading, setFeedbackLoading] = useState(false);
   const [feedbackError, setFeedbackError] = useState(null);
+
+  const promptAppRating = async () => {
+    try {
+      await InAppReview.requestReview();
+    } catch (error) {
+      console.warn("In-app review not available.", error);
+    }
+  };
   // console.log(reading);
 
   const handleFeedback = async (value) => {
@@ -20,6 +29,9 @@ export function FeedbackSession({ user, reading }) {
       if (error) throw error;
       setFeedback(value);
       toast.success("Thank you for your feedback!");
+      if (value === 1) {
+        await promptAppRating();
+      }
     } catch (err) {
       setFeedbackError("Failed to submit feedback. Please try again.");
       toast.error("Failed to submit feedback. Please try again.");
