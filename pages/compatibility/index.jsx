@@ -7,13 +7,14 @@ import { useAuth } from "@/context/AuthContext"; // Import useAuth
 import { useRouter } from "next/router";
 import Link from "next/link"; // Import Link for navigation
 import { config } from "@/utils/config";
-// import { DashboardNavbar } from "@/components/layouts/dashboard-navbar"; // Assuming not used directly
 import { Navbar } from "@/components/layouts/navbar";
 import { Menubar } from "@/components/layouts/menubar";
 import { LoveCompatibilityCard } from "@/components/readings/love-compatibility-card";
 import { FriendshipCompatibilityCard } from "@/components/readings/friendship-compatibility-card";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
+import { HomeLoadingSkeleton } from "@/components/layouts/home-loading-skeleton";
+import { CompatibilityLoadingSkeleton } from "@/components/layouts/compatibility-loading-skeleton";
 import { ReadingLoading } from "@/components/readings/reading-loading";
 import {
   SunIcon,
@@ -441,9 +442,9 @@ export default function CompatibilityPage() {
     }
   }, [profileData]); // Dependencies
 
-  if (authLoading || (loading && !error)) {
-    return <PageLoadingLayout />;
-  }
+  // if (authLoading || loading || (loadingProfile && !error)) {
+  //   return <PageLoadingLayout />;
+  // }
 
   if (!profileData && !authLoading && !loading && !loadingProfile) {
     return (
@@ -468,171 +469,179 @@ export default function CompatibilityPage() {
         />
       </Head>
 
-      {/* --- Main Layout Container --- */}
       <div className="h-[100svh] flex flex-col bg-base relative">
         <Navbar title="Compatibility" isConnection={true} isBack={true} />
-        {/* Main Content Area */}
-        <div className="flex-grow overflow-y-auto justify-center pt-4 sm:pt-6 pb-20 px-5">
-          <div className="flex-col items-center text-center mb-4">
-            <div className="text-sm my-5">
-              Select a partner to create a compatibility reading and see the
-              relationship dynamics.
-            </div>
-            <div className="flex my-4 flex-row justify-between">
-              {profileData && (
-                <div className="p-2 flex-col flex items-center w-[45%]">
-                  <h3 className="font-semibold text-lg mb-2">
-                    {profileData?.full_name.split(" ")[0] || "User Name"}
-                  </h3>
-                  <div className="avatar">
-                    <div className="size-24 ring-3 ring-offset-2 ring-batik-border rounded-full">
-                      <img
-                        src={
-                          profileData?.avatar_url ||
-                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            profileData.full_name
-                          )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
-                        }
-                        alt={profileData.full_name}
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-3">
-                    <p className="text-xl font-bold text-batik-black"></p>
-                    <div className="flex flex-col items-center text-sm">
-                      <div className="flex items-center gap-1">
-                        {profileData?.weton?.weton_en}
+        {authLoading || loading || (loadingProfile && !error) ? (
+          <CompatibilityLoadingSkeleton />
+        ) : (
+          <div className="flex-grow overflow-y-auto justify-center pt-4 sm:pt-6 pb-20 px-5">
+            <div className="flex-col items-center text-center mb-4">
+              <div className="text-sm my-5">
+                Select a partner to create a compatibility reading and see the
+                relationship dynamics.
+              </div>
+              <div className="flex my-4 flex-row justify-between">
+                {profileData && (
+                  <div className="p-2 flex-col flex items-center w-[45%]">
+                    <h3 className="font-semibold text-lg mb-2">
+                      {profileData?.full_name.split(" ")[0] || "User Name"}
+                    </h3>
+                    <div className="avatar">
+                      <div className="size-24 ring-3 ring-offset-2 ring-batik-border rounded-full">
+                        <img
+                          src={
+                            profileData?.avatar_url ||
+                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              profileData.full_name
+                            )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
+                          }
+                          alt={profileData.full_name}
+                        />
                       </div>
                     </div>
+                    <div className="mt-3">
+                      <p className="text-xl font-bold text-batik-black"></p>
+                      <div className="flex flex-col items-center text-sm">
+                        <div className="flex items-center gap-1">
+                          {profileData?.weton?.weton_en}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div className="flex-grow w-fit">
+                  <div className="flex h-full justify-center items-center text-2xl font-semibold">
+                    {compatibilityType == "love" ? "💖" : "🤝"}
                   </div>
                 </div>
-              )}
-              <div className="flex-grow w-fit">
-                <div className="flex h-full justify-center items-center text-2xl font-semibold">
-                  {compatibilityType == "love" ? "💖" : "🤝"}
-                </div>
-              </div>
 
-              {partnerProfile.id ? (
-                <button
-                  onClick={() => setShowPartnerSelectionSheet(true)}
-                  className="p-2 flex-col flex items-center w-[45%] "
-                >
-                  <h3 className="text-lg font-semibold mb-2">
-                    {partnerProfile?.full_name.split(" ")[0] || "Partner Name"}
-                  </h3>
-                  <div className="avatar">
-                    <div className="size-24 ring-3 ring-offset-2 ring-batik-border rounded-full">
-                      <img
-                        src={
-                          partnerProfile?.avatar_url ||
-                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            partnerProfile.full_name
-                          )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
-                        }
-                        alt={partnerProfile.full_name}
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-3">
-                    <div className="flex flex-col items-center text-sm">
-                      <div className="flex items-center gap-1">
-                        {partnerProfile?.weton?.weton_en}
+                {partnerProfile.id ? (
+                  <button
+                    onClick={() => setShowPartnerSelectionSheet(true)}
+                    className="p-2 flex-col flex items-center w-[45%] "
+                  >
+                    <h3 className="text-lg font-semibold mb-2">
+                      {partnerProfile?.full_name.split(" ")[0] ||
+                        "Partner Name"}
+                    </h3>
+                    <div className="avatar">
+                      <div className="size-24 ring-3 ring-offset-2 ring-batik-border rounded-full">
+                        <img
+                          src={
+                            partnerProfile?.avatar_url ||
+                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              partnerProfile.full_name
+                            )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
+                          }
+                          alt={partnerProfile.full_name}
+                        />
                       </div>
                     </div>
-                  </div>
-                </button>
-              ) : (
-                <button
-                  onClick={() => setShowPartnerSelectionSheet(true)}
-                  className="p-2 flex-col flex items-center w-[45%] "
-                >
-                  <h3 className="text-lg font-semibold mb-2">
-                    {partnerProfile?.full_name?.split(" ")[0] ||
-                      "Select Partner"}
-                  </h3>
-                  <div className="avatar">
-                    <div className=" size-24 ring-3 ring-offset-2 ring-slate-200 rounded-full bg-slate-200">
-                      <div className="flex h-full justify-center items-center">
-                        <SmilePlusIcon size={30} className="text-batik-white" />
+                    <div className="mt-3">
+                      <div className="flex flex-col items-center text-sm">
+                        <div className="flex items-center gap-1">
+                          {partnerProfile?.weton?.weton_en}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </button>
-              )}
-            </div>
-          </div>
-
-          {error && (
-            <div className="mb-4 p-5 bg-red-100 text-red-700 border border-red-300 rounded-md text-sm">
-              {error}
-            </div>
-          )}
-
-          <div className="flex space-y-4 my-6 justify-between flex-col items-center gap-4 w-full">
-            {partnerProfile.id && profileData?.weton && (
-              <div className="mb-4 w-fit max-w-xs mx-auto justify-center text-center flex relative">
-                <select
-                  id="compatibilityType"
-                  value={compatibilityType}
-                  onChange={(e) => {
-                    const newType = e.target.value;
-                    setCompatibilityType(e.target.value);
-                    fetchSelectedPartnerReading(partnerProfile, newType);
-                  }}
-                  className="w-full text-center rounded-2xl border bg-batik/50 border-batik-border px-4 py-2 pr-10 font-semibold text-batik-black focus:outline-none focus:border-rose-400 appearance-none"
-                >
-                  <option value="love">💖 As Romantic Partners</option>
-                  <option value="friendship">🤝 As a Friendship</option>
-                </select>
-                <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-batik-black">
-                  <ChevronDown size={20} />
-                </span>
-              </div>
-            )}
-
-            {wetonJodoh.jodoh4 && partnerProfile.id && (
-              <>
-                {selectedPartnerReading?.status === "completed" ? (
-                  compatibilityType === "love" ? (
-                    <LoveCompatibilityCard reading={selectedPartnerReading} />
-                  ) : (
-                    <FriendshipCompatibilityCard
-                      reading={selectedPartnerReading}
-                    />
-                  )
-                ) : selectedPartnerReading?.status === "loading" ? (
-                  <div className="p-5 w-full rounded-2xl border border-slate-300">
-                    <AnimatedLoadingText
-                      messages={
-                        compatibilityType
-                          ? coupleLoadingMessages
-                          : friendshipLoadingMessages
-                      }
-                    />
-                  </div>
+                  </button>
                 ) : (
                   <button
-                    onClick={() =>
-                      profileData?.subscription == "pro"
-                        ? handleCoupleReading()
-                        : presentPaywall()
-                    }
-                    className="btn btn-secondary rounded-xl w-full border-rose-500 border disabled:bg-slate-400 mt-20 disabled:cursor-not-allowed"
-                    disabled={loading || !wetonJodoh.jodoh4 || !partnerProfile}
+                    onClick={() => setShowPartnerSelectionSheet(true)}
+                    className="p-2 flex-col flex items-center w-[45%] "
                   >
-                    {loading && coupleReading.length === 0
-                      ? "Generating..."
-                      : "Get Compatibility Reading"}
+                    <h3 className="text-lg font-semibold mb-2">
+                      {partnerProfile?.full_name?.split(" ")[0] ||
+                        "Select Partner"}
+                    </h3>
+                    <div className="avatar">
+                      <div className=" size-24 ring-3 ring-offset-2 ring-slate-200 rounded-full bg-slate-200">
+                        <div className="flex h-full justify-center items-center">
+                          <SmilePlusIcon
+                            size={30}
+                            className="text-batik-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </button>
                 )}
-              </>
+              </div>
+            </div>
+
+            {error && (
+              <div className="mb-4 p-5 bg-red-100 text-red-700 border border-red-300 rounded-md text-sm">
+                {error}
+              </div>
             )}
+
+            <div className="flex space-y-4 my-6 justify-between flex-col items-center gap-4 w-full">
+              {partnerProfile.id && profileData?.weton && (
+                <div className="mb-4 w-fit max-w-xs mx-auto justify-center text-center flex relative">
+                  <select
+                    id="compatibilityType"
+                    value={compatibilityType}
+                    onChange={(e) => {
+                      const newType = e.target.value;
+                      setCompatibilityType(e.target.value);
+                      fetchSelectedPartnerReading(partnerProfile, newType);
+                    }}
+                    className="w-full text-center rounded-2xl border bg-batik/50 border-batik-border px-4 py-2 pr-10 font-semibold text-batik-black focus:outline-none focus:border-rose-400 appearance-none"
+                  >
+                    <option value="love">💖 As Romantic Partners</option>
+                    <option value="friendship">🤝 As a Friendship</option>
+                  </select>
+                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-batik-black">
+                    <ChevronDown size={20} />
+                  </span>
+                </div>
+              )}
+
+              {wetonJodoh.jodoh4 && partnerProfile.id && (
+                <>
+                  {selectedPartnerReading?.status === "completed" ? (
+                    compatibilityType === "love" ? (
+                      <LoveCompatibilityCard reading={selectedPartnerReading} />
+                    ) : (
+                      <FriendshipCompatibilityCard
+                        reading={selectedPartnerReading}
+                      />
+                    )
+                  ) : selectedPartnerReading?.status === "loading" ? (
+                    <div className="p-5 w-full rounded-2xl border border-slate-300">
+                      <AnimatedLoadingText
+                        messages={
+                          compatibilityType
+                            ? coupleLoadingMessages
+                            : friendshipLoadingMessages
+                        }
+                      />
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() =>
+                        profileData?.subscription == "pro"
+                          ? handleCoupleReading()
+                          : presentPaywall()
+                      }
+                      className="btn btn-secondary rounded-xl w-full border-rose-500 border disabled:bg-slate-400 mt-20 disabled:cursor-not-allowed"
+                      disabled={
+                        loading || !wetonJodoh.jodoh4 || !partnerProfile
+                      }
+                    >
+                      {loading && coupleReading.length === 0
+                        ? "Generating..."
+                        : "Get Compatibility Reading"}
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )}
+
         <Menubar page={"compatibility"} />
 
-        {/* Partner Selection Bottom Sheet */}
         {showPartnerSelectionSheet && (
           <div className="fixed inset-0 bg-slate-500/40 bg-opacity-10 z-40 flex items-end justify-center">
             <div className="bg-base-100 rounded-t-lg p-4 w-full max-w-md shadow-lg h-[90vh] flex flex-col">
@@ -776,7 +785,6 @@ export default function CompatibilityPage() {
           </div>
         )}
 
-        {/* Custom Partner Bottom Sheet/Modal */}
         {showCustomPartnerForm && (
           <div className="fixed inset-0 bg-slate-500/40 bg-opacity-10 z-50 flex items-end justify-center">
             <div className="bg-base-100 rounded-t-lg p-6 w-full max-w-md shadow-lg transform transition-transform duration-300 ease-out translate-y-0">

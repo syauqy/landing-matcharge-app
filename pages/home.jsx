@@ -302,42 +302,6 @@ export default function Home() {
     }
   }, [user, authLoading, router]);
 
-  // Effect to handle daily reading once profileData is available
-  // useEffect(() => {
-  //   if (profileData && user && !dailyReadingRequestedRef.current) {
-  //     // handleMonthlyReading();
-  //     handleDailyReading();
-  //   }
-  // }, [profileData, user]);
-
-  // useEffect(() => {
-  //   if (!user) return;
-
-  //   const channel = supabase
-  //     .channel("daily_reading_changes")
-  //     .on(
-  //       "postgres_changes",
-  //       {
-  //         event: "UPDATE",
-  //         schema: "public",
-  //         table: "readings",
-  //         filter: {
-  //           user_id: `eq.${user?.id}`,
-  //           reading_category: "eq.daily",
-  //         },
-  //       },
-  //       (payload) => {
-  //         console.log("payload", payload);
-  //         setDailyReading(payload.new);
-  //       }
-  //     )
-  //     .subscribe();
-
-  //   return () => {
-  //     supabase.removeChannel(channel).catch();
-  //   };
-  // }, [user]);
-
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
     setShowTitleInNavbar(scrollPosition > 40);

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
+import { ProfileLoadingSkeleton } from "@/components/layouts/profile-loading-skeleton";
 
 function DetailProfilePage() {
   const router = useRouter();
@@ -340,13 +341,13 @@ function DetailProfilePage() {
 
   // Avatar logic: use profile.avatar_url or generate with ui-avatars
   const displayAvatarUrl =
-    profile.avatar_url ||
-    (profile.full_name
+    profile?.avatar_url ||
+    (profile?.full_name
       ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
-          profile.full_name
+          profile?.full_name
         )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
       : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-          profile.username
+          profile?.username
         )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`); // Fallback to username if no full_name
 
   return (
@@ -365,6 +366,7 @@ function DetailProfilePage() {
 
       <div className="h-[100svh] flex flex-col bg-base relative">
         <Navbar title={profile.full_name} isBack={true} />
+
         <div className="flex-grow overflow-y-auto overflow-x-clip pt-4 sm:pt-6 pb-20">
           <div className="px-5 mb-6 flex items-center gap-4">
             <div className="avatar">
@@ -993,52 +995,11 @@ function DetailProfilePage() {
             )
           )}
         </div>
-        {/* Menubar: Consider if 'page' prop needs adjustment for public profiles */}
+
         {/* <Menubar page={"profile"} /> */}
       </div>
     </>
   );
 }
-
-// export async function getServerSideProps(context) {
-//   const { slug } = context.params;
-
-//   if (!slug || typeof slug !== "string" || slug.trim() === "") {
-//     return { notFound: true }; // Invalid slug
-//   }
-
-//   // Fetch profile data from Supabase 'profiles' table
-//   // Assumes your 'profiles' table has a 'username' column that matches the slug
-//   const { data: profile, error } = await supabase
-//     .from("profiles")
-//     .select("id, username, full_name, dina_pasaran, weton, wuku") // Added id, avatar_url, bio
-//     .eq("username", slug) // Match the username column with the slug
-//     .single(); // Expect a single record
-
-//   if (error) {
-//     // .single() throws an error if 0 or >1 rows are found.
-//     // This typically means the profile was not found or there's a data integrity issue (e.g. duplicate usernames).
-//     console.error(
-//       `Supabase error fetching profile for slug "${slug}":`,
-//       error.message
-//     );
-//     return { notFound: true }; // Triggers a 404 page
-//   }
-
-//   // Although .single() should error if no profile is found,
-//   // this is an extra check.
-//   if (!profile) {
-//     console.warn(
-//       `Profile data unexpectedly null for slug "${slug}" despite no Supabase error.`
-//     );
-//     return { notFound: true };
-//   }
-
-//   return {
-//     props: {
-//       profile,
-//     },
-//   };
-// }
 
 export default DetailProfilePage;
