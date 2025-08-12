@@ -121,12 +121,12 @@ export default function Home() {
     }
   };
 
-  console.log(
-    dailyReading,
-    loadingDailyReading,
-    profileData,
-    dailyReadingGenerated.current
-  );
+  // console.log(
+  //   dailyReading,
+  //   loadingDailyReading,
+  //   profileData,
+  //   dailyReadingGenerated.current
+  // );
 
   useEffect(() => {
     if (

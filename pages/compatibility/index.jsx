@@ -58,8 +58,9 @@ export default function CompatibilityPage() {
   const [customFullName, setCustomFullName] = useState("");
   const [customBirthDate, setCustomBirthDate] = useState("");
   const [customBirthTime, setCustomBirthTime] = useState("");
+  const [showBirthTimeChecker, setShowBirthTimeChecker] = useState(false);
   const [customGender, setCustomGender] = useState(""); // Added gender
-  const [savingCustomPartner, setSavingCustomPartner] = useState(false);
+  const [savingCustomPartner, setSavingCustomPartner] = useState(true);
   const [wetonJodoh, setWetonJodoh] = useState({});
   const [selectedPartnerReading, setSelectedPartnerReading] = useState(null);
 
@@ -200,12 +201,16 @@ export default function CompatibilityPage() {
     setError(null);
 
     try {
-      const wetonData = getWeton(customBirthDate);
-      const wukuData = getWuku(customBirthDate);
+      console.log("birth time:", customBirthTime);
+
+      const wetonData = getWeton(customBirthDate, customBirthTime);
+      const wukuData = getWuku(customBirthDate, customBirthTime);
 
       if (!wetonData || !wukuData) {
         throw new Error("Could not calculate Weton/Wuku from birth date.");
       }
+
+      // console.log("Weton Data:", wetonData, "Wuku Data:", wukuData);
 
       // Insert into custom_partners table
       const { data, error: insertError } = await supabase
@@ -223,10 +228,10 @@ export default function CompatibilityPage() {
           dina_pasaran: wetonData.weton,
           type: "custom",
         })
-        .select("*") // Select the inserted row to get its ID
+        .select("*")
         .single();
 
-      if (insertError) throw insertError;
+      // if (insertError) throw insertError;
 
       // Add the custom partner to friendships table
       // const { error: friendshipError } = await supabase
@@ -848,14 +853,80 @@ export default function CompatibilityPage() {
                     >
                       Birth Time
                     </label>
-                    <input
-                      type="time"
-                      id="customBirthTime"
-                      value={customBirthTime}
-                      onChange={(e) => setCustomBirthTime(e.target.value)}
-                      className="w-full px-3 py-2 font-semibold border-2 border-batik/70 text-base rounded-2xl focus:border-batik-border-light focus:border-2 bg-batik/70 appearance-none focus:outline-hidden"
-                      required
-                    />
+                    {!showBirthTimeChecker && (
+                      <input
+                        type="time"
+                        id="customBirthTime"
+                        value={customBirthTime}
+                        onChange={(e) => setCustomBirthTime(e.target.value)}
+                        className="w-full px-3 py-2 font-semibold border-2 border-batik/70 text-base rounded-2xl focus:border-batik-border-light focus:border-2 bg-batik/70 appearance-none focus:outline-hidden"
+                        required
+                      />
+                    )}
+                    {/* Checkbox for "I don't know my birth time" */}
+                    <div className="mt-2">
+                      <label className="flex items-center gap-2 text-sm text-gray-700">
+                        <input
+                          className="checkbox checkbox-xs border-slate-300 bg-slate-200 checked:border-rose-500 checked:bg-rose-400 checked:text-white"
+                          type="checkbox"
+                          checked={showBirthTimeChecker === true}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setShowBirthTimeChecker(true);
+                              setCustomBirthTime("06:00"); // Default to "I don't know" option
+                            } else {
+                              setShowBirthTimeChecker(false);
+                              setCustomBirthTime(""); // Reset time input
+                            }
+                          }}
+                        />
+                        I don't know
+                      </label>
+                    </div>
+
+                    {/* If user doesn't know birth time, show options */}
+                    {showBirthTimeChecker && (
+                      <div className="mt-2">
+                        <label className="block text-sm text-gray-700 mb-1">
+                          Choose one:
+                        </label>
+                        <div className="flex flex-col gap-2">
+                          <label className="flex items-center gap-2 text-sm text-gray-700">
+                            <input
+                              className="radio radio-xs border-slate-300 bg-slate-200 checked:border-rose-500 checked:bg-rose-400 checked:text-white"
+                              type="radio"
+                              name="unknownBirthTime"
+                              value="06:00"
+                              checked={customBirthTime === "06:00"}
+                              onChange={() => setCustomBirthTime("06:00")}
+                            />
+                            I don't know
+                          </label>
+                          <label className="flex items-center gap-2 text-sm text-gray-700">
+                            <input
+                              className="radio radio-xs border-slate-300 bg-slate-200 checked:border-rose-500 checked:bg-rose-400 checked:text-white"
+                              type="radio"
+                              name="unknownBirthTime"
+                              value="12:00"
+                              checked={customBirthTime === "12:00"}
+                              onChange={() => setCustomBirthTime("12:00")}
+                            />
+                            Before 6 PM
+                          </label>
+                          <label className="flex items-center gap-2 text-sm text-gray-700">
+                            <input
+                              className="radio radio-xs border-slate-300 bg-slate-200 checked:border-rose-500 checked:bg-rose-400 checked:text-white"
+                              type="radio"
+                              name="unknownBirthTime"
+                              value="20:00"
+                              checked={customBirthTime === "20:00"}
+                              onChange={() => setCustomBirthTime("20:00")}
+                            />
+                            After 6 PM
+                          </label>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -884,13 +955,10 @@ export default function CompatibilityPage() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full rounded-2xl max-w-md bg-rose-400 py-2.5 font-semibold text-white mb-3"
+                  className="w-full rounded-2xl max-w-md bg-rose-400 py-2.5 font-semibold text-white mb-3 disabled:bg-slate-200"
                   disabled={savingCustomPartner}
                 >
-                  {savingCustomPartner ? (
-                    <Loader2 size={20} className="animate-spin mr-2" />
-                  ) : null}
-                  Save Profile
+                  {savingCustomPartner ? "Saving..." : "Save Custom Partner"}
                 </button>
               </form>
             </div>

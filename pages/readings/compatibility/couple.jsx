@@ -228,7 +228,7 @@ export default function DetailCompatibilityReading() {
   //   }
 
   const readingContent = reading?.reading?.reading || reading?.reading; // Handle if reading.reading is an object or string
-  //   console.log(reading.reading);
+  // console.log(reading.reading, reading);
   //   console.log(user);
   // console.log(profileData, partnerProfile);
 
@@ -266,8 +266,8 @@ ${readingContent?.blend?.dina?.interpretation}`;
         <meta
           name="description"
           content={
-            reading.subtitle ||
-            `Detailed compatibility reading: ${reading.title}`
+            reading?.subtitle ||
+            `Detailed compatibility reading: ${reading?.title}`
           }
         />
       </Head>
@@ -291,7 +291,7 @@ ${readingContent?.blend?.dina?.interpretation}`;
                 Compatibility
               </div>
               <span className="text-batik-black font-semibold text-sm truncate max-w-xs">
-                {reading.title.replace(/'s Compatibility$/, "")}
+                {reading?.title?.replace(/'s Compatibility$/, "")}
               </span>
             </div>
           )}
@@ -302,11 +302,11 @@ ${readingContent?.blend?.dina?.interpretation}`;
           (readingError && <ErrorLayout error={error} router={router} />)}
 
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-          {reading.status === "completed" ? (
+          {reading?.status === "completed" ? (
             <div className="space-y-6">
               <div>
                 <h2 className="text-xl font-semibold text-left">
-                  {reading.title || "Compatibility Reading"}
+                  {reading?.title || "Compatibility Reading"}
                 </h2>
               </div>
               <section className={"pt-4 flex flex-col"}>

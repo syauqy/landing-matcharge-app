@@ -381,31 +381,57 @@ function getRakam(date) {
   }
 }
 
-export function getWeton(birthDate) {
+export function getWeton(birthDate, birthTime) {
   try {
     let date;
+    let workingDate;
     if (
       typeof birthDate === "string" &&
       /^\d{4}-\d{2}-\d{2}$/.test(birthDate)
     ) {
-      date = new Date(`${birthDate}T12:00:00Z`); // Use noon UTC
+      // date = new Date(`${birthDate}T12:00:00Z`); // Use noon UTC
+      workingDate = new Date(birthDate);
     } else if (birthDate instanceof Date) {
-      // Ensure we use UTC parts of the passed Date object if needed
-      const year = birthDate.getFullYear();
-      const month = String(birthDate.getMonth() + 1).padStart(2, "0");
-      const day = String(birthDate.getDate()).padStart(2, "0");
-      date = new Date(
-        `<span class="math-inline">\{year\}\-</span>{month}-${day}T12:00:00Z`
-      );
+      workingDate = new Date(birthDate.getTime());
+
+      // const year = birthDate.getFullYear();
+      // const month = String(birthDate.getMonth() + 1).padStart(2, "0");
+      // const day = String(birthDate.getDate()).padStart(2, "0");
+      // date = new Date(
+      //   `<span class="math-inline">\{year\}\-</span>{month}-${day}T12:00:00Z`
+      // );
     } else {
       throw new Error(
         "Invalid Date Input type/format. Use YYYY-MM-DD string or Date object."
       );
     }
 
-    if (isNaN(date.getTime())) {
+    // if (isNaN(date.getTime())) {
+    //   throw new Error("Invalid Date Input value");
+    // }
+
+    if (isNaN(workingDate.getTime())) {
       throw new Error("Invalid Date Input value");
     }
+
+    if (birthTime) {
+      const [hours] = birthTime.split(":").map(Number);
+      // console.log("Birth time hours:", hours);
+      if (hours >= 18) {
+        // console.log("Adjusting date for evening birth time", hours);
+        workingDate.setDate(workingDate.getDate() + 1);
+      }
+    }
+
+    const yearTemp = workingDate.getFullYear();
+    const monthTemp = String(workingDate.getMonth() + 1).padStart(2, "0");
+    const dayTemp = String(workingDate.getDate()).padStart(2, "0");
+
+    // console.log("workingDate:", workingDate);
+
+    date = new Date(`${yearTemp}-${monthTemp}-${dayTemp}T12:00:00Z`);
+
+    // console.log("workingDate:", workingDate, "date", date);
 
     const year = date.getUTCFullYear();
     const month = date.getUTCMonth() + 1;
@@ -507,31 +533,56 @@ export function getWeton(birthDate) {
   }
 }
 
-export function getWuku(birthDate) {
+export function getWuku(birthDate, birthTime) {
   try {
     let date;
+    let workingDate;
     if (
       typeof birthDate === "string" &&
       /^\d{4}-\d{2}-\d{2}$/.test(birthDate)
     ) {
-      date = new Date(`${birthDate}T12:00:00Z`); // Use noon UTC
+      // date = new Date(`${birthDate}T12:00:00Z`); // Use noon UTC
+      workingDate = new Date(birthDate);
     } else if (birthDate instanceof Date) {
+      workingDate = new Date(birthDate.getTime());
       // Ensure we use UTC parts of the passed Date object if needed
-      const year = birthDate.getFullYear();
-      const month = String(birthDate.getMonth() + 1).padStart(2, "0");
-      const day = String(birthDate.getDate()).padStart(2, "0");
-      date = new Date(
-        `<span class="math-inline">\{year\}\-</span>{month}-${day}T12:00:00Z`
-      );
+      // const year = birthDate.getFullYear();
+      // const month = String(birthDate.getMonth() + 1).padStart(2, "0");
+      // const day = String(birthDate.getDate()).padStart(2, "0");
+      // date = new Date(
+      //   `<span class="math-inline">\{year\}\-</span>{month}-${day}T12:00:00Z`
+      // );
     } else {
       throw new Error(
         "Invalid Date Input type/format. Use YYYY-MM-DD string or Date object."
       );
     }
 
-    if (isNaN(date.getTime())) {
+    // if (isNaN(date.getTime())) {
+    //   throw new Error("Invalid Date Input value");
+    // }
+
+    if (isNaN(workingDate.getTime())) {
       throw new Error("Invalid Date Input value");
     }
+
+    if (birthTime) {
+      // console.log("Birth time provided:", birthTime);
+      const [hours] = birthTime.split(":").map(Number);
+      // console.log("Birth time hours:", hours);
+      if (hours >= 18) {
+        // console.log("Adjusting date for evening birth time", hours);
+        workingDate.setDate(workingDate.getDate() + 1);
+      }
+    }
+
+    const yearTemp = workingDate.getFullYear();
+    const monthTemp = String(workingDate.getMonth() + 1).padStart(2, "0");
+    const dayTemp = String(workingDate.getDate()).padStart(2, "0");
+
+    date = new Date(`${yearTemp}-${monthTemp}-${dayTemp}T12:00:00Z`);
+
+    // console.log("workingDate:", workingDate, "date", date);
 
     const namaHari = [
       "Minggu",
@@ -577,6 +628,7 @@ export function getWuku(birthDate) {
       god_meaning: wuku.god_meaning,
       name: wuku.name,
       character: wuku.character,
+      short_character: wuku.short_character,
       tree: wuku.tree,
       tree_meaning: wuku.tree_meaning,
       bird: wuku.bird,

@@ -238,11 +238,11 @@ export default function DetailCompatibilityReading() {
   return (
     <>
       <Head>
-        <title>{reading.title || "Compatibility Reading"} - Wetonscope</title>
+        <title>{reading?.title || "Compatibility Reading"} - Wetonscope</title>
         <meta
           name="description"
           content={
-            reading.subtitle ||
+            reading?.subtitle ||
             `Detailed compatibility reading: ${reading.title}`
           }
         />
@@ -278,11 +278,11 @@ export default function DetailCompatibilityReading() {
           (readingError && <ErrorLayout error={error} router={router} />)}
 
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
-          {reading.status === "completed" ? (
+          {reading?.status === "completed" ? (
             <div className="space-y-6">
               <div>
                 <h2 className="text-xl font-semibold text-left">
-                  {reading.title || "Compatibility Reading"}
+                  {reading?.title || "Compatibility Reading"}
                 </h2>
               </div>
               <section className={"pt-4 flex flex-col"}>

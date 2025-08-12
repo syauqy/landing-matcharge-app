@@ -26,14 +26,14 @@ export function ProfileLoadingSkeleton() {
           </nav>
         </div>
         <div className="flex flex-col gap-5">
-          <div className="flex flex-row gap-y-4 text-sm">
-            <div className="flex flex-col border-y border-l border-batik-border rounded-l-xl">
-              <div className="h-5 w-24 bg-gray-200 rounded mb-2" />
-              <div className="h-5 w-24 bg-gray-200 rounded mb-2" />
-              <div className="h-5 w-24 bg-gray-200 rounded mb-2" />
-              <div className="h-5 w-24 bg-gray-200 rounded mb-2" />
+          <div className="flex flex-row gap-4 text-sm">
+            <div className="flex flex-col ">
+              <div className="h-5 w-24 p-2 bg-gray-200 rounded mb-2" />
+              <div className="h-5 w-24 p-2 bg-gray-200 rounded mb-2" />
+              <div className="h-5 w-24 p-2 bg-gray-200 rounded mb-2" />
+              <div className="h-5 w-24 p-2 bg-gray-200 rounded mb-2" />
             </div>
-            <div className="flex flex-col border flex-grow border-batik-border rounded-r-xl font-medium text-batik-black">
+            <div className="flex flex-col ">
               <div className="h-5 w-32 bg-gray-200 rounded mb-2" />
               <div className="h-5 w-32 bg-gray-200 rounded mb-2" />
               <div className="h-5 w-32 bg-gray-200 rounded mb-2" />
