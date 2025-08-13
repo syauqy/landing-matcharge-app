@@ -25,6 +25,7 @@
     "@capacitor/browser": "^7.0.1",
     "@capacitor/core": "^7.4.0",
     "@capacitor/ios": "^7.4.0",
+    "@capacitor/splash-screen": "^7.0.2",
     "@capacitor/status-bar": "^7.0.1",
     "@google/generative-ai": "^0.24.0",
     "@microlink/react-json-view": "^1.26.2",
@@ -38,6 +39,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
+    "framer-motion": "^12.23.12",
     "lucide-react": "^0.509.0",
     "markdown-to-jsx": "^7.7.10",
     "next": "15.2.4",
@@ -56,6 +58,7 @@
     "zod": "^3.25.28"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^7.2.0",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/forms": "^0.5.10",

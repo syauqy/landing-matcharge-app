@@ -32,18 +32,21 @@ export default function ProfileSetupPage() {
   const [wukuData, setWukuData] = useState(null);
   const onboardingSteps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-  // console.log(user);
+  console.log(user);
 
   // Effect to redirect if not logged in
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/login");
+      router.push("/");
     }
   }, [user, authLoading, router]);
 
   useEffect(() => {
     const checkProfile = async () => {
-      if (!user) return;
+      if (!user) {
+        router.push("/");
+        return;
+      }
 
       try {
         const { data, error } = await supabase
@@ -665,9 +668,9 @@ export default function ProfileSetupPage() {
                       {wetonData?.weton_en || "Unknown"}
                     </div>
                   </h2>
-                  <div className="card h-full bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-3">
+                  <div className="card h-fit bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-3">
                     <div className="card-body p-4 flex flex-col items-center justify-between">
-                      <div className="text-center flex flex-col gap-2">
+                      <div className="text-center flex flex-col gap-4">
                         <h3 className="text-xl font-semibold text-slate-800">
                           {wetonData?.watak_weton?.archetype || "Unknown"}
                         </h3>
@@ -702,8 +705,8 @@ export default function ProfileSetupPage() {
                       {wukuData?.name || "Unknown"}
                     </div>
                   </h2>
-                  <div className="card h-full bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-3">
-                    <div className="card-body p-4 flex flex-col items-center justify-between">
+                  <div className="card h-fit bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-3">
+                    <div className="card-body p-4 flex flex-col items-center gap-5">
                       <div className="text-center">
                         <h3 className="text-lg font-semibold text-slate-800 mb-1">
                           {wukuData?.name || "Unknown"}
@@ -712,8 +715,8 @@ export default function ProfileSetupPage() {
                           {wukuData?.short_character || "unknown"}
                         </p>
                       </div>
-                      <div className="w-full flex flex-col gap-2 text-sm text-gray-700">
-                        <div className="text-center">
+                      <div className="w-full flex flex-col gap-4 text-sm text-gray-700">
+                        <div className="text-left">
                           <h3 className="text-sm font-medium text-batik-text">
                             👑 Guardian Deity
                           </h3>
@@ -721,7 +724,7 @@ export default function ProfileSetupPage() {
                             {wukuData?.god || "Unknown"}
                           </p>
                         </div>
-                        <div className="flex flex-row justify-between text-center">
+                        <div className="flex flex-row gap-4 text-left">
                           <div>
                             <h3 className="text-sm font-medium text-batik-text">
                               🌳 Tree
@@ -779,7 +782,7 @@ export default function ProfileSetupPage() {
               )}
 
               {/* Navigation Buttons */}
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 pb-8">
                 {currentStep < 11 && (
                   <button
                     type="button"
@@ -826,7 +829,7 @@ export default function ProfileSetupPage() {
         {currentStep === 9 || currentStep === 10 ? (
           <></>
         ) : (
-          <footer className="w-full py-4 px-4 bg-transparent">
+          <footer className="w-full py-5 px-4 bg-transparent">
             <div className="max-w-md mx-auto text-center text-xs text-gray-500">
               <p>
                 By continuing, your birth details will be securely stored to
@@ -1050,12 +1053,12 @@ export default function ProfileSetupPage() {
           </div>
         </div>
         {/* Navigation Buttons */}
-        <div className="flex flex-col gap-2 absolute z-10 bottom-0 w-full px-5 py-3">
+        <div className="flex flex-col gap-2 absolute z-10 bottom-0 w-full p-5 pb-10">
           {currentStep < 4 && (
             <button
               type="button"
               onClick={nextStep}
-              className="bg-batik-border text-batik-white font-semibold py-2 px-4 rounded-lg hover:bg-batik-border-hover transition duration-150 ease-in-out cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-400"
+              className="bg-batik-border active:bg-batik-border-hover delay-150 hover:-translate-y-1 text-batik-white font-semibold py-2 px-4 rounded-lg hover:bg-batik-border-hover transition duration-150 ease-in-out cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-400"
             >
               Continue
             </button>

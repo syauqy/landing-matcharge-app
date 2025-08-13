@@ -5,8 +5,11 @@ import { AppUrlListener } from "@/context/AppUrlListener";
 import { NewAppUrlListener } from "@/context/NewAppUrlListener";
 // import { DeepLinkHandler } from "@/context/DeepLinkHandler";
 import { useEffect } from "react";
+import SplashScreen from "@/components/illustrations/splash-screen";
+import { useSplashScreen } from "@/utils/useSplashScreen";
 
 export default function MyApp({ Component, pageProps }) {
+  const { showSplash } = useSplashScreen();
   useEffect(() => {
     function handleTouchStart(event) {
       if (event.target.tagName === "A") {
@@ -22,9 +25,11 @@ export default function MyApp({ Component, pageProps }) {
     <AuthProvider>
       {/* <AppUrlListener></AppUrlListener> */}
       <NewAppUrlListener />
+
       {/* <DeepLinkHandler /> */}
       {/* <DebugComponent /> */}
       <NuqsAdapter>
+        {showSplash && <SplashScreen />}
         <Component {...pageProps} />
       </NuqsAdapter>
     </AuthProvider>

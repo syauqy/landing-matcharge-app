@@ -8,6 +8,8 @@ import { Capacitor } from "@capacitor/core";
 import { Toaster, toast } from "sonner";
 import { openBrowser, closeBrowser } from "@/utils/native-browser";
 import Link from "next/link";
+import { Abhaya_Libre } from "next/font/google";
+import clsx from "clsx";
 
 // Import Slick CSS
 import "slick-carousel/slick/slick.css";
@@ -46,6 +48,11 @@ const onboardingData = [
   },
 ];
 
+const abhaya = Abhaya_Libre({
+  weight: "800",
+  subsets: ["latin"],
+});
+
 export default function HomePage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth(); // Get user and loading state
@@ -56,17 +63,17 @@ export default function HomePage() {
 
   console.log("Login Page: isNative:", isNative, user);
   let redirectUrl = isNative
-    ? "wetonscope://home"
+    ? "wetonscope://page-router"
     : process.env.NODE_ENV === "production"
-    ? "https://app.wetonscope.com/home"
-    : "http://localhost:3000/home";
+    ? "https://app.wetonscope.com/page-router"
+    : "http://localhost:3000/page-router";
 
   useEffect(() => {
     console.log("Auth loading:", authLoading, "User:", user);
     if (!authLoading && user) {
       console.log("User is logged in:", user);
       // If not loading and user is logged in, redirect to dashboard
-      router.push("/home");
+      router.push("/page-router");
     }
   }, [user, authLoading, router]);
 
@@ -151,7 +158,12 @@ export default function HomePage() {
     <div className="h-[100svh] flex flex-col items-center justify-center bg-base-100 p-5">
       <Toaster />
       <div className="w-full h-[100%] max-w-md px-4 py-8 rounded-lg">
-        <h1 className="text-4xl font-bold mb-4 text-center h-[10%] text-batik-black tracking-wide">
+        <h1
+          className={clsx(
+            "text-5xl font-bold mb-4 text-center h-[10%] text-batik-black tracking-wide",
+            abhaya.className
+          )}
+        >
           Wetonscope
         </h1>
         {/* <div>{JSON.stringify(user, null, 2)}</div> */}
