@@ -63,10 +63,10 @@ export default function HomePage() {
 
   console.log("Login Page: isNative:", isNative, user);
   let redirectUrl = isNative
-    ? "wetonscope://page-router"
+    ? "wetonscope://home"
     : process.env.NODE_ENV === "production"
-    ? "https://app.wetonscope.com/page-router"
-    : "http://localhost:3000/page-router";
+    ? "https://app.wetonscope.com/home"
+    : "http://localhost:3000/home";
 
   useEffect(() => {
     console.log("Auth loading:", authLoading, "User:", user);

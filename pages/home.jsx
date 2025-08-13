@@ -32,6 +32,8 @@ export default function Home() {
   const dailyReadingGenerated = useRef(false);
   const monthlyReadingGenerated = useRef(false);
 
+  const hari = new Date();
+
   const {
     reading: dailyReading,
     error: dailyReadingError,
@@ -61,11 +63,19 @@ export default function Home() {
     async (category) => {
       if (!profileData) return;
       console.log(`Generating ${category} reading...`);
+
+      // Create a date string in YYYY-MM-DD format based on the user's local timezone.
+      // This ensures the server calculates for the correct local day, avoiding timezone issues.
+      const localDate = new Date();
+      const todayString = `${localDate.getFullYear()}-${String(
+        localDate.getMonth() + 1
+      ).padStart(2, "0")}-${String(localDate.getDate()).padStart(2, "0")}`;
+
       try {
         await fetch(`${config.api.url}/readings/${category}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ profile: profileData, today: new Date() }),
+          body: JSON.stringify({ profile: profileData, today: todayString }),
           credentials: "include",
         });
       } catch (err) {
@@ -380,6 +390,8 @@ export default function Home() {
       </ul>
     );
   };
+
+  console.log(hari);
 
   // console.log(profileData);
 

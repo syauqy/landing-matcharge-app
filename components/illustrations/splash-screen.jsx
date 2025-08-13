@@ -11,10 +11,10 @@ const abhaya = Abhaya_Libre({
 const SplashScreen = () => {
   return (
     <motion.div
-      className="relative flex h-[100svh] w-screen flex-col items-center justify-center bg-cover bg-center bg-gradient-to-t from-batik to-base-100 to-85% z-20"
+      className="relative flex h-[100svh] w-screen flex-col items-center justify-center bg-cover bg-center bg-gradient-to-t from-batik to-base-100 to-85% z-50"
       initial={{ opacity: 1 }}
       animate={{ opacity: 0 }}
-      transition={{ duration: 0.5, delay: 1.5 }}
+      transition={{ duration: 3, delay: 1.5 }}
       style={{
         pointerEvents: "none",
         backgroundImage: "url('/splash-background.jpg')",

@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { supabase } from "@/utils/supabaseClient";
 import { Abhaya_Libre } from "next/font/google";
 import clsx from "clsx";
+import { motion } from "framer-motion";
 
 const abhaya = Abhaya_Libre({
   weight: "800",
@@ -13,56 +14,54 @@ const abhaya = Abhaya_Libre({
 export default function PageRouter() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // Wait for auth to finish loading. The AuthProvider will handle
-    // the session from the URL hash after an OAuth redirect.
     if (authLoading) {
       return;
     }
 
-    // If there's no user after loading, they are not logged in.
-    // Redirect to the login page.
-    if (!user) {
-      router.replace("/");
-      return;
-    }
+    const handleRedirect = (path) => {
+      setIsExiting(true);
+      setTimeout(() => {
+        router.replace(path);
+      }, 500); // Duration of the fade-out animation
+    };
 
-    // If we have a user, check if they have a profile.
-    const checkProfile = async () => {
+    const checkUserAndProfile = async () => {
+      if (!user) {
+        handleRedirect("/");
+        return;
+      }
+
       try {
         const { data: profile, error } = await supabase
           .from("profiles")
-          .select("id, birth_date") // We only need to know if a profile with a birth_date exists.
+          .select("id, birth_date")
           .eq("id", user.id)
           .single();
 
-        // A "PGRST116" error means no rows were found, which is expected for a new user.
-        if (error && error.code !== "PGRST116") {
-          throw error;
-        }
+        if (error && error.code !== "PGRST116") throw error;
 
-        if (profile && profile.birth_date) {
-          // Profile exists and is complete, go to the main app.
-          router.replace("/home");
-        } else {
-          // No profile or it's incomplete, go to the setup page.
-          router.replace("/profile-setup");
-        }
+        const destination =
+          profile && profile.birth_date ? "/home" : "/profile-setup";
+        handleRedirect(destination);
       } catch (err) {
         console.error("Error checking profile, redirecting to login:", err);
-        router.replace("/"); // Redirect to login on error
+        handleRedirect("/");
       }
     };
 
-    checkProfile();
+    checkUserAndProfile();
   }, [user, authLoading, router]);
 
-  // Display a loading indicator while we determine the user's state.
   return (
-    <div
+    <motion.div
       className="relative flex h-[100svh] w-screen flex-col items-center justify-center bg-cover bg-center bg-gradient-to-t from-batik to-base-100 to-85%"
       style={{ backgroundImage: "url('/splash-background.jpg')" }}
+      initial={{ opacity: 1 }}
+      animate={{ opacity: isExiting ? 0 : 1 }}
+      transition={{ duration: 0.5 }}
     >
       <div className="absolute inset-0 " />
       <div className="relative z-10 text-center">
@@ -102,6 +101,6 @@ export default function PageRouter() {
           </svg>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
