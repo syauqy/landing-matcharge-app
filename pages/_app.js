@@ -8,28 +8,28 @@ import SplashScreen from "@/components/illustrations/splash-screen";
 import { useSplashScreen } from "@/utils/useSplashScreen";
 import { Posthog } from "@capawesome/capacitor-posthog";
 import { PostHogPageview } from "@/components/PostHogPageview";
+import { SplashScreen as CapacitorSplashScreen } from "@capacitor/splash-screen";
 import { Capacitor } from "@capacitor/core";
-import { analytics } from "@/utils/analytics";
 
 export default function MyApp({ Component, pageProps }) {
   const { showSplash } = useSplashScreen();
 
-  // useEffect(() => {
-  //   const initializePostHog = async () => {
-  //     if (Capacitor.isNativePlatform()) {
-  //       console.log("Initializing PostHog");
-  //       await Posthog.initialize({
-  //         apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY,
-  //         host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-  //         captureApplicationLifecycleEvents: true,
-  //         captureDeepLinks: true,
-  //       });
-  //     }
-  //   };
-  //   initializePostHog();
-  // }, []);
   useEffect(() => {
-    analytics.init(process.env.NEXT_PUBLIC_POSTHOG_KEY);
+    const initializePostHog = async () => {
+      if (Capacitor.isNativePlatform()) {
+        await Posthog.initialize({
+          apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+          host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+          captureApplicationLifecycleEvents: true,
+          captureDeepLinks: true,
+        });
+      }
+    };
+    initializePostHog();
+
+    if (Capacitor.isNativePlatform()) {
+      CapacitorSplashScreen.hide();
+    }
   }, []);
 
   useEffect(() => {

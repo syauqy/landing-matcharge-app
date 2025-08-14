@@ -11,14 +11,19 @@
       "style": "LIGHT",
       "backgroundColor": "#ffffff"
     },
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "launchAutoHide": false,
+      "backgroundColor": "#F8F6F3",
+      "iosSpinnerStyle": "small",
+      "splashFullScreen": true,
+      "splashImmersive": true,
+      "androidScaleType": "CENTER_CROP"
+    },
     "CapacitorHttp": {
       "enabled": true
     },
     "CapacitorPosthog": {
-      "apiKey": "phc_4O2KwlSWpIpxTw7xkZttic1kMmkjywQ5GN8esGBBwZ9",
-      "host": "https://eu.i.posthog.com"
-    },
-    "Posthog": {
       "apiKey": "phc_4O2KwlSWpIpxTw7xkZttic1kMmkjywQ5GN8esGBBwZ9",
       "host": "https://eu.i.posthog.com"
     }

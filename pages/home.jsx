@@ -391,7 +391,7 @@ export default function Home() {
     );
   };
 
-  console.log(hari);
+  // console.log(hari);
 
   // console.log(profileData);
 
