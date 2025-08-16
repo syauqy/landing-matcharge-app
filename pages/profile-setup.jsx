@@ -10,6 +10,7 @@ import { config } from "@/utils/config";
 import axios from "axios";
 import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
 import { userRegistrationLoadingMessages } from "@/lib/loading-content";
+import { motion } from "framer-motion";
 
 export default function ProfileSetupPage() {
   const { user, loading: authLoading } = useAuth();
@@ -32,7 +33,7 @@ export default function ProfileSetupPage() {
   const [wukuData, setWukuData] = useState(null);
   const onboardingSteps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-  console.log(user);
+  // console.log(user);
 
   // Effect to redirect if not logged in
   useEffect(() => {
@@ -55,9 +56,9 @@ export default function ProfileSetupPage() {
           .eq("id", user.id)
           .single();
 
-        if (!error && data && data.birth_date) {
-          router.push("/home");
-        }
+        // if (!error && data && data.birth_date) {
+        //   router.push("/home");
+        // }
       } catch (err) {
         console.error("Error checking profile:", err);
       }
@@ -392,11 +393,18 @@ export default function ProfileSetupPage() {
         <Navbar title="Complete Your Profile" />
         <div className="flex-grow flex items-center justify-center p-5">
           <div className="w-full h-[100%] max-w-md">
-            <progress
-              className="progress bg-slate-100 text-batik-border w-full mb-2"
-              value={currentStep}
-              max={onboardingSteps.length}
-            ></progress>
+            <div className="relative w-full mb-1">
+              <div className="progress bg-slate-100 text-batik-border w-full h-1.5 rounded-full overflow-hidden" />
+              <motion.div
+                className="absolute top-0 left-0 h-1.5 rounded-full bg-batik-border"
+                initial={false}
+                animate={{
+                  width: `${(currentStep / onboardingSteps.length) * 100}%`,
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                style={{ zIndex: 2 }}
+              />
+            </div>
 
             <form
               onSubmit={handleSaveProfile}
@@ -554,7 +562,8 @@ export default function ProfileSetupPage() {
                       className="block text-gray-700 mb-2 font-semibold"
                       htmlFor="birthTime"
                     >
-                      Birth Time <span className="text-red-500">*</span>
+                      Birth Time
+                      <span className="text-red-500">*</span>
                     </label>
                     {!showBirthTimeChecker && (
                       <input
@@ -661,14 +670,24 @@ export default function ProfileSetupPage() {
 
               {/* Step 4: Show Weton Card */}
               {currentStep === 9 && (
-                <div className="h-[65%]">
+                <motion.div
+                  className="h-[65%]"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
                   <h2 className="text-2xl font-bold text-center">
                     {fullName?.split(" ")[0] || ""}, your Weton is{" "}
                     <div className="text-batik-text">
                       {wetonData?.weton_en || "Unknown"}
                     </div>
                   </h2>
-                  <div className="card h-fit bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-3">
+                  <motion.div
+                    className="card h-fit bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
                     <div className="card-body p-4 flex flex-col items-center justify-between">
                       <div className="text-center flex flex-col gap-4">
                         <h3 className="text-xl font-semibold text-slate-800">
@@ -692,26 +711,36 @@ export default function ProfileSetupPage() {
                       </div>
                       <div></div>
                     </div>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
               )}
 
               {/* Step 4: Show Wuku Card */}
               {currentStep === 10 && (
-                <div className="h-[65%]">
+                <motion.div
+                  className="h-[65%]"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
                   <h2 className="text-2xl font-bold text-center">
-                    {fullName?.split(" ")[0] || ""}, your Weton is{" "}
+                    {fullName?.split(" ")[0] || ""}, your Wuku is{" "}
                     <div className="text-batik-text">
                       {wukuData?.name || "Unknown"}
                     </div>
                   </h2>
-                  <div className="card h-fit bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-3">
+                  <motion.div
+                    className="card h-fit bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
                     <div className="card-body p-4 flex flex-col items-center gap-5">
                       <div className="text-center">
                         <h3 className="text-lg font-semibold text-slate-800 mb-1">
                           {wukuData?.name || "Unknown"}
                         </h3>
-                        <p className="text-[16px] text-slate-600 line-clamp-[10]">
+                        <p className="text-[16px] text-slate-600 line-clamp-[10] text-left">
                           {wukuData?.short_character || "unknown"}
                         </p>
                       </div>
@@ -744,8 +773,8 @@ export default function ProfileSetupPage() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
               )}
 
               {/* Step 11: Gender */}
@@ -850,13 +879,22 @@ export default function ProfileSetupPage() {
         <Navbar title="Wetonscope" />
         <div className="flex-grow flex items-center justify-center p-5">
           <div className="w-full h-[100%] max-w-md">
-            <progress
-              className="progress bg-slate-100 text-batik-border w-full"
-              value={currentStep}
-              max={onboardingSteps.length}
-            ></progress>
+            {/* Animated Progress Bar */}
+            <div className="relative w-full mb-1">
+              <div className="progress bg-slate-100 text-batik-border w-full h-1.5 rounded-full overflow-hidden" />
+              <motion.div
+                className="absolute top-0 left-0 h-1.5 rounded-full bg-batik-border"
+                initial={false}
+                animate={{
+                  width: `${(currentStep / onboardingSteps.length) * 100}%`,
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                style={{ zIndex: 2 }}
+              />
+            </div>
             <div className="space-y-6 h-[100%] flex flex-col justify-between">
               {/* Step 1: Daily Reading */}
+
               {currentStep === 1 && (
                 <div className="">
                   <h2 className="text-3xl font-bold">
@@ -867,7 +905,12 @@ export default function ProfileSetupPage() {
                     deeper than a standard horoscope. Navigate your day with
                     intention.
                   </p>
-                  <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="card bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-6"
+                  >
                     <div className="card-body p-4">
                       <p className="text-sm font-semibold">
                         🗓️ August 9 (Saturday Pon)
@@ -884,11 +927,9 @@ export default function ProfileSetupPage() {
                         obstacles may arise.
                       </p>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
               )}
-
-              {/* Step 3: Weton */}
               {currentStep === 2 && (
                 <div className="">
                   <h2 className="text-3xl font-bold">
@@ -898,7 +939,12 @@ export default function ProfileSetupPage() {
                     Learn your Weton archetype to understand your core
                     strengths, challenges, and natural way of being.
                   </p>
-                  <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="card bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-6"
+                  >
                     <div className="card-body p-4">
                       <div className="flex flex-row justify-between">
                         <div>
@@ -927,11 +973,9 @@ export default function ProfileSetupPage() {
                         nature, and skill with words earn you immense respect.
                       </p>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
               )}
-
-              {/* Step 3: Wuku */}
               {currentStep === 3 && (
                 <div className="">
                   <h2 className="text-3xl font-bold">
@@ -942,7 +986,12 @@ export default function ProfileSetupPage() {
                     complete with a guiding deity, symbolic tree, and spirit
                     animal.
                   </p>
-                  <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="card bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-6"
+                  >
                     <div className="card-body p-4">
                       <div>
                         <h3 className="text-sm font-semibold text-batik-text">
@@ -980,7 +1029,7 @@ export default function ProfileSetupPage() {
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
               )}
 
@@ -994,7 +1043,12 @@ export default function ProfileSetupPage() {
                     Check your energetic compatibility with friends and partners
                     to build deeper, more meaningful connections.
                   </p>
-                  <div className="card bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="card bg-base-100 border border-[var(--color-batik-border)] shadow-sm mt-6"
+                  >
                     <div className="card-body p-4 flex flex-col">
                       <div className="flex mt-2 flex-row justify-between">
                         <div className="flex-col flex items-center w-[45%]">
@@ -1046,7 +1100,7 @@ export default function ProfileSetupPage() {
                         Compatibility
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
               )}
             </div>

@@ -7,9 +7,6 @@ import { ArrowLeft } from "lucide-react";
 import { fetchProfileData } from "@/utils/fetch";
 import { config } from "@/utils/config";
 import dynamic from "next/dynamic";
-const ReactJsonView = dynamic(() => import("@microlink/react-json-view"), {
-  ssr: false,
-});
 
 export default function HastawaraPage() {
   const { user, loading: authLoading } = useAuth();
@@ -252,13 +249,13 @@ export default function HastawaraPage() {
                   Hastawara
                 </div>
 
-                <ReactJsonView
+                {/* <ReactJsonView
                   src={reading}
                   theme="bright:inverted"
                   displayObjectSize={false}
                   className="rounded-2xl"
                   displayDataTypes={false}
-                />
+                /> */}
               </div>
             )}
           </div>

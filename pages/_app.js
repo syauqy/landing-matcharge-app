@@ -15,17 +15,17 @@ export default function MyApp({ Component, pageProps }) {
   const { showSplash } = useSplashScreen();
 
   useEffect(() => {
-    const initializePostHog = async () => {
-      if (Capacitor.isNativePlatform()) {
-        await Posthog.initialize({
-          apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY,
-          host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-          captureApplicationLifecycleEvents: true,
-          captureDeepLinks: true,
-        });
-      }
-    };
-    initializePostHog();
+    // const initializePostHog = async () => {
+    //   if (Capacitor.isNativePlatform()) {
+    //     await Posthog.initialize({
+    //       apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    //       host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    //       captureApplicationLifecycleEvents: true,
+    //       captureDeepLinks: true,
+    //     });
+    //   }
+    // };
+    // initializePostHog();
 
     if (Capacitor.isNativePlatform()) {
       CapacitorSplashScreen.hide();

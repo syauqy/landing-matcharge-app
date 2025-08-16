@@ -60,7 +60,7 @@ export const dailyReadingPrompt = (profile, todayWeton, todayWuku, dayInfo) => {
   
   **1. Today's Energy Signature:**
   - State **Today's Weton** - ${todayWeton}
-  - Define **Today's Vibe** based on the ${dayInfo?.dayInfo?.pasaranDescription} in 2-3 words.
+  - Define **Today's Vibe** based on the ${dayInfo?.dayInfo?.pasaranDescription} in 1 sentence.
    
   **2. Your Personalized Focus:**
 

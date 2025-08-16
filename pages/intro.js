@@ -9,16 +9,6 @@ import { useAuth } from "@/context/AuthContext";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const StoriesLazy = dynamic(() => import("react-insta-stories"), {
-  loading: () => <p>Loading...</p>,
-});
-
-const WithSeeMore = dynamic(() =>
-  import("react-insta-stories").then((module) => ({
-    default: module.WithSeeMore,
-  }))
-);
-
 export default function IntroPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
@@ -67,9 +57,9 @@ export default function IntroPage() {
               <div className="leading-relaxed text-gray-700 text-xl">
                 Ever wondered if your birthdate holds a deeper meaning?
                 <p className="mt-3">
-                  In ancient Javanese wisdom, your birth date isn't just a
-                  number. It's the key to your unique personality, hidden
-                  talents, and life's true path.
+                  In ancient Javanese wisdom, your birth date isn&apos;t just a
+                  number. It&apos;s the key to your unique personality, hidden
+                  talents, and life&apos;s true path.
                 </p>
               </div>
             </section>
@@ -94,7 +84,7 @@ export default function IntroPage() {
                   We call these systems{" "}
                   <span className="font-bold text-batik-text">Weton</span> and{" "}
                   <span className="font-bold text-batik-text">Wuku</span>. They
-                  are your guide to understanding yourself and the world's
+                  are your guide to understanding yourself and the world&apos;s
                   rhythm.
                 </p>
               </p>
@@ -108,7 +98,7 @@ export default function IntroPage() {
         return (
           <div className="text-gray-700 p-5 min-h-screen bg-base-200 text-center">
             <h1 className="text-3xl font-bold text-batik-black py-4">
-              Weton, Your Soul's Code
+              Weton, Your Soul&apos;s Code
             </h1>
             <section className="grow justify-center items-center h-[28rem] flex mt-8">
               <div className="flex flex-col items-center text-left text-lg">
@@ -189,26 +179,27 @@ export default function IntroPage() {
     {
       content: ({ action, story }) => {
         return (
-          <WithSeeMore story={story} action={action}>
-            <div className="text-gray-700 p-5 bg-base-200 text-center">
-              <h1 className="text-3xl font-bold text-batik-black py-4">
-                Unlock Your Path to Harmony
-              </h1>
-              <section className="grow justify-center items-center h-[20rem] flex ">
-                <div className="flex flex-col h-[28rem] justify-center items-center text-xl ">
-                  <p className="mt-3 text-gray-700">
-                    From finding a harmonious partner to launching a new
-                    venture, this wisdom helps you align your actions with the
-                    cosmos.
-                  </p>
-                  <p className="mt-3 text-gray-700">
-                    The complete story of your strengths, your path, and your
-                    potential is waiting. Are you ready to discover it?
-                  </p>
-                </div>
-              </section>
-            </div>
-          </WithSeeMore>
+          <div></div>
+          // <WithSeeMore story={story} action={action}>
+          //   <div className="text-gray-700 p-5 bg-base-200 text-center">
+          //     <h1 className="text-3xl font-bold text-batik-black py-4">
+          //       Unlock Your Path to Harmony
+          //     </h1>
+          //     <section className="grow justify-center items-center h-[20rem] flex ">
+          //       <div className="flex flex-col h-[28rem] justify-center items-center text-xl ">
+          //         <p className="mt-3 text-gray-700">
+          //           From finding a harmonious partner to launching a new
+          //           venture, this wisdom helps you align your actions with the
+          //           cosmos.
+          //         </p>
+          //         <p className="mt-3 text-gray-700">
+          //           The complete story of your strengths, your path, and your
+          //           potential is waiting. Are you ready to discover it?
+          //         </p>
+          //       </div>
+          //     </section>
+          //   </div>
+          // </WithSeeMore>
         );
       },
       seeMoreCollapsed: ({ toggleMore, action }) => (
@@ -322,7 +313,7 @@ export default function IntroPage() {
         </section> */}
       {/* </Slider> */}
       {/* </main> */}
-      <StoriesLazy
+      {/* <StoriesLazy
         preloadCount={3}
         width={"100%"}
         height={"100%"}
@@ -331,7 +322,7 @@ export default function IntroPage() {
         stories={stories}
         progressStyles={{ backgroundColor: "#d1b08e", height: "3px" }}
         progressWrapperStyles={{ height: "3px" }}
-      ></StoriesLazy>
+      ></StoriesLazy> */}
     </div>
   );
 }
