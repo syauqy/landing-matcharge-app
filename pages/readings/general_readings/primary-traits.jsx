@@ -7,7 +7,7 @@ import { fetchProfileData } from "@/utils/fetch";
 import { ChevronDown } from "lucide-react";
 import { ReadingDescription } from "@/components/readings/reading-description";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
-import { LoadingProfile } from "@/components/layouts/loading-profile";
+// import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
 // import { Capacitor } from "@capacitor/core";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
@@ -19,7 +19,7 @@ import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-sk
 import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
 import { useReading } from "@/utils/useReading";
 import { config } from "@/utils/config";
-import Markdown from "markdown-to-jsx";
+import { SimpleContentSection } from "@/components/readings/simple-content-section";
 
 export default function PrimaryTraitsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -201,28 +201,9 @@ export default function PrimaryTraitsPage() {
                   <div className="text-batik-text font-semibold">
                     🌀 Weton Identity
                   </div>
-                  <Markdown
-                    className="text-gray-700"
-                    options={{
-                      overrides: {
-                        p: {
-                          props: {
-                            className: "pb-4 last:pb-0",
-                          },
-                        },
-                        li: {
-                          props: {
-                            className: "pb-2 last:pb-0",
-                          },
-                        },
-                      },
-                    }}
-                  >
-                    {reading?.reading?.weton_identity?.element.replace(
-                      /—/gi,
-                      ", "
-                    )}
-                  </Markdown>
+                  <SimpleContentSection
+                    reading={reading?.reading?.weton_identity?.element}
+                  />
                 </div>
               </div>
             </section>
@@ -255,50 +236,13 @@ export default function PrimaryTraitsPage() {
                       <div className="text-lg font-semibold">
                         {profileData.weton?.laku?.name}
                       </div>
-                      <Markdown
-                        className="text-gray-700"
-                        options={{
-                          overrides: {
-                            p: {
-                              props: {
-                                className: "pb-4 last:pb-0",
-                              },
-                            },
-                            li: {
-                              props: {
-                                className: "pb-2 last:pb-0",
-                              },
-                            },
-                          },
-                        }}
-                      >
-                        {reading?.reading?.characters?.laku.replace(
-                          /—/gi,
-                          ", "
-                        )}
-                      </Markdown>
-                      <Markdown
-                        className="text-gray-700 pt-2"
-                        options={{
-                          overrides: {
-                            p: {
-                              props: {
-                                className: "pb-4 last:pb-0",
-                              },
-                            },
-                            li: {
-                              props: {
-                                className: "pb-2 last:pb-0",
-                              },
-                            },
-                          },
-                        }}
-                      >
-                        {reading?.reading?.symbol?.philosophy.replace(
-                          /—/gi,
-                          ", "
-                        )}
-                      </Markdown>
+                      <SimpleContentSection
+                        reading={reading?.reading?.characters?.laku}
+                      />
+                      <SimpleContentSection
+                        reading={reading?.reading?.symbol?.philosophy}
+                        className={"pt-2"}
+                      />
                       <PromotionBanner
                         title={`Learn More about ${profileData.weton?.laku?.name}`}
                         content="Discover the archetype and behavioral pattern that guides your life's journey."
@@ -365,33 +309,40 @@ export default function PrimaryTraitsPage() {
                       <div className="font-semibold  text-batik-text">
                         🌊 Emotional Nature
                       </div>
-                      <div className="text-gray-700">
-                        {reading?.reading?.influences?.emotion}
-                      </div>
+                      <SimpleContentSection
+                        reading={reading?.reading?.influences?.emotion}
+                      />
                     </div>
                     <div className="flex flex-col">
                       <div className="font-semibold  text-batik-text">
                         💬 Social Interactions
                       </div>
-                      <div className="text-gray-700">
-                        {reading?.reading?.influences?.social}
-                      </div>
+                      <SimpleContentSection
+                        reading={reading?.reading?.influences?.social}
+                      />
                     </div>
                     <div className="flex flex-col">
                       <div className="font-semibold  text-batik-text">
                         👔 Work Ethics
                       </div>
-                      <div className="text-gray-700">
-                        {reading?.reading?.influences?.work}
-                      </div>
+                      <SimpleContentSection
+                        reading={reading?.reading?.influences?.work}
+                      />
+                      <PromotionBanner
+                        title={`Find Out Your Best Gig`}
+                        content="Explore professions and work styles that resonate with your Weton's energy."
+                        url={"/readings/work_readings/your-career"}
+                        pro={true}
+                        icon={"💼"}
+                      />
                     </div>
                     <div className="flex flex-col">
                       <div className="font-semibold  text-batik-text">
                         💵 Financial Tendencies
                       </div>
-                      <div className="text-gray-700">
-                        {reading?.reading?.influences?.financial}
-                      </div>
+                      <SimpleContentSection
+                        reading={reading?.reading?.influences?.financial}
+                      />
                       <PromotionBanner
                         title={`Know Financial Traits`}
                         content="Understand your natural approach to wealth, and financial opportunities."
@@ -405,9 +356,9 @@ export default function PrimaryTraitsPage() {
                       <div className="font-semibold  text-batik-text">
                         🧘🏻‍♀️ Health
                       </div>
-                      <div className="text-gray-700">
-                        {reading?.reading?.influences?.health}
-                      </div>
+                      <SimpleContentSection
+                        reading={reading?.reading?.influences?.health}
+                      />
                     </div>
                   </div>
                 </div>
@@ -441,17 +392,17 @@ export default function PrimaryTraitsPage() {
                       <div className="font-semibold  text-batik-text">
                         🤔 Reflection
                       </div>
-                      <div className="text-gray-700">
-                        {reading?.reading?.wisdom?.reflection}
-                      </div>
+                      <SimpleContentSection
+                        reading={reading?.reading?.wisdom?.reflection}
+                      />
                     </div>
                     <div className="flex flex-col">
                       <div className="font-semibold  text-batik-text">
                         💌 Message For You
                       </div>
-                      <div className="text-gray-700">
-                        {reading?.reading?.wisdom?.empowerment}
-                      </div>
+                      <SimpleContentSection
+                        reading={reading?.reading?.wisdom?.empowerment}
+                      />
                     </div>
                   </div>
                 </div>
