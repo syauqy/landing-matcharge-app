@@ -373,7 +373,7 @@ export default function CompatibilityPage() {
           return;
         } else if (!existingReading && !fetchError) {
           console.log("No existing reading found, generating new one...");
-          setLoading(false);
+          // setLoading(false);
 
           try {
             const { data: newCompatibilityReading, error } = await supabase
@@ -566,6 +566,7 @@ export default function CompatibilityPage() {
                             size={30}
                             className="text-batik-white"
                           />
+                          <div className="bg-rose-300 absolute rounded-full animate-ping size-18 opacity-35"></div>
                         </div>
                       </div>
                     </div>
@@ -634,6 +635,7 @@ export default function CompatibilityPage() {
                         loading || !wetonJodoh.jodoh4 || !partnerProfile
                       }
                     >
+                      <span class="absolute inline-flex size-10 w-1/2 animate-ping rounded-full bg-rose-300 opacity-50"></span>
                       {loading && coupleReading.length === 0
                         ? "Generating..."
                         : "Get Compatibility Reading"}

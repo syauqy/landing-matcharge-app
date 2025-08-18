@@ -13,6 +13,8 @@ import { getWeton, getWuku } from "@/utils";
 import { Toaster, toast } from "sonner";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ProfileLoadingSkeleton } from "@/components/layouts/profile-loading-skeleton";
+import { InAppReview } from "@capacitor-community/in-app-review";
+import { Capacitor } from "@capacitor/core";
 
 export default function ProfilePage() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -31,6 +33,20 @@ export default function ProfilePage() {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("weton");
   const [isRegenerating, setIsRegenerating] = useState(false);
+
+  const handleRateApp = async () => {
+    if (!Capacitor.isNativePlatform()) {
+      toast.info("This feature is only available on the mobile app.");
+      return;
+    }
+    try {
+      // requestReview will automatically check if it's appropriate to show the dialog.
+      await InAppReview.requestReview();
+    } catch (error) {
+      console.error("Error requesting in-app review:", error);
+      // It's best not to bother the user with an error message for this feature.
+    }
+  };
 
   // --- Fetch Profile Data ---
   const fetchProfile = async () => {
@@ -707,7 +723,7 @@ export default function ProfilePage() {
                       <div className="space-y-6">
                         <div className="flex flex-col gap-2">
                           <Link
-                            href="/intro"
+                            href="/readings/general_readings/weton-intro"
                             className="text-left text-batik-text hover:underline"
                           >
                             See Weton and Wuku Introduction
@@ -724,7 +740,9 @@ export default function ProfilePage() {
                           </button>
                           <button
                             onClick={() =>
-                              handleSupportButton("https://jala.tech")
+                              handleSupportButton(
+                                "https://wetonscope.com/terms"
+                              )
                             }
                             className="text-left text-batik-text hover:underline"
                           >
@@ -732,9 +750,20 @@ export default function ProfilePage() {
                           </button>
                           <div className="py-2 border-t border-gray-200">
                             <button
+                              onClick={handleRateApp}
+                              className="text-left text-batik-text hover:underline"
+                            >
+                              Rate the App
+                            </button>
+                            <p className="text-xs text-gray-500 mt-1">
+                              Enjoying Wetonscope? Let us know!
+                            </p>
+                          </div>
+                          <div className="py-2 border-t border-gray-200">
+                            <button
                               onClick={handleManageSubscription}
                               disabled={isManagingSubscription}
-                              className="text-left text-blue-600 hover:underline disabled:text-gray-400 disabled:cursor-not-allowed font-semibold"
+                              className="text-left text-batik-text hover:underline disabled:text-gray-400 disabled:cursor-not-allowed"
                             >
                               {isManagingSubscription
                                 ? "Loading..."
@@ -744,11 +773,11 @@ export default function ProfilePage() {
                               Change or cancel your subscription.
                             </p>
                           </div>
-                          <div className="py-2 border-t border-gray-200">
+                          {/* <div className="py-2 border-t border-gray-200">
                             <button
                               onClick={handleRegenerateProfile}
                               disabled={isRegenerating}
-                              className="text-left text-blue-600 hover:underline disabled:text-gray-400 disabled:cursor-not-allowed font-semibold"
+                              className="text-left text-batik-text hover:underline disabled:text-gray-400 disabled:cursor-not-allowed font-semibold"
                             >
                               {isRegenerating
                                 ? "Regenerating..."
@@ -758,7 +787,7 @@ export default function ProfilePage() {
                               Use this if you believe your Weton/Wuku data is
                               incorrect.
                             </p>
-                          </div>
+                          </div> */}
                           <button
                             onClick={handleLogout}
                             className="w-full sm:w-auto text-red-600 hover:underline text-left font-semibold mt-5"

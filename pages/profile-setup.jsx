@@ -56,9 +56,9 @@ export default function ProfileSetupPage() {
           .eq("id", user.id)
           .single();
 
-        // if (!error && data && data.birth_date) {
-        //   router.push("/home");
-        // }
+        if (!error && data && data.birth_date) {
+          router.push("/home");
+        }
       } catch (err) {
         console.error("Error checking profile:", err);
       }
@@ -281,7 +281,7 @@ export default function ProfileSetupPage() {
       setLoadingWeton(true);
 
       if (wetonData) {
-        router.push("/intro");
+        router.push("/readings/general_readings/weton-intro");
       }
 
       // await requestWetonAnalysis(user.id, birthDate);
@@ -373,7 +373,7 @@ export default function ProfileSetupPage() {
     );
   }
 
-  if (loadingWeton) {
+  if (loadingWeton || saving) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-base-100 p-5">
         <div className="text-center flex flex-col gap-2 items-center">
@@ -515,7 +515,7 @@ export default function ProfileSetupPage() {
                       required
                     />
                     <p className="text-xs text-gray-500 mt-2">
-                      Required for character traits analysis
+                      This will help your friends find you easily
                     </p>
                   </div>
                 </div>

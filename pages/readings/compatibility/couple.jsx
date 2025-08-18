@@ -513,29 +513,16 @@ ${readingContent?.blend?.dina?.interpretation}`;
               )}
             </div>
           ) : reading?.status == "loading" ? (
-            <div className="space-y-6">
+            <div className="space-y-6 animate-pulse">
               <div>
-                <h2 className="text-xl font-semibold text-left">
-                  {profileData?.full_name.split(" ")[0]} &{" "}
-                  {partnerProfile?.full_name.split(" ")[0]}'s Love
-                </h2>
+                <div className="text-xl bg-slate-200 rounded-2xl h-7 mb-2 w-1/2"></div>
               </div>
               <div className="mb-2">
                 <div className="avatar">
-                  <div className="size-12 ring-2 ring-offset-2 ring-batik-border rounded-full overflow-hidden">
-                    <img
-                      src={userAvatar}
-                      alt={profileData?.full_name || "User"}
-                    />
-                  </div>
+                  <div className="size-12 ring-2 ring-offset-2 ring-batik-border rounded-full bg-slate-200"></div>
                 </div>
                 <div className="avatar">
-                  <div className="size-12 ring-2 ring-offset-2 ring-batik-border rounded-full overflow-hidden">
-                    <img
-                      src={partnerAvatar}
-                      alt={partnerProfile?.full_name || "Partner"}
-                    />
-                  </div>
+                  <div className="size-12 ring-2 ring-offset-2 ring-batik-border rounded-full bg-slate-200"></div>
                 </div>
               </div>
               <AnimatedLoadingText messages={coupleLoadingMessages} />

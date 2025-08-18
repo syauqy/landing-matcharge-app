@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
+// import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { fetchProfileData } from "@/utils/fetch";
@@ -9,9 +9,9 @@ import { ReadingDescription } from "@/components/readings/reading-description";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
-import { Capacitor } from "@capacitor/core";
+// import { Capacitor } from "@capacitor/core";
 import { ReadingNavbar } from "@/components/readings/reading-navbar";
-import { ContentSection } from "@/components/readings/content-section";
+// import { ContentSection } from "@/components/readings/content-section";
 import { PromotionBanner } from "@/components/readings/promotion-banner";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { FeedbackSession } from "@/components/readings/feedback-section";
@@ -19,6 +19,7 @@ import { ReadingLoadingSkeleton } from "@/components/readings/reading-loading-sk
 import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
 import { useReading } from "@/utils/useReading";
 import { config } from "@/utils/config";
+import Markdown from "markdown-to-jsx";
 
 export default function PrimaryTraitsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -200,9 +201,28 @@ export default function PrimaryTraitsPage() {
                   <div className="text-batik-text font-semibold">
                     🌀 Weton Identity
                   </div>
-                  <div className="text-gray-700">
-                    {reading?.reading?.weton_identity?.element}
-                  </div>
+                  <Markdown
+                    className="text-gray-700"
+                    options={{
+                      overrides: {
+                        p: {
+                          props: {
+                            className: "pb-4 last:pb-0",
+                          },
+                        },
+                        li: {
+                          props: {
+                            className: "pb-2 last:pb-0",
+                          },
+                        },
+                      },
+                    }}
+                  >
+                    {reading?.reading?.weton_identity?.element.replace(
+                      /—/gi,
+                      ", "
+                    )}
+                  </Markdown>
                 </div>
               </div>
             </section>
@@ -235,12 +255,50 @@ export default function PrimaryTraitsPage() {
                       <div className="text-lg font-semibold">
                         {profileData.weton?.laku?.name}
                       </div>
-                      <div className="text-gray-700">
-                        {reading?.reading?.characters?.laku}
-                      </div>
-                      <div className="text-gray-700 mt-2">
-                        {reading?.reading?.symbol?.philosophy}
-                      </div>
+                      <Markdown
+                        className="text-gray-700"
+                        options={{
+                          overrides: {
+                            p: {
+                              props: {
+                                className: "pb-4 last:pb-0",
+                              },
+                            },
+                            li: {
+                              props: {
+                                className: "pb-2 last:pb-0",
+                              },
+                            },
+                          },
+                        }}
+                      >
+                        {reading?.reading?.characters?.laku.replace(
+                          /—/gi,
+                          ", "
+                        )}
+                      </Markdown>
+                      <Markdown
+                        className="text-gray-700 pt-2"
+                        options={{
+                          overrides: {
+                            p: {
+                              props: {
+                                className: "pb-4 last:pb-0",
+                              },
+                            },
+                            li: {
+                              props: {
+                                className: "pb-2 last:pb-0",
+                              },
+                            },
+                          },
+                        }}
+                      >
+                        {reading?.reading?.symbol?.philosophy.replace(
+                          /—/gi,
+                          ", "
+                        )}
+                      </Markdown>
                       <PromotionBanner
                         title={`Learn More about ${profileData.weton?.laku?.name}`}
                         content="Discover the archetype and behavioral pattern that guides your life's journey."

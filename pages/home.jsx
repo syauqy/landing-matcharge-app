@@ -121,7 +121,7 @@ export default function Home() {
         .neq("reading_category", "daily")
         // .neq("reading_category", "monthly")
         .order("created_at", { ascending: false })
-        .limit(5);
+        .limit(9);
 
       if (error) throw error;
       setLatestReadings(data);
@@ -339,7 +339,7 @@ export default function Home() {
   //   return <PageLoadingLayout />;
   // }
 
-  if (!profileData && !loading) {
+  if (!profileData && !loading && !user) {
     return (
       <NoProfileLayout
         router={router}

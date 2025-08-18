@@ -61,7 +61,7 @@ export default function HomePage() {
 
   // console.log("user", user);
 
-  console.log("Login Page: isNative:", isNative, user);
+  // console.log("Login Page: isNative:", isNative, user);
   let redirectUrl = isNative
     ? "wetonscope://home"
     : process.env.NODE_ENV === "production"
@@ -69,7 +69,7 @@ export default function HomePage() {
     : "http://localhost:3000/home";
 
   useEffect(() => {
-    console.log("Auth loading:", authLoading, "User:", user);
+    // console.log("Auth loading:", authLoading, "User:", user);
     if (!authLoading && user) {
       console.log("User is logged in:", user);
       // If not loading and user is logged in, redirect to dashboard
