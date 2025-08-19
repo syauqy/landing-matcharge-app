@@ -480,16 +480,19 @@ function DetailProfilePage() {
                   )}
                   aria-label="Tabs"
                 >
-                  <button
-                    onClick={() => setActiveTab("compatibility")}
-                    className={`${
-                      activeTab === "compatibility"
-                        ? "border-batik-text text-batik-black bg-batik-border font-semibold"
-                        : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
-                    } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
-                  >
-                    Synergy
-                  </button>
+                  {compatibilityReadingData ||
+                    (friendshipReadingData && (
+                      <button
+                        onClick={() => setActiveTab("compatibility")}
+                        className={`${
+                          activeTab === "compatibility"
+                            ? "border-batik-text text-batik-black bg-batik-border font-semibold"
+                            : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
+                        } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
+                      >
+                        Synergy
+                      </button>
+                    ))}
                   <button
                     onClick={() => setActiveTab("weton")}
                     className={`${

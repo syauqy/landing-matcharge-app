@@ -86,7 +86,7 @@ export const dailyReadingPrompt = (profile, todayWeton, todayWuku, dayInfo) => {
   
   ## Mandatory Instructions
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
   - Do not use em dashes (—).
   - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
   - Write the Indonesian and Javanese words in italic.
@@ -175,9 +175,9 @@ export const monthlyReadingPrompt = (
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
-  - Avoid em dashes.
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
   - Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section. Ensuring richness over brevity.
   - Accuracy: Ensure all interpretation for Weton and Wuku are precise and align accurately with traditional Javanese Primbon knowledge.
@@ -260,11 +260,11 @@ export const primaryTraitsPrompt = (profile) => {
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
-  - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Avoid em dashes.
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
+  - Write the Indonesian and Javanese words/terms in italic.
   - Depth: Provide meaningful insights without being overly verbose. Aim for depth over length.
-  - Write the Indonesian and Javanese words in italic.
   - Accuracy: Ensure all Weton calculations and interpretations are as precise as possible based on traditional knowledge.
   - Ethical AI: Emphasize that Weton provides guidance, not absolute destiny. Encourage personal agency and free will.
   - Base the analysis **strictly on common, traditional Javanese Primbon interpretations** associated with the given Weton/Neptu. Do not invent details.
@@ -350,11 +350,12 @@ export const basicLovePrompt = (profile) => {
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi).
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Avoid em dashes.
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
+  - Write the Indonesian and Javanese words in italic.
   - Depth: Provide meaningful insights without being overly verbose. Aim for depth over length.
-  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
+  - Mention the dina or day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night).
   - Accuracy: Ensure all Weton, Wuku, Rakam, Laku, and Saptawara calculations and their interpretations regarding love are accurate according to traditional Javanese Primbon knowledge.
   - Ethical AI: Emphasize that Weton provides guidance, not absolute destiny. Encourage personal agency and free will.
   - No Redundancy: While drawing from the same core birth data, ensure each section provides distinct insights relevant to its specific focus (Core Approach, Style, Attitudes) without unnecessary repetition.
@@ -434,10 +435,13 @@ export const proLovePrompt = (profile) => {
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Avoid em dashes.
   - Add line breaks or new line if the output response is more than 2 sentences.
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
+  - Write the Indonesian and Javanese words in italic.
+  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night).
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
   - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, and the power of free will in navigating one's life path.
@@ -519,10 +523,13 @@ export const proLovePrompt2 = (profile) => {
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Avoid em dashes.
   - Add line breaks or new line if the output response is more than 2 sentences.
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
+  - Write the Indonesian and Javanese words in italic.
+  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night).
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
   - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, and the power of free will in navigating one's life path.
@@ -612,10 +619,13 @@ export const proGeneralCalculationPrompt = (profile) => {
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Avoid em dashes.
   - Add line breaks or new line if the output response is more than 2 sentences.
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
+  - Write the Indonesian and Javanese words in italic.
+  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night).
   - Depth: Provide comprehensive and distinct insights for each section, ensuring sufficient detail and nuance for each specific component. Aim for depth over length.
   - Accuracy: Ensure all calculations for Weton, Rakam, Saptawara, and Laku based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency and conscious effort in navigating life's energies.
@@ -701,10 +711,13 @@ export const proGeneralCalculationPrompt2 = (profile) => {
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Avoid em dashes.
   - Add line breaks or new line if the output response is more than 2 sentences.
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
+  - Write the Indonesian and Javanese words in italic.
+  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night).
   - Depth: Provide comprehensive and distinct insights for each section, ensuring sufficient detail and nuance for each specific component. Aim for depth over length.
   - Accuracy: Ensure all calculations for Weton, Rakam, Saptawara, and Laku based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency and conscious effort in navigating life's energies.
@@ -795,10 +808,13 @@ export const proCareerPrompt = (profile) => {
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Avoid em dashes.
   - Add line breaks or new line if the output response is more than 2 sentences.
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). Write the Indonesian and Javanese words in italic.
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
+  - Write the Indonesian and Javanese words in italic.
+  - Mention the dina/day, Wuku Bird, Wuku Tree in English (eg. Monday Kliwon, Thursday Legi, Javan Kingfisher, Queen of the night). 
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
   - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, and the power of free will in navigating one's life path.
@@ -897,9 +913,11 @@ export const proFinancialPrompt = (profile) => {
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Avoid em dashes. 
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi). Write the Indonesian and Javanese words in italic.
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
+  - Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
   - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. Emphasize the importance of personal agency, conscious choices, due diligence, and the power of free will in managing one's financial path. Explicitly state that these are not financial advice.
@@ -1016,8 +1034,10 @@ export const proLoveCompatibilityPrompt = (profile1, profile2, wetonJodoh) => {
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi). Write the Indonesian and Javanese words in italic.
-  - Avoid em dashes. Avoid underscores.
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
+  - Write the Indonesian and Javanese words in italic.
   - For text formatting, write in markdown.
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
   - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
@@ -1184,9 +1204,11 @@ export const proCoupleCompatibilityPrompt = (
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Avoid em dashes. 
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
+  - Write the Indonesian and Javanese words in italic.
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi). Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
   - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. 
@@ -1318,9 +1340,11 @@ export const proFriendshipCompatibilityPrompt = (
   - Simple words: Write like you talk to a friend, avoid complex vocabulary
   
   ## Mandatory Instructions
-  - Avoid em dashes. 
   - Make it relevant to the younger generation (Millenial and Gen Z) and modern life.
-  - Mention the dina/day in English (eg. Monday Kliwon, Thursday Legi). Write the Indonesian and Javanese words in italic.
+  - Mention the dina or day of Weton in English (eg. Monday for Senin, Tuesday for Selasa and so on).
+  - Do not use em dashes (—).
+  - The Golden Rule of Jargon: Never state a Javanese term (Gigis, Aras Kembang, etc.) without immediately explaining its practical meaning in simple, modern language. Translate the wisdom, don't just state the word.
+  - Write the Indonesian and Javanese words in italic.
   - Depth: Provide comprehensive and distinct insights for each section. Each section should offer a nuanced understanding of the specific aspect of character it addresses, ensuring richness over brevity.
   - Accuracy: Ensure all calculations for Weton, Wuku, Rakam, Laku, and Saptawara based on the provided birth data are precise, and their interpretations align accurately with traditional Javanese Primbon knowledge.
   - Ethical AI: Always reinforce the idea that these readings are guides for self-understanding and growth, not absolute rules. 

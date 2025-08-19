@@ -142,7 +142,7 @@ export async function generateMonthlyReading(profile, today) {
   const { data: newReading, error } = await supabase
     .from("readings")
     .insert({
-      reading_type: "basic",
+      reading_type: "pro",
       reading_category: "monthly",
       title: "Monthly Reading",
       username: profile.username,

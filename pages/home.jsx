@@ -356,7 +356,7 @@ export default function Home() {
           const compatibilitySlug = getCompatibilitySlug(r.slug);
           if (r?.reading_category === "compatibility") {
             return (
-              <li key={r.id} className="w-fit ml-4 last:mr-4 ">
+              <li key={r.id} className="w-fit ml-4 last:mr-4 relative ">
                 <Link
                   href={`/readings/${r?.reading_category}/${compatibilitySlug}?slug=${r.slug}`}
                 >
@@ -369,11 +369,16 @@ export default function Home() {
                     </div>
                   </div>
                 </Link>
+                {r.reading_type === "pro" && (
+                  <div className="absolute rounded-xl px-3 py-0.5 z-10 font-semibold bg-amber-400 text-[10px] top-1 right-1 text-batik-black">
+                    PRO
+                  </div>
+                )}
               </li>
             );
           } else
             return (
-              <li key={r.id} className="w-fit ml-4 last:mr-4 ">
+              <li key={r.id} className="w-fit ml-4 last:mr-4 relative ">
                 <Link href={`/readings/${r?.reading_category}/${r.slug}`}>
                   <div className="rounded-2xl flex flex-col gap-2 p-4 bg-base-100 active:bg-batik focus:bg-batik shadow-md border border-[var(--color-batik-border)] h-[8rem] w-[10rem]">
                     <p className="line-clamp-2 text-base-content font-semibold text-sm">
@@ -384,6 +389,11 @@ export default function Home() {
                     </div>
                   </div>
                 </Link>
+                {r.reading_type === "pro" && (
+                  <div className="absolute rounded-xl px-3 py-0.5 z-10 font-semibold bg-amber-400 text-[10px] top-1 right-1 text-batik-black">
+                    PRO
+                  </div>
+                )}
               </li>
             );
         })}

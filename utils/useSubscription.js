@@ -6,8 +6,10 @@ import { toast } from "sonner";
 export function useSubscription() {
   const { user } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [profileData, setProfileData] = useState(null);
 
-  const checkProfile = async () => {
+  const checkProfile = useCallback(async () => {
     setLoading(true);
     try {
       const { data: profile, error: profileError } = await supabase
@@ -29,7 +31,7 @@ export function useSubscription() {
       setLoading(false);
     }
     setLoading(false);
-  };
+  }, [user]);
 
   const presentPaywall = useCallback(async () => {
     if (!user || isProcessing) return;

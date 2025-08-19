@@ -30,7 +30,7 @@
   },
   "backgroundColor": "#ffffff",
   "server": {
-    "url": "http://192.168.1.36:3000",
+    "url": "http://192.168.1.5:3000",
     "cleartext": true
   }
 }
