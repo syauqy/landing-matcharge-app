@@ -117,6 +117,7 @@ export default function Home() {
         .from("readings")
         .select("*")
         .eq("user_id", user.id)
+        .eq("status", "completed")
         // .neq("reading_category", "compatibility")
         .neq("reading_category", "daily")
         // .neq("reading_category", "monthly")

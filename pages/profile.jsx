@@ -102,8 +102,14 @@ export default function ProfilePage() {
     setError(null);
 
     try {
-      const wetonDetails = getWeton(profileData.birth_date);
-      const wukuDetails = getWuku(profileData.birth_date);
+      const wetonDetails = getWeton(
+        profileData.birth_date,
+        profileData.birth_time
+      );
+      const wukuDetails = getWuku(
+        profileData.birth_date,
+        profileData.birth_time
+      );
 
       const { error: updateError } = await supabase
         .from("profiles")
@@ -773,21 +779,23 @@ export default function ProfilePage() {
                               Change or cancel your subscription.
                             </p>
                           </div>
-                          {/* <div className="py-2 border-t border-gray-200">
-                            <button
-                              onClick={handleRegenerateProfile}
-                              disabled={isRegenerating}
-                              className="text-left text-batik-text hover:underline disabled:text-gray-400 disabled:cursor-not-allowed font-semibold"
-                            >
-                              {isRegenerating
-                                ? "Regenerating..."
-                                : "Regenerate Profile Data"}
-                            </button>
-                            <p className="text-xs text-gray-500 mt-1">
-                              Use this if you believe your Weton/Wuku data is
-                              incorrect.
-                            </p>
-                          </div> */}
+                          {profileData?.type === "admin" && (
+                            <div className="py-2 border-t border-gray-200">
+                              <button
+                                onClick={handleRegenerateProfile}
+                                disabled={isRegenerating}
+                                className="text-left text-rose-500 hover:underline disabled:text-gray-400 disabled:cursor-not-allowed font-semibold"
+                              >
+                                {isRegenerating
+                                  ? "Regenerating..."
+                                  : "Regenerate Profile Data"}
+                              </button>
+                              <p className="text-xs text-gray-500 mt-1">
+                                Use this if you believe your Weton/Wuku data is
+                                incorrect.
+                              </p>
+                            </div>
+                          )}
                           <button
                             onClick={handleLogout}
                             className="w-full sm:w-auto text-red-600 hover:underline text-left font-semibold mt-5"

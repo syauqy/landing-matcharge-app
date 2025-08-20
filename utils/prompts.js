@@ -747,8 +747,8 @@ export const proCareerPrompt = (profile) => {
     - Gender: ${profile.gender}
     - Birth Date: ${birthDate}
     - Weton: ${wetonDetails.weton_en}
-    - Weton Character: ${wetonDetails.watak_weton?.description}
-    - Career: ${wetonDetails.neptu_character?.career_inclinations}
+    - Weton Character: ${wetonDetails.watak_weton?.short_description}
+    - Career: ${wetonDetails.neptu_character?.short_career_inclinations}
     - Day (Dina): ${wetonDetails.dina}
     - Market Day (Pasaran): ${wetonDetails.pasaran}
     - Rakam: ${wetonDetails.rakam.name}
@@ -776,7 +776,7 @@ export const proCareerPrompt = (profile) => {
 
   1. Your Career Profile
   This reading delves into your inherent professional aptitudes, work ethic, leadership style, and potential for success, as shaped by your birth Weton, Laku, and Rakam. 
-  It's a strategic guide to the professional world, helping the user understand their professional talents and how to navigate the modern workplace.
+  It's a strategic guide to the professional world.
   * Professional Strengths & Aptitudes
   * Ideal Work Environment
   * Leadership & Collaboration Style - Your Team Player Persona
@@ -842,8 +842,8 @@ export const proFinancialPrompt = (profile) => {
     - Gender: ${profile.gender}
     - Birth Date: ${birthDate}
     - Weton: ${wetonDetails.weton_en}
-    - Weton Character: ${wetonDetails.watak_weton?.description}
-    - Financial Style: ${wetonDetails.neptu_character?.financial_style}
+    - Weton Character: ${wetonDetails.watak_weton?.short_description}
+    - Financial Style: ${wetonDetails.neptu_character?.short_financial_style}
     - Day (Dina): ${wetonDetails.dina}
     - Market Day (Pasaran): ${wetonDetails.pasaran}
     - Rakam: ${wetonDetails.rakam.name}
