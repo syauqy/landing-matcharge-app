@@ -56,11 +56,11 @@ export default function LakuPage() {
       description:
         "How do you naturally approach leadership and working with others.",
     },
-    {
-      icon: "✍🏼",
-      title: "The Path of Working Diligently",
-      description: `Your career insights to the Javanese concept of 'makarya' or working diligently.`,
-    },
+    // {
+    //   icon: "✍🏼",
+    //   title: "The Path of Working Diligently",
+    //   description: `Your career insights to the Javanese concept of 'makarya' or working diligently.`,
+    // },
   ];
 
   // adjust the data according to topics const above, min 9 objects. Change the emoji based on the text
@@ -82,10 +82,10 @@ export default function LakuPage() {
       text: "Identifying potential career challenges and growth areas...",
       emoji: "⚠️",
     },
-    {
-      text: "Reflecting on your path of working diligently (makarya)...",
-      emoji: "✍🏼",
-    },
+    // {
+    //   text: "Reflecting on your path of working diligently (makarya)...",
+    //   emoji: "✍🏼",
+    // },
     {
       text: "Uncovering your adaptability in changing professional settings...",
       emoji: "🔄",

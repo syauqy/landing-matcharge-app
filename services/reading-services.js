@@ -1665,18 +1665,18 @@ export async function generateCareerProReading(profile) {
                 `Analyze their Rakam or the challenging aspects of their Weton. Identify their key professional challenge and frame it as their "growth edge"—the one area where intentional effort will bring the most reward. Offer guidance on how to navigate these.`
               )
               .catch(() => ""),
-            makarya: z
-              .string()
-              .describe(
-                "Explain the Javanese concept of *makarya* (working with diligence and purpose). Connect this to their path to success, emphasizing that their greatest rewards will come from applying their professional with integrity and effort."
-              )
-              .catch(() => ""),
+            // makarya: z
+            //   .string()
+            //   .describe(
+            //     "Explain the Javanese concept of *makarya* (working with diligence and purpose). Connect this to their path to success, emphasizing that their greatest rewards will come from applying their professional with integrity and effort."
+            //   )
+            //   .catch(() => ""),
           }),
           ideal_life: z.object({
             fulfillment: z
               .string()
               .describe(
-                "Analyze their Wuku to describe what a fulfilling life looks like for them, moving beyond material wealth. Describe what constitutes your unique vision of a fulfilling life."
+                "Analyze their Weton and Wuku to describe what a fulfilling life looks like for them, moving beyond material wealth. Describe what constitutes your unique vision of a fulfilling life."
               )
               .catch(() => ""),
             peace: z
@@ -1700,7 +1700,7 @@ export async function generateCareerProReading(profile) {
             environment: z
               .string()
               .describe(
-                "Describe the types of physical places and social dynamics where their soul will feel most at home and able to grow, using their Wuku's Tree (*Pohon*) as a guiding metaphor."
+                "Describe the types of physical places and social dynamics where their soul will feel most at home and able to grow."
               )
               .catch(() => ""),
           }),
