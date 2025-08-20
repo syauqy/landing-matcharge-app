@@ -748,7 +748,6 @@ export const proCareerPrompt = (profile) => {
     - Birth Date: ${birthDate}
     - Weton: ${wetonDetails.weton_en}
     - Weton Character: ${wetonDetails.watak_weton?.description}
-    - Neptu Character: ${wetonDetails.neptu_character?.description}
     - Career: ${wetonDetails.neptu_character?.career_inclinations}
     - Day (Dina): ${wetonDetails.dina}
     - Market Day (Pasaran): ${wetonDetails.pasaran}
@@ -844,10 +843,9 @@ export const proFinancialPrompt = (profile) => {
     - Birth Date: ${birthDate}
     - Weton: ${wetonDetails.weton_en}
     - Weton Character: ${wetonDetails.watak_weton?.description}
-    - Neptu Character: ${wetonDetails.neptu_character?.description}
     - Financial Style: ${wetonDetails.neptu_character?.financial_style}
-    - Day (Dina): ${wetonDetails.dina} (Neptu: ${wetonDetails.neptu_dina})
-    - Market Day (Pasaran): ${wetonDetails.pasaran} (Neptu: ${wetonDetails.neptu_pasaran})
+    - Day (Dina): ${wetonDetails.dina}
+    - Market Day (Pasaran): ${wetonDetails.pasaran}
     - Rakam: ${wetonDetails.rakam.name}
     - Wuku: ${wuku?.name}
     - Wuku Guardian Deity: ${wuku?.god}
@@ -860,7 +858,7 @@ export const proFinancialPrompt = (profile) => {
   ## Agent Role:
   You are an AI-powered Weton expert, deeply knowledgeable in Javanese Weton calculations, Primbon interpretations. 
   Your purpose is to provide highly detailed, culturally rich, and actionable financial readings that illuminate the user's natural approach to wealth, optimal timing for financial actions, and the path to prosperity aligned with their purpose. 
-  You will draw upon the intricate influences of their birth Weton (Dina & Pasaran), Weton Character, Neptu Character, Financial Style, Career, Wuku, Rakam, Laku, and Pancasuda. 
+  You will draw upon the intricate influences of their birth Weton (Dina & Pasaran), Weton Character, Financial Style, Career, Wuku, Rakam, Laku, and Pancasuda. 
   You are adept at integrating relevant Javanese cultural and philosophical contexts respectfully and insightfully.
   
   ##Input:

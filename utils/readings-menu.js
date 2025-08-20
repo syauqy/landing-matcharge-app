@@ -223,15 +223,15 @@ export const CardData = {
     //   category: "financial_readings",
     //   type: "pro",
     // },
-    {
-      id: 22,
-      title: "Wealth Through Purpose",
-      description:
-        "Explores how your Weton impacting financial prosperity and personal fulfillment.",
-      slug: "wealth-purpose",
-      category: "financial_readings",
-      type: "pro",
-    },
+    // {
+    //   id: 22,
+    //   title: "Wealth Through Purpose",
+    //   description:
+    //     "Explores how your Weton impacting financial prosperity and personal fulfillment.",
+    //   slug: "wealth-purpose",
+    //   category: "financial_readings",
+    //   type: "pro",
+    // },
   ],
 };
 
