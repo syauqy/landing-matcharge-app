@@ -12,10 +12,10 @@ import { Menubar } from "@/components/layouts/menubar";
 import { LoveCompatibilityCard } from "@/components/readings/love-compatibility-card";
 import { FriendshipCompatibilityCard } from "@/components/readings/friendship-compatibility-card";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
-import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
-import { HomeLoadingSkeleton } from "@/components/layouts/home-loading-skeleton";
+// import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
+// import { HomeLoadingSkeleton } from "@/components/layouts/home-loading-skeleton";
 import { CompatibilityLoadingSkeleton } from "@/components/layouts/compatibility-loading-skeleton";
-import { ReadingLoading } from "@/components/readings/reading-loading";
+// import { ReadingLoading } from "@/components/readings/reading-loading";
 import {
   SunIcon,
   MoonStarIcon,
@@ -60,7 +60,7 @@ export default function CompatibilityPage() {
   const [customBirthTime, setCustomBirthTime] = useState("");
   const [showBirthTimeChecker, setShowBirthTimeChecker] = useState(false);
   const [customGender, setCustomGender] = useState(""); // Added gender
-  const [savingCustomPartner, setSavingCustomPartner] = useState(true);
+  const [savingCustomPartner, setSavingCustomPartner] = useState(false);
   const [wetonJodoh, setWetonJodoh] = useState({});
   const [selectedPartnerReading, setSelectedPartnerReading] = useState(null);
 
@@ -131,8 +131,8 @@ export default function CompatibilityPage() {
           id,
           requester_id,
           addressee_id,
-          profile_requester:requester_id (id, username, full_name, dina_pasaran, weton, wuku, gender, birth_date, avatar_url),
-          profile_addressee:addressee_id (id, username, full_name, dina_pasaran, weton, wuku, gender, birth_date, avatar_url)
+          profile_requester:profiles!requester_id (id, username, full_name, dina_pasaran, weton, wuku, gender, birth_date, avatar_url),
+          profile_addressee:profiles!addressee_id (id, username, full_name, dina_pasaran, weton, wuku, gender, birth_date, avatar_url)
         `
         )
         .eq("status", "accepted")
@@ -172,8 +172,7 @@ export default function CompatibilityPage() {
         .select(
           "id, full_name, birth_date, gender, weton, wuku, dina_pasaran, type, username"
         ) // username might be null for custom
-        .eq("id", user.id) // Assuming custom_profiles are linked by user_id, but the table structure has `id` as user.id
-        .eq("type", "custom");
+        .eq("user_id", user.id); // Assuming custom_profiles are linked by user_id, but the table structure has `id` as user.id
 
       if (customProfilesError) throw customProfilesError;
       setCustomProfilesList(data || []);
@@ -201,7 +200,7 @@ export default function CompatibilityPage() {
     setError(null);
 
     try {
-      console.log("birth time:", customBirthTime);
+      // console.log("birth time:", customBirthTime);
 
       const wetonData = getWeton(customBirthDate, customBirthTime);
       const wukuData = getWuku(customBirthDate, customBirthTime);
@@ -216,12 +215,13 @@ export default function CompatibilityPage() {
       const { data, error: insertError } = await supabase
         .from("custom_profiles") // Assuming you have a custom_partners table
         .insert({
-          id: user.id,
+          user_id: user.id,
           full_name: customFullName,
           username:
             customFullName.replace(/\s/g, "").toLowerCase() +
             format(new Date(), "t"),
           birth_date: customBirthDate,
+          birth_time: customBirthTime,
           gender: customGender,
           weton: wetonData,
           wuku: wukuData,
@@ -231,18 +231,22 @@ export default function CompatibilityPage() {
         .select("*")
         .single();
 
-      // if (insertError) throw insertError;
+      if (insertError) throw insertError;
 
-      // Add the custom partner to friendships table
-      // const { error: friendshipError } = await supabase
-      //   .from("friendships")
-      //   .insert({
-      //     requester_id: user.id,
-      //     addressee_id: data.id,
-      //     status: "accepted",
-      //   });
+      // console.log(data?.id);
 
-      // if (friendshipError) throw friendshipError;
+      // if (data) {
+      //   // Add the custom partner to friendships table
+      //   const { error: friendshipError } = await supabase
+      //     .from("friendships")
+      //     .insert({
+      //       requester_id: user.id,
+      //       addressee_id: data.id,
+      //       status: "accepted",
+      //     });
+
+      //   if (friendshipError) throw friendshipError;
+      // }
 
       // Set the newly created custom partner as the active partner profile
       setPartnerProfile(data);
@@ -477,7 +481,7 @@ export default function CompatibilityPage() {
       <div className="h-[100svh] flex flex-col bg-base relative">
         <Navbar title="Compatibility" isConnection={true} isBack={true} />
         {authLoading || loading || (loadingProfile && !error) ? (
-          <CompatibilityLoadingSkeleton />
+          <CompatibilityLoadingSkeleton compatibilityType={compatibilityType} />
         ) : (
           <div className="flex-grow overflow-y-auto justify-center pt-4 sm:pt-6 pb-20 px-5">
             <div className="flex-col items-center text-center mb-4">
@@ -520,7 +524,7 @@ export default function CompatibilityPage() {
                   </div>
                 </div>
 
-                {partnerProfile.id ? (
+                {partnerProfile?.id ? (
                   <button
                     onClick={() => setShowPartnerSelectionSheet(true)}
                     className="p-2 flex-col flex items-center w-[45%] "
@@ -582,7 +586,7 @@ export default function CompatibilityPage() {
             )}
 
             <div className="flex space-y-4 my-6 justify-between flex-col items-center gap-4 w-full">
-              {partnerProfile.id && profileData?.weton && (
+              {partnerProfile?.id && profileData?.weton && (
                 <div className="mb-4 w-fit max-w-xs mx-auto justify-center text-center flex relative">
                   <select
                     id="compatibilityType"
@@ -603,7 +607,7 @@ export default function CompatibilityPage() {
                 </div>
               )}
 
-              {wetonJodoh.jodoh4 && partnerProfile.id && (
+              {wetonJodoh?.jodoh4 && partnerProfile?.id && (
                 <>
                   {selectedPartnerReading?.status === "completed" ? (
                     compatibilityType === "love" ? (
@@ -635,7 +639,7 @@ export default function CompatibilityPage() {
                         loading || !wetonJodoh.jodoh4 || !partnerProfile
                       }
                     >
-                      <span class="absolute inline-flex size-10 w-1/2 animate-ping rounded-full bg-rose-300 opacity-50"></span>
+                      <span className="absolute inline-flex size-10 w-1/2 animate-ping rounded-full bg-rose-300 opacity-50"></span>
                       {loading && coupleReading.length === 0
                         ? "Generating..."
                         : "Get Compatibility Reading"}
@@ -958,7 +962,13 @@ export default function CompatibilityPage() {
                 <button
                   type="submit"
                   className="w-full rounded-2xl max-w-md bg-rose-400 py-2.5 font-semibold text-white mb-3 disabled:bg-slate-200"
-                  disabled={savingCustomPartner}
+                  disabled={
+                    savingCustomPartner ||
+                    !customGender ||
+                    !customBirthDate ||
+                    !customFullName ||
+                    !customBirthTime
+                  }
                 >
                   {savingCustomPartner ? "Saving..." : "Save Custom Partner"}
                 </button>

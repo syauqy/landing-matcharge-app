@@ -732,8 +732,8 @@ const getJodoh8 = (combinedNeptu) => {
 };
 
 const getJodoh9 = (totalNeptu1, totalNeptu2) => {
-  const weton1 = totalNeptu1 % 9;
-  const weton2 = totalNeptu2 % 9;
+  const weton1 = totalNeptu1 % 9 || 9;
+  const weton2 = totalNeptu2 % 9 || 9;
 
   const sortedWeton = [weton1, weton2].sort((a, b) => a - b);
   const key = `${sortedWeton[0]}-${sortedWeton[1]}`;

@@ -437,14 +437,16 @@ ${readingContent?.blend?.dina?.interpretation}`;
               )}
               {activeTab === "dynamics" && (
                 <div className="space-y-6">
-                  <ContentSection
-                    reading={readingContent?.blend?.neptu?.interpretation}
-                    subtitle={readingContent?.blend?.neptu?.result}
-                    setIsSectionOpen={setIsSectionEightOpen}
-                    isSectionOpen={isSectionEightOpen}
-                    title="♾️ Your Prosperity Paths"
-                    firstSection={true}
-                  />
+                  {readingContent?.blend?.neptu?.result !== "undefined" && (
+                    <ContentSection
+                      reading={readingContent?.blend?.neptu?.interpretation}
+                      subtitle={readingContent?.blend?.neptu?.result}
+                      setIsSectionOpen={setIsSectionEightOpen}
+                      isSectionOpen={isSectionEightOpen}
+                      title="♾️ Your Prosperity Paths"
+                      firstSection={true}
+                    />
+                  )}
                   <ContentSection
                     reading={dayCombinationContent}
                     setIsSectionOpen={setIsSectionNineOpen}

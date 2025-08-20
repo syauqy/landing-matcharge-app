@@ -1650,7 +1650,7 @@ export async function generateCareerProReading(profile) {
             ideal_work: z
               .string()
               .describe(
-                "Analyze their Laku (Elemental Nature). Describe the types of professional settings or industries where your Weton suggests you would feel most aligned and productive. Describe the type of work environment (e.g., fast-paced startup, stable corporate, independent freelance) where they will feel most natural and effective."
+                "Analyze their Laku. Describe the types of professional settings or industries where your Weton suggests you would feel most aligned and productive. Describe the type of work environment (e.g., fast-paced startup, stable corporate, independent freelance) where they will feel effective."
               )
               .catch(() => ""),
             leadership: z
@@ -1668,7 +1668,7 @@ export async function generateCareerProReading(profile) {
             makarya: z
               .string()
               .describe(
-                "Explain the Javanese concept of *makarya* (working with diligence and purpose). Connect this to their path to success, emphasizing that their greatest rewards will come from applying their professional superpower with integrity and effort."
+                "Explain the Javanese concept of *makarya* (working with diligence and purpose). Connect this to their path to success, emphasizing that their greatest rewards will come from applying their professional with integrity and effort."
               )
               .catch(() => ""),
           }),
@@ -1676,7 +1676,7 @@ export async function generateCareerProReading(profile) {
             fulfillment: z
               .string()
               .describe(
-                "Analyze their Wuku to describe what a fulfilling life looks like for them, moving beyond material wealth. Describe what constitutes your unique vision of a fulfilling life. Is it rooted in spiritual growth, strong family bonds, creative expression, community service, adventurous experiences, intellectual mastery, or financial freedom?"
+                "Analyze their Wuku to describe what a fulfilling life looks like for them, moving beyond material wealth. Describe what constitutes your unique vision of a fulfilling life."
               )
               .catch(() => ""),
             peace: z
@@ -1688,7 +1688,7 @@ export async function generateCareerProReading(profile) {
             priorities: z
               .string()
               .describe(
-                `What are the fundamental areas of life (e.g., family, self-development, community, spiritual practice, work, leisure) that your Weton suggests should be prioritized for your overall well-being and sense of meaning? Present these as their core values and "true north" for making life decisions.`
+                `What are the fundamental areas of life (e.g., family, self-development, community, spiritual practice, work, leisure) that your Weton suggests should be prioritized for your overall well-being and sense of meaning?`
               )
               .catch(() => ""),
             authentic: z
@@ -1802,6 +1802,278 @@ export async function generateCareerProReading(profile) {
 }
 
 export async function generateFinancialProReading(profile) {
+  const { data: newFinancialReading, error } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "financial_readings",
+      title: "Your Financial",
+      subtitle:
+        "Understand your natural approach to wealth, and financial opportunities.",
+      username: profile.username,
+      status: "loading",
+      slug: "your-financial",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error inserting new reading:", error);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newFinancialReading);
+
+  const { data: newConciousCoinReading, errorConciousCoin } = await supabase
+    .from("readings")
+    .insert({
+      reading_type: "pro",
+      reading_category: "financial_readings",
+      title: "Concious Coin",
+      subtitle:
+        "Understand your spending style that reflects your values and priorities.",
+      username: profile.username,
+      status: "loading",
+      slug: "concious-coin",
+      user_id: profile.id,
+    })
+    .select()
+    .maybeSingle();
+
+  if (errorConciousCoin) {
+    console.error("Error inserting new reading:", errorConciousCoin);
+    throw error;
+  }
+
+  console.log("new reading generated on supabase", newConciousCoinReading);
+
+  // const { data: newWealthPurposeReading, errorWealthPurpose } = await supabase
+  //   .from("readings")
+  //   .insert({
+  //     reading_type: "pro",
+  //     reading_category: "financial_readings",
+  //     title: "Wealth Through Purpose",
+  //     subtitle:
+  //       "Explores how your Weton impacting financial prosperity and personal fulfillment.",
+  //     username: profile.username,
+  //     status: "loading",
+  //     slug: "wealth-purpose",
+  //     user_id: profile.id,
+  //   })
+  //   .select()
+  //   .maybeSingle();
+
+  // if (errorWealthPurpose) {
+  //   console.error("Error inserting new reading:", errorWealthPurpose);
+  //   throw error;
+  // }
+
+  // console.log("new reading generated on supabase", newWealthPurposeReading);
+
+  const maxAttempts = 2;
+  let attempt = 0;
+  let lastErrorMsg = "";
+  do {
+    attempt++;
+    try {
+      const response = await generateObject({
+        // model: google("gemini-2.5-flash-preview-05-20"),
+        model: google("gemini-2.5-pro"),
+        providerOptions: {
+          google: {
+            thinkingConfig: {
+              thinkingBudget: 2000,
+            },
+          },
+        },
+        schema: z.object({
+          financial: z.object({
+            archetype: z
+              .string()
+              .describe(
+                `Based on a holistic view of their profile, assign them a resonant archetype title. (e.g., "The Diligent Builder," "The Charismatic Merchant," "The Community Steward," "The Intuitive Risk-Taker", and so on)`
+              )
+              .catch(() => ""),
+            mindset: z
+              .string()
+              .describe(
+                "Describe your natural approach to earning, saving, and spending. Are you typically a natural accumulator, a generous giver, a careful planner, or someone who tends to take more risks?"
+              )
+              .catch(() => ""),
+            tendencies: z
+              .string()
+              .describe(
+                "Discuss your overall predisposition towards attracting or managing financial resources. This isn't about specific amounts, but about the flow of wealth in your life. explain their natural comfort level with financial risk."
+              )
+              .catch(() => ""),
+            opportunities: z
+              .string()
+              .describe(
+                "Identify the general avenues or approaches through which you are most likely to find financial opportunities (e.g., through diligent work, networking, specific talents, or by helping others)."
+              )
+              .catch(() => ""),
+            pitfalls: z
+              .string()
+              .describe(
+                "Outline any inherent tendencies that might lead to financial challenges or require careful management (e.g., impulsive spending, excessive generosity, aversion to financial planning, periods of unexpected fluctuation)."
+              )
+              .catch(() => ""),
+            karmic: z
+              .string()
+              .describe(
+                "Analyze their Pancasuda and Rakam. Clearly explain their innate financial advantage (e.g., *Satria Wibawa* - commanding respect that brings opportunity) or the primary financial challenge they are here to master. Frame the challenge as a vital area for personal growth."
+              )
+              .catch(() => ""),
+          }),
+          // cycles: z.object({
+          //   cycles: z
+          //     .string()
+          //     .describe(
+          //       "Describe the broader periods of financial growth, stability, or potential challenge that may recur in your life, based on your inherent Wuku and Weton influences."
+          //     )
+          //     .catch(() => ""),
+          //   auspicious: z
+          //     .string()
+          //     .describe(
+          //       "Highlight general types of times or phases that are traditionally considered more favorable for specific financial endeavors (e.g., starting new businesses, making significant investments, major purchases, signing contracts). Explain the energetic reason behind these recommendations."
+          //     )
+          //     .catch(() => ""),
+          //   caution: z
+          //     .string()
+          //     .describe(
+          //       "Identify types of times or phases that may require greater caution or conservative financial strategies (e.g., avoiding large risks, reviewing budgets, delaying major expenditures)."
+          //     )
+          //     .catch(() => ""),
+          //   auspicious_alignment: z
+          //     .string()
+          //     .describe(
+          //       "Offer actionable advice on how to tune into and leverage these cyclical insights, emphasizing the wisdom of choosing dina apik for important financial undertakings, without guaranteeing outcomes."
+          //     )
+          //     .catch(() => ""),
+          // }),
+          // purpose: z.object({
+          //   talents: z
+          //     .string()
+          //     .describe(
+          //       "Identify your key innate talents, skills, and areas of intelligence (derived from your Weton and Laku) that are most conducive to creating wealth through meaningful work."
+          //     )
+          //     .catch(() => ""),
+          //   values: z
+          //     .string()
+          //     .describe(
+          //       "Discuss how your core values (from your Weton and Rakam) should guide your financial endeavors. What kind of earning methods would resonate most deeply with your integrity and sense of purpose?"
+          //     )
+          //     .catch(() => ""),
+          //   contribution: z
+          //     .string()
+          //     .describe(
+          //       "Explain how contributing your unique gifts to society or solving problems for others can naturally unlock financial opportunities and spiritual fulfillment."
+          //     )
+          //     .catch(() => ""),
+          //   nurturing: z
+          //     .string()
+          //     .describe(
+          //       'Offer advice on how to cultivate a personal "ecosystem" where your work, values, and financial aspirations are harmoniously intertwined, leading to sustainable prosperity.'
+          //     )
+          //     .catch(() => ""),
+          //   proverb: z
+          //     .string()
+          //     .describe(
+          //       "Conclude with a fitting Javanese proverb that serves as a mantra for their journey to purposeful wealth."
+          //     )
+          //     .catch(() => ""),
+          // }),
+          concious: z.object({
+            introduction: z
+              .string()
+              .describe(
+                `Start with a simple, profound idea: every financial transaction is an exchange of energy. Ask the user, "Is the energy you send out into the world through your money aligned with the person you truly are?"`
+              )
+              .catch(() => ""),
+            values: z
+              .string()
+              .describe(
+                `Identify the user's Wuku Guardian Deity (*Dewa*). Describe the primary virtues of that deity (e.g., justice, creativity, compassion, wisdom). Present these as the user's "Soul's Core Values."`
+              )
+              .catch(() => ""),
+            budget: z
+              .string()
+              .describe(
+                `Guide them to think about their spending through the lens of these values. Ask reflective questions like: "Your patron is Batara Wisnu, a symbol of universal compassion. When you look at your monthly spending, how much of it is dedicated to caring for others or for the world? This isn't a judgment, but an observation."`
+              )
+              .catch(() => ""),
+            mindful: z
+              .string()
+              .describe(
+                `Based on their core values, provide gentle guidance on how they can express their nature through generosity. "For you, true generosity may not be about money, but about sharing your gift of wisdom or your time for a just cause."`
+              )
+              .catch(() => ""),
+            philosophy: z
+              .string()
+              .describe(
+                `Introduce the Javanese concept of *Memayu Hayuning Bawana* (a commitment to beautifying the beauty of the world). Frame it as a timeless guide for ethical and conscious use of resources.`
+              )
+              .catch(() => ""),
+          }),
+        }),
+        messages: [{ role: "user", content: proFinancialPrompt(profile) }],
+      });
+      const resObj = response.object;
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.financial,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newFinancialReading.id);
+
+      await supabase
+        .from("readings")
+        .update({
+          status: "completed",
+          reading: resObj.concious,
+          input_token: response.usage.promptTokens,
+          output_token: response.usage.completionTokens,
+          total_token: response.usage.totalTokens,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", newConciousCoinReading.id);
+
+      // await supabase
+      //   .from("readings")
+      //   .update({
+      //     status: "completed",
+      //     reading: resObj.purpose,
+      //     input_token: response.usage.promptTokens,
+      //     output_token: response.usage.completionTokens,
+      //     total_token: response.usage.totalTokens,
+      //     updated_at: new Date().toISOString(),
+      //   })
+      //   .eq("id", newWealthPurposeReading.id);
+    } catch (error) {
+      lastErrorMsg = error.message;
+      console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
+      if (attempt >= maxAttempts) {
+        await supabase
+          .from("readings")
+          .update({
+            status: "error",
+            reading: { error: lastErrorMsg },
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", newFinancialReading.id);
+      }
+    }
+  } while (attempt < maxAttempts);
+}
+
+export async function generateFinancialProReadingCopy(profile) {
   const { data: newFinancialReading, error } = await supabase
     .from("readings")
     .insert({
