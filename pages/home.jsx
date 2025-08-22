@@ -18,9 +18,11 @@ import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { HomeLoadingSkeleton } from "@/components/layouts/home-loading-skeleton";
 import { useDailyReading, useMonthlyReading } from "@/utils/useReading";
 import { ArrowRight } from "lucide-react";
+import { useSubscription } from "@/utils/useSubscription";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
+  const { isPro } = useSubscription();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(true);
@@ -32,8 +34,6 @@ export default function Home() {
   const scrollContainerRef = useRef(null);
   const dailyReadingGenerated = useRef(false);
   const monthlyReadingGenerated = useRef(false);
-
-  const hari = new Date();
 
   const {
     reading: dailyReading,
