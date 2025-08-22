@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     const { data: proUsers, error: dbError } = await supabaseAdmin
       .from("profiles")
       .select("id")
-      .eq("subscription_status", "pro");
+      .eq("subscription", "pro");
 
     if (dbError) throw dbError;
 
@@ -47,7 +47,7 @@ export default async function handler(req, res) {
       ) {
         await supabaseAdmin
           .from("profiles")
-          .update({ subscription_status: "free" })
+          .update({ subscription: "free" })
           .eq("id", user.id);
       }
     }
