@@ -722,8 +722,17 @@ const getJodoh7 = (combinedNeptu) => {
     weton_index = combinedNeptu % 10;
   }
 
-  // console.log("Weton Index for Jodoh7:", weton_index);
-  return nameDivison7[weton_index];
+  // console.log(
+  //   "Weton Index for Jodoh7:",
+  //   weton_index,
+  //   nameDivison7[weton_index]
+  // );
+
+  if (weton_index == 7) {
+    return nameDivison7[0];
+  } else {
+    return nameDivison7[weton_index];
+  }
 };
 
 const getJodoh8 = (combinedNeptu) => {

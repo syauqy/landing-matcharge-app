@@ -1171,10 +1171,10 @@ export const proCoupleCompatibilityPrompt = (
     - Market Day (Pasaran): ${wetonDetails1.pasaran} (Neptu: ${
     wetonDetails1.neptu_pasaran
   })
-    - Rakam: ${wetonDetails1.rakam.name}
+    - Rakam: ${wetonDetails1.rakam?.name}
     - Wuku: ${wuku1}
-    - Saptawara/Pancasuda: ${wetonDetails1.saptawara.name}
-    - Laku: ${wetonDetails1.laku.name}
+    - Saptawara/Pancasuda: ${wetonDetails1.saptawara?.name}
+    - Laku: ${wetonDetails1.laku?.name}
 
     Person B Data:
     - Name: ${profile2.full_name.split(" ")[0]}
@@ -1185,30 +1185,30 @@ export const proCoupleCompatibilityPrompt = (
     - Market Day (Pasaran): ${wetonDetails2.pasaran} (Neptu: ${
     wetonDetails2.neptu_pasaran
   })
-    - Rakam: ${wetonDetails2.rakam.name}
+    - Rakam: ${wetonDetails2.rakam?.name}
     - Wuku: ${wuku2}
-    - Saptawara/Pancasuda: ${wetonDetails2.saptawara.name}
-    - Laku: ${wetonDetails2.laku.name}
+    - Saptawara/Pancasuda: ${wetonDetails2.saptawara?.name}
+    - Laku: ${wetonDetails2.laku?.name}
 
     Pre-calculated Weton Jodoh Results:
-    - Weton Jodoh Division by 4 Result: ${wetonJodoh.jodoh4.name} - ${
-    wetonJodoh.jodoh4.description
+    - Weton Jodoh Division by 4 Result: ${wetonJodoh.jodoh4?.name} - ${
+    wetonJodoh.jodoh4?.description
   }
-    - Weton Jodoh Division by 5 Result: ${wetonJodoh.jodoh5.name} - ${
-    wetonJodoh.jodoh5.description
+    - Weton Jodoh Division by 5 Result: ${wetonJodoh.jodoh5?.name} - ${
+    wetonJodoh.jodoh5?.description
   }
-    - Weton Jodoh Division by 7 Result: ${wetonJodoh.jodoh7.name} - ${
-    wetonJodoh.jodoh7.description
+    - Weton Jodoh Division by 7 Result: ${wetonJodoh.jodoh7?.name} - ${
+    wetonJodoh.jodoh7?.description
   }
-    - Weton Jodoh Division by 8 Result: ${wetonJodoh.jodoh8.name} - ${
-    wetonJodoh.jodoh8.description
+    - Weton Jodoh Division by 8 Result: ${wetonJodoh.jodoh8?.name} - ${
+    wetonJodoh.jodoh8?.description
   }
     - Combined of couple's total neptu of each individual result divide by 9 result: ${
-      wetonJodoh.jodoh9.weton1
-    } and ${wetonJodoh.jodoh9.weton2} - ${wetonJodoh.jodoh9.result}
+      wetonJodoh.jodoh9?.weton1
+    } and ${wetonJodoh.jodoh9?.weton2} - ${wetonJodoh.jodoh9?.result}
     - Dina combination of couple (e.g., Kamis and Minggu): ${
-      wetonJodoh.jodohDay.dina1
-    } and ${wetonJodoh.jodohDay.dina2} - ${wetonJodoh.jodohDay.result}
+      wetonJodoh.jodohDay?.dina1
+    } and ${wetonJodoh.jodohDay?.dina2} - ${wetonJodoh.jodohDay?.result}
     `;
 
   console.log(wetonData);
@@ -1340,10 +1340,10 @@ export const proFriendshipCompatibilityPrompt = (
     - Weton Character: ${wetonDetails1.watak_weton?.description}
     - Total Neptu: ${wetonDetails1.total_neptu}
     - Neptu Character: ${wetonDetails1.neptu_character?.description}
-    - Rakam: ${wetonDetails1.rakam.name}
+    - Rakam: ${wetonDetails1.rakam?.name}
     - Wuku: ${wuku1}
-    - Saptawara/Pancasuda: ${wetonDetails1.saptawara.name}
-    - Laku: ${wetonDetails1.laku.name}
+    - Saptawara/Pancasuda: ${wetonDetails1.saptawara?.name}
+    - Laku: ${wetonDetails1.laku?.name}
 
     Person B Data:
     - Name: ${profile2.full_name.split(" ")[0]}
@@ -1355,17 +1355,17 @@ export const proFriendshipCompatibilityPrompt = (
     - Weton Character: ${wetonDetails1.watak_weton?.description}
     - Total Neptu: ${wetonDetails2.total_neptu}
     - Neptu Character: ${wetonDetails1.neptu_character?.description}
-    - Rakam: ${wetonDetails2.rakam.name}
+    - Rakam: ${wetonDetails2.rakam?.name}
     - Wuku: ${wuku2}
-    - Saptawara/Pancasuda: ${wetonDetails2.saptawara.name}
-    - Laku: ${wetonDetails2.laku.name}
+    - Saptawara/Pancasuda: ${wetonDetails2.saptawara?.name}
+    - Laku: ${wetonDetails2.laku?.name}
 
     Pre-calculated Weton Jodoh Results:
-    - Weton Jodoh Division by 4 Result: ${wetonJodoh.jodoh4.name} - ${
-    wetonJodoh.jodoh4.description
+    - Weton Jodoh Division by 4 Result: ${wetonJodoh.jodoh4?.name} - ${
+    wetonJodoh.jodoh4?.description
   }
-    - Weton Jodoh Division by 7 Result: ${wetonJodoh.jodoh7.name} - ${
-    wetonJodoh.jodoh7.description
+    - Weton Jodoh Division by 7 Result: ${wetonJodoh.jodoh7?.name} - ${
+    wetonJodoh.jodoh7?.description
   }
 
     - **CRITICAL INSTRUCTION:** This is a friendship reading. Do NOT use or reference romantic Jodoh result in romance/love context.
@@ -1398,8 +1398,8 @@ export const proFriendshipCompatibilityPrompt = (
   Section 2: The Friendship Engine
   This section provides a detailed interpretation of the traditional Javanese Weton Jodoh compatibility methods, offering specific insights into the various facets of your friendship's destiny.
   * Your Combined Power Level (interplay of the each individual Neptu Character)
-  * The Story of Your Bond (Division by 4) ${wetonJodoh.jodoh4.name}
-  * Your Public Persona (Division by 7) ${wetonJodoh.jodoh7.name}
+  * The Story of Your Bond (Division by 4) ${wetonJodoh.jodoh4?.name}
+  * Your Public Persona (Division by 7) ${wetonJodoh.jodoh7?.name}
 
   Section 3: The Friendship Playbook: How You Thrive in Real Life
   This section explores the specific energetic interaction between your individual Weton (Dina and Pasaran) and the combined Neptu, revealing deeper layers of your compatibility.

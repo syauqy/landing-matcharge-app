@@ -22,7 +22,7 @@ import { useSubscription } from "@/utils/useSubscription";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
-  const { isPro } = useSubscription();
+  // const { isPro } = useSubscription();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(true);

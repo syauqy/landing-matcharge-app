@@ -284,33 +284,29 @@ export default function CompatibilityPage() {
     setError(null);
 
     try {
-      const slug1Base = `${profileData.username}-${partner.username}`;
-      const slug2Base = `${partner.username}-${profileData.username}`;
+      const slugSuffix = type === "love" ? "couple" : "friendship";
+      const slug1 = `${profileData.username}-${partner.username}-${slugSuffix}`;
+      const slug2 = `${partner.username}-${profileData.username}-${slugSuffix}`;
 
+      // console.log(partner);
+
+      // The OR condition should check for a reading created by the current user (with slug1 and their ID)
+      // OR a reading created by the partner (with slug2 and their ID).
       const orConditions = [
-        `and(user_id.eq.${user.id},or(slug.eq.${slug1Base}-${
-          type == "love" ? "couple" : "friendship"
-        }))`,
-        `and(user_id.eq.${partner.id},or(slug.eq.${slug2Base}-${
-          type == "love" ? "couple" : "friendship"
-        }))`,
+        `and(user_id.eq.${user.id},slug.eq.${slug1})`,
+        `and(user_id.eq.${partner.id},slug.eq.${slug2})`,
       ].join(",");
-
-      const slug =
-        type === "love"
-          ? `${profileData.username}-${partner.username}-couple`
-          : `${profileData.username}-${partner.username}-friendship`;
 
       const { data: existingReading, error: fetchError } = await supabase
         .from("readings")
         .select("reading, status, slug, title")
         .eq("reading_type", "pro")
-        // .eq("user_id", user.id)
         .eq("reading_category", "compatibility")
         .or(orConditions)
         .order("created_at", { ascending: false })
-        // .eq("slug", slug)
         .maybeSingle();
+
+      // console.log(existingReading, orConditions);
 
       if (fetchError && fetchError.code !== "PGRST116") {
         throw fetchError;
@@ -326,6 +322,8 @@ export default function CompatibilityPage() {
       setSelectedPartnerReading(null);
     }
   };
+
+  // console.log(wetonJodoh);
 
   const handleCoupleReading = async () => {
     setError(null);
