@@ -2,7 +2,7 @@ import React from "react";
 import { getCompatibilitySlug, getWetonEmojiScore } from "@/utils";
 import Link from "next/link";
 
-export function FriendshipCompatibilityCard({ reading }) {
+export function FriendshipCompatibilityCard({ reading, type }) {
   return (
     <div className="w-full justify-center bg-base-100 rounded-2xl p-4 border border-[var(--color-batik-border)] hover:shadow-lg cursor-pointer">
       <div className="flex flex-col gap-2">
@@ -45,7 +45,7 @@ export function FriendshipCompatibilityCard({ reading }) {
         <Link
           href={`/readings/compatibility/${getCompatibilitySlug(
             reading.slug
-          )}?slug=${reading.slug}`}
+          )}?slug=${reading.slug}${type ? `&type=${type}` : ""}`}
           passHref
           className="text-sm font-semibold text-batik-text hover:underline"
         >

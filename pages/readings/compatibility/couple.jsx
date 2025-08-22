@@ -33,6 +33,7 @@ export default function DetailCompatibilityReading() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [slug, setSlug] = useQueryState("slug");
+  const [profileType, setProfileType] = useQueryState("type");
   // const [reading, setReading] = useState(null);
   const [isSectionOneOpen, setIsSectionOneOpen] = useState(true);
   const [isSectionTwoOpen, setIsSectionTwoOpen] = useState(false);
@@ -168,26 +169,34 @@ export default function DetailCompatibilityReading() {
     };
   }, []);
 
-  const fetchPartnerProfile = useCallback(async (partnerUsername) => {
-    if (!partnerUsername) return;
-    try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("avatar_url, dina_pasaran, full_name, username")
-        .eq("username", partnerUsername)
-        .single();
+  const fetchPartnerProfile = useCallback(
+    async (partnerUsername) => {
+      if (!partnerUsername) return;
+      try {
+        const selectColumns =
+          profileType === "custom"
+            ? "dina_pasaran, full_name, username"
+            : "avatar_url, dina_pasaran, full_name, username";
 
-      if (error) {
-        console.error("Error fetching partner profile:", error);
+        const { data, error } = await supabase
+          .from(profileType == "custom" ? "custom_profiles" : "profiles")
+          .select(selectColumns)
+          .eq("username", partnerUsername)
+          .single();
+
+        if (error) {
+          console.error("Error fetching partner profile:", error);
+          setPartnerProfile(null);
+          return;
+        }
+        setPartnerProfile(data);
+      } catch (err) {
+        console.error("Error in fetchPartnerProfile:", err);
         setPartnerProfile(null);
-        return;
       }
-      setPartnerProfile(data);
-    } catch (err) {
-      console.error("Error in fetchPartnerProfile:", err);
-      setPartnerProfile(null);
-    }
-  }, []);
+    },
+    [profileType]
+  );
 
   useEffect(() => {
     if (slug && profileData?.username) {

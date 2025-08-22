@@ -824,7 +824,7 @@ export default function ProfileSetupPage() {
                       (currentStep === 8 && !birthTime) ||
                       (currentStep === 11 && !gender)
                     }
-                    className="bg-batik-border text-batik-white font-semibold py-2 px-4 rounded-lg hover:bg-batik-border-hover transition duration-150 ease-in-out cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-400"
+                    className="bg-batik-text/70 text-batik-white font-semibold py-2 px-4 rounded-lg hover:bg-batik-border-hover transition duration-150 ease-in-out cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-400"
                   >
                     Continue
                   </button>
@@ -834,7 +834,7 @@ export default function ProfileSetupPage() {
                   <button
                     type="submit"
                     disabled={saving || (currentStep === 11 && !gender)}
-                    className="bg-batik-border text-batik-white font-semibold py-2 px-4 rounded-lg hover:bg-batik-border-hover transition duration-150 ease-in-out cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-400"
+                    className="bg-batik-text/70 text-batik-white font-semibold py-2 px-4 rounded-lg hover:bg-batik-border-hover transition duration-150 ease-in-out cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-400"
                   >
                     {saving
                       ? "Generating your reading"
@@ -1040,8 +1040,8 @@ export default function ProfileSetupPage() {
                     Understand the Vibe Between You
                   </h2>
                   <p className="text-sm text-slate-600 mt-2">
-                    Check your energetic compatibility with friends and partners
-                    to build deeper, more meaningful connections.
+                    Explore your compatibility with friends and partner to build
+                    stronger and more meaningful connections.
                   </p>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -1112,7 +1112,7 @@ export default function ProfileSetupPage() {
             <button
               type="button"
               onClick={nextStep}
-              className="bg-batik-border active:bg-batik-border-hover delay-150 hover:-translate-y-1 text-batik-white font-semibold py-2 px-4 rounded-lg hover:bg-batik-border-hover transition duration-150 ease-in-out cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-400"
+              className="bg-batik-text/70 active:bg-batik-border-hover delay-150 hover:-translate-y-1 text-batik-white font-semibold py-2 px-4 rounded-lg hover:bg-batik-border-hover transition duration-150 ease-in-out cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-400"
             >
               Continue
             </button>
@@ -1124,7 +1124,7 @@ export default function ProfileSetupPage() {
                 setIntroComplete(true);
                 nextStep();
               }}
-              className="bg-batik-border text-batik-white font-semibold py-2 px-4 rounded-lg hover:bg-batik-border-hover transition duration-150 ease-in-out cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-400"
+              className="bg-batik-text/70 text-batik-white font-semibold py-2 px-4 rounded-lg hover:bg-batik-border-hover transition duration-150 ease-in-out cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-400"
             >
               Continue
             </button>

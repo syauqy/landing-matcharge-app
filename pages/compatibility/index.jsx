@@ -372,7 +372,11 @@ export default function CompatibilityPage() {
         if (existingReading) {
           setCoupleReading(existingReading);
           const readingType = getCompatibilitySlug(slug);
-          router.push(`/readings/compatibility/${readingType}?slug=${slug}`);
+          router.push(
+            `/readings/compatibility/${readingType}?slug=${slug}&${
+              partnerProfile.type == "custom" ? "type=custom" : ""
+            }`
+          );
           setLoading(false);
           return;
         } else if (!existingReading && !fetchError) {
@@ -426,7 +430,9 @@ export default function CompatibilityPage() {
             );
             const newSlug = newCompatibilityReading?.slug;
             router.push(
-              `/readings/compatibility/${readingType}?slug=${newSlug}`
+              `/readings/compatibility/${readingType}?slug=${newSlug}&${
+                partnerProfile.type == "custom" ? "type=custom" : ""
+              }`
             );
             // setLoading(false);
           } catch (err) {
@@ -611,10 +617,14 @@ export default function CompatibilityPage() {
                 <>
                   {selectedPartnerReading?.status === "completed" ? (
                     compatibilityType === "love" ? (
-                      <LoveCompatibilityCard reading={selectedPartnerReading} />
+                      <LoveCompatibilityCard
+                        reading={selectedPartnerReading}
+                        type={partnerProfile.type}
+                      />
                     ) : (
                       <FriendshipCompatibilityCard
                         reading={selectedPartnerReading}
+                        type={partnerProfile.type}
                       />
                     )
                   ) : selectedPartnerReading?.status === "loading" ? (
