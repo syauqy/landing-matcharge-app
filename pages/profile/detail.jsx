@@ -38,17 +38,23 @@ function DetailProfilePage() {
   const [friendshipReadingData, setFriendshipReadingData] = useState(null);
   const [loadingCompatibilityReading, setLoadingCompatibilityReading] =
     useState(false);
+  const [profileType, setProfileType] = useQueryState("type");
+
+  // console.log(profileType, friendshipStatus);
 
   const fetchProfile = useCallback(async () => {
     if (!username) return;
 
+    const selectColumns =
+      profileType === "custom"
+        ? "id, username, full_name, dina_pasaran, weton, wuku"
+        : "id, username, full_name, dina_pasaran, weton, wuku, avatar_url";
+
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from("profiles")
-        .select(
-          "id, username, full_name, dina_pasaran, weton, wuku, avatar_url"
-        )
+        .from(profileType == "custom" ? "custom_profiles" : "profiles")
+        .select(selectColumns)
         .eq("username", username)
         .single();
 
@@ -102,6 +108,10 @@ function DetailProfilePage() {
       setFriendshipStatus("not_friends"); // Fallback
     } finally {
       setIsFriendActionLoading(false);
+    }
+
+    if (profileType == "custom") {
+      setFriendshipStatus("friends");
     }
   };
 
@@ -337,7 +347,7 @@ function DetailProfilePage() {
     );
   }
 
-  // console.log(profile);
+  // console.log(compatibilityReadingData, friendshipReadingData);
 
   // Avatar logic: use profile.avatar_url or generate with ui-avatars
   const displayAvatarUrl =
@@ -423,39 +433,41 @@ function DetailProfilePage() {
                       Get Compatibility
                     </Link>
                   )}
-                <button
-                  onClick={handleFriendAction}
-                  disabled={isFriendActionLoading || !friendshipStatus}
-                  className={`btn rounded-2xl ${
-                    friendshipStatus === "friends"
-                      ? "border-red-500 text-red-600 bg-red-100" // Option to remove friend
-                      : friendshipStatus === "pending_sent"
-                      ? "bg-red-100 border-red-500 text-red-600" // Option to cancel request
-                      : friendshipStatus === "pending_received"
-                      ? "bg-green-100 border-green-500 text-green-600" // Option to accept
-                      : "bg-batik border-batik-border" // Option to add friend
-                  } flex items-center justify-center gap-2`}
-                >
-                  {isFriendActionLoading ? (
-                    <Loader2 size={18} className="animate-spin" />
-                  ) : friendshipStatus === "friends" ? (
-                    <>
-                      <UserX size={18} /> Remove Friend
-                    </>
-                  ) : friendshipStatus === "pending_sent" ? (
-                    <>
-                      <UserX size={18} /> Cancel Request
-                    </>
-                  ) : friendshipStatus === "pending_received" ? (
-                    <>
-                      <UserCheck size={18} /> Accept Request
-                    </>
-                  ) : (
-                    <>
-                      <UserPlus size={18} /> Add Friend
-                    </>
-                  )}
-                </button>
+                {profileType !== "custom" && (
+                  <button
+                    onClick={handleFriendAction}
+                    disabled={isFriendActionLoading || !friendshipStatus}
+                    className={`btn rounded-2xl ${
+                      friendshipStatus === "friends"
+                        ? "border-red-500 text-red-600 bg-red-100" // Option to remove friend
+                        : friendshipStatus === "pending_sent"
+                        ? "bg-red-100 border-red-500 text-red-600" // Option to cancel request
+                        : friendshipStatus === "pending_received"
+                        ? "bg-green-100 border-green-500 text-green-600" // Option to accept
+                        : "bg-batik border-batik-border" // Option to add friend
+                    } flex items-center justify-center gap-2`}
+                  >
+                    {isFriendActionLoading ? (
+                      <Loader2 size={18} className="animate-spin" />
+                    ) : friendshipStatus === "friends" ? (
+                      <>
+                        <UserX size={18} /> Remove Friend
+                      </>
+                    ) : friendshipStatus === "pending_sent" ? (
+                      <>
+                        <UserX size={18} /> Cancel Request
+                      </>
+                    ) : friendshipStatus === "pending_received" ? (
+                      <>
+                        <UserCheck size={18} /> Accept Request
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus size={18} /> Add Friend
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -480,19 +492,18 @@ function DetailProfilePage() {
                   )}
                   aria-label="Tabs"
                 >
-                  {compatibilityReadingData ||
-                    (friendshipReadingData && (
-                      <button
-                        onClick={() => setActiveTab("compatibility")}
-                        className={`${
-                          activeTab === "compatibility"
-                            ? "border-batik-text text-batik-black bg-batik-border font-semibold"
-                            : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
-                        } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
-                      >
-                        Synergy
-                      </button>
-                    ))}
+                  {(compatibilityReadingData || friendshipReadingData) && (
+                    <button
+                      onClick={() => setActiveTab("compatibility")}
+                      className={`${
+                        activeTab === "compatibility"
+                          ? "border-batik-text text-batik-black bg-batik-border font-semibold"
+                          : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
+                      } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
+                    >
+                      Synergy
+                    </button>
+                  )}
                   <button
                     onClick={() => setActiveTab("weton")}
                     className={`${
@@ -540,11 +551,13 @@ function DetailProfilePage() {
                             {compatibilityReadingData && (
                               <LoveCompatibilityCard
                                 reading={compatibilityReadingData}
+                                type={profileType}
                               />
                             )}
                             {friendshipReadingData && (
                               <FriendshipCompatibilityCard
                                 reading={friendshipReadingData}
+                                type={profileType}
                               />
                             )}
                           </div>

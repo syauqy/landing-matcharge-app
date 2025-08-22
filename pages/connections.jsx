@@ -18,6 +18,8 @@ export default function ConnectionsPage() {
   const [friends, setFriends] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(true);
   const [error, setError] = useState(null);
+  const [customProfiles, setCustomProfiles] = useState([]);
+  const [loadingCustomProfiles, setLoadingCustomProfiles] = useState(true);
 
   const fetchPendingRequests = useCallback(async () => {
     if (!user) return;
@@ -89,12 +91,33 @@ export default function ConnectionsPage() {
     }
   }, [user]);
 
+  const fetchCustomProfiles = useCallback(async () => {
+    if (!user) return;
+    setLoadingFriends(true);
+    setError(null);
+    try {
+      const { data, error: customProfilesError } = await supabase
+        .from("custom_profiles")
+        .select(`id, gender, username, full_name, weton->laku, wuku->name`)
+        .eq("user_id", user.id);
+
+      if (customProfilesError) throw customProfilesError;
+      setCustomProfiles(data || []);
+    } catch (err) {
+      console.error("Error fetching custom profiles:", err);
+      setError("Failed to load custom profiles.");
+    } finally {
+      setLoadingCustomProfiles(false);
+    }
+  }, [user]);
+
   useEffect(() => {
     if (user) {
       fetchPendingRequests();
       fetchFriends();
+      fetchCustomProfiles();
     }
-  }, [user, fetchPendingRequests, fetchFriends]);
+  }, [user, fetchPendingRequests, fetchFriends, fetchCustomProfiles]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -126,6 +149,8 @@ export default function ConnectionsPage() {
       setSearchingDone(true);
     }
   };
+
+  // console.log(customProfiles);
 
   const handleFriendRequestAction = async (requestId, action) => {
     if (!user) return;
@@ -322,9 +347,10 @@ export default function ConnectionsPage() {
             <h2 className="text-lg font-semibold text-batik-black mb-3">
               Your Connections
             </h2>
-            {loadingFriends && (
-              <p className="text-sm text-gray-500">Loading friends...</p>
-            )}
+            {loadingFriends ||
+              (loadingCustomProfiles && (
+                <p className="text-sm text-gray-500">Loading friends...</p>
+              ))}
             <div className="space-y-2">
               {friends.length > 0
                 ? friends.map((friend) => (
@@ -370,12 +396,61 @@ export default function ConnectionsPage() {
                       </div>
                     </Link>
                   ))
-                : !loadingFriends && (
+                : !loadingFriends &&
+                  !customProfiles && (
                     <p className="text-sm text-gray-500">
                       You have no connections yet. Try searching using the
                       search bar above.
                     </p>
                   )}
+            </div>
+            <div className="space-y-2 mt-2">
+              {customProfiles?.length > 0 ? (
+                customProfiles.map((customProfile) => (
+                  <Link
+                    key={customProfile.id}
+                    href={`/profile/detail?username=${customProfile.username}&type=custom`}
+                    className="relative flex flex-row items-center gap-3 p-3 bg-base-100 rounded-2xl shadow-xs border border-batik-border hover:bg-batik/50 transition-colors"
+                  >
+                    <div className="avatar">
+                      <div className="w-12 rounded-full ring-batik-border">
+                        <img
+                          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            customProfile.full_name
+                          )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`}
+                          alt={customProfile.full_name}
+                        />
+                      </div>
+                    </div>
+                    <div className="absolute bg-amber-400 text-batik-black text-xs right-0.5 bottom-1 z-10 px-3 py-1 rounded-2xl font-medium">
+                      Custom
+                    </div>
+                    <div className="flex flex-col gap-2 max-w-[80%]">
+                      <div className="flex flex-row gap-2 items-end leading-4 line-clamp-1">
+                        <p className="font-semibold text-batik-black text-ellipsis overflow-hidden text-nowrap">
+                          {customProfile.full_name || customProfile.username}
+                        </p>
+                        <p className="text-xs text-gray-500 leading-3.5 text-ellipsis overflow-hidden text-nowrap">
+                          @{customProfile.username}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs">
+                        <div className="flex items-center gap-1">
+                          <SunIcon size={12} />
+                          {customProfile?.laku?.name}
+                        </div>
+                        <>&bull;</>
+                        <div className="flex items-center gap-1">
+                          <MoonStarIcon size={12} />
+                          {customProfile?.name}
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <></>
+              )}
             </div>
           </section>
         </div>

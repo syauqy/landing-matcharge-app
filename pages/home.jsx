@@ -17,6 +17,7 @@ import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { HomeLoadingSkeleton } from "@/components/layouts/home-loading-skeleton";
 import { useDailyReading, useMonthlyReading } from "@/utils/useReading";
+import { ArrowRight } from "lucide-react";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -471,9 +472,21 @@ export default function Home() {
               </div>
             </div>
             <div className="my-4 flex flex-col gap-2">
-              <div className="px-4 text-lg font-semibold text-batik-black">
-                Latest Readings
+              <div className="px-4 flex flex-row justify-between items-center">
+                <div className=" text-lg font-semibold text-batik-black">
+                  Latest Readings
+                </div>
+                <Link
+                  href={`/readings`}
+                  className="text-batik-text flex items-center gap-1"
+                >
+                  All Readings{" "}
+                  <span>
+                    <ArrowRight size={15} />
+                  </span>
+                </Link>
               </div>
+
               <div className="overflow-x-auto overflow-y-clip">
                 {renderLatestReadings()}
               </div>

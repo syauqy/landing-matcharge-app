@@ -1,6 +1,6 @@
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
-import { createClient } from "@/utils/supabase/server-props";
+import { supabaseAdmin } from "@/utils/supabase/admin";
 import {
   dailyReadingPrompt,
   monthlyReadingPrompt,
@@ -17,7 +17,6 @@ import {
   proLovePrompt2,
 } from "@/utils/prompts";
 import { z } from "zod";
-import { supabase } from "@/utils/supabaseClient";
 import {
   getWeton,
   getWuku,
@@ -33,7 +32,7 @@ export async function generateDailyReading(profile, today) {
   // supabase client is now an argument
   // console.log("today date", today);
   // console.log(profile.id, profile.username, today);
-  const { data: newReading, error } = await supabase
+  const { data: newReading, error } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "basic",
@@ -108,7 +107,7 @@ export async function generateDailyReading(profile, today) {
 
       // console.log("resObj", resObj);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -125,7 +124,7 @@ export async function generateDailyReading(profile, today) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -139,7 +138,7 @@ export async function generateDailyReading(profile, today) {
 }
 
 export async function generateMonthlyReading(profile, today) {
-  const { data: newReading, error } = await supabase
+  const { data: newReading, error } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -307,7 +306,7 @@ export async function generateMonthlyReading(profile, today) {
 
       // console.log("resObj", resObj);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -324,7 +323,7 @@ export async function generateMonthlyReading(profile, today) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -339,10 +338,10 @@ export async function generateMonthlyReading(profile, today) {
 
 export async function generatePrimaryTraitsReading(profile) {
   // supabase client is now an argument
-  console.log("Starting AI generation process...");
-  const startTime = process.hrtime.bigint();
+  // console.log("Starting AI generation process...");
+  // const startTime = process.hrtime.bigint();
 
-  const { data: newReading, error } = await supabase
+  const { data: newReading, error } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "basic",
@@ -481,7 +480,7 @@ export async function generatePrimaryTraitsReading(profile) {
       });
       const resObj = response.object;
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -493,15 +492,15 @@ export async function generatePrimaryTraitsReading(profile) {
         })
         .eq("id", newReading.id);
 
-      const endTime = process.hrtime.bigint();
-      const durationMs = Number(endTime - startTime) / 1_000_000;
-      console.log(`Total AI Generation Logic took: ${durationMs}ms`);
+      // const endTime = process.hrtime.bigint();
+      // const durationMs = Number(endTime - startTime) / 1_000_000;
+      // console.log(`Total AI Generation Logic took: ${durationMs}ms`);
       break;
     } catch (error) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -515,7 +514,7 @@ export async function generatePrimaryTraitsReading(profile) {
 }
 
 export async function generateGeneralProReading(profile) {
-  const { data: newRakamReading, error } = await supabase
+  const { data: newRakamReading, error } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -538,7 +537,7 @@ export async function generateGeneralProReading(profile) {
 
   console.log("new reading generated on supabase", newRakamReading);
 
-  const { data: newSaptawaraReading, errorSaptawara } = await supabase
+  const { data: newSaptawaraReading, errorSaptawara } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -561,7 +560,7 @@ export async function generateGeneralProReading(profile) {
 
   console.log("new reading generated on supabase", newSaptawaraReading);
 
-  const { data: newLakuReading, errorLaku } = await supabase
+  const { data: newLakuReading, errorLaku } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -681,7 +680,7 @@ export async function generateGeneralProReading(profile) {
       });
       const resObj = response.object;
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -693,7 +692,7 @@ export async function generateGeneralProReading(profile) {
         })
         .eq("id", newRakamReading.id);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -705,7 +704,7 @@ export async function generateGeneralProReading(profile) {
         })
         .eq("id", newSaptawaraReading.id);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -722,7 +721,7 @@ export async function generateGeneralProReading(profile) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -730,7 +729,7 @@ export async function generateGeneralProReading(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newRakamReading.id);
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -738,7 +737,7 @@ export async function generateGeneralProReading(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newSaptawaraReading.id);
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -752,7 +751,7 @@ export async function generateGeneralProReading(profile) {
 }
 
 export async function generateGeneralProReading2(profile) {
-  const { data: newValuesReading, errorValues } = await supabase
+  const { data: newValuesReading, errorValues } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -775,7 +774,7 @@ export async function generateGeneralProReading2(profile) {
 
   console.log("new reading generated on supabase", newValuesReading);
 
-  const { data: newInteractionStyle, errorInteraction } = await supabase
+  const { data: newInteractionStyle, errorInteraction } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -877,7 +876,7 @@ export async function generateGeneralProReading2(profile) {
       });
       const resObj = response.object;
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -889,7 +888,7 @@ export async function generateGeneralProReading2(profile) {
         })
         .eq("id", newInteractionStyle.id);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -906,7 +905,7 @@ export async function generateGeneralProReading2(profile) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -914,7 +913,7 @@ export async function generateGeneralProReading2(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newValuesReading.id);
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -936,7 +935,7 @@ export async function generateGeneralProReading2(profile) {
 }
 
 export async function generateLoveBasicReading(profile) {
-  const { data: newLoveBasicReading, error } = await supabase
+  const { data: newLoveBasicReading, error } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "basic",
@@ -959,7 +958,7 @@ export async function generateLoveBasicReading(profile) {
 
   console.log("new reading generated on supabase", newLoveBasicReading);
 
-  const { data: newLoveStyleReading, errorLoveStyle } = await supabase
+  const { data: newLoveStyleReading, errorLoveStyle } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "basic",
@@ -982,21 +981,22 @@ export async function generateLoveBasicReading(profile) {
 
   console.log("new reading generated on supabase", newLoveStyleReading);
 
-  const { data: newLoveAttitudesReading, errorLoveAttitudes } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "basic",
-      reading_category: "love_readings",
-      title: "Love Attitudes",
-      subtitle:
-        "Uncover your underlying beliefs and perspectives when it comes to romance.",
-      username: profile.username,
-      status: "loading",
-      slug: "love-attitudes",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
+  const { data: newLoveAttitudesReading, errorLoveAttitudes } =
+    await supabaseAdmin
+      .from("readings")
+      .insert({
+        reading_type: "basic",
+        reading_category: "love_readings",
+        title: "Love Attitudes",
+        subtitle:
+          "Uncover your underlying beliefs and perspectives when it comes to romance.",
+        username: profile.username,
+        status: "loading",
+        slug: "love-attitudes",
+        user_id: profile.id,
+      })
+      .select()
+      .maybeSingle();
 
   if (errorLoveAttitudes) {
     console.error("Error inserting new reading:", error);
@@ -1125,7 +1125,7 @@ export async function generateLoveBasicReading(profile) {
 
       // console.log("resObj", resObj);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -1137,7 +1137,7 @@ export async function generateLoveBasicReading(profile) {
         })
         .eq("id", newLoveBasicReading.id);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -1149,7 +1149,7 @@ export async function generateLoveBasicReading(profile) {
         })
         .eq("id", newLoveStyleReading.id);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -1165,7 +1165,7 @@ export async function generateLoveBasicReading(profile) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -1173,7 +1173,7 @@ export async function generateLoveBasicReading(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newLoveBasicReading.id);
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -1181,7 +1181,7 @@ export async function generateLoveBasicReading(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newLoveStyleReading.id);
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -1195,7 +1195,7 @@ export async function generateLoveBasicReading(profile) {
 }
 
 export async function generateLoveProReading(profile) {
-  const { data: newLoveOfferReading, errorOffer } = await supabase
+  const { data: newLoveOfferReading, errorOffer } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -1218,21 +1218,22 @@ export async function generateLoveProReading(profile) {
 
   console.log("new reading generated on supabase", newLoveOfferReading);
 
-  const { data: newLoveCompatibleReading, errorCompatible } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "love_readings",
-      title: "Compatible With",
-      subtitle:
-        "Learn about Weton energies that naturally harmonize with your own in love",
-      username: profile.username,
-      status: "loading",
-      slug: "love-compatibility",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
+  const { data: newLoveCompatibleReading, errorCompatible } =
+    await supabaseAdmin
+      .from("readings")
+      .insert({
+        reading_type: "pro",
+        reading_category: "love_readings",
+        title: "Compatible With",
+        subtitle:
+          "Learn about Weton energies that naturally harmonize with your own in love",
+        username: profile.username,
+        status: "loading",
+        slug: "love-compatibility",
+        user_id: profile.id,
+      })
+      .select()
+      .maybeSingle();
 
   if (errorCompatible) {
     console.error("Error inserting new reading:", errorCompatible);
@@ -1327,7 +1328,7 @@ export async function generateLoveProReading(profile) {
 
       // console.log("resObj", resObj);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -1339,7 +1340,7 @@ export async function generateLoveProReading(profile) {
         })
         .eq("id", newLoveOfferReading.id);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -1355,7 +1356,7 @@ export async function generateLoveProReading(profile) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -1363,7 +1364,7 @@ export async function generateLoveProReading(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newLoveOfferReading.id);
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -1377,7 +1378,7 @@ export async function generateLoveProReading(profile) {
 }
 
 export async function generateLoveProReading2(profile) {
-  const { data: newLoveAttachmentReading, error } = await supabase
+  const { data: newLoveAttachmentReading, error } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -1400,21 +1401,22 @@ export async function generateLoveProReading2(profile) {
 
   console.log("new reading generated on supabase", newLoveAttachmentReading);
 
-  const { data: newLoveIncompatibleReading, errorIncompatible } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "love_readings",
-      title: "Incompatible With",
-      subtitle:
-        "Understand potential energetic clashes and challenges with other Wetons in relationships",
-      username: profile.username,
-      status: "loading",
-      slug: "love-incompatibility",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
+  const { data: newLoveIncompatibleReading, errorIncompatible } =
+    await supabaseAdmin
+      .from("readings")
+      .insert({
+        reading_type: "pro",
+        reading_category: "love_readings",
+        title: "Incompatible With",
+        subtitle:
+          "Understand potential energetic clashes and challenges with other Wetons in relationships",
+        username: profile.username,
+        status: "loading",
+        slug: "love-incompatibility",
+        user_id: profile.id,
+      })
+      .select()
+      .maybeSingle();
 
   if (errorIncompatible) {
     console.error("Error inserting new reading:", errorIncompatible);
@@ -1503,7 +1505,7 @@ export async function generateLoveProReading2(profile) {
 
       // console.log("resObj", resObj);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -1515,7 +1517,7 @@ export async function generateLoveProReading2(profile) {
         })
         .eq("id", newLoveAttachmentReading.id);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -1532,7 +1534,7 @@ export async function generateLoveProReading2(profile) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -1540,7 +1542,7 @@ export async function generateLoveProReading2(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newLoveAttachmentReading.id);
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -1554,7 +1556,7 @@ export async function generateLoveProReading2(profile) {
 }
 
 export async function generateCareerProReading(profile) {
-  const { data: newCareerReading, error } = await supabase
+  const { data: newCareerReading, error } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -1577,7 +1579,7 @@ export async function generateCareerProReading(profile) {
 
   console.log("new reading generated on supabase", newCareerReading);
 
-  const { data: newIdealLifeReading, errorIdealLife } = await supabase
+  const { data: newIdealLifeReading, errorIdealLife } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -1741,7 +1743,7 @@ export async function generateCareerProReading(profile) {
       });
       const resObj = response.object;
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -1753,7 +1755,7 @@ export async function generateCareerProReading(profile) {
         })
         .eq("id", newCareerReading.id);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -1780,7 +1782,7 @@ export async function generateCareerProReading(profile) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -1788,7 +1790,7 @@ export async function generateCareerProReading(profile) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", newCareerReading.id);
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -1802,7 +1804,7 @@ export async function generateCareerProReading(profile) {
 }
 
 export async function generateFinancialProReading(profile) {
-  const { data: newFinancialReading, error } = await supabase
+  const { data: newFinancialReading, error } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -1825,21 +1827,22 @@ export async function generateFinancialProReading(profile) {
 
   console.log("new reading generated on supabase", newFinancialReading);
 
-  const { data: newConciousCoinReading, errorConciousCoin } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "financial_readings",
-      title: "Concious Coin",
-      subtitle:
-        "Understand your spending style that reflects your values and priorities.",
-      username: profile.username,
-      status: "loading",
-      slug: "concious-coin",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
+  const { data: newConciousCoinReading, errorConciousCoin } =
+    await supabaseAdmin
+      .from("readings")
+      .insert({
+        reading_type: "pro",
+        reading_category: "financial_readings",
+        title: "Concious Coin",
+        subtitle:
+          "Understand your spending style that reflects your values and priorities.",
+        username: profile.username,
+        status: "loading",
+        slug: "concious-coin",
+        user_id: profile.id,
+      })
+      .select()
+      .maybeSingle();
 
   if (errorConciousCoin) {
     console.error("Error inserting new reading:", errorConciousCoin);
@@ -2021,7 +2024,7 @@ export async function generateFinancialProReading(profile) {
       });
       const resObj = response.object;
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -2033,7 +2036,7 @@ export async function generateFinancialProReading(profile) {
         })
         .eq("id", newFinancialReading.id);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -2060,7 +2063,7 @@ export async function generateFinancialProReading(profile) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -2074,7 +2077,7 @@ export async function generateFinancialProReading(profile) {
 }
 
 export async function generateFinancialProReadingCopy(profile) {
-  const { data: newFinancialReading, error } = await supabase
+  const { data: newFinancialReading, error } = await supabaseAdmin
     .from("readings")
     .insert({
       reading_type: "pro",
@@ -2097,21 +2100,22 @@ export async function generateFinancialProReadingCopy(profile) {
 
   console.log("new reading generated on supabase", newFinancialReading);
 
-  const { data: newConciousCoinReading, errorConciousCoin } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "financial_readings",
-      title: "Concious Coin",
-      subtitle:
-        "Understand your spending style that reflects your values and priorities.",
-      username: profile.username,
-      status: "loading",
-      slug: "concious-coin",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
+  const { data: newConciousCoinReading, errorConciousCoin } =
+    await supabaseAdmin
+      .from("readings")
+      .insert({
+        reading_type: "pro",
+        reading_category: "financial_readings",
+        title: "Concious Coin",
+        subtitle:
+          "Understand your spending style that reflects your values and priorities.",
+        username: profile.username,
+        status: "loading",
+        slug: "concious-coin",
+        user_id: profile.id,
+      })
+      .select()
+      .maybeSingle();
 
   if (errorConciousCoin) {
     console.error("Error inserting new reading:", errorConciousCoin);
@@ -2120,21 +2124,22 @@ export async function generateFinancialProReadingCopy(profile) {
 
   console.log("new reading generated on supabase", newConciousCoinReading);
 
-  const { data: newWealthPurposeReading, errorWealthPurpose } = await supabase
-    .from("readings")
-    .insert({
-      reading_type: "pro",
-      reading_category: "financial_readings",
-      title: "Wealth Through Purpose",
-      subtitle:
-        "Explores how your Weton impacting financial prosperity and personal fulfillment.",
-      username: profile.username,
-      status: "loading",
-      slug: "wealth-purpose",
-      user_id: profile.id,
-    })
-    .select()
-    .maybeSingle();
+  const { data: newWealthPurposeReading, errorWealthPurpose } =
+    await supabaseAdmin
+      .from("readings")
+      .insert({
+        reading_type: "pro",
+        reading_category: "financial_readings",
+        title: "Wealth Through Purpose",
+        subtitle:
+          "Explores how your Weton impacting financial prosperity and personal fulfillment.",
+        username: profile.username,
+        status: "loading",
+        slug: "wealth-purpose",
+        user_id: profile.id,
+      })
+      .select()
+      .maybeSingle();
 
   if (errorWealthPurpose) {
     console.error("Error inserting new reading:", errorWealthPurpose);
@@ -2293,7 +2298,7 @@ export async function generateFinancialProReadingCopy(profile) {
       });
       const resObj = response.object;
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -2305,7 +2310,7 @@ export async function generateFinancialProReadingCopy(profile) {
         })
         .eq("id", newFinancialReading.id);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -2317,7 +2322,7 @@ export async function generateFinancialProReadingCopy(profile) {
         })
         .eq("id", newConciousCoinReading.id);
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -2332,7 +2337,7 @@ export async function generateFinancialProReadingCopy(profile) {
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -2566,7 +2571,7 @@ export async function generateCoupleCompatibilityReading(
       });
       const resObj = response.object;
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -2583,7 +2588,7 @@ export async function generateCoupleCompatibilityReading(
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -2775,7 +2780,7 @@ export async function generateFriendshipCompatibilityReading(
       });
       const resObj = response.object;
 
-      await supabase
+      await supabaseAdmin
         .from("readings")
         .update({
           status: "completed",
@@ -2792,7 +2797,7 @@ export async function generateFriendshipCompatibilityReading(
       lastErrorMsg = error.message;
       console.error(`Attempt ${attempt} failed:`, lastErrorMsg);
       if (attempt >= maxAttempts) {
-        await supabase
+        await supabaseAdmin
           .from("readings")
           .update({
             status: "error",
@@ -2803,23 +2808,4 @@ export async function generateFriendshipCompatibilityReading(
       }
     }
   } while (attempt < maxAttempts);
-}
-
-export async function getServerSideProps(context) {
-  const supabase = createClient(context);
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      user: data.user,
-      supabase: supabase,
-    },
-  };
 }
