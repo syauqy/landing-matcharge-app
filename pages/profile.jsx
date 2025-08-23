@@ -238,11 +238,22 @@ export default function ProfilePage() {
           <div className="flex-grow overflow-y-auto pt-4 sm:pt-6 pb-20">
             {profileData && (
               <div className="px-5 mb-6 flex items-center gap-4">
-                <div className="avatar">
-                  <div className="w-16 rounded-full ring-3 ring-offset-2 ring-batik-border">
-                    <img src={displayAvatarUrl} alt={profileData.full_name} />
+                <div className="relative shrink-0">
+                  <div className="avatar">
+                    <div className="w-16 rounded-full ring-3 ring-offset-2 ring-batik-border">
+                      <img
+                        src={displayAvatarUrl}
+                        alt={profileData?.full_name}
+                      />
+                    </div>
                   </div>
+                  {profileData?.subscription === "pro" && (
+                    <div className="absolute rounded-xl px-3 py-0.5 z-10 font-semibold bg-amber-400 text-[10px] -bottom-4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-batik-black">
+                      PRO
+                    </div>
+                  )}
                 </div>
+
                 <div className="flex flex-col gap-2 max-w-[80%]">
                   <div className="flex flex-col">
                     <div className="text-xl font-bold text-batik-black overflow-x-clip text-nowrap text-ellipsis">
@@ -319,7 +330,7 @@ export default function ProfilePage() {
 
                 {/* Tab Content */}
                 <div>
-                  {activeTab === "weton" && profileData.weton && (
+                  {activeTab === "weton" && profileData?.weton && (
                     <div className="flex flex-col gap-5">
                       <div className="flex flex-row gap-y-4 text-sm">
                         <div className="flex flex-col border-y border-l border-batik-border rounded-l-xl">
