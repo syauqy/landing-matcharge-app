@@ -234,7 +234,7 @@ export default function DetailCompatibilityReading() {
         <main className="p-5 bg-base-100 md:p-6 max-w-3xl mx-auto space-y-6 pb-16">
           <ReadingDescription
             reading_category={"🤝 Compatibility"}
-            title={reading.title || "Compatibility Reading"}
+            title={reading?.title || "Compatibility Reading"}
             topics={topics}
             description={readingContent?.summary?.vibe}
           />
@@ -276,7 +276,7 @@ export default function DetailCompatibilityReading() {
                 Compatibility
               </div>
               <span className="text-batik-black font-semibold text-sm truncate max-w-xs">
-                {reading.title.replace(/'s Compatibility$/, "")}
+                {reading?.title.replace(/'s Compatibility$/, "")}
               </span>
             </div>
           )}

@@ -359,58 +359,58 @@ export default function ProfilePage() {
                             href="#weton"
                             className="border-b border-batik-border px-4 py-2"
                           >
-                            {profileData.weton?.weton_en}
+                            {profileData?.weton?.weton_en}
                           </Link>
                           <Link
                             href="#dina"
                             className="border-b border-batik-border px-4 py-2"
                           >
-                            {profileData.weton?.dina_en}
+                            {profileData?.weton?.dina_en}
                           </Link>
                           <Link
                             href="#pasaran"
                             className="border-b border-batik-border px-4 py-2"
                           >
-                            {profileData.weton?.pasaran}
+                            {profileData?.weton?.pasaran}
                           </Link>
                           <Link
                             href="#weton"
                             className="border-b border-batik-border px-4 py-2"
                           >
-                            {profileData.weton?.total_neptu}
+                            {profileData?.weton?.total_neptu}
                           </Link>
                           <Link
                             href="#laku"
                             className="border-b border-batik-border px-4 py-2"
                           >
-                            {profileData.weton?.laku?.name}
+                            {profileData?.weton?.laku?.name}
                           </Link>
                           <Link
                             href="#pancasuda"
                             className="border-b border-batik-border px-4 py-2"
                           >
-                            {profileData.weton?.saptawara?.name}
+                            {profileData?.weton?.saptawara?.name}
                           </Link>
                           <Link href="#rakam" className="px-4 p-2">
-                            {profileData.weton?.rakam?.name}
+                            {profileData?.weton?.rakam?.name}
                           </Link>
                         </div>
                       </div>
                       <div className="bg-base-100 rounded-2xl p-4 md:p-6 mb-6 border border-[var(--color-batik-border)]">
                         <div className="space-y-4 text-sm">
-                          {(profileData.weton?.dina_en ||
-                            profileData.weton?.day_character?.description) && (
+                          {(profileData?.weton?.dina_en ||
+                            profileData?.weton?.day_character?.description) && (
                             <div id="dina" className="flex flex-col gap-1">
                               <div className="text-sm font-semibold  text-batik-text">
                                 Day (Dina)
                               </div>
                               <div>
                                 <div className="text-lg font-semibold">
-                                  {profileData.weton?.dina_en}
+                                  {profileData?.weton?.dina_en}
                                 </div>
                                 <div className="text-base text-gray-700">
                                   {
-                                    profileData.weton?.day_character
+                                    profileData?.weton?.day_character
                                       ?.description
                                   }
                                 </div>
@@ -418,8 +418,8 @@ export default function ProfilePage() {
                             </div>
                           )}
 
-                          {(profileData.weton?.pasaran ||
-                            profileData.weton?.pasaran_character
+                          {(profileData?.weton?.pasaran ||
+                            profileData?.weton?.pasaran_character
                               ?.description) && (
                             <div
                               id="pasaran"
@@ -430,11 +430,11 @@ export default function ProfilePage() {
                               </div>
                               <div>
                                 <div className="text-lg font-semibold">
-                                  {profileData.weton?.pasaran}
+                                  {profileData?.weton?.pasaran}
                                 </div>
                                 <div className="text-base text-gray-700">
                                   {
-                                    profileData.weton?.pasaran_character
+                                    profileData?.weton?.pasaran_character
                                       ?.description
                                   }
                                 </div>
@@ -443,7 +443,7 @@ export default function ProfilePage() {
                           )}
 
                           {/* Weton Energy (Neptu Character) */}
-                          {profileData.weton?.neptu_character?.description && (
+                          {profileData?.weton?.neptu_character?.description && (
                             <div
                               id="weton"
                               className="flex flex-col gap-1 pt-4 border-t border-batik-border"
@@ -453,23 +453,23 @@ export default function ProfilePage() {
                               </div>
                               <div>
                                 <div className="text-lg font-semibold">
-                                  {profileData.weton?.weton_en}
+                                  {profileData?.weton?.weton_en}
                                 </div>
                                 <div className="text-base text-gray-700">
                                   {
-                                    profileData.weton?.neptu_character
+                                    profileData?.weton?.neptu_character
                                       ?.description
                                   }
                                 </div>
                                 <div className="text-base text-gray-700 mt-2">
-                                  {profileData.weton?.watak_weton?.description}
+                                  {profileData?.weton?.watak_weton?.description}
                                 </div>
                               </div>
                             </div>
                           )}
 
                           {/* Laku */}
-                          {profileData.weton?.laku && (
+                          {profileData?.weton?.laku && (
                             <div
                               id="laku"
                               className="flex flex-col gap-1 pt-4 border-t border-batik-border"
@@ -480,21 +480,21 @@ export default function ProfilePage() {
                               <div className="flex flex-col gap-2">
                                 <div>
                                   <div className="text-lg font-semibold">
-                                    {profileData.weton.laku.name}
+                                    {profileData?.weton.laku.name}
                                   </div>
                                   <div className="text-sm font-light text-slate-700">
-                                    {profileData.weton.laku.meaning}
+                                    {profileData?.weton.laku.meaning}
                                   </div>
                                 </div>
                                 <div className="text-base text-gray-700">
-                                  {profileData.weton.laku.description}
+                                  {profileData?.weton.laku.description}
                                 </div>
                               </div>
                             </div>
                           )}
 
                           {/* Pancasuda (Saptawara) */}
-                          {profileData.weton?.saptawara && (
+                          {profileData?.weton?.saptawara && (
                             <div
                               id="pancasuda"
                               className="flex flex-col gap-1 pt-4 border-t border-batik-border"
@@ -505,21 +505,21 @@ export default function ProfilePage() {
                               <div className="flex flex-col gap-2">
                                 <div>
                                   <div className="text-lg font-semibold">
-                                    {profileData.weton.saptawara.name}
+                                    {profileData?.weton.saptawara.name}
                                   </div>
                                   <div className="text-sm font-light text-slate-700">
-                                    {profileData.weton.saptawara.meaning}
+                                    {profileData?.weton.saptawara.meaning}
                                   </div>
                                 </div>
                                 <div className="text-base text-gray-700">
-                                  {profileData.weton.saptawara.description}
+                                  {profileData?.weton.saptawara.description}
                                 </div>
                               </div>
                             </div>
                           )}
 
                           {/* Rakam */}
-                          {profileData.weton?.rakam && (
+                          {profileData?.weton?.rakam && (
                             <div
                               id="rakam"
                               className="flex flex-col gap-1 pt-4 border-t border-batik-border"
@@ -530,14 +530,14 @@ export default function ProfilePage() {
                               <div className="flex flex-col gap-2">
                                 <div>
                                   <div className="text-lg font-semibold">
-                                    {profileData.weton.rakam.name}
+                                    {profileData?.weton.rakam.name}
                                   </div>
                                   <div className="text-sm font-light text-slate-700">
-                                    {profileData.weton.rakam.meaning}
+                                    {profileData?.weton.rakam.meaning}
                                   </div>
                                 </div>
                                 <div className="text-base text-gray-700">
-                                  {profileData.weton.rakam.description}
+                                  {profileData?.weton.rakam.description}
                                 </div>
                               </div>
                             </div>
@@ -572,7 +572,7 @@ export default function ProfilePage() {
                       </div>
                     </div>
                   )}
-                  {activeTab === "wuku" && profileData.wuku && (
+                  {activeTab === "wuku" && profileData?.wuku && (
                     <div className="flex flex-col gap-5">
                       <div className="flex flex-row gap-y-4 text-sm">
                         <div className="flex flex-col border-y border-l border-batik-border rounded-l-xl">
@@ -709,18 +709,18 @@ export default function ProfilePage() {
                         </div>
                         <div className="flex flex-col border flex-grow border-batik-border rounded-r-xl font-medium text-batik-black">
                           <div className="border-b border-batik-border px-4 py-2 overflow-x-clip text-nowrap text-ellipsis">
-                            {profileData.full_name}
+                            {profileData?.full_name}
                           </div>
                           <div className="border-b border-batik-border px-4 py-2 overflow-x-clip text-nowrap text-ellipsis">
-                            {profileData.username}
+                            {profileData?.username}
                           </div>
                           <div className="border-b border-batik-border px-4 py-2">
-                            {profileData.email}
+                            {profileData?.email}
                           </div>
                           <div className="border-b border-batik-border px-4 py-2">
-                            {profileData.birth_date
+                            {profileData?.birth_date
                               ? new Date(
-                                  profileData.birth_date
+                                  profileData?.birth_date
                                 ).toLocaleDateString("en-US", {
                                   year: "numeric",
                                   month: "long",
@@ -729,10 +729,10 @@ export default function ProfilePage() {
                               : "N/A"}
                           </div>
                           <div className="border-b border-batik-border px-4 py-2 capitalize">
-                            {profileData.gender}
+                            {profileData?.gender}
                           </div>
                           <div className="px-4 py-2 capitalize">
-                            {profileData.subscription || "Free"}
+                            {profileData?.subscription || "Free"}
                           </div>
                         </div>
                       </div>

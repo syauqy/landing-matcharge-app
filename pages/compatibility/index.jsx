@@ -505,10 +505,10 @@ export default function CompatibilityPage() {
                           src={
                             profileData?.avatar_url ||
                             `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                              profileData.full_name
+                              profileData?.full_name
                             )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
                           }
-                          alt={profileData.full_name}
+                          alt={profileData?.full_name}
                         />
                       </div>
                     </div>
@@ -543,10 +543,10 @@ export default function CompatibilityPage() {
                           src={
                             partnerProfile?.avatar_url ||
                             `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                              partnerProfile.full_name
+                              partnerProfile?.full_name
                             )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
                           }
-                          alt={partnerProfile.full_name}
+                          alt={partnerProfile?.full_name}
                         />
                       </div>
                     </div>
@@ -617,12 +617,12 @@ export default function CompatibilityPage() {
                     compatibilityType === "love" ? (
                       <LoveCompatibilityCard
                         reading={selectedPartnerReading}
-                        type={partnerProfile.type}
+                        type={partnerProfile?.type}
                       />
                     ) : (
                       <FriendshipCompatibilityCard
                         reading={selectedPartnerReading}
-                        type={partnerProfile.type}
+                        type={partnerProfile?.type}
                       />
                     )
                   ) : selectedPartnerReading?.status === "loading" ? (
@@ -644,11 +644,11 @@ export default function CompatibilityPage() {
                       }
                       className="btn btn-secondary rounded-xl w-full border-rose-500 border disabled:bg-slate-400 mt-20 disabled:cursor-not-allowed"
                       disabled={
-                        loading || !wetonJodoh.jodoh4 || !partnerProfile
+                        loading || !wetonJodoh?.jodoh4 || !partnerProfile
                       }
                     >
                       <span className="absolute inline-flex size-10 w-1/2 animate-ping rounded-full bg-rose-300 opacity-50"></span>
-                      {loading && coupleReading.length === 0
+                      {loading && coupleReading?.length === 0
                         ? "Generating..."
                         : "Get Compatibility Reading"}
                     </button>

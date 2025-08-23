@@ -3,7 +3,7 @@ import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { ArrowLeft, HelpCircle } from "lucide-react";
-import { LoadingProfile } from "@/components/layouts/loading-profile";
+// import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
@@ -146,7 +146,7 @@ export default function BasicReadingPage() {
     setIsSheetOpen(true);
   };
 
-  console.log("Profile Data:", profileData);
+  // console.log("Profile Data:", profileData);
 
   if (authLoading || (loading && !error)) {
     return <PageLoadingLayout />;
@@ -189,7 +189,7 @@ export default function BasicReadingPage() {
               Weton
             </div>
             <span className="text-batik-black font-semibold text-sm">
-              {profileData.dina_pasaran}
+              {profileData?.dina_pasaran}
             </span>
           </div>
         )}
@@ -223,13 +223,13 @@ export default function BasicReadingPage() {
                 </button>
               </div>
               <div className="font-semibold text-lg">
-                {profileData.dina_pasaran}
+                {profileData?.dina_pasaran}
               </div>
               <div className="text-base text-gray-700">
-                {profileData.weton?.neptu_character?.description}
+                {profileData?.weton?.neptu_character?.description}
               </div>
               <div className="text-base text-gray-700 mt-3">
-                {profileData.weton?.watak_weton?.description}
+                {profileData?.weton?.watak_weton?.description}
               </div>
             </div>
             <div className="flex flex-col">
@@ -246,10 +246,10 @@ export default function BasicReadingPage() {
               </div>
               <div>
                 <div className="text-lg font-semibold">
-                  {profileData.weton?.dina_en} ({profileData.weton?.dina})
+                  {profileData?.weton?.dina_en} ({profileData?.weton?.dina})
                 </div>
                 <div className="text-gray-700">
-                  {profileData.weton?.day_character?.description}
+                  {profileData?.weton?.day_character?.description}
                 </div>
               </div>
             </div>
@@ -271,10 +271,10 @@ export default function BasicReadingPage() {
                 </button>
               </div>
               <div className="text-lg font-semibold">
-                {profileData.weton?.pasaran}
+                {profileData?.weton?.pasaran}
               </div>
               <div className="text-gray-700">
-                {profileData.weton?.pasaran_character?.description}
+                {profileData?.weton?.pasaran_character?.description}
               </div>
             </div>
           </div>
@@ -305,11 +305,11 @@ export default function BasicReadingPage() {
               </div>
               <div>
                 <div className="text-lg font-semibold">
-                  {profileData.weton?.laku?.name} (
-                  {profileData.weton?.laku?.meaning})
+                  {profileData?.weton?.laku?.name} (
+                  {profileData?.weton?.laku?.meaning})
                 </div>
                 <div className="text-gray-700">
-                  {profileData.weton?.laku?.description}
+                  {profileData?.weton?.laku?.description}
                 </div>
               </div>
             </div>
@@ -332,13 +332,13 @@ export default function BasicReadingPage() {
               </div>
               <div>
                 <div className="text-lg font-semibold">
-                  {profileData.weton?.saptawara?.name}
+                  {profileData?.weton?.saptawara?.name}
                 </div>
                 <div className="text-gray-700 ">
-                  {profileData.weton?.saptawara?.meaning}
+                  {profileData?.weton?.saptawara?.meaning}
                 </div>
                 <div className="text-gray-700 mt-3">
-                  {profileData.weton?.saptawara?.description}
+                  {profileData?.weton?.saptawara?.description}
                 </div>
               </div>
             </div>
@@ -372,13 +372,13 @@ export default function BasicReadingPage() {
               </div>
               <div>
                 <div className="text-lg font-semibold">
-                  {profileData.weton?.rakam?.name}
+                  {profileData?.weton?.rakam?.name}
                 </div>
                 <div className="text-gray-700">
-                  {profileData.weton?.rakam?.meaning}
+                  {profileData?.weton?.rakam?.meaning}
                 </div>
                 <div className="text-gray-700 mt-3">
-                  {profileData.weton?.rakam?.description}
+                  {profileData?.weton?.rakam?.description}
                 </div>
               </div>
             </div>
@@ -398,7 +398,7 @@ export default function BasicReadingPage() {
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold text-batik-black">
-                {sheetContent.title}
+                {sheetContent?.title}
               </h3>
               <button
                 onClick={() => setIsSheetOpen(false)}
@@ -408,7 +408,7 @@ export default function BasicReadingPage() {
               </button>
             </div>
             <p className="text-base text-gray-700">
-              {sheetContent.description}
+              {sheetContent?.description}
             </p>
           </div>
         </div>

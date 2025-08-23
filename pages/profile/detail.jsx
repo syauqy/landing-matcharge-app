@@ -373,18 +373,18 @@ function DetailProfilePage() {
     <>
       <Head>
         <title>{`${
-          profile.full_name || profile.username
+          profile?.full_name || profile?.username
         }'s Profile - Wetonscope`}</title>
         <meta
           name="description"
           content={`View the Weton and Wuku details for ${
-            profile.full_name || profile.username
+            profile?.full_name || profile?.username
           }.`}
         />
       </Head>
 
       <div className="h-[100svh] flex flex-col bg-base relative">
-        <Navbar title={profile.full_name} isBack={true} />
+        <Navbar title={profile?.full_name} isBack={true} />
 
         <div className="flex-grow overflow-y-auto overflow-x-clip pt-4 sm:pt-6 pb-20">
           <div className="px-5 mb-6 flex items-center gap-4">
@@ -393,7 +393,7 @@ function DetailProfilePage() {
                 <div className="w-16 rounded-full ring-3 ring-offset-2 ring-batik-border">
                   <img
                     src={displayAvatarUrl}
-                    alt={`${profile.full_name || profile.username}'s avatar`}
+                    alt={`${profile?.full_name || profile?.username}'s avatar`}
                   />
                 </div>
               </div>
@@ -490,9 +490,9 @@ function DetailProfilePage() {
           )}
 
           {/* Bio Section */}
-          {profile.bio && (
+          {profile?.bio && (
             <div className="px-5 mb-6">
-              <p className="text-sm text-gray-700">{profile.bio}</p>
+              <p className="text-sm text-gray-700">{profile?.bio}</p>
             </div>
           )}
 
@@ -595,7 +595,7 @@ function DetailProfilePage() {
                     </div>
                   )}
                 {activeTab === "weton" &&
-                  profile.weton && ( // Check if weton data exists
+                  profile?.weton && ( // Check if weton data exists
                     <div className="flex flex-col gap-5">
                       <div className="flex flex-row gap-y-4 text-sm">
                         <div className="flex flex-col border-y border-l border-batik-border rounded-l-xl">
@@ -648,16 +648,16 @@ function DetailProfilePage() {
                             href="#laku"
                             className="border-b border-batik-border px-4 py-2"
                           >
-                            {profile.weton?.laku?.name}
+                            {profile?.weton?.laku?.name}
                           </Link>
                           <Link
                             href="#pancasuda"
                             className="border-b border-batik-border px-4 py-2"
                           >
-                            {profile.weton?.saptawara?.name}
+                            {profile?.weton?.saptawara?.name}
                           </Link>
                           <Link href="#rakam" className="px-4 p-2">
-                            {profile.weton?.rakam?.name}
+                            {profile?.weton?.rakam?.name}
                           </Link>
                         </div>
                       </div>
@@ -703,7 +703,7 @@ function DetailProfilePage() {
                             </div>
                           )} */}
 
-                          {profile.weton?.watak_weton && (
+                          {profile?.weton?.watak_weton && (
                             <div
                               id="weton"
                               className="flex flex-col gap-1 pt-4"
@@ -713,14 +713,14 @@ function DetailProfilePage() {
                               </div>
                               <div className="flex flex-col gap-3">
                                 <div className="text-lg font-semibold">
-                                  {profile.weton.watak_weton.archetype}
+                                  {profile?.weton.watak_weton.archetype}
                                 </div>
                                 <div className="flex flex-col">
                                   <div className="text-sm font-semibold text-batik-text/70">
                                     Vibe
                                   </div>
                                   <div className="text-base text-gray-700">
-                                    {profile.weton.watak_weton.vibe}
+                                    {profile?.weton.watak_weton.vibe}
                                   </div>
                                 </div>
                                 <div className="flex flex-col">
@@ -728,7 +728,7 @@ function DetailProfilePage() {
                                     Green Flags
                                   </div>
                                   <div className="text-base text-gray-700">
-                                    {profile.weton.watak_weton.green_flags}
+                                    {profile?.weton.watak_weton.green_flags}
                                   </div>
                                 </div>
                                 <div className="flex flex-col">
@@ -737,7 +737,7 @@ function DetailProfilePage() {
                                   </div>
                                   <div className="text-base text-gray-700">
                                     {
-                                      profile.weton.watak_weton
+                                      profile?.weton.watak_weton
                                         .potential_challenges
                                     }
                                   </div>
@@ -746,7 +746,7 @@ function DetailProfilePage() {
                             </div>
                           )}
 
-                          {profile.weton?.neptu_character?.description && (
+                          {profile?.weton?.neptu_character?.description && (
                             <div
                               id="weton"
                               className="flex flex-col gap-1 pt-4"
@@ -756,14 +756,14 @@ function DetailProfilePage() {
                               </div>
                               <div>
                                 <div className="text-base text-gray-700">
-                                  {profile.weton?.neptu_character?.description}
+                                  {profile?.weton?.neptu_character?.description}
                                 </div>
                               </div>
                             </div>
                           )}
 
                           {/* Laku */}
-                          {profile.weton?.laku && (
+                          {profile?.weton?.laku && (
                             <div
                               id="laku"
                               className="flex flex-col gap-1 pt-4 border-t border-batik-border"
@@ -774,21 +774,21 @@ function DetailProfilePage() {
                               <div className="flex flex-col gap-2">
                                 <div>
                                   <div className="text-lg font-semibold">
-                                    {profile.weton.laku.name}
+                                    {profile?.weton.laku.name}
                                   </div>
                                   <div className="text-sm font-light text-slate-700">
-                                    {profile.weton.laku.meaning}
+                                    {profile?.weton.laku.meaning}
                                   </div>
                                 </div>
                                 <div className="text-base text-gray-700">
-                                  {profile.weton.laku.description}
+                                  {profile?.weton.laku.description}
                                 </div>
                               </div>
                             </div>
                           )}
 
                           {/* Pancasuda (Saptawara) */}
-                          {profile.weton?.saptawara && (
+                          {profile?.weton?.saptawara && (
                             <div
                               id="pancasuda"
                               className="flex flex-col gap-1 pt-4 border-t border-batik-border"
@@ -799,21 +799,21 @@ function DetailProfilePage() {
                               <div className="flex flex-col gap-2">
                                 <div>
                                   <div className="text-lg font-semibold">
-                                    {profile.weton.saptawara.name}
+                                    {profile?.weton.saptawara.name}
                                   </div>
                                   <div className="text-sm font-light text-slate-700">
-                                    {profile.weton.saptawara.meaning}
+                                    {profile?.weton.saptawara.meaning}
                                   </div>
                                 </div>
                                 <div className="text-base text-gray-700">
-                                  {profile.weton.saptawara.description}
+                                  {profile?.weton.saptawara.description}
                                 </div>
                               </div>
                             </div>
                           )}
 
                           {/* Rakam */}
-                          {profile.weton?.rakam && (
+                          {profile?.weton?.rakam && (
                             <div
                               id="rakam"
                               className="flex flex-col gap-1 pt-4 border-t border-batik-border"
@@ -824,14 +824,14 @@ function DetailProfilePage() {
                               <div className="flex flex-col gap-2">
                                 <div>
                                   <div className="text-lg font-semibold">
-                                    {profile.weton.rakam.name}
+                                    {profile?.weton.rakam.name}
                                   </div>
                                   <div className="text-sm font-light text-slate-700">
-                                    {profile.weton.rakam.meaning}
+                                    {profile?.weton.rakam.meaning}
                                   </div>
                                 </div>
                                 <div className="text-base text-gray-700">
-                                  {profile.weton.rakam.description}
+                                  {profile?.weton.rakam.description}
                                 </div>
                               </div>
                             </div>
@@ -866,14 +866,14 @@ function DetailProfilePage() {
                       </div>
                     </div>
                   )}
-                {activeTab === "weton" && !profile.weton && (
+                {activeTab === "weton" && !profile?.weton && (
                   <p className="text-gray-500">
                     Weton data not available for this user.
                   </p>
                 )}
 
                 {activeTab === "wuku" &&
-                  profile.wuku && ( // Check if wuku data exists
+                  profile?.wuku && ( // Check if wuku data exists
                     <div className="flex flex-col gap-5">
                       <div className="flex flex-row gap-y-4 text-sm">
                         <div className="flex flex-col border-y border-l border-batik-border rounded-l-xl">
@@ -893,22 +893,22 @@ function DetailProfilePage() {
                             href="#wuku"
                             className="border-b border-batik-border px-4 py-2"
                           >
-                            {profile.wuku?.name}
+                            {profile?.wuku?.name}
                           </Link>
                           <Link
                             href="#god"
                             className="border-b border-batik-border px-4 py-2"
                           >
-                            {profile.wuku.god}
+                            {profile?.wuku?.god}
                           </Link>
                           <Link
                             href="#tree"
                             className="border-b border-batik-border px-4 py-2"
                           >
-                            {profile.wuku.tree}
+                            {profile?.wuku?.tree}
                           </Link>
                           <Link href="#bird" className="px-4 py-2">
-                            {profile.wuku.bird}
+                            {profile?.wuku?.bird}
                           </Link>
                         </div>
                       </div>
@@ -942,7 +942,7 @@ function DetailProfilePage() {
                                   {profile?.wuku?.god}
                                 </div>
                                 <div className="text-base text-gray-700">
-                                  {profile.wuku.god_meaning}
+                                  {profile?.wuku?.god_meaning}
                                 </div>
                               </div>
                             </div>
@@ -960,7 +960,7 @@ function DetailProfilePage() {
                                   {profile?.wuku?.tree}
                                 </div>
                                 <div className="text-base text-gray-700">
-                                  {profile.wuku.tree_meaning}
+                                  {profile?.wuku?.tree_meaning}
                                 </div>
                               </div>
                             </div>
@@ -978,7 +978,7 @@ function DetailProfilePage() {
                                   {profile?.wuku?.bird}
                                 </div>
                                 <div className="text-base text-gray-700">
-                                  {profile.wuku.bird_meaning}
+                                  {profile?.wuku?.bird_meaning}
                                 </div>
                               </div>
                             </div>
@@ -987,7 +987,7 @@ function DetailProfilePage() {
                       </div>
                     </div>
                   )}
-                {activeTab === "wuku" && !profile.wuku && (
+                {activeTab === "wuku" && !profile?.wuku && (
                   <p className="text-gray-500">
                     Wuku data not available for this user.
                   </p>
@@ -997,7 +997,7 @@ function DetailProfilePage() {
           ) : (
             user &&
             profile &&
-            user.id !== profile.id &&
+            user?.id !== profile?.id &&
             (friendshipStatus === "not_friends" ||
               friendshipStatus === "pending_sent" ||
               friendshipStatus === "pending_received") && (

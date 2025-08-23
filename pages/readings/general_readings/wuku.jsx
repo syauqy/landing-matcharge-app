@@ -3,7 +3,7 @@ import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { ArrowLeft, HelpCircle } from "lucide-react";
-import { LoadingProfile } from "@/components/layouts/loading-profile";
+// import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
@@ -295,7 +295,7 @@ export default function BasicReadingPage() {
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold text-batik-black">
-                {sheetContent.title}
+                {sheetContent?.title}
               </h3>
               <button
                 onClick={() => setIsSheetOpen(false)}
@@ -305,7 +305,7 @@ export default function BasicReadingPage() {
               </button>
             </div>
             <p className="text-base text-gray-700">
-              {sheetContent.description}
+              {sheetContent?.description}
             </p>
           </div>
         </div>

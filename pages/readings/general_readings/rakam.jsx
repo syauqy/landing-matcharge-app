@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { fetchProfileData, handleGenerateReading } from "@/utils/fetch";
-import { LoadingProfile } from "@/components/layouts/loading-profile";
+// import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
