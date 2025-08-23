@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
-import { ProfileLoadingSkeleton } from "@/components/layouts/profile-loading-skeleton";
+// import { ProfileLoadingSkeleton } from "@/components/layouts/profile-loading-skeleton";
 
 function DetailProfilePage() {
   const router = useRouter();
@@ -48,7 +48,7 @@ function DetailProfilePage() {
     const selectColumns =
       profileType === "custom"
         ? "id, username, full_name, dina_pasaran, weton, wuku"
-        : "id, username, full_name, dina_pasaran, weton, wuku, avatar_url";
+        : "id, username, full_name, dina_pasaran, weton, wuku, avatar_url, subscription";
 
     try {
       setLoading(true);
@@ -177,9 +177,14 @@ function DetailProfilePage() {
       const slug1Base = `${loggedInUsername}-${profile.username}`;
       const slug2Base = `${profile.username}-${loggedInUsername}`;
 
+      // const orConditions = [
+      //   `and(user_id.eq.${user.id},slug.eq.${slug1Base}-couple))`,
+      //   `and(user_id.eq.${profile.id},slug.eq.${slug2Base}-couple))`,
+      // ].join(",");
+
       const orConditions = [
-        `and(user_id.eq.${user.id},slug.eq.${slug1Base}-couple))`,
-        `and(user_id.eq.${profile.id},slug.eq.${slug2Base}-couple))`,
+        `and(user_id.eq.${user.id},slug.eq.${slug1Base}-couple)`,
+        `and(user_id.eq.${profile.id},slug.eq.${slug2Base}-couple)`,
       ].join(",");
 
       const { data, error } = await supabase
@@ -189,6 +194,8 @@ function DetailProfilePage() {
         .or(orConditions)
         .order("created_at", { ascending: false })
         .maybeSingle();
+
+      // console.log("love compatibility", data, orConditions);
 
       if (error) throw error;
       setCompatibilityReadingData(data);
@@ -237,8 +244,8 @@ function DetailProfilePage() {
       const slug2Base = `${profile.username}-${loggedInUsername}`;
 
       const orConditions = [
-        `and(user_id.eq.${user.id},or(slug.eq.${slug1Base}-friendship))`,
-        `and(user_id.eq.${profile.id},or(slug.eq.${slug2Base}-friendship))`,
+        `and(user_id.eq.${user.id},slug.eq.${slug1Base}-friendship)`,
+        `and(user_id.eq.${profile.id},slug.eq.${slug2Base}-friendship)`,
       ].join(",");
 
       const { data, error } = await supabase
@@ -248,6 +255,8 @@ function DetailProfilePage() {
         .or(orConditions)
         .order("created_at", { ascending: false })
         .maybeSingle();
+
+      // console.log("friendship compatibility", data);
 
       if (error) throw error;
       setFriendshipReadingData(data);
@@ -379,14 +388,22 @@ function DetailProfilePage() {
 
         <div className="flex-grow overflow-y-auto overflow-x-clip pt-4 sm:pt-6 pb-20">
           <div className="px-5 mb-6 flex items-center gap-4">
-            <div className="avatar">
-              <div className="w-16 rounded-full ring-3 ring-offset-2 ring-batik-border">
-                <img
-                  src={displayAvatarUrl}
-                  alt={`${profile.full_name || profile.username}'s avatar`}
-                />
+            <div className="relative shrink-0">
+              <div className="avatar">
+                <div className="w-16 rounded-full ring-3 ring-offset-2 ring-batik-border">
+                  <img
+                    src={displayAvatarUrl}
+                    alt={`${profile.full_name || profile.username}'s avatar`}
+                  />
+                </div>
               </div>
+              {profile?.subscription === "pro" && (
+                <div className="absolute rounded-xl px-3 py-0.5 z-10 font-semibold bg-amber-400 text-[10px] -bottom-4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-batik-black">
+                  PRO
+                </div>
+              )}
             </div>
+
             <div className="flex flex-col gap-2 max-w-[80%]">
               <div className="flex flex-col">
                 <div className="text-xl font-bold text-batik-black overflow-x-clip text-nowrap text-ellipsis line-clamp-1">

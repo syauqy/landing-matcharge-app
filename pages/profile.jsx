@@ -11,7 +11,7 @@ import { SunIcon, MoonStarIcon, Users2Icon } from "lucide-react";
 import { openBrowser, closeBrowser } from "@/utils/native-browser";
 import { getWeton, getWuku } from "@/utils";
 import { Toaster, toast } from "sonner";
-import { LoadingProfile } from "@/components/layouts/loading-profile";
+// import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ProfileLoadingSkeleton } from "@/components/layouts/profile-loading-skeleton";
 import { InAppReview } from "@capacitor-community/in-app-review";
 import { Capacitor } from "@capacitor/core";
