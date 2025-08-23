@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/utils/supabaseClient";
 import { toast } from "sonner";
+import { Capacitor } from "@capacitor/core";
 
 export function useSubscription() {
   const { user } = useAuth();
@@ -92,7 +93,7 @@ export function useSubscription() {
   }, [user]);
 
   useEffect(() => {
-    if (user) {
+    if (user && Capacitor.isNativePlatform()) {
       checkSubscription();
     }
   }, [user, checkSubscription]);

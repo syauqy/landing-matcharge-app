@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { NuqsAdapter } from "nuqs/adapters/next/pages";
-import { AppUrlListener } from "@/context/AppUrlListener";
+// import { AppUrlListener } from "@/context/AppUrlListener";
 import { NewAppUrlListener } from "@/context/NewAppUrlListener";
 import { useEffect } from "react";
 import SplashScreen from "@/components/illustrations/splash-screen";
@@ -15,17 +15,17 @@ export default function MyApp({ Component, pageProps }) {
   const { showSplash } = useSplashScreen();
 
   useEffect(() => {
-    // const initializePostHog = async () => {
-    //   if (Capacitor.isNativePlatform()) {
-    //     await Posthog.initialize({
-    //       apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY,
-    //       host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-    //       captureApplicationLifecycleEvents: true,
-    //       captureDeepLinks: true,
-    //     });
-    //   }
-    // };
-    // initializePostHog();
+    const initializePostHog = async () => {
+      if (Capacitor.isNativePlatform()) {
+        await Posthog.setup({
+          apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+          host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+          captureApplicationLifecycleEvents: true,
+          captureDeepLinks: true,
+        });
+      }
+    };
+    initializePostHog();
 
     if (Capacitor.isNativePlatform()) {
       CapacitorSplashScreen.hide();

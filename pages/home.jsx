@@ -8,17 +8,17 @@ import Link from "next/link";
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
 import { Menubar } from "@/components/layouts/menubar";
 import { getDayInformation, getWeton, getCompatibilitySlug } from "@/utils";
-import { closeBrowser } from "@/utils/native-browser";
+// import { closeBrowser } from "@/utils/native-browser";
 import { DailyReadingSection } from "@/components/readings/daily-reading-section";
 import { MonthlyReadingSection } from "@/components/readings/monthly-reading-section";
 import { Toaster, toast } from "sonner";
 import { SubscriptionBannerHome } from "@/components/subscriptions/subscription-banner-home";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
-import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
+// import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { HomeLoadingSkeleton } from "@/components/layouts/home-loading-skeleton";
 import { useDailyReading, useMonthlyReading } from "@/utils/useReading";
 import { ArrowRight } from "lucide-react";
-import { useSubscription } from "@/utils/useSubscription";
+// import { useSubscription } from "@/utils/useSubscription";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -417,6 +417,7 @@ export default function Home() {
             {getTimeOfDay()} {profileData?.full_name?.split(" ")[0]}! 👋
           </p>
         </div>
+        {/* <Link href="/profile-setup">Profile Setup</Link> */}
         {authLoading || (loading && !error) ? (
           <HomeLoadingSkeleton />
         ) : (
