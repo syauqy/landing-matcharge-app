@@ -212,7 +212,12 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     console.log("AuthProvider logout called");
-    await supabase.auth.signOut();
+    // await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error && error.code !== "session_not_found") {
+      console.error("Unexpected error during sign out:", error.message);
+      // You might want to show a notification to the user here
+    }
     // State updates happen via the listener
   };
 
