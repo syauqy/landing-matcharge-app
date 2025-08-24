@@ -7,7 +7,8 @@ import { config } from "@/utils/config";
 import Link from "next/link";
 import { DashboardNavbar } from "@/components/layouts/dashboard-navbar";
 import { Menubar } from "@/components/layouts/menubar";
-import { getDayInformation, getWeton, getCompatibilitySlug } from "@/utils";
+import { getCompatibilitySlug } from "@/utils";
+import { useQueryState } from "nuqs";
 // import { closeBrowser } from "@/utils/native-browser";
 import { DailyReadingSection } from "@/components/readings/daily-reading-section";
 import { MonthlyReadingSection } from "@/components/readings/monthly-reading-section";
@@ -18,15 +19,16 @@ import { NoProfileLayout } from "@/components/readings/no-profile-layout";
 import { HomeLoadingSkeleton } from "@/components/layouts/home-loading-skeleton";
 import { useDailyReading, useMonthlyReading } from "@/utils/useReading";
 import { ArrowRight } from "lucide-react";
-// import { useSubscription } from "@/utils/useSubscription";
+import { useSubscription } from "@/utils/useSubscription";
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
-  // const { isPro } = useSubscription();
+  const { presentPaywall, isPro } = useSubscription();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(true);
   const [profileData, setProfileData] = useState(null);
+  const [showPaywall, setShowPaywall] = useQueryState("paywall");
   const [error, setError] = useState(null);
   const [latestReadings, setLatestReadings] = useState([]);
   const [showTitleInNavbar, setShowTitleInNavbar] = useState(false);
@@ -34,6 +36,7 @@ export default function Home() {
   const scrollContainerRef = useRef(null);
   const dailyReadingGenerated = useRef(false);
   const monthlyReadingGenerated = useRef(false);
+  const hasCheckedPaywall = useRef(false);
 
   const {
     reading: dailyReading,
@@ -133,12 +136,37 @@ export default function Home() {
     }
   };
 
-  // console.log(
-  //   dailyReading,
-  //   loadingDailyReading,
-  //   profileData,
-  //   dailyReadingGenerated.current
-  // );
+  const checkPaywallTrigger = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("paywall_triggers")
+        .select("show")
+        .eq("screen", "home")
+        .single();
+      if (error) throw error;
+      if (
+        data?.show &&
+        profileData?.subscription == "free" &&
+        showPaywall == "true"
+      ) {
+        presentPaywall();
+      }
+    } catch (err) {
+      console.error("Error checking paywall trigger:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (
+      !hasCheckedPaywall.current &&
+      profileData?.subscription === "free" &&
+      showPaywall == "true"
+    ) {
+      console.log("Showing Paywall");
+      hasCheckedPaywall.current = true;
+      checkPaywallTrigger();
+    }
+  }, [checkPaywallTrigger]);
 
   useEffect(() => {
     if (
@@ -417,7 +445,7 @@ export default function Home() {
             {getTimeOfDay()} {profileData?.full_name?.split(" ")[0]}! 👋
           </p>
         </div>
-        {/* <Link href="/profile-setup">Profile Setup</Link> */}
+        {/* <Link href="/home?showPaywall=TRUE">Show Home with Paywall</Link> */}
         {authLoading || (loading && !error) ? (
           <HomeLoadingSkeleton />
         ) : (

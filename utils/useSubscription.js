@@ -71,7 +71,7 @@ export function useSubscription() {
         appUserID: user.id,
       });
 
-      const customerInfo = await Purchases.getCustomerInfo();
+      const { customerInfo } = await Purchases.getCustomerInfo();
       const isSubscribed =
         customerInfo?.entitlements?.active?.Pro !== undefined;
 

@@ -339,7 +339,11 @@ function DetailProfilePage() {
   };
 
   const canViewDetails =
-    (user && profile && user.id === profile.id) ||
+    (user &&
+      profile &&
+      user.id === profile.id &&
+      !loadingCompatibilityReading &&
+      !loading) ||
     friendshipStatus === "friends";
 
   if (authLoading || (loading && !friendshipError)) {
@@ -442,6 +446,7 @@ function DetailProfilePage() {
                 )}
               >
                 {friendshipStatus === "friends" &&
+                  !loadingCompatibilityReading &&
                   (!compatibilityReadingData || !friendshipReadingData) && (
                     <Link
                       href="/compatibility"
@@ -502,25 +507,28 @@ function DetailProfilePage() {
               <div className="mb-4 border-2 rounded-2xl border-gray-100 bg-gray-100 sticky -top-3 z-50 shadow-sm">
                 <nav
                   className={clsx(
-                    compatibilityReadingData || friendshipReadingData
+                    (!loadingCompatibilityReading &&
+                      compatibilityReadingData) ||
+                      friendshipReadingData
                       ? "grid-cols-3"
                       : "grid-cols-2",
                     "grid"
                   )}
                   aria-label="Tabs"
                 >
-                  {(compatibilityReadingData || friendshipReadingData) && (
-                    <button
-                      onClick={() => setActiveTab("compatibility")}
-                      className={`${
-                        activeTab === "compatibility"
-                          ? "border-batik-text text-batik-black bg-batik-border font-semibold"
-                          : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
-                      } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
-                    >
-                      Synergy
-                    </button>
-                  )}
+                  {!loadingCompatibilityReading &&
+                    (compatibilityReadingData || friendshipReadingData) && (
+                      <button
+                        onClick={() => setActiveTab("compatibility")}
+                        className={`${
+                          activeTab === "compatibility"
+                            ? "border-batik-text text-batik-black bg-batik-border font-semibold"
+                            : "border-transparent text-gray-500 hover:text-batik-text hover:border-batik-text"
+                        } whitespace-nowrap py-2 px-4 rounded-2xl font-medium text-sm`}
+                      >
+                        Synergy
+                      </button>
+                    )}
                   <button
                     onClick={() => setActiveTab("weton")}
                     className={`${

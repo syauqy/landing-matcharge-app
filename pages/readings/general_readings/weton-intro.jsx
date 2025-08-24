@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { ArrowLeft, CircleAlertIcon, HelpCircle } from "lucide-react";
 import Link from "next/link";
+import { useSubscription } from "@/utils/useSubscription";
 
 export default function BasicReadingPage() {
   const { user, loading: authLoading } = useAuth();
@@ -17,6 +18,8 @@ export default function BasicReadingPage() {
     title: "",
     description: "",
   });
+  const { presentPaywall, isPro } = useSubscription();
+  const hasCheckedPaywall = useRef(false);
 
   const tooltipContent = {
     weton:
@@ -63,7 +66,7 @@ export default function BasicReadingPage() {
         // Fetch the user's profile data from the 'profiles' table
         const { data: userProfile, error: profileFetchError } = await supabase
           .from("profiles")
-          .select("weton, dina_pasaran") // Fetching the objects and dina_pasaran string
+          .select("weton, dina_pasaran, subscription") // Fetching the objects and dina_pasaran string
           .eq("id", user.id) // 'id' in profiles table is the user_id
           .single(); // Assuming one profile per user
         if (profileFetchError) throw profileFetchError;
@@ -71,6 +74,7 @@ export default function BasicReadingPage() {
         const safeProfileData = {
           dina_pasaran: userProfile.dina_pasaran || "N/A",
           weton: userProfile.weton || {},
+          subscription: userProfile.subscription || "free",
         };
         setProfileData(safeProfileData);
       } catch (err) {
@@ -97,6 +101,33 @@ export default function BasicReadingPage() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const checkPaywallTrigger = async () => {
+    // if (hasCheckedPaywall.current) return;
+    try {
+      const { data, error } = await supabase
+        .from("paywall_triggers")
+        .select("show")
+        .eq("screen", "intro")
+        .single();
+      if (error) throw error;
+      // hasCheckedPaywall.current = true;
+      if (data?.show) {
+        presentPaywall();
+      }
+    } catch (err) {
+      console.error("Error checking paywall trigger:", err);
+      // hasCheckedPaywall.current = true;
+    }
+  };
+
+  useEffect(() => {
+    if (!hasCheckedPaywall.current && profileData?.subscription == "free") {
+      console.log("Showing Paywall");
+      hasCheckedPaywall.current = true;
+      checkPaywallTrigger();
+    }
+  }, [presentPaywall]);
 
   const handleShowExplanation = (title, description) => {
     setSheetContent({ title, description });

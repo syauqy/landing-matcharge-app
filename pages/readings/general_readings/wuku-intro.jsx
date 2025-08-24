@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
-import { ArrowLeft, HelpCircle } from "lucide-react";
-import { LoadingProfile } from "@/components/layouts/loading-profile";
+import { HelpCircle } from "lucide-react";
+// import { LoadingProfile } from "@/components/layouts/loading-profile";
 import { ErrorLayout } from "@/components/layouts/error-page";
 import { PageLoadingLayout } from "@/components/readings/page-loading-layout";
 import { NoProfileLayout } from "@/components/readings/no-profile-layout";
@@ -304,7 +304,7 @@ export default function BasicReadingPage() {
         <section className="border-t border-batik-text/20 pt-4">
           <div className="flex justify-center my-6">
             <button
-              onClick={() => router.replace("/home")}
+              onClick={() => router.replace("/home?paywall=true")}
               className="btn text-lg text-batik-black border bg-batik border-batik-border py-3 px-7 rounded-2xl shadow-sm relative"
             >
               <span className="absolute inline-flex h-full w-1/3 animate-ping rounded-full bg-batik-border-light opacity-50"></span>
