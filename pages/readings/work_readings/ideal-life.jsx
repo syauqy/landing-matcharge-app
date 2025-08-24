@@ -311,13 +311,13 @@ export default function LakuPage() {
               title="☝ Life's Core Priorities"
             />
             <ContentSection
-              reading={reading?.reading?.authentic}
+              reading={reading?.reading?.laku}
               setIsSectionOpen={setIsSectionFourOpen}
               isSectionOpen={isSectionFourOpen}
               title="😎 Embracing Your Authentic Self"
             />
             <ContentSection
-              reading={reading?.reading?.environment}
+              reading={reading?.reading?.environments}
               setIsSectionOpen={setIsSectionFiveOpen}
               isSectionOpen={isSectionFiveOpen}
               title="🏕️ Environments for Growth"
@@ -349,7 +349,7 @@ export default function LakuPage() {
               handleGenerateReading({
                 profileData,
                 user,
-                apiUrl: "readings/work/work-pro",
+                apiUrl: "readings/work/ideal-life",
                 setError,
                 setIsGenerating,
               })

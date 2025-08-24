@@ -373,7 +373,7 @@ export default function FinancialPage() {
               handleGenerateReading({
                 profileData,
                 user,
-                apiUrl: "readings/financial/financial-pro",
+                apiUrl: "readings/financial/your-financial",
                 setError,
                 setIsGenerating,
               })

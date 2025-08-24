@@ -295,7 +295,7 @@ export default function ConciousCoinPage() {
               handleGenerateReading({
                 profileData,
                 user,
-                apiUrl: "readings/financial/financial-pro",
+                apiUrl: "readings/financial/concious-coin",
                 setError,
                 setIsGenerating,
               })

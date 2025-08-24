@@ -154,6 +154,10 @@ export default function HomePage() {
     }
   };
 
+  const handleSupportButton = async (link) => {
+    await openBrowser(link);
+  };
+
   return (
     <div className="h-[100svh] flex flex-col items-center justify-center bg-base-100 p-5">
       <Toaster />
@@ -233,22 +237,28 @@ export default function HomePage() {
       </div>
       <footer className="w-full py-4 px-4 bg-transparent">
         <div className="max-w-md mx-auto text-center text-xs text-slate-600">
-          <p>
+          <div>
             By continuing, you agree to our{" "}
-            <Link
+            <span
+              onClick={() =>
+                handleSupportButton("https://wetonscope.com/terms")
+              }
               href="/terms"
               className="text-batik-text hover:underline font-medium"
             >
               Terms of Service
-            </Link>{" "}
+            </span>{" "}
             and{" "}
-            <Link
+            <span
+              onClick={() =>
+                handleSupportButton("https://wetonscope.com/privacy")
+              }
               href="/privacy"
               className="text-batik-text hover:underline font-medium"
             >
               Privacy Policy
-            </Link>
-          </p>
+            </span>
+          </div>
         </div>
       </footer>
     </div>

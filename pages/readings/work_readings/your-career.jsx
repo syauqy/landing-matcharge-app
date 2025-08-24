@@ -349,7 +349,7 @@ export default function LakuPage() {
               handleGenerateReading({
                 profileData,
                 user,
-                apiUrl: "readings/work/work-pro",
+                apiUrl: "readings/work/your-career",
                 setError,
                 setIsGenerating,
               })

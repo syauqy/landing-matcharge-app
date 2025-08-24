@@ -119,6 +119,15 @@ export default function ConnectionsPage() {
     }
   }, [user, fetchPendingRequests, fetchFriends, fetchCustomProfiles]);
 
+  const handleSearchChange = (e) => {
+    const newTerm = e.target.value;
+    setSearchTerm(newTerm);
+    if (newTerm.trim() === "") {
+      setSearchResults([]);
+      setSearchingDone(false);
+    }
+  };
+
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchTerm.trim()) {
@@ -199,6 +208,7 @@ export default function ConnectionsPage() {
   }
 
   // console.log(friends);
+  // console.log(searchResults, searchTerm);
 
   return (
     <>
@@ -216,7 +226,7 @@ export default function ConnectionsPage() {
                 type="text"
                 placeholder="Search people by username..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchChange}
                 className="focus:outline-0 appearance-none border border-batik-text p-2 rounded-xl w-full"
               />
               <button
@@ -234,57 +244,66 @@ export default function ConnectionsPage() {
             {loadingSearch && (
               <p className="text-sm text-gray-500">Searching...</p>
             )}
-            <div className="space-y-2">
-              {searchResults.map((profile) => (
-                <Link
-                  href={`/profile/detail?username=${profile.username}`}
-                  key={profile.id}
-                  className="flex-row gap-3 p-3 bg-base-100 rounded-2xl shadow-xs border border-batik-border flex items-center"
-                >
-                  <div className="avatar">
-                    <div className="w-12 rounded-full ring-batik-border">
-                      <img
-                        src={
-                          profile?.avatar_url
-                            ? profile?.avatar_url
-                            : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                profile.full_name
-                              )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
-                        }
-                        alt={profile.full_name}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2 max-w-[80%]">
-                    <div className="flex flex-row gap-2 items-end leading-4">
-                      <p className="font-semibold text-batik-black text-ellipsis overflow-hidden text-nowrap">
-                        {profile.full_name || profile.username}
-                      </p>
-                      <p className="text-xs text-gray-500 leading-3.5 text-ellipsis overflow-hidden text-nowrap">
-                        @{profile.username}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 text-xs">
-                      <div className="flex items-center gap-1">
-                        <SunIcon size={12} />
-                        {profile?.laku?.name}
+            {!loadingSearch &&
+              searchTerm !== "" &&
+              searchingDone &&
+              searchResults?.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="text-base font-semibold text-batik-black">
+                    Search Results
+                  </h3>
+
+                  {searchResults.map((profile) => (
+                    <Link
+                      href={`/profile/detail?username=${profile.username}`}
+                      key={profile.id}
+                      className="flex-row gap-3 p-3 bg-base-100 rounded-2xl shadow-xs border border-batik-border flex items-center"
+                    >
+                      <div className="avatar">
+                        <div className="w-12 rounded-full ring-batik-border">
+                          <img
+                            src={
+                              profile?.avatar_url
+                                ? profile?.avatar_url
+                                : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                    profile.full_name
+                                  )}&background=e0c3a3&color=fff&size=128&rounded=true&bold=true`
+                            }
+                            alt={profile.full_name}
+                          />
+                        </div>
                       </div>
-                      <>&bull;</>
-                      <div className="flex items-center gap-1">
-                        <MoonStarIcon size={12} />
-                        {profile?.name}
+                      <div className="flex flex-col gap-2 max-w-[80%]">
+                        <div className="flex flex-row gap-2 items-end leading-4">
+                          <p className="font-semibold text-batik-black text-ellipsis overflow-hidden text-nowrap">
+                            {profile.full_name || profile.username}
+                          </p>
+                          <p className="text-xs text-gray-500 leading-3.5 text-ellipsis overflow-hidden text-nowrap">
+                            @{profile.username}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs">
+                          <div className="flex items-center gap-1">
+                            <SunIcon size={12} />
+                            {profile?.laku?.name}
+                          </div>
+                          <>&bull;</>
+                          <div className="flex items-center gap-1">
+                            <MoonStarIcon size={12} />
+                            {profile?.name}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-              {!loadingSearch &&
-                searchTerm !== "" &&
-                searchingDone &&
-                searchResults.length === 0 && (
-                  <p className="text-sm text-gray-500">No users found.</p>
-                )}
-            </div>
+                    </Link>
+                  ))}
+                  {!loadingSearch &&
+                    searchTerm !== "" &&
+                    searchingDone &&
+                    searchResults.length === 0 && (
+                      <p className="text-sm text-gray-500">No users found.</p>
+                    )}
+                </div>
+              )}
           </section>
 
           {pendingRequests?.length > 0 && (
@@ -347,10 +366,9 @@ export default function ConnectionsPage() {
             <h2 className="text-lg font-semibold text-batik-black mb-3">
               Your Connections
             </h2>
-            {loadingFriends ||
-              (loadingCustomProfiles && (
-                <p className="text-sm text-gray-500">Loading friends...</p>
-              ))}
+            {(loadingFriends || loadingCustomProfiles) && (
+              <p className="text-sm text-gray-500">Loading friends...</p>
+            )}
             <div className="space-y-2">
               {friends.length > 0
                 ? friends.map((friend) => (
@@ -397,7 +415,7 @@ export default function ConnectionsPage() {
                     </Link>
                   ))
                 : !loadingFriends &&
-                  !customProfiles && (
+                  customProfiles?.length === 0 && (
                     <p className="text-sm text-gray-500">
                       You have no connections yet. Try searching using the
                       search bar above.

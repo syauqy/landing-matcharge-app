@@ -308,7 +308,7 @@ export default function BasicReadingPage() {
               className="btn text-lg text-batik-black border bg-batik border-batik-border py-3 px-7 rounded-2xl shadow-sm relative"
             >
               <span className="absolute inline-flex h-full w-1/3 animate-ping rounded-full bg-batik-border-light opacity-50"></span>
-              Go to Homepage
+              Discover More Insights
             </button>
           </div>
         </section>
