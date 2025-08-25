@@ -56,6 +56,12 @@ const nextConfig = {
 
   // Add webpack config to exclude NextJS API routes for native builds
   webpack: (config, { isServer, buildId, dev, webpack: nextWebpack }) => {
+    // Add markdown loader
+    config.module.rules.push({
+      test: /\.md$/,
+      use: "raw-loader",
+    });
+
     // Only apply this modification during the native build
     if (process.env.IS_NATIVE) {
       // Replace requests for modules in app/api with an empty module

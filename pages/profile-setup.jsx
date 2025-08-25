@@ -11,7 +11,7 @@ import axios from "axios";
 import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
 import { userRegistrationLoadingMessages } from "@/lib/loading-content";
 import { motion } from "framer-motion";
-import { Capacitor } from "@capacitor/core";
+// import { Capacitor } from "@capacitor/core";
 import { Posthog } from "@capawesome/capacitor-posthog";
 
 export default function ProfileSetupPage() {

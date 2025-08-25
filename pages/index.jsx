@@ -241,7 +241,7 @@ export default function HomePage() {
             By continuing, you agree to our{" "}
             <span
               onClick={() =>
-                handleSupportButton("https://wetonscope.com/terms")
+                handleSupportButton("https://app.wetonscope.com/terms")
               }
               href="/terms"
               className="text-batik-text hover:underline font-medium"
@@ -251,7 +251,7 @@ export default function HomePage() {
             and{" "}
             <span
               onClick={() =>
-                handleSupportButton("https://wetonscope.com/privacy")
+                handleSupportButton("https://app.wetonscope.com/privacy")
               }
               href="/privacy"
               className="text-batik-text hover:underline font-medium"

@@ -748,7 +748,7 @@ export default function ProfilePage() {
                           <button
                             onClick={() =>
                               handleSupportButton(
-                                "https://wetonscope.com/privacy"
+                                "https://app.wetonscope.com/privacy"
                               )
                             }
                             className="text-left text-batik-text hover:underline"
@@ -758,7 +758,7 @@ export default function ProfilePage() {
                           <button
                             onClick={() =>
                               handleSupportButton(
-                                "https://wetonscope.com/terms"
+                                "https://app.wetonscope.com/terms"
                               )
                             }
                             className="text-left text-batik-text hover:underline"

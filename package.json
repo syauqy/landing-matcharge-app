@@ -37,7 +37,6 @@
     "axios": "^1.10.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "date-fns-tz": "^3.2.0",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.509.0",
     "markdown-to-jsx": "^7.7.10",
@@ -48,7 +47,6 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.5.0",
     "react-slick": "^0.30.3",
-    "remark-gfm": "^4.0.1",
     "slick-carousel": "^1.8.1",
     "sonner": "^2.0.3",
     "tailwindcss-safe-area-capacitor": "^0.5.1",
@@ -64,6 +62,7 @@
     "daisyui": "^5.0.35",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
+    "raw-loader": "^4.0.2",
     "supabase": "^2.22.6",
     "tailwindcss": "^4"
   }
