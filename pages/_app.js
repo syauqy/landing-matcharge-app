@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-import { AuthProvider } from "@/context/AuthContext";
+// import { AuthProvider } from "@/context/AuthContext";
 import { NuqsAdapter } from "nuqs/adapters/next/pages";
 // import { AppUrlListener } from "@/context/AppUrlListener";
 // import { NewAppUrlListener } from "@/context/NewAppUrlListener";
@@ -26,17 +26,18 @@ export default function MyApp({ Component, pageProps }) {
   //   };
   // }, []);
   return (
-    <AuthProvider>
-      {/* <PostHogPageview /> */}
-      {/* <AppUrlListener></AppUrlListener> */}
-      {/* <NewAppUrlListener /> */}
+    // <AuthProvider>
+    //   {/* <PostHogPageview /> */}
+    //   {/* <AppUrlListener></AppUrlListener> */}
+    //   {/* <NewAppUrlListener /> */}
 
-      {/* <DeepLinkHandler /> */}
-      {/* <DebugComponent /> */}
-      <NuqsAdapter>
-        {/* {showSplash && <SplashScreen />} */}
-        <Component {...pageProps} />
-      </NuqsAdapter>
-    </AuthProvider>
+    //   {/* <DeepLinkHandler /> */}
+    //   {/* <DebugComponent /> */}
+
+    // </AuthProvider>
+    <NuqsAdapter>
+      {/* {showSplash && <SplashScreen />} */}
+      <Component {...pageProps} />
+    </NuqsAdapter>
   );
 }
