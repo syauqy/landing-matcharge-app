@@ -6,13 +6,13 @@ import { useRouter } from "next/router";
 import { getWeton, getWuku } from "@/utils";
 import { Toaster, toast } from "sonner";
 import { Navbar } from "@/components/layouts/navbar";
-import { config } from "@/utils/config";
+// import { config } from "@/utils/config";
 import axios from "axios";
 import { AnimatedLoadingText } from "@/components/readings/AnimatedLoadingText";
 import { userRegistrationLoadingMessages } from "@/lib/loading-content";
 import { motion } from "framer-motion";
 // import { Capacitor } from "@capacitor/core";
-import { Posthog } from "@capawesome/capacitor-posthog";
+// import { Posthog } from "@capawesome/capacitor-posthog";
 
 export default function ProfileSetupPage() {
   const { user, loading: authLoading } = useAuth();
@@ -330,43 +330,6 @@ export default function ProfileSetupPage() {
     }
   };
 
-  const captureEvent = async (eventName) => {
-    if (Posthog) {
-      await Posthog.capture({
-        event: eventName,
-        properties: {
-          user_id: user.id,
-          email: user.email,
-          name: user.user_metadata?.full_name,
-          step:
-            currentStep === 1
-              ? "Intro: Daily Reading"
-              : currentStep === 2
-              ? "Intro: Weton Reading"
-              : currentStep === 3
-              ? "Intro: Wuku Reading"
-              : currentStep === 4
-              ? "Intro: Compatibility Reading"
-              : currentStep === 5
-              ? "Usernamee"
-              : currentStep === 6
-              ? "Full Name"
-              : currentStep === 7
-              ? "Birth Date"
-              : currentStep === 8
-              ? "Birth Time"
-              : currentStep === 9
-              ? "Weton Card"
-              : currentStep === 10
-              ? "Wuku Card"
-              : currentStep === 11
-              ? "Gender"
-              : "",
-        },
-      });
-    }
-  };
-
   const nextStep = () => {
     if (currentStep === 5 && (!username || !usernameAvailable)) {
       toast.error(usernameError || "Please choose a valid username");
@@ -398,7 +361,7 @@ export default function ProfileSetupPage() {
       return;
     }
 
-    captureEvent(`Onboarding: Step ${currentStep} Completed`);
+    // captureEvent(`Onboarding: Step ${currentStep} Completed`);
 
     setCurrentStep(currentStep + 1);
   };

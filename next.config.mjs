@@ -8,6 +8,14 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   devIndicators: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "imagekit.io",
+      },
+    ],
+  },
   // output: "export",
   // images: {
   //   unoptimized: true,

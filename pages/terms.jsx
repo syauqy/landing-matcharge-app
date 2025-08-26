@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import Markdown from "markdown-to-jsx";
+import { Navbar } from "@/components/layouts/navbar";
+import { Footer } from "@/components/layouts/footer";
+import { NextSeo } from "next-seo";
 
 export default function Terms() {
   const [content, setContent] = useState("");
@@ -13,11 +16,43 @@ export default function Terms() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-base relative">
-      {/* <DashboardNavbar /> */}
+    <div className="min-h-screen flex flex-col bg-base-100 relative">
+      <NextSeo
+        title="Terms of Service - Wetonscope"
+        description="Discover your soul's blueprint with Wetonscope, a modern guide to ancient Javanese wisdom. Get personalized daily readings, relationship compatibility insights, and deep self-discovery through traditional Weton calculations."
+        openGraph={{
+          type: "website",
+          locale: "en_US",
+          url: "https://wetonscope.com/terms",
+          siteName: "Wetonscope",
+          title: "Terms of Service - Wetonscope",
+          description:
+            "Discover your soul's blueprint with Wetonscope. Get personalized daily readings and relationship insights based on ancient Javanese wisdom.",
+          images: [
+            {
+              url: "/wetonscope-app-hero.png",
+              width: 1200,
+              height: 630,
+              alt: "Wetonscope App Preview",
+            },
+          ],
+        }}
+        additionalMetaTags={[
+          {
+            name: "keywords",
+            content:
+              "weton calculator, javanese astrology, horoscope, birth date calculator, relationship compatibility, daily reading, self discovery, primbon jawa, astrology",
+          },
+          {
+            name: "application-name",
+            content: "Wetonscope",
+          },
+        ]}
+      />
+      <Navbar />
 
       <main className="flex-grow p-5 md:p-6 pb-24">
-        <div className="max-w-3xl mx-auto bg-base-100">
+        <div className="max-w-3xl mx-auto">
           <article className="prose prose-stone max-w-none">
             <Markdown
               options={{
@@ -74,7 +109,7 @@ export default function Terms() {
         </div>
       </main>
 
-      {/* <Menubar page="profile" /> */}
+      <Footer />
     </div>
   );
 }

@@ -1,9 +1,10 @@
-export const SelfDiscovery = () => {
+export const SelfDiscovery = ({ className }) => {
   return (
     <svg
       width="200"
       height="200"
       viewBox="0 0 200 200"
+      className={className}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -30,11 +31,12 @@ export const SelfDiscovery = () => {
   );
 };
 
-export const Insight = () => {
+export const Insight = ({ className }) => {
   return (
     <svg
       width="200"
       height="200"
+      className={className}
       viewBox="0 0 200 200"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -80,11 +82,12 @@ export const Love = () => {
   );
 };
 
-export const Door = () => {
+export const Door = ({ className }) => {
   return (
     <svg
       width="200"
       height="200"
+      className={className}
       viewBox="0 0 200 200"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
