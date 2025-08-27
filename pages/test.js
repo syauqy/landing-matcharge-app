@@ -1,7 +1,7 @@
 // pages/test.js
 import { useState, useEffect, use } from "react";
 import { supabase } from "@/utils/supabaseClient";
-import { useAuth } from "@/context/AuthContext";
+// import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import {
   getWuku,
@@ -15,7 +15,7 @@ import {
 } from "@/utils";
 
 export default function TestPage() {
-  const { user, loading: authLoading } = useAuth();
+  // const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [results, setResults] = useState({});
   const [loading, setLoading] = useState(false);
@@ -30,61 +30,61 @@ export default function TestPage() {
   const [monthDatesProfile, setMonthDateProfile] = useState({});
   const [wetonPrimbon, setWetonPrimbon] = useState({});
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      console.log("User not authenticated, redirecting to login");
-      // router.push("/");
-    }
-  }, [user, authLoading, router]);
+  // useEffect(() => {
+  //   if (!authLoading && !user) {
+  //     console.log("User not authenticated, redirecting to login");
+  //     // router.push("/");
+  //   }
+  // }, [user, authLoading, router]);
 
-  const handleTestModels = async () => {
-    setLoading(true);
-    setError(null);
-    setResults({});
+  // const handleTestModels = async () => {
+  //   setLoading(true);
+  //   setError(null);
+  //   setResults({});
 
-    const models = [
-      "gemini-1.5-flash",
-      // "gemini-1.5-flash-8b",
-      // "gemini-2.5-pro-preview-03-25",
-      "gemini-2.0-flash",
-    ];
+  //   // const models = [
+  //   //   "gemini-1.5-flash",
+  //   //   // "gemini-1.5-flash-8b",
+  //   //   // "gemini-2.5-pro-preview-03-25",
+  //   //   "gemini-2.0-flash",
+  //   // ];
 
-    const newResults = {};
+  //   const newResults = {};
 
-    try {
-      for (const model of models) {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (!session?.access_token) {
-          throw new Error("No active session");
-        }
+  //   try {
+  //     for (const model of models) {
+  //       const {
+  //         data: { session },
+  //       } = await supabase.auth.getSession();
+  //       if (!session?.access_token) {
+  //         throw new Error("No active session");
+  //       }
 
-        const response = await fetch("/api/get-test", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-            "Content-Type": "application/json",
-            "x-model-override": model,
-          },
-        });
+  //       const response = await fetch("/api/get-test", {
+  //         method: "POST",
+  //         headers: {
+  //           Authorization: `Bearer ${session.access_token}`,
+  //           "Content-Type": "application/json",
+  //           "x-model-override": model,
+  //         },
+  //       });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || `Error: ${response.status}`);
-        }
+  //       if (!response.ok) {
+  //         const errorData = await response.json();
+  //         throw new Error(errorData.error || `Error: ${response.status}`);
+  //       }
 
-        const data = await response.json();
-        newResults[model] = data; // Store the entire data object
-      }
-      setResults(newResults);
-    } catch (err) {
-      console.error("Error testing models:", err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //       const data = await response.json();
+  //       newResults[model] = data; // Store the entire data object
+  //     }
+  //     setResults(newResults);
+  //   } catch (err) {
+  //     console.error("Error testing models:", err);
+  //     setError(err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleTest = () => {
     const wuku_data = getWuku(birthDate);
@@ -129,62 +129,62 @@ export default function TestPage() {
     setFavoriteDayofMonth(favoriteDayofMonth);
   };
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
+  // if (authLoading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <p>Loading...</p>
+  //     </div>
+  //   );
+  // }
 
-  const testAISDK = async () => {
-    setLoading(true); // Add loading state handling
-    setError(null);
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!session?.access_token) {
-        throw new Error("No active session");
-      }
+  // const testAISDK = async () => {
+  //   setLoading(true); // Add loading state handling
+  //   setError(null);
+  //   try {
+  //     const {
+  //       data: { session },
+  //     } = await supabase.auth.getSession();
+  //     if (!session?.access_token) {
+  //       throw new Error("No active session");
+  //     }
 
-      const response = await fetch("/api/ai-test", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-          "Content-Type": "application/json",
-        },
-      });
+  //     const response = await fetch("/api/ai-test", {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization: `Bearer ${session.access_token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Error: ${response.status}`);
-      }
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.error || `Error: ${response.status}`);
+  //     }
 
-      console.log(response);
+  //     console.log(response);
 
-      const data = await response.json();
-      setResults(data); // Store the entire data object
-    } catch (err) {
-      console.error("Error testing AI SDK:", err); // Store the entire data object
-    } finally {
-      setLoading(false); // Stop loading indicator
-    }
-  };
+  //     const data = await response.json();
+  //     setResults(data); // Store the entire data object
+  //   } catch (err) {
+  //     console.error("Error testing AI SDK:", err); // Store the entire data object
+  //   } finally {
+  //     setLoading(false); // Stop loading indicator
+  //   }
+  // };
 
   // console.log(wuku, weton, birthDate);
-  console.log(weton);
+  // console.log(weton);
 
   return (
     <div className="min-h-screen p-4">
       <h1 className="text-2xl font-bold mb-4">Test AI Models</h1>
-      <button
+      {/* <button
         onClick={handleTestModels}
         disabled={loading}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 disabled:opacity-50"
       >
         {loading ? "Testing Models..." : "Test Models"}
-      </button>
+      </button> */}
       <button
         onClick={handleTest}
         disabled={loading}
@@ -192,13 +192,13 @@ export default function TestPage() {
       >
         {loading ? "Calulate Wuku and Weton..." : "Wuku and Weton"}
       </button>
-      <button
+      {/* <button
         onClick={testAISDK}
         disabled={loading}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 disabled:opacity-50"
       >
         {loading ? "Testing Models..." : "Test AI SDK"}
-      </button>
+      </button> */}
       <button
         onClick={handleDailyReading}
         disabled={loading}

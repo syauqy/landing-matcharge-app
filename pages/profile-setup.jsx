@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
-import { createClient } from "@supabase/supabase-js";
-import { useAuth } from "@/context/AuthContext";
+// import { supabase } from "@/utils/supabaseClient";
+// import { createClient } from "@supabase/supabase-js";
+// import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { getWeton, getWuku } from "@/utils";
 import { Toaster, toast } from "sonner";
@@ -15,7 +15,7 @@ import { motion } from "framer-motion";
 // import { Posthog } from "@capawesome/capacitor-posthog";
 
 export default function ProfileSetupPage() {
-  const { user, loading: authLoading } = useAuth();
+  // const { user, loading: authLoading } = useAuth();
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -38,111 +38,111 @@ export default function ProfileSetupPage() {
   // console.log(user);
 
   // Effect to redirect if not logged in
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/");
-    }
-  }, [user, authLoading, router]);
+  // useEffect(() => {
+  //   if (!authLoading && !user) {
+  //     router.push("/");
+  //   }
+  // }, [user, authLoading, router]);
 
-  useEffect(() => {
-    const checkProfile = async () => {
-      if (!user) {
-        router.push("/");
-        return;
-      }
+  // useEffect(() => {
+  //   const checkProfile = async () => {
+  //     if (!user) {
+  //       router.push("/");
+  //       return;
+  //     }
 
-      try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", user.id)
-          .single();
+  //     try {
+  //       const { data, error } = await supabase
+  //         .from("profiles")
+  //         .select("*")
+  //         .eq("id", user.id)
+  //         .single();
 
-        if (!error && data && data.birth_date) {
-          router.push("/home");
-        } else {
-          captureEvent("Onboarding Started");
-        }
-      } catch (err) {
-        console.error("Error checking profile:", err);
-      }
-    };
+  //       if (!error && data && data.birth_date) {
+  //         router.push("/home");
+  //       } else {
+  //         captureEvent("Onboarding Started");
+  //       }
+  //     } catch (err) {
+  //       console.error("Error checking profile:", err);
+  //     }
+  //   };
 
-    if (user) {
-      checkProfile();
-      setFullName(user?.user_metadata?.full_name);
-      setUsername(user?.email ? user.email.split("@")[0] : "");
-    }
-  }, [user, router]);
+  //   if (user) {
+  //     checkProfile();
+  //     setFullName(user?.user_metadata?.full_name);
+  //     setUsername(user?.email ? user.email.split("@")[0] : "");
+  //   }
+  // }, [user, router]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (username) {
-        checkUsernameAvailability(username);
-      }
-    }, 500);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (username) {
+  //       checkUsernameAvailability(username);
+  //     }
+  //   }, 500);
 
-    return () => clearTimeout(timer);
-  }, [username]);
+  //   return () => clearTimeout(timer);
+  // }, [username]);
 
-  const checkUsernameAvailability = async (value) => {
-    if (!value || value.trim() === "") {
-      setUsernameAvailable(null);
-      setUsernameError("");
-      return;
-    }
+  // const checkUsernameAvailability = async (value) => {
+  //   if (!value || value.trim() === "") {
+  //     setUsernameAvailable(null);
+  //     setUsernameError("");
+  //     return;
+  //   }
 
-    if (!/^[a-zA-Z0-9_]+$/.test(value)) {
-      setUsernameAvailable(false);
-      setUsernameError(
-        "Username can only contain letters, numbers, and underscores"
-      );
-      return;
-    }
+  //   if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+  //     setUsernameAvailable(false);
+  //     setUsernameError(
+  //       "Username can only contain letters, numbers, and underscores"
+  //     );
+  //     return;
+  //   }
 
-    if (value.length < 3) {
-      setUsernameAvailable(false);
-      setUsernameError("Username must be at least 3 characters long");
-      return;
-    }
+  //   if (value.length < 3) {
+  //     setUsernameAvailable(false);
+  //     setUsernameError("Username must be at least 3 characters long");
+  //     return;
+  //   }
 
-    if (!user) {
-      setUsernameAvailable(null);
-      setUsernameError("Authentication required");
-      return;
-    }
+  //   if (!user) {
+  //     setUsernameAvailable(null);
+  //     setUsernameError("Authentication required");
+  //     return;
+  //   }
 
-    setIsCheckingUsername(true);
-    setUsernameError("");
+  //   setIsCheckingUsername(true);
+  //   setUsernameError("");
 
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+  //   try {
+  //     const {
+  //       data: { session },
+  //     } = await supabase.auth.getSession();
 
-      if (!session) {
-        throw new Error("No active session");
-      }
+  //     if (!session) {
+  //       throw new Error("No active session");
+  //     }
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, username")
-        .eq("username", username.toLowerCase());
+  //     const { data, error } = await supabase
+  //       .from("profiles")
+  //       .select("id, username")
+  //       .eq("username", username.toLowerCase());
 
-      if (data && data.length == 0) {
-        setUsernameAvailable(true);
-      } else {
-        setUsernameAvailable(false);
-        setUsernameError("Username is already taken");
-      }
-    } catch (err) {
-      console.error("Error checking username:", err);
-      setUsernameAvailable(null);
-      setUsernameError("Error checking username");
-    } finally {
-      setIsCheckingUsername(false);
-    }
-  };
+  //     if (data && data.length == 0) {
+  //       setUsernameAvailable(true);
+  //     } else {
+  //       setUsernameAvailable(false);
+  //       setUsernameError("Username is already taken");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error checking username:", err);
+  //     setUsernameAvailable(null);
+  //     setUsernameError("Error checking username");
+  //   } finally {
+  //     setIsCheckingUsername(false);
+  //   }
+  // };
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
@@ -187,148 +187,148 @@ export default function ProfileSetupPage() {
     const wetonDetails = getWeton(birthDate, birthTime);
     const wukuDetails = getWuku(birthDate, birthTime);
 
-    const profileData = {
-      id: user.id,
-      username: username.toLowerCase(),
-      full_name: fullName,
-      gender: gender,
-      birth_date: birthDate,
-      birth_time: birthTime,
-      email: user?.email,
-      subscription: "free",
-      weton: wetonDetails,
-      wuku: wukuDetails,
-      dina_pasaran: wetonDetails?.weton_en,
-      avatar_url: user?.user_metadata?.avatar_url,
-    };
+    // const profileData = {
+    //   id: user.id,
+    //   username: username.toLowerCase(),
+    //   full_name: fullName,
+    //   gender: gender,
+    //   birth_date: birthDate,
+    //   birth_time: birthTime,
+    //   email: user?.email,
+    //   subscription: "free",
+    //   weton: wetonDetails,
+    //   wuku: wukuDetails,
+    //   dina_pasaran: wetonDetails?.weton_en,
+    //   avatar_url: user?.user_metadata?.avatar_url,
+    // };
 
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+    // try {
+    //   const {
+    //     data: { session },
+    //   } = await supabase.auth.getSession();
 
-      if (!session) {
-        throw new Error("No active session");
-      }
+    //   if (!session) {
+    //     throw new Error("No active session");
+    //   }
 
-      const supabaseUserClient = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-        {
-          global: {
-            headers: { Authorization: `Bearer ${session.access_token}` },
-          },
-        }
-      );
+    //   const supabaseUserClient = createClient(
+    //     process.env.NEXT_PUBLIC_SUPABASE_URL,
+    //     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    //     {
+    //       global: {
+    //         headers: { Authorization: `Bearer ${session.access_token}` },
+    //       },
+    //     }
+    //   );
 
-      const { data: existingProfile, error: existingError } =
-        await supabaseUserClient
-          .from("profiles")
-          .select("id")
-          .eq("id", user.id)
-          .single();
+    //   const { data: existingProfile, error: existingError } =
+    //     await supabaseUserClient
+    //       .from("profiles")
+    //       .select("id")
+    //       .eq("id", user.id)
+    //       .single();
 
-      if (existingError && existingError.code !== "PGRST116") {
-        throw existingError;
-      }
+    //   if (existingError && existingError.code !== "PGRST116") {
+    //     throw existingError;
+    //   }
 
-      let error;
+    //   let error;
 
-      if (existingProfile) {
-        const { error: updateError } = await supabaseUserClient
-          .from("profiles")
-          .update(profileData)
-          .eq("id", user.id);
-        error = updateError;
-      } else {
-        const { error: insertError } = await supabaseUserClient
-          .from("profiles")
-          .insert(profileData);
-        error = insertError;
-      }
+    //   if (existingProfile) {
+    //     const { error: updateError } = await supabaseUserClient
+    //       .from("profiles")
+    //       .update(profileData)
+    //       .eq("id", user.id);
+    //     error = updateError;
+    //   } else {
+    //     const { error: insertError } = await supabaseUserClient
+    //       .from("profiles")
+    //       .insert(profileData);
+    //     error = insertError;
+    //   }
 
-      //generate the weton and wuku readings after registration
-      const { data: wetonData, error: wetonError } = await supabaseUserClient
-        .from("readings")
-        .insert([
-          {
-            user_id: user.id,
-            reading_type: "basic",
-            username: username.toLowerCase(),
-            title: "Weton",
-            subtitle:
-              "Uncover the foundational energies of your unique birth day combination.",
-            reading_category: "general_readings",
-            slug: "weton",
-          },
-          {
-            user_id: user.id,
-            reading_type: "basic",
-            username: username.toLowerCase(),
-            title: "Wuku",
-            subtitle:
-              "Explore the distinct characteristics and symbolic influences of your birth week.",
-            reading_category: "general_readings",
-            slug: "wuku",
-          },
-        ])
-        .select();
+    //   //generate the weton and wuku readings after registration
+    //   const { data: wetonData, error: wetonError } = await supabaseUserClient
+    //     .from("readings")
+    //     .insert([
+    //       {
+    //         user_id: user.id,
+    //         reading_type: "basic",
+    //         username: username.toLowerCase(),
+    //         title: "Weton",
+    //         subtitle:
+    //           "Uncover the foundational energies of your unique birth day combination.",
+    //         reading_category: "general_readings",
+    //         slug: "weton",
+    //       },
+    //       {
+    //         user_id: user.id,
+    //         reading_type: "basic",
+    //         username: username.toLowerCase(),
+    //         title: "Wuku",
+    //         subtitle:
+    //           "Explore the distinct characteristics and symbolic influences of your birth week.",
+    //         reading_category: "general_readings",
+    //         slug: "wuku",
+    //       },
+    //     ])
+    //     .select();
 
-      generateFreeReading(profileData);
+    //   generateFreeReading(profileData);
 
-      if (wetonError) throw wetonError;
-      if (error) throw error;
+    //   if (wetonError) throw wetonError;
+    //   if (error) throw error;
 
-      toast.success(
-        "Profile saved successfully! Preparing your weton reading..."
-      );
-      captureEvent("Onboarding Completed");
-      setLoadingWeton(true);
+    //   toast.success(
+    //     "Profile saved successfully! Preparing your weton reading..."
+    //   );
+    //   captureEvent("Onboarding Completed");
+    //   setLoadingWeton(true);
 
-      if (wetonData) {
-        router.push("/readings/general_readings/weton-intro");
-      }
+    //   if (wetonData) {
+    //     router.push("/readings/general_readings/weton-intro");
+    //   }
 
-      // await requestWetonAnalysis(user.id, birthDate);
-    } catch (err) {
-      console.error("Error saving profile:", err);
-      toast.error(`Failed to save profile: ${err.message}`);
-    } finally {
-      setSaving(false);
-    }
+    //   // await requestWetonAnalysis(user.id, birthDate);
+    // } catch (err) {
+    //   console.error("Error saving profile:", err);
+    //   toast.error(`Failed to save profile: ${err.message}`);
+    // } finally {
+    //   setSaving(false);
+    // }
   };
 
-  const generateFreeReading = async (profileData) => {
-    if (!profileData || !user) {
-      console.error("Profile data or user not available.");
-      return;
-    } else {
-      try {
-        const response = await axios.post(
-          `${config.api.url}/readings/general/primary-traits`,
-          { profile: profileData },
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+  // const generateFreeReading = async (profileData) => {
+  //   if (!profileData || !user) {
+  //     console.error("Profile data or user not available.");
+  //     return;
+  //   } else {
+  //     try {
+  //       const response = await axios.post(
+  //         `${config.api.url}/readings/general/primary-traits`,
+  //         { profile: profileData },
+  //         {
+  //           headers: { "Content-Type": "application/json" },
+  //         }
+  //       );
 
-        const response_loveCore = await axios.post(
-          `${config.api.url}/readings/love/love-core`,
-          { profile: profileData },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      } catch (err) {
-        console.error(
-          "Error in fetch or processing response for primary traits:",
-          err
-        );
-      }
-    }
-  };
+  //       const response_loveCore = await axios.post(
+  //         `${config.api.url}/readings/love/love-core`,
+  //         { profile: profileData },
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
+  //     } catch (err) {
+  //       console.error(
+  //         "Error in fetch or processing response for primary traits:",
+  //         err
+  //       );
+  //     }
+  //   }
+  // };
 
   const nextStep = () => {
     if (currentStep === 5 && (!username || !usernameAvailable)) {
@@ -373,13 +373,13 @@ export default function ProfileSetupPage() {
   // console.log("Weton Data:", wetonData);
   // console.log("Wuku Data:", wukuData);
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
+  // if (authLoading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <p>Loading...</p>
+  //     </div>
+  //   );
+  // }
 
   if (loadingWeton || saving) {
     return (
