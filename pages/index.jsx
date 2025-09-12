@@ -185,23 +185,23 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      {/* <section className="py-20 bg-white">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-16">
             A Toolkit for a More Aligned Life
           </h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="h-48 bg-gray-200">
+              <div className="h-80 bg-gray-200">
                 <Image
-                  src="/features/daily-clarity.jpg"
+                  src="/features/landing-feature-1.jpg"
                   alt="Daily Clarity"
                   width={500}
-                  height={500}
+                  height={600}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="p-8">
+              <div className="p-5">
                 <h3 className="text-2xl font-bold mb-4">Your Daily Clarity</h3>
                 <p className="text-gray-600">
                   Go beyond passive readings. Use daily insights as a prompt for
@@ -212,16 +212,16 @@ export default function HomePage() {
             </div>
 
             <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="h-48 bg-gray-200">
+              <div className="h-80 bg-gray-200">
                 <Image
-                  src="/features/deeper-connections.png"
+                  src="/features/landing-feature-2.jpg"
                   alt="Deeper Connections"
-                  width={400}
-                  height={192}
+                  width={500}
+                  height={600}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="p-8">
+              <div className="p-5">
                 <h3 className="text-2xl font-bold mb-4">
                   Understand Your Connections
                 </h3>
@@ -234,16 +234,16 @@ export default function HomePage() {
             </div>
 
             <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="h-48 bg-gray-200">
+              <div className="h-80 bg-gray-200">
                 <Image
-                  src="/features/purposeful-career.png"
+                  src="/features/landing-feature-3.jpg"
                   alt="Purposeful Career"
-                  width={400}
-                  height={192}
+                  width={500}
+                  height={600}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="p-8">
+              <div className="p-5">
                 <h3 className="text-2xl font-bold mb-4">
                   Align Your Career Path
                 </h3>
@@ -256,16 +256,16 @@ export default function HomePage() {
             </div>
 
             <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="h-48 bg-gray-200">
+              <div className="h-80 bg-gray-200">
                 <Image
-                  src="/features/souls-blueprint.png"
+                  src="/features/landing-feature-4.jpg"
                   alt="Your Soul's Blueprint"
-                  width={400}
-                  height={192}
+                  width={500}
+                  height={600}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="p-8">
+              <div className="p-5">
                 <h3 className="text-2xl font-bold mb-4">
                   Discover Your Full Blueprint
                 </h3>
@@ -278,7 +278,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section> */}
+      </section>
 
       {/* Testimonials Section */}
       {/* <section className="py-20 bg-white">
