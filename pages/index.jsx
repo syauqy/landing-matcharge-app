@@ -193,12 +193,13 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
               <div className="h-80 bg-gray-200">
-                <Image
+                <img
                   src="/features/landing-feature-1.jpg"
                   alt="Daily Clarity"
                   width={500}
                   height={600}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
               <div className="p-5">
@@ -213,12 +214,13 @@ export default function HomePage() {
 
             <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
               <div className="h-80 bg-gray-200">
-                <Image
+                <img
                   src="/features/landing-feature-2.jpg"
                   alt="Deeper Connections"
                   width={500}
                   height={600}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
               <div className="p-5">
@@ -235,12 +237,13 @@ export default function HomePage() {
 
             <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
               <div className="h-80 bg-gray-200">
-                <Image
+                <img
                   src="/features/landing-feature-3.jpg"
                   alt="Purposeful Career"
                   width={500}
                   height={600}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
               <div className="p-5">
@@ -257,12 +260,13 @@ export default function HomePage() {
 
             <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
               <div className="h-80 bg-gray-200">
-                <Image
+                <img
                   src="/features/landing-feature-4.jpg"
                   alt="Your Soul's Blueprint"
                   width={500}
                   height={600}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
               <div className="p-5">

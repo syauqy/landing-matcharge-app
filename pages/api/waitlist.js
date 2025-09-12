@@ -3,7 +3,7 @@ import Airtable from "airtable";
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
   process.env.AIRTABLE_BASE_ID
 );
-const TABLE_NAME = process.env.AIRTABLE_TABLE_NAME || "waitlist";
+const TABLE_NAME = "waitlist";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
