@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://wetonscope.com
+
+# Sitemaps
+Sitemap: https://wetonscope.com/sitemap.xml

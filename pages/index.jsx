@@ -5,6 +5,7 @@ import { NextSeo } from "next-seo";
 import clsx from "clsx";
 import { SelfDiscovery, Insight, Love, Door } from "@/components/illustrations";
 import { AppStore } from "@/components/icons";
+import { WaitlistForm } from "@/components/WaitlistForm";
 import { Navbar } from "@/components/layouts/navbar";
 import { Footer } from "@/components/layouts/footer";
 
@@ -66,13 +67,12 @@ export default function HomePage() {
               the ancient Javanese art of self-discovery. Get the clarity you've
               been looking for.
             </p>
-            <div className="flex justify-center lg:justify-start">
-              <a
-                href="https://apps.apple.com/your-app-link"
-                className="transition-transform hover:scale-95"
-              >
-                <AppStore className="w-48" width={130} />
-              </a>
+            <div className="flex flex-col gap-3 justify-center md:justify-start mt-4">
+              <div className="text-xs md:text-sm text-gray-500 w-2/3 justify-center md:justify-start mx-auto lg:mx-0">
+                Wetonscope is coming soon. Join our waitlist to get exclusive
+                early access and a special founder's gift on launch day.
+              </div>
+              <WaitlistForm position={"left"} />
             </div>
           </div>
           <div className="lg:w-1/2">
@@ -184,8 +184,104 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Features Section */}
+      {/* <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-16">
+            A Toolkit for a More Aligned Life
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="h-48 bg-gray-200">
+                <Image
+                  src="/features/daily-clarity.jpg"
+                  alt="Daily Clarity"
+                  width={500}
+                  height={500}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-8">
+                <h3 className="text-2xl font-bold mb-4">Your Daily Clarity</h3>
+                <p className="text-gray-600">
+                  Go beyond passive readings. Use daily insights as a prompt for
+                  your private journal and set clear intentions to navigate your
+                  day with purpose.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="h-48 bg-gray-200">
+                <Image
+                  src="/features/deeper-connections.png"
+                  alt="Deeper Connections"
+                  width={400}
+                  height={192}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-8">
+                <h3 className="text-2xl font-bold mb-4">
+                  Understand Your Connections
+                </h3>
+                <p className="text-gray-600">
+                  Discover the energetic blueprint between you and anyone in
+                  your life. Get a practical guide to better communication in
+                  love and friendship.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="h-48 bg-gray-200">
+                <Image
+                  src="/features/purposeful-career.png"
+                  alt="Purposeful Career"
+                  width={400}
+                  height={192}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-8">
+                <h3 className="text-2xl font-bold mb-4">
+                  Align Your Career Path
+                </h3>
+                <p className="text-gray-600">
+                  Uncover your professional superpowers and ideal work style.
+                  Find the path that honors your natural energy and leads to
+                  true fulfillment.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="h-48 bg-gray-200">
+                <Image
+                  src="/features/souls-blueprint.png"
+                  alt="Your Soul's Blueprint"
+                  width={400}
+                  height={192}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-8">
+                <h3 className="text-2xl font-bold mb-4">
+                  Discover Your Full Blueprint
+                </h3>
+                <p className="text-gray-600">
+                  Explore the deep layers of your being. Understand your karmic
+                  themes, elemental nature (Laku), and the core values that
+                  guide your soul's journey.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section> */}
+
       {/* Testimonials Section */}
-      <section className="py-20 bg-white">
+      {/* <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-16">
             Don't Just Take Our Word For It
@@ -211,7 +307,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Final CTA Section */}
       <section className="py-20 bg-gradient-to-b from-white to-batik">
@@ -224,13 +320,12 @@ export default function HomePage() {
             just a tap away. Download Wetonscope and start living a more aligned
             life today.
           </p>
-          <div className="flex justify-center">
-            <a
-              href="https://apps.apple.com/your-app-link"
-              className="transition-transform hover:scale-105"
-            >
-              <AppStore className="w-48" />
-            </a>
+          <div className="flex flex-col gap-3 justify-center lg:justify-start mt-4">
+            <div className="text-xs md:text-sm text-gray-500 w-2/3 justify-center lg:justify-start mx-auto">
+              Wetonscope is coming soon. Join our waitlist to get exclusive
+              early access and a special founder's gift on launch day.
+            </div>
+            <WaitlistForm />
           </div>
         </div>
       </section>

@@ -9,14 +9,14 @@ const abhaya = Abhaya_Libre({
   subsets: ["latin"],
 });
 
-export function Navbar({ bg }) {
+export function Navbar({ bg, page }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
-      setHasScrolled(scrollPosition > 0);
+      setHasScrolled(scrollPosition > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -45,21 +45,46 @@ export function Navbar({ bg }) {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-batik-text">
+            {/* <Link href="/" className="text-gray-700 hover:text-batik-text">
               Home
+            </Link> */}
+            <Link
+              href="/blog"
+              className={clsx(
+                page === "blog"
+                  ? "text-batik-text underline underline-offset-2"
+                  : "text-gray-700",
+                " hover:text-batik-text font-semibold"
+              )}
+            >
+              Blog
             </Link>
+            <Link
+              href="/contact"
+              className={clsx(
+                page === "contact"
+                  ? "text-batik-text underline underline-offset-2"
+                  : "text-gray-700",
+                " hover:text-batik-text font-semibold"
+              )}
+            >
+              Contact
+            </Link>
+            {/* <Link href="/support" className="text-gray-700 hover:text-batik-text">
+              Support
+            </Link> */}
             {/* <Link href="/about" className="text-gray-700 hover:text-batik-text">
               About
             </Link>
             <Link href="/weton" className="text-gray-700 hover:text-batik-text">
               Check Your Weton
             </Link> */}
-            <a
+            {/* <a
               href="https://apps.apple.com/your-app-link"
               className=" px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors"
             >
               <AppStore className="w-32" />
-            </a>
+            </a> */}
           </div>
 
           {/* Mobile Menu Button */}
@@ -87,7 +112,7 @@ export function Navbar({ bg }) {
         </div>
 
         {/* Mobile Menu Popover */}
-        {isOpen && (
+        {/* {isOpen && (
           <div className="md:hidden absolute top-16 left-0 right-0 bg-white border-b border-gray-200">
             <div className="flex flex-col space-y-4 px-4 py-6">
               <Link
@@ -97,13 +122,13 @@ export function Navbar({ bg }) {
               >
                 Home
               </Link>
-              {/* <Link
+              <Link
                 href="/about"
                 className="text-gray-600 hover:text-batik-text"
                 onClick={() => setIsOpen(false)}
               >
                 About
-              </Link> */}
+              </Link>
               <a
                 href="https://apps.apple.com/your-app-link"
                 className="bg-batik-black text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-center"
@@ -113,7 +138,7 @@ export function Navbar({ bg }) {
               </a>
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </nav>
   );
