@@ -45,9 +45,17 @@ export function Navbar({ bg, page }) {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            {/* <Link href="/" className="text-gray-700 hover:text-batik-text">
-              Home
-            </Link> */}
+            <Link
+              href="/check"
+              className={clsx(
+                page === "check"
+                  ? "text-batik-text underline underline-offset-2"
+                  : "text-gray-700",
+                " hover:text-batik-text font-semibold"
+              )}
+            >
+              Check Your Weton
+            </Link>
             <Link
               href="/blog"
               className={clsx(
@@ -121,9 +129,7 @@ export function Navbar({ bg, page }) {
                 : bg + "/80 backdrop-blur-md"
             )}
           >
-            <div
-              className={clsx("flex flex-col space-y-4 px-4 py-6 shadow-md")}
-            >
+            <div className={clsx("flex flex-col pt-4  shadow-md")}>
               {/* <Link
                 href="/"
                 className="text-gray-600 hover:text-batik-text"
@@ -139,8 +145,25 @@ export function Navbar({ bg, page }) {
                 About
               </Link> */}
               <Link
+                href="/check"
+                className={clsx(
+                  page === "check"
+                    ? "text-batik-text bg-batik"
+                    : "text-gray-600",
+                  "hover:text-batik-text font-semibold text-lg px-4 py-4 active:bg-batik"
+                )}
+                onClick={() => setIsOpen(false)}
+              >
+                Check Your Weton
+              </Link>
+              <Link
                 href="/blog"
-                className="text-gray-600 hover:text-batik-text font-semibold text-lg"
+                className={clsx(
+                  page === "blog"
+                    ? "text-batik-text bg-batik"
+                    : "text-gray-600",
+                  "hover:text-batik-text font-semibold text-lg px-4 py-4 active:bg-batik"
+                )}
                 onClick={() => setIsOpen(false)}
               >
                 Blog

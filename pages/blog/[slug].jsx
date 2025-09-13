@@ -123,7 +123,7 @@ export default function BlogPost({
         ]}
       />
       <Navbar page={"blog"} />
-      <div className="max-w-3xl mx-auto p-8 pb-20">
+      <div className="max-w-3xl mx-auto p-8 px-5 pb-20">
         <Link
           href="/blog"
           className="mb-6 inline-block font-semibold text-batik-text hover:underline"
