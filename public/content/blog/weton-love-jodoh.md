@@ -4,6 +4,8 @@ date: "2025-09-17"
 excerpt: "Explore the Javanese concept of Jodoh, or energetic compatibility in relationships. Learn how Weton calculations can reveal natural harmony, complementary strengths, and growth opportunities between partners."
 image: "/content/blog/images/wisdom-love.jpg"
 categories: ["Practical Application", "Relationships"]
+meta_title: "Weton & Love: The Wisdom of Jodoh"
+meta_description: "Explore Jodoh, the Javanese concept of energetic compatibility. Learn how Weton calculations reveal harmony, strengths, and growth in relationships."
 ---
 
 One of the most fascinating applications of Weton is in understanding relationships. The Javanese concept for compatibility is called **Jodoh**.

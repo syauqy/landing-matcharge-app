@@ -4,6 +4,8 @@ date: "2025-09-13"
 excerpt: "Delve into the concept of Neptu, the 'Life Force Value' in Javanese wisdom. This article explains how to calculate your total Neptu from your birth day (Dina) and market day (Pasaran) to reveal your innate energy."
 image: "/content/blog/images/wisdom-neptu.jpg"
 categories: ["Core Concepts"]
+meta_title: "The Power of Neptu: Your Life Force"
+meta_description: "Delve into Neptu, the 'Life Force Value' in Javanese wisdom. Learn to calculate your total Neptu from your birth day (Dina) and market day (Pasaran)."
 ---
 
 In Javanese wisdom, every day has a "spiritual weight" or numerical value called a **Neptu**. Think of this as your "Life Force Value", a number that reveals the intensity and nature of your innate energy.

@@ -4,6 +4,8 @@ date: "2025-09-11"
 excerpt: "Explore the two fundamental cycles of Javanese wisdom: the seven-day Dina and the five-day Pasaran. Learn how their interplay creates your unique Weton and defines your personality's blueprint."
 image: "/content/blog/images/wisdom-dina.jpg"
 categories: ["Core Concepts"]
+meta_title: "The Two Calendars: Dina & Pasaran"
+meta_description: "Explore Javanese wisdom's two cycles: the 7-day Dina and 5-day Pasaran. Learn how their interplay creates your Weton and defines your personality."
 ---
 
 The magic of your Weton comes from the interplay of two distinct cycles, like two gears turning together to create a unique moment in time. Understanding these two calendars is the key to unlocking your blueprint.

@@ -70,34 +70,46 @@ export async function getStaticProps({ params }) {
       body: mdContent,
       image: data.image || null,
       excerpt: data.excerpt || "",
+      meta_title: data.meta_title || data.title || params.slug,
+      meta_description: data.meta_description || data.excerpt || "",
       relatedPosts: relatedPosts.slice(0, 4),
+      slug: params.slug,
     },
   };
 }
 
-export default function BlogPost({ title, date, body, image, relatedPosts }) {
+export default function BlogPost({
+  title,
+  date,
+  body,
+  image,
+  relatedPosts,
+  meta_title,
+  meta_description,
+  slug,
+}) {
   return (
     <div className="min-h-screen bg-base-100">
       <NextSeo
-        title="Blog - Wetonscope"
-        description="Discover your soul's blueprint with Wetonscope, a modern guide to ancient Javanese wisdom. Get personalized daily readings, relationship compatibility insights, and deep self-discovery through traditional Weton calculations."
+        title={`${meta_title} - Wetonscope`}
+        description={meta_description}
         openGraph={{
           type: "website",
           locale: "en_US",
           url: "https://wetonscope.com/blog",
           siteName: "Wetonscope",
-          title: "Blog - Wetonscope",
-          description:
-            "Discover your soul's blueprint with Wetonscope. Get personalized daily readings and relationship insights based on ancient Javanese wisdom.",
+          title: meta_title,
+          description: meta_description,
           images: [
             {
-              url: "/wetonscope-app-hero.png",
+              url: image,
               width: 1200,
               height: 630,
               alt: "Wetonscope App Preview",
             },
           ],
         }}
+        canonical={`https://wetonscope.com/blog/${slug}`}
         additionalMetaTags={[
           {
             name: "keywords",

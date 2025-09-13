@@ -4,6 +4,8 @@ date: "2025-09-29"
 excerpt: "An introduction to the Pawukon calendar, the 210-day spiritual almanac at the heart of Javanese wisdom. Learn about its mythological origins and the interlocking cycles that create a map of cosmic energy."
 image: "/content/blog/images/wisdom-pawukon.jpg"
 categories: ["Core Concepts"]
+meta_title: "Pawukon Calendar: 210-Day Wisdom"
+meta_description: "Discover the Pawukon calendar, a 210-day Javanese almanac with mythic origins and cosmic cycles."
 ---
 
 When you think of a calendar, you likely think of the 365-day Gregorian calendar that governs our modern lives, or perhaps a lunar calendar that follows the cycles of the moon. **The Javanese Pawukon calendar**, which is the foundation of Wetonscope, is something entirely different. It is not designed to track seasons or agricultural cycles; it is a spiritual almanac, a complex and beautiful map of cosmic energy.

@@ -4,6 +4,8 @@ date: "2025-09-22"
 excerpt: "Navigate life with greater intention by understanding auspicious (dina becik) and inauspicious (dina ala) days in Javanese wisdom. Learn about the energetic 'weather' and special days like Taliwangke and Samparwangke."
 image: "/content/blog/images/wisdom-days.jpg"
 categories: ["Core Concepts", "Practical Application"]
+meta_title: "Good Days & Bad Days: Energetic Weather"
+meta_description: "Understand auspicious (dina becik) and inauspicious (dina ala) days in Javanese wisdom. Learn about energetic 'weather' and special days to navigate life."
 ---
 
 In Javanese wisdom, not all days are created equal. Just as the physical weather can be sunny, rainy, or stormy, the energetic weather of each day has a unique quality. Understanding this flow can help you navigate your life with greater ease and intention. This is the wisdom behind the concepts of auspicious (_dina becik_) and inauspicious (_dina ala_) days.

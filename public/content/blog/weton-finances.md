@@ -4,6 +4,8 @@ date: "2025-09-18"
 excerpt: "Understand your 'financial DNA' through your Weton. This article explores how your archetype, Rakam, and Pancasuda influence your natural money style and financial journey, guiding you toward conscious prosperity."
 image: "/content/blog/images/wisdom-finances.jpg"
 categories: ["Practical Application", "Finance"]
+meta_title: "Weton & Your Finances: Path to Prosperity"
+meta_description: "Understand your 'financial DNA' through Weton. Explore how your archetype, Rakam, and Pancasuda influence your money style and guide you to prosperity."
 ---
 
 Your relationship with money is deeply personal and is strongly influenced by your innate energetic signature. Wetonscope offers a unique perspective on your "financial DNA," helping you manage your resources with greater self-awareness and intention.

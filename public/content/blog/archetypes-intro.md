@@ -4,6 +4,8 @@ date: "2025-09-12"
 excerpt: "An introduction to the 35 distinct archetypes in Javanese wisdom, born from the combination of the 7 Dina and 5 Pasaran. This article explores how this nuanced system offers a rich and personal understanding of personality and purpose."
 image: "/content/blog/images/wisdom-archetypes.jpg"
 categories: ["Core Concepts", "Archetype"]
+meta_title: "The 35 Archetypes: An Introduction"
+meta_description: "An intro to the 35 archetypes in Javanese wisdom, from the 7 Dina and 5 Pasaran. Explore how this system offers a rich understanding of personality."
 ---
 
 The combination of the 7 _Dina_ and 5 _Pasaran_ creates a complete cycle of 35 unique days. In Javanese wisdom, each of these 35 combinations is a distinct **archetype** with its own rich story, personality, and energetic signature.

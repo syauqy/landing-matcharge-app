@@ -4,6 +4,8 @@ date: "2025-09-27"
 excerpt: "Learn how to turn ancient Weton insights into a modern mindfulness practice. This article explains the two-step daily reflection in the Wetonscope app, designed to build self-awareness and promote conscious action."
 image: "/content/blog/images/wisdom-daily.jpg"
 categories: ["Practical Application", "Mindfulness"]
+meta_title: "Daily Practice: Weton for Mindfulness"
+meta_description: "Turn ancient Weton insights into a modern mindfulness practice. Learn the 2-step daily reflection in the Wetonscope app to build self-awareness."
 ---
 
 The wisdom of Wetonscope is not just something to be read; it is something to be _practiced_. The daily journal and intention-setting features are the heart of the app, designed to help you turn ancient insight into modern, mindful action.

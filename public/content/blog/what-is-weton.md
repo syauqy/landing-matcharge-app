@@ -4,6 +4,8 @@ date: "2025-09-10"
 excerpt: "Discover Weton, the Javanese system of self-discovery. Learn how the combination of a 7-day and 5-day calendar creates 35 unique archetypes, offering a personalized blueprint for your soul's energetic signature."
 image: "/content/blog/images/wisdom-weton.jpg"
 categories: ["Core Concepts", "Weton"]
+meta_title: "What is Weton? Your Soul's Blueprint"
+meta_description: "Discover Weton, the Javanese system of self-discovery. Learn how it combines two calendars to create 35 unique archetypes for your soul's blueprint."
 ---
 
 If you’ve ever felt that your standard zodiac sign only tells part of your story, you’re on the right track. Weton is a system of self-discovery from the island of Java, Indonesia, that offers a much deeper, more personalized perspective. It’s a way of understanding your energetic DNA.

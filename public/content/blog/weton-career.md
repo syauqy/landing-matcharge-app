@@ -4,6 +4,8 @@ date: "2025-09-19"
 excerpt: "Discover how your Weton archetype and elemental persona (Laku) can guide you to a fulfilling career. This article explains how aligning your work with your natural energy can lead to a state of flow and lasting success."
 image: "/content/blog/images/wisdom-career.jpg"
 categories: ["Practical Application", "Career"]
+meta_title: "Weton & Your Career: Finding Your Path"
+meta_description: "Discover how your Weton archetype and elemental persona (Laku) can guide your career. Align your work with your natural energy for flow and success."
 ---
 
 In a world full of career advice, Javanese wisdom offers a simple but profound starting point: the most fulfilling work is a natural extension of who you are.

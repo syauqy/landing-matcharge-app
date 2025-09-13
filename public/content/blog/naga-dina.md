@@ -4,6 +4,8 @@ date: "2025-09-23"
 excerpt: "Learn about Naga Dina, the 'Dragon of the Day,' a Javanese concept for directional luck. This article explains how to align your actions with the dragon's position to harmonize with the day's prosperous energy."
 image: "/content/blog/images/wisdom-naga.jpg"
 categories: ["Core Concepts", "Practical Application"]
+meta_title: "Naga Dina: Dragon of the Day"
+meta_description: "Learn about Naga Dina, the 'Dragon of the Day,' a Javanese concept for directional luck. Align your actions with the dragon's position for prosperity."
 ---
 
 One of the most fascinating and practical concepts in Javanese wisdom is the **Naga Dina**, or the "Dragon of the Day." This ancient teaching provides a guide to directional luck, helping you align your actions with the flow of fortune.

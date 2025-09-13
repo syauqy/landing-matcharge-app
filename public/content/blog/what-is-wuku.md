@@ -4,6 +4,8 @@ date: "2025-09-15"
 excerpt: "Go deeper than your Weton to discover your Wuku—the sacred story of your birth week. This article introduces the 30 Wuku of the Pawukon calendar, each with its own myth, guides, and influence on your destiny."
 image: "/content/blog/images/wisdom-wuku.jpg"
 categories: ["Core Concepts", "Wuku"]
+meta_title: "What is Wuku? Sacred Story of Birth"
+meta_description: "Discover your Wuku, the sacred story of your birth week. This intro to the 30 Wuku of the Pawukon calendar reveals their myth, guides, and destiny."
 ---
 
 Now that you understand your Weton "your daily energetic signature" we can explore a much deeper layer of your blueprint: your **Wuku**.

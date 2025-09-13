@@ -4,6 +4,8 @@ date: "2025-09-26"
 excerpt: "Explore Pancasuda, your innate 'Fortune Factor' in Javanese wisdom. This article explains how this single, powerful trait can act as your spiritual superpower or, if unmanaged, your kryptonite."
 image: "/content/blog/images/wisdom-pancasuda.jpg"
 categories: ["Core Concepts", "Pancasuda"]
+meta_title: "Your Fortune Factor: Pancasuda"
+meta_description: "Explore Pancasuda, your innate 'Fortune Factor' in Javanese wisdom. Learn how this powerful trait can be your spiritual superpower or your kryptonite."
 ---
 
 If Rakam is your life's story, then **Pancasuda** is your innate "Fortune Factor". A single, powerful trait that acts as your spiritual superpower or, if unmanaged, your kryptonite.

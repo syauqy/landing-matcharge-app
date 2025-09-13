@@ -4,6 +4,8 @@ date: "2025-09-16"
 excerpt: "Meet the spiritual guides of your Wuku: the Guardian Deity (Dewa), Tree of Life (Pohon), and Spirit Bird (Manuk). This article explains how these three patrons reveal your higher purpose, talents, and aspirations."
 image: "/content/blog/images/wisdom-deity.jpg"
 categories: ["Core Concepts", "Wuku"]
+meta_title: "Your Wuku's Guides: Deity, Tree & Bird"
+meta_description: "Meet your Wuku's spiritual guides: Guardian Deity (Dewa), Tree of Life (Pohon), and Spirit Bird (Manuk). Learn how they reveal your purpose and talents."
 ---
 
 Every Wuku has a team of spiritual guides that offer wisdom about your life's path. Understanding these three patrons reveals the deeper purpose behind your personality and talents.

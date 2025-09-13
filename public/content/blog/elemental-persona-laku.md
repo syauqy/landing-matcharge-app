@@ -4,6 +4,8 @@ date: "2025-09-24"
 excerpt: "Discover your Laku, your elemental persona in Javanese wisdom. This article explores the different Laku types (Earth, Fire, Wind, etc.) and how understanding your soul's natural rhythm can help you live in a state of flow."
 image: "/content/blog/images/wisdom-laku.jpg"
 categories: ["Core Concepts", "Laku"]
+meta_title: "Your Elemental Persona: Your Laku"
+meta_description: "Discover your Laku, your elemental persona in Javanese wisdom. Explore Laku types (Earth, Fire, Wind) and how your soul's rhythm helps you find flow."
 ---
 
 While your Weton is _what_ you are, your **Laku** is _how_ you are. It is your elemental persona, your soul's natural way of moving through the world. It reveals your intrinsic rhythm, your behavioral style, and your instinctual approach to life's challenges.

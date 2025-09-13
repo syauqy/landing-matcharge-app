@@ -4,6 +4,8 @@ date: "2025-09-25"
 excerpt: "An introduction to Rakam, your 'karmic headline' in Javanese wisdom. Learn how this life theme, derived from your Neptu, influences your social standing, reputation, and the recurring lessons in your life's story."
 image: "/content/blog/images/wisdom-rakam.jpg"
 categories: ["Core Concepts", "Rakam"]
+meta_title: "Your Karmic Path: An Intro to Rakam"
+meta_description: "An intro to Rakam, your 'karmic headline' in Javanese wisdom. Learn how this life theme from your Neptu influences your social standing and life lessons."
 ---
 
 Your **Rakam** is like your "karmic headline" or the overarching plot of your life's story. It is a specific life theme, derived from your _Neptu_, that often influences your social standing, your reputation, and the types of experiences you attract.

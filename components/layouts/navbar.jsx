@@ -112,10 +112,19 @@ export function Navbar({ bg, page }) {
         </div>
 
         {/* Mobile Menu Popover */}
-        {/* {isOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-white border-b border-gray-200">
-            <div className="flex flex-col space-y-4 px-4 py-6">
-              <Link
+        {isOpen && (
+          <div
+            className={clsx(
+              "md:hidden absolute top-16 left-0 right-0 transition-colors duration-200",
+              hasScrolled
+                ? "bg-white/90 backdrop-blur-md"
+                : bg + "/80 backdrop-blur-md"
+            )}
+          >
+            <div
+              className={clsx("flex flex-col space-y-4 px-4 py-6 shadow-md")}
+            >
+              {/* <Link
                 href="/"
                 className="text-gray-600 hover:text-batik-text"
                 onClick={() => setIsOpen(false)}
@@ -128,17 +137,24 @@ export function Navbar({ bg, page }) {
                 onClick={() => setIsOpen(false)}
               >
                 About
+              </Link> */}
+              <Link
+                href="/blog"
+                className="text-gray-600 hover:text-batik-text font-semibold text-lg"
+                onClick={() => setIsOpen(false)}
+              >
+                Blog
               </Link>
-              <a
+              {/* <a
                 href="https://apps.apple.com/your-app-link"
                 className="bg-batik-black text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-center"
                 onClick={() => setIsOpen(false)}
               >
                 Download
-              </a>
+              </a> */}
             </div>
           </div>
-        )} */}
+        )}
       </div>
     </nav>
   );

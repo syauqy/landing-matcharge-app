@@ -4,6 +4,8 @@ date: "2025-09-20"
 excerpt: "Learn how Javanese wisdom views friendship through the lens of Weton. This article explores compatibility readings to understand the support systems, growth dynamics, and social synergy within your chosen family."
 image: "/content/blog/images/wisdom-friendship.jpg"
 categories: ["Practical Application", "Relationships"]
+meta_title: "Weton & Friendship: Bonds We Choose"
+meta_description: "Learn how Javanese wisdom views friendship via Weton. Explore compatibility readings to understand support systems, growth dynamics, and social synergy."
 ---
 
 While romantic compatibility often gets the spotlight, Javanese wisdom places immense value on the bonds of friendship. These are our "chosen family," the community we build to support us through life's journey.

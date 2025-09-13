@@ -4,6 +4,8 @@ date: "2025-09-28"
 excerpt: "Discover core Javanese philosophies for a life of meaning and harmony. This article explores concepts like Memayu Hayuning Bawana, Urip Iku Urup, and Eling lan Waspada to guide your daily life."
 image: "/content/blog/images/wisdom-philosophy.jpg"
 categories: ["Philosophy", "Lifestyle"]
+meta_title: "The Art of Living: Javanese Philosophy"
+meta_description: "Discover core Javanese philosophies for a life of meaning and harmony. Explore concepts like Memayu Hayuning Bawana and Urip Iku Urup to guide your life."
 ---
 
 The wisdom of Weton is not just about knowing yourself; it is about _living_ better. Javanese culture is rich with philosophical principles that act as a guide for a life of meaning, harmony, and purpose. Here are a few core concepts you can apply to your daily life.
