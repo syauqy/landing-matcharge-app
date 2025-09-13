@@ -4,7 +4,7 @@ import { Abhaya_Libre } from "next/font/google";
 import { NextSeo } from "next-seo";
 import clsx from "clsx";
 import { SelfDiscovery, Insight, Love, Door } from "@/components/illustrations";
-import { AppStore } from "@/components/icons";
+// import { AppStore } from "@/components/icons";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { Navbar } from "@/components/layouts/navbar";
 import { Footer } from "@/components/layouts/footer";

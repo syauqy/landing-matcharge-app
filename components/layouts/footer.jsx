@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { Abhaya_Libre } from "next/font/google";
 import clsx from "clsx";
-import { AppStore } from "@/components/icons";
+// import { AppStore } from "@/components/icons";
 
 const abhaya = Abhaya_Libre({
   weight: "800",
