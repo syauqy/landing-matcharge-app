@@ -1,64 +1,47 @@
-# Wetonscope Terms and Conditions
+# Terms of Service for Matcharge
 
-**Effective Date:** August 1, 2025
+**Last Updated:** October 11, 2025
 
-Welcome to Wetonscope. These Terms and Conditions ("Terms") govern your use of our mobile application (the "App") and the services we provide. Please read these Terms carefully before using our App.
+Please read these Terms of Service ("Terms") carefully before using the Matcharge mobile application (the "Service") operated by [Your Name or Company Name] ("us", "we", or "our").
 
-### 1. Agreement to Terms
+Your access to and use of the Service is conditioned upon your acceptance of and compliance with these Terms. These Terms apply to all visitors, users, and others who wish to access or use the Service.
 
-By creating an account and using our App, you agree to be bound by these Terms. If you do not agree to these Terms, do not use the App.
+### 1. ACCOUNTS
 
-### 2. Important Disclaimers
+When you create an account with us, you guarantee that you are above the age of 13, and that the information you provide us is accurate, complete, and current at all times. You are responsible for maintaining the confidentiality of your account and password.
 
-**For Entertainment and Self-Discovery Purposes Only:** The content provided within Wetonscope, including all readings, insights, and guidance, is based on the traditional Javanese system of Weton and is intended for entertainment, spiritual, and self-discovery purposes only.
+### 2. SUBSCRIPTIONS (MATCHAREGE PRO)
 
-**Not Professional Advice:** The information provided in this App does not constitute, and should not be used as a substitute for, professional financial, legal, medical, or psychological advice. Always consult with a qualified professional for any concerns in these areas. We are not responsible for any actions or decisions you make based on the content of this App.
+Some parts of the Service are billed on a subscription basis ("Subscription(s)"). You will be billed in advance on a recurring and periodic basis ("Billing Cycle"). Billing cycles are set either on a monthly or annual basis, depending on the type of subscription plan you select.
 
-### 3. User Accounts
+At the end of each Billing Cycle, your Subscription will automatically renew under the exact same conditions unless you cancel it or we cancel it. You may cancel your Subscription renewal through your App Store account settings.
 
-- **Account Creation:** To access the full features of the App, you must register for an account. You agree to provide accurate and complete information (birth date, birth time, email address) and to keep this information up to date.
-- **Account Security:** You are responsible for safeguarding your account password and for any activities or actions under your account. You agree to notify us immediately of any unauthorized use of your account.
+### 3. CONTENT
 
-### 4. Subscriptions and Payment
+Our Service allows you to post, link, store, share and otherwise make available certain information, text, graphics, or other material ("Content"). You are responsible for the Content that you post on or through the Service, including its legality, reliability, and appropriateness.
 
-- **Pro Features:** Certain features of the App may be available only through a paid subscription ("Wetonscope Pro").
-- **Billing:** Subscriptions are billed on a weekly, monthly, or annual basis. Payment will be charged to your App Store account at the confirmation of purchase.
-- **Automatic Renewal:** Your subscription will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged for renewal within 24 hours prior to the end of the current period.
-- **Managing Subscriptions:** You can manage your subscriptions and turn off auto-renewal by going to your App Store account settings after purchase.
+You retain any and all of your rights to any Content you submit, post or display on or through the Service and you are responsible for protecting those rights.
 
-### 5. Prohibited Activities
+### 4. INTELLECTUAL PROPERTY
 
-You agree not to use the App for any purpose that is illegal or prohibited by these Terms. You agree not to:
+The Service and its original content (excluding Content provided by users), features and functionality are and will remain the exclusive property of Matcharge and its licensors.
 
-- Decompile, reverse engineer, or otherwise attempt to obtain the source code of the App.
-- Use the App to harass, abuse, or harm another person.
-- Use the App for any commercial purpose without our prior written consent.
-- Interfere with the proper working of the App.
+### 5. THIRD-PARTY TRADEMARKS
 
-### 6. Intellectual Property
+All third-party trademarks, product names, and company names or logos used in the Service (e.g., Netflix, Spotify, etc.) are the property of their respective owners. The use of these names and logos is for identification purposes only and does not imply any affiliation with or endorsement by the trademark holder.
 
-The App and its original content, features, and functionality are and will remain the exclusive property of Wetonscope and its licensors. Our trademarks and trade dress may not be used in connection with any product or service without our prior written consent.
+### 6. TERMINATION
 
-### 7. Term and Termination
+We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not to a breach of the Terms.
 
-We may terminate or suspend your account and bar access to the App immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
+### 7. LIMITATION OF LIABILITY
 
-If you wish to terminate your account, you may do so by sending a request to [**support@wetonscope.com**](mailto:support@wetonscope.com).
+In no event shall Matcharge, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the Service.
 
-### 8. Limitation of Liability
-
-In no event shall Wetonscope, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the App.
-
-### 9. Governing Law
+### 8. GOVERNING LAW
 
 These Terms shall be governed and construed in accordance with the laws of Indonesia, without regard to its conflict of law provisions.
 
-### 10. Changes to These Terms
+### 9. CONTACT US
 
-We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will provide notice of any changes by posting the new Terms within the App. By continuing to access or use our App after any revisions become effective, you agree to be bound by the revised terms.
-
-### 11. Contact Us
-
-If you have any questions about these Terms, please contact us at:
-
-[**support@wetonscope.com**](mailto:support@wetonscope.com)
+If you have any questions about these Terms, please contact us at [support@matcharge.app](mailto:support@matcharge.app).

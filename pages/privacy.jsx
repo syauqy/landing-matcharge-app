@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import Markdown from "markdown-to-jsx";
 import { Navbar } from "@/components/layouts/navbar";
+import { Inter } from "next/font/google";
 import { Footer } from "@/components/layouts/footer";
 import { NextSeo } from "next-seo";
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Privacy() {
   const [content, setContent] = useState("");
@@ -16,24 +18,26 @@ export default function Privacy() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-base-100 relative">
+    <div
+      className={`min-h-screen flex flex-col bg-[#F0F5F1] relative ${inter.className}`}
+    >
       <NextSeo
-        title="Privacy Policy - Wetonscope"
-        description="Discover your soul's blueprint with Wetonscope, a modern guide to ancient Javanese wisdom. Get personalized daily readings, relationship compatibility insights, and deep self-discovery through traditional Weton calculations."
+        title="Privacy Policy - Matcharge"
+        description="Privacy Policy for the Matcharge mobile app. We are committed to protecting your personal information and your right to privacy."
         openGraph={{
           type: "website",
           locale: "en_US",
-          url: "https://wetonscope.com/privacy",
-          siteName: "Wetonscope",
-          title: "Privacy Policy - Wetonscope",
+          url: "https://matcharge.app/privacy",
+          siteName: "Matcharge",
+          title: "Privacy Policy - Matcharge",
           description:
-            "Discover your soul's blueprint with Wetonscope. Get personalized daily readings and relationship insights based on ancient Javanese wisdom.",
+            "Track recurring bills, visualize spending, and end surprise charges.",
           images: [
             {
-              url: "/wetonscope-app-hero.png",
+              url: "/matcharge-og-image.png",
               width: 1200,
               height: 630,
-              alt: "Wetonscope App Preview",
+              alt: "Matcharge App Preview",
             },
           ],
         }}
@@ -41,40 +45,37 @@ export default function Privacy() {
           {
             name: "keywords",
             content:
-              "weton calculator, javanese astrology, horoscope, birth date calculator, relationship compatibility, daily reading, self discovery, primbon jawa, astrology",
+              "matcharge, privacy policy, subscription tracker, bill organizer, personal finance",
           },
           {
             name: "application-name",
-            content: "Wetonscope",
+            content: "Matcharge",
           },
         ]}
       />
-      <Navbar />
+      <Navbar bg={"bg-[#F0F5F1]"} />
 
-      <main className="flex-grow p-5 md:p-6 pb-24">
+      <main className="grow p-5 md:p-6 pb-24 text-[#3A4D39]">
         <div className="max-w-3xl mx-auto ">
-          <article className="prose prose-stone max-w-none">
+          <article className="prose max-w-none">
             <Markdown
               options={{
                 overrides: {
                   h1: {
-                    component: ({ children }) => (
-                      <h1 className="text-3xl font-bold text-batik-black mb-6">
-                        {children}
-                      </h1>
-                    ),
+                    props: {
+                      className: "text-3xl font-bold text-[#3A4D39] mb-6",
+                    },
                   },
                   h3: {
-                    component: ({ children }) => (
-                      <h3 className="text-xl font-semibold text-batik-black mt-8 mb-4">
-                        {children}
-                      </h3>
-                    ),
+                    props: {
+                      className:
+                        "text-xl font-semibold text-[#3A4D39] mt-8 mb-4",
+                    },
                   },
                   p: {
-                    component: ({ children }) => (
-                      <p className="text-batik-black mb-4">{children}</p>
-                    ),
+                    props: {
+                      className: "text-[#5A785A] mb-4",
+                    },
                   },
                   strong: {
                     component: ({ children }) => (
@@ -83,19 +84,17 @@ export default function Privacy() {
                   },
                   ul: {
                     component: ({ children }) => (
-                      <ul className="list-disc pl-6 mb-4 text-batik-black">
+                      <ul className="list-disc pl-6 mb-4 text-[#5A785A]">
                         {children}
                       </ul>
                     ),
                   },
                   li: {
-                    component: ({ children }) => (
-                      <li className="mb-2">{children}</li>
-                    ),
+                    props: { className: "mb-2" },
                   },
                   a: {
                     component: ({ children, href }) => (
-                      <a className="text-batik-text underline" href={href}>
+                      <a className="text-[#6A8A69] underline" href={href}>
                         {children}
                       </a>
                     ),
@@ -109,7 +108,7 @@ export default function Privacy() {
         </div>
       </main>
 
-      <Footer />
+      <Footer bg={"bg-[#F0F5F1]"} />
     </div>
   );
 }

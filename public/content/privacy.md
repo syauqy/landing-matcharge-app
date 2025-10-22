@@ -1,54 +1,51 @@
-# Wetonscope Privacy Policy
+# Privacy Policy for Matcharge
 
-**Effective Date:** August 1, 2025
+**Last Updated:** October 11, 2025
 
-Welcome to Wetonscope. Your privacy is a sacred trust, and we are committed to protecting it. This Privacy Policy explains how we collect, use, and safeguard your information when you use our mobile application (the "App"). Please read this policy carefully.
+Thank you for using Matcharge ("we," "us," or "our"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains what information we collect, how we use it, and what rights you have in relation to it.
 
-### 1. Information We Collect
+### 1. WHAT INFORMATION DO WE COLLECT?
 
-To provide you with personalized and insightful readings, we collect the following information:
+We collect personal information that you voluntarily provide to us when you register on the app, as well as information that is collected automatically.
 
-- **Personal Information:** When you create an account, we ask for your birth date, birth time, and email address. This information is essential for us to calculate your Weton and provide the core functionality of the App.
-- **Usage Data:** We collect anonymous data about how you interact with our App. This includes which features you use most often, session duration, and general engagement patterns. This helps us understand what is most valuable to our users so we can improve the App.
+#### Personal Information You Disclose to Us:
 
-We do **not** collect your precise location data.
+- **Account Information:** When you choose to create an account by linking your Google or Apple account, we receive your name, email address, and profile picture as provided by those services.
 
-### 2. How We Use Your Information
+- **Subscription Data:** We collect and store the subscription information you manually enter into the app, including the service name, price, billing cycle, first bill date, and category.
 
-We use the information we collect for the following purposes:
+#### Information Automatically Collected:
 
-- **To Provide and Personalize Our Services:** Your birth date and time are used exclusively to generate your Weton, Wuku, and other related readings. Your email address is used to secure your account.
-- **To Improve Our App:** We analyze anonymous Usage Data to understand user behavior, identify popular features, and make improvements to the App's functionality and user experience.
-- **To Communicate With You (Future Use):** In the future, we may use your email address to send you occasional updates about new features, new readings, or other information related to Wetonscope. You will have the option to opt out of these communications.
+- **Anonymous User ID:** When you first use the app, we assign you a unique, anonymous identifier through Firebase Authentication to store your initial data locally. This ID is not linked to your personal identity until you choose to create a permanent account.
 
-### 3. How We Share Your Information
+- **Usage Data:** We may collect information about how you interact with our app for the purpose of improving our services.
 
-Your privacy is paramount. We do not sell your personal data. We only share information with third-party service providers under the following circumstances:
+#### Purchase Information:
 
-- **For Product Analytics:** We share anonymous Usage Data with **PostHog**, our product analytics provider. This helps us analyze how our App is being used so we can make it better. This data is anonymized and is not linked to your personal email or name.
-- **For Email Communications (Future Use):** In the future, to send you newsletters or updates, we may share your email address with a third-party email service provider, such as Mailchimp or Mailjet. We will only do so for the purpose of communicating with you about Wetonscope.
+All in-app purchases are processed through Apple's App Store. We use a third-party service, RevenueCat, to manage subscription status. We do not collect or store your payment card details.
 
-### 4. Data Storage and Security
+### 2. HOW DO WE USE YOUR INFORMATION?
 
-We take the security of your data seriously. Your information is stored on secure servers provided by **Supabase**. We use industry-standard security measures, including those provided by Supabase like authentication and database access controls (Row Level Security), to protect your data from unauthorized access.
+We use the information we collect to:
 
-### 5. Your Rights and Choices
+- Provide, operate, and maintain the core functionality of the Matcharge app.
+- Sync your subscription data across devices if you create an account.
+- Manage your subscription status (free vs. Pro).
+- Communicate with you, including sending you service-related notices.
+- Improve the app's performance and user experience.
 
-You have control over your personal information.
+### 3. WILL YOUR INFORMATION BE SHARED WITH ANYONE?
 
-- **Access and Update:** You can access and update your information within the App's settings.
-- **Account Deletion:** You have the right to delete your account and all associated personal data at any time. To do so, please send a request to our support team at [**support@wetonscope.com**](mailto:support@wetonscope.com) from the email address associated with your account. We are working on an in-app feature to make this process even simpler, which will be available in a future update.
+We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties. Your data is stored securely in Google's Firebase platform. We only share information with third-party service providers (like RevenueCat) to the extent necessary to provide the app's services.
 
-### 6. Children's Privacy
+### 4. HOW DO WE KEEP YOUR INFORMATION SAFE?
 
-Wetonscope is not intended for use by children under the age of 13. We do not knowingly collect personal information from children under 13. If we become aware that we have collected such information, we will take steps to delete it.
+We use Google Firebase, a secure and industry-standard platform, to store and protect your data. While we take all reasonable measures to protect your information, no electronic transmission or storage technology can be guaranteed to be 100% secure.
 
-### 7. Changes to This Privacy Policy
+### 5. WHAT ARE YOUR PRIVACY RIGHTS?
 
-We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy within the App and updating the "Effective Date" at the top. We encourage you to review this policy periodically.
+You may review, change, or terminate your account at any time. You can delete your account from the Settings page within the app, which will permanently delete all associated data from our servers.
 
-### 8. Contact Us
+### 6. CONTACT US
 
-If you have any questions or concerns about this Privacy Policy or your data, please do not hesitate to contact us at:
-
-[**support@wetonscope.com**](mailto:support@wetonscope.com)
+If you have questions or comments about this policy, you may email us at [**support@matcharge.app**](mailto:support@matcharge.app).

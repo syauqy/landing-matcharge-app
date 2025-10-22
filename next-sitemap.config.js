@@ -4,7 +4,7 @@ const path = require("path");
 const matter = require("gray-matter");
 
 module.exports = {
-  siteUrl: process.env.SITE_URL || "https://wetonscope.com",
+  siteUrl: process.env.SITE_URL || "https://matcharge.app",
   generateRobotsTxt: true,
   robotsTxtOptions: {
     policies: [
@@ -14,12 +14,7 @@ module.exports = {
       },
     ],
   },
-  exclude: [
-    "/server-sitemap.xml",
-    "/test",
-    "/profile-setup",
-    "/profile/detail",
-  ], // Exclude server-side generated pages if any
+  exclude: ["/server-sitemap.xml", "/test", "/blog", "/contact"], // Exclude server-side generated pages if any
   generateIndexSitemap: false,
   changefreq: "weekly",
   priority: 0.7,

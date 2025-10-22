@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Abhaya_Libre } from "next/font/google";
+import { Lora } from "next/font/google";
 import clsx from "clsx";
-import { AppStore } from "@/components/icons";
 
-const abhaya = Abhaya_Libre({
-  weight: "800",
+const lora = Lora({
+  weight: "700",
   subsets: ["latin"],
 });
 
@@ -31,20 +30,20 @@ export function Navbar({ bg, page }) {
       )}
     >
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-center items-center h-16">
           {/* Logo */}
           <Link
             href="/"
             className={clsx(
-              "text-4xl font-bold text-batik-black",
-              abhaya.className
+              "text-3xl md:text-4xl font-bold text-batik-black",
+              lora.className
             )}
           >
-            Wetonscope
+            Matcharge
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/check"
               className={clsx(
@@ -78,25 +77,25 @@ export function Navbar({ bg, page }) {
             >
               Contact
             </Link>
-            {/* <Link href="/support" className="text-gray-700 hover:text-batik-text">
+            <Link href="/support" className="text-gray-700 hover:text-batik-text">
               Support
-            </Link> */}
-            {/* <Link href="/about" className="text-gray-700 hover:text-batik-text">
+            </Link>
+            <Link href="/about" className="text-gray-700 hover:text-batik-text">
               About
             </Link>
             <Link href="/weton" className="text-gray-700 hover:text-batik-text">
               Check Your Weton
-            </Link> */}
-            {/* <a
+            </Link>
+            <a
               href="https://apps.apple.com/your-app-link"
               className=" px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors"
             >
               <AppStore className="w-32" />
-            </a> */}
-          </div>
+            </a>
+          </div> */}
 
           {/* Mobile Menu Button */}
-          <button
+          {/* <button
             className="md:hidden"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
@@ -116,11 +115,11 @@ export function Navbar({ bg, page }) {
                 <path d="M4 6h16M4 12h16M4 18h16" />
               )}
             </svg>
-          </button>
+          </button> */}
         </div>
 
         {/* Mobile Menu Popover */}
-        {isOpen && (
+        {/* {isOpen && (
           <div
             className={clsx(
               "md:hidden absolute top-16 left-0 right-0 transition-colors duration-200",
@@ -130,20 +129,6 @@ export function Navbar({ bg, page }) {
             )}
           >
             <div className={clsx("flex flex-col pt-4  shadow-md")}>
-              {/* <Link
-                href="/"
-                className="text-gray-600 hover:text-batik-text"
-                onClick={() => setIsOpen(false)}
-              >
-                Home
-              </Link>
-              <Link
-                href="/about"
-                className="text-gray-600 hover:text-batik-text"
-                onClick={() => setIsOpen(false)}
-              >
-                About
-              </Link> */}
               <Link
                 href="/check"
                 className={clsx(
@@ -168,16 +153,9 @@ export function Navbar({ bg, page }) {
               >
                 Blog
               </Link>
-              {/* <a
-                href="https://apps.apple.com/your-app-link"
-                className="bg-batik-black text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors text-center"
-                onClick={() => setIsOpen(false)}
-              >
-                Download
-              </a> */}
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </nav>
   );
