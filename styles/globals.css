@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes: pastel --default;
+  themes: winter;
+  --color-base-100: oklch(0.98 0.01 120);
 }
 
 @plugin "daisyui/theme" {

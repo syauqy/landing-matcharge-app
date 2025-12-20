@@ -19,10 +19,16 @@ export function Footer({ bg }) {
             <Link
               href="/"
               className={clsx(
-                "text-5xl font-bold text-batik-black",
+                "text-4xl font-bold text-base-content flex items-center gap-2 justify-center md:justify-start",
                 lora.className
               )}
+              aria-label="Pippin Home"
             >
+              <img
+                src="/matcharge-icon.jpg"
+                alt="Matcharge Mascot"
+                className="w-8 h-8 md:w-12 md:h-12 inline-block align-middle rounded-2xl overflow-clip object-cover"
+              />
               Matcharge
             </Link>
             <p className="mt-2 mb-4 text-gray-700 font-semibold max-w-sm">
@@ -57,11 +63,51 @@ export function Footer({ bg }) {
             >
               Terms of Service
             </Link>
+            <div className="mt-3 text-sm flex flex-col items-center md:items-start md:gap-2">
+              From the maker of{" "}
+              <Link
+                href="https://www.getpippin.app"
+                className={clsx(
+                  "text-lg font-bold text-base-content flex items-center gap-2 justify-center md:justify-start py-2"
+                )}
+                aria-label="Pippin Home"
+              >
+                <img
+                  src="/pippin-icon.jpg"
+                  alt="Pippin Mascot"
+                  className="w-8 h-8 md:w-12 md:h-12 inline-block align-middle rounded-xl md:rounded-2xl overflow-clip object-cover"
+                />
+                Pippin
+              </Link>
+              <p className="mb-4 text-sm max-w-sm font-light text-center">
+                Minimalist journal for overthinkers.
+              </p>
+            </div>
 
             {/* <a href="/faq" className="text-gray-600 hover:text-batik-text">
               FAQ
             </a> */}
           </div>
+        </div>
+        <div className="mt-5 flex justify-center items-center md:justify-start gap-2">
+          <a href="https://fazier.com/launches/matcharge.app" target="_blank">
+            <img
+              src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=light"
+              // width={120}
+              alt="Fazier badge"
+            />
+          </a>
+          <a
+            href="https://turbo0.com/item/matcharge-subscription-manager"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://img.turbo0.com/badge-listed-light.svg"
+              alt="Listed on Turbo0"
+              style={{ height: "54px", width: "auto" }}
+            />
+          </a>
         </div>
       </div>
     </footer>
