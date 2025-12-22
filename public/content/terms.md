@@ -44,4 +44,4 @@ These Terms shall be governed and construed in accordance with the laws of Indon
 
 ### 9. CONTACT US
 
-If you have any questions about these Terms, please contact us at [support@matcharge.app](mailto:support@matcharge.app).
+If you have any questions about these Terms, please contact us at [hey@syauqy.dev](mailto:hey@syauqy.dev).

@@ -48,4 +48,4 @@ You may review, change, or terminate your account at any time. You can delete yo
 
 ### 6. CONTACT US
 
-If you have questions or comments about this policy, you may email us at [**support@matcharge.app**](mailto:support@matcharge.app).
+If you have questions or comments about this policy, you may email us at [**hey@syauqy.dev**](mailto:hey@syauqy.dev).

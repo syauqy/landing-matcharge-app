@@ -47,7 +47,7 @@ const faq = [
   {
     question: "I have a feature request or found a bug. How can I contact you?",
     answer:
-      'We are building Matcharge with our community! If you have ideas for new features or run into any issues, you can reach out through the "Settings" menu in the app or email us at support@matcharge.app. We read every message.',
+      'We are building Matcharge with our community! If you have ideas for new features or run into any issues, you can reach out through the "Settings" menu in the app or email us at hey@syauqy.dev. We read every message.',
   },
 ];
 
