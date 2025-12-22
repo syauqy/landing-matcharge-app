@@ -105,7 +105,17 @@ export function Footer({ bg }) {
             <img
               src="https://img.turbo0.com/badge-listed-light.svg"
               alt="Listed on Turbo0"
-              style={{ height: "54px", width: "auto" }}
+              style={{ height: "45px", width: "auto" }}
+            />
+          </a>
+          <a
+            href="https://findly.tools/matcharge-subscription-manager?utm_source=matcharge-subscription-manager"
+            target="_blank"
+          >
+            <img
+              src="https://findly.tools/badges/findly-tools-badge-light.svg"
+              alt="Featured on findly.tools"
+              width="150"
             />
           </a>
         </div>
