@@ -50,6 +50,11 @@ export default function MatchargeHomePage() {
       <Navbar bg={""} />
 
       <main className={` text-[#3A4D39] ${inter.className}`}>
+        {/* Top Banner */}
+        {/* <div className="bg-[#D4A574] text-white py-2 px-4 text-center text-xs md:text-sm font-medium">
+          Holiday Deal: $7.99/year or 1 month free · Ends Dec 31
+        </div> */}
+
         {/* Hero Section */}
         <section className="lg:max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-4 text-center py-20 md:py-32 px-4">
           <div className="flex flex-col items-center md:items-start md:text-left max-w-2xl mx-auto">
@@ -66,9 +71,46 @@ export default function MatchargeHomePage() {
               recurring bills, visualize your spending, and end the stress of
               surprise charges.
             </p>
+
+            {/* Soft Bullets */}
+            {/* <ul className="text-left mb-8 space-y-3 text-[#5A785A]">
+              <li className="flex items-center gap-2">
+                <span className="text-[#3A4D39]">✓</span> Track recurring
+                subscriptions & bills
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-[#3A4D39]">✓</span> See spending in a
+                calming "zen bowl" dashboard
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-[#3A4D39]">✓</span> Catch forgotten trials
+                before they renew
+              </li>
+            </ul> */}
+
+            {/* CTA Buttons */}
+            {/* <div className="flex flex-col md:flex-row gap-3 mb-6 w-full md:w-auto">
+              <a
+                href="https://apps.apple.com/us/app/bill-organizer-matcharge/id6752604627?itscg=30200&itsct=apps_box_badge&mttnsubad=6752604627"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#3A4D39] text-white py-3 px-6 rounded-lg font-semibold text-center hover:bg-[#2a3d29] transition-colors"
+              >
+                Redeem Annual Deal
+              </a>
+              <a
+                href="https://apps.apple.com/us/app/bill-organizer-matcharge/id6752604627?itscg=30200&itsct=apps_box_badge&mttnsubad=6752604627"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white text-[#3A4D39] border-2 border-[#3A4D39] py-3 px-6 rounded-lg font-semibold text-center hover:bg-[#F9F7F3] transition-colors"
+              >
+                Redeem Monthly Free
+              </a>
+            </div> */}
+
             <a
               href="https://apps.apple.com/us/app/bill-organizer-matcharge/id6752604627?itscg=30200&itsct=apps_box_badge&mttnsubad=6752604627"
-              className="mt-4 inline-block"
+              className="mt-2 inline-block"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -104,6 +146,45 @@ export default function MatchargeHomePage() {
             </div>
           </div>
         </section>
+
+        {/* Offer Details Section - COMMENTED OUT */}
+        {/* 
+        <section className="bg-[#F9F7F3] py-16 md:py-20 px-4">
+          <div className="container mx-auto max-w-5xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              <div className="bg-white rounded-2xl p-8 border border-[#E6EFE7]">
+                <h3 className="text-2xl font-bold mb-3">Annual Deal</h3>
+                <p className="text-[#5A785A] mb-4">
+                  <span className="text-3xl font-bold text-[#3A4D39]">
+                    $7.99
+                  </span>
+                  <span className="text-lg"> for first year</span>
+                </p>
+                <p className="text-[#5A785A] text-sm">
+                  Then renews at $17.99/year unless cancelled
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-8 border border-[#E6EFE7]">
+                <h3 className="text-2xl font-bold mb-3">Monthly Deal</h3>
+                <p className="text-[#5A785A] mb-4">
+                  <span className="text-3xl font-bold text-[#3A4D39]">
+                    Free
+                  </span>
+                  <span className="text-lg"> first month</span>
+                </p>
+                <p className="text-[#5A785A] text-sm">
+                  Then $2.99/month unless cancelled
+                </p>
+              </div>
+            </div>
+
+            <p className="text-center text-[#5A785A] text-sm">
+              Limited codes · Ends Dec 31
+            </p>
+          </div>
+        </section>
+        */}
 
         {/* Features Section */}
         <section className="bg-[#E6EFE7] py-20 md:py-24 px-4">

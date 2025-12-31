@@ -60,6 +60,17 @@ const nextConfig = {
         },
       ];
     },
+    // URL redirects
+    async redirects() {
+      return [
+        {
+          source: "/deals",
+          destination:
+            "https://apps.apple.com/redeem?ctx=offercodes&id=6752604627&code=MATCHA2025MONTHLYHOLIDAY",
+          permanent: false,
+        },
+      ];
+    },
   }),
 
   // Add webpack config to exclude NextJS API routes for native builds
