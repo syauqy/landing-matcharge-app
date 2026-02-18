@@ -32,16 +32,16 @@ const badges = [
     src: "https://toolfame.com/badge-light.svg",
     alt: "Featured on toolfame.com",
   },
-  // {
-  //   href: "https://earlyhunt.com",
-  //   src: "https://earlyhunt.com/badges/earlyhunt-badge-light.svg",
-  //   alt: "Featured on EarlyHunt",
-  // },
-  // {
-  //   href: "https://indiehunt.io",
-  //   src: "https://indiehunt.io/badges/indiehunt-badge-light.svg",
-  //   alt: "Featured on IndieHunt",
-  // },
+  {
+    href: "https://earlyhunt.com",
+    src: "https://earlyhunt.com/badges/earlyhunt-badge-light.svg",
+    alt: "Featured on EarlyHunt",
+  },
+  {
+    href: "https://indiehunt.io",
+    src: "https://indiehunt.io/badges/indiehunt-badge-light.svg",
+    alt: "Featured on IndieHunt",
+  },
   // {
   //   href: "https://startupfa.me/s/pippin?utm_source=getpippin.app",
   //   src: "https://startupfa.me/badges/featured/default.webp",
@@ -67,16 +67,16 @@ const badges = [
     src: "https://wired.business/badge1-white.svg",
     alt: "Featured on Wired Business",
   },
-  // {
-  //   href: "https://dofollow.tools",
-  //   src: "https://dofollow.tools/badge/badge_light.svg",
-  //   alt: "Featured on Dofollow.Tools",
-  // },
-  // {
-  //   href: "https://www.showmysites.com",
-  //   src: "https://www.showmysites.com/static/backlink/blue_border.webp",
-  //   alt: "Featured on ShowMySites",
-  // },
+  {
+    href: "https://dofollow.tools",
+    src: "https://dofollow.tools/badge/badge_light.svg",
+    alt: "Featured on Dofollow.Tools",
+  },
+  {
+    href: "https://www.showmysites.com",
+    src: "https://www.showmysites.com/static/backlink/blue_border.webp",
+    alt: "Featured on ShowMySites",
+  },
   // {
   //   href: "https://www.activesearchresults.com",
   //   src: "",
@@ -87,11 +87,11 @@ const badges = [
   //   src: "https://ufind.best/badges/ufind-best-badge-light.svg",
   //   alt: "Featured on ufind.best",
   // },
-  // {
-  //   href: "https://goodaitools.com",
-  //   src: "https://goodaitools.com/assets/images/badge.png",
-  //   alt: "Featured on goodaitools.com",
-  // },
+  {
+    href: "https://goodaitools.com",
+    src: "https://goodaitools.com/assets/images/badge.png",
+    alt: "Featured on goodaitools.com",
+  },
 ];
 
 export function BadgeMarquee() {
