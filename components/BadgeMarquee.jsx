@@ -22,11 +22,11 @@ const badges = [
     src: "https://cdn.prod.website-files.com/63d8afd87da01fb58ea3fbcb/6487e2868c6c8f93b4828827_dang-badge.png",
     alt: "Dang.ai",
   },
-  // {
-  //   href: "https://launchigniter.com/product/pippin-overthinking-journal?ref=badge-pippin-overthinking-journal",
-  //   src: "https://launchigniter.com/api/badge/pippin-overthinking-journal?theme=light",
-  //   alt: "Featured on LaunchIgniter",
-  // },
+  {
+    href: "https://launchigniter.com/product/matcharge-subscription-manager?ref=badge-matcharge-subscription-manager",
+    src: "https://launchigniter.com/api/badge/matcharge-subscription-manager?theme=light",
+    alt: "Featured on LaunchIgniter",
+  },
   // {
   //   href: "https://toolfame.com/item/pippin-overthinking-journal",
   //   src: "https://toolfame.com/badge-light.svg",
@@ -47,11 +47,11 @@ const badges = [
   //   src: "https://startupfa.me/badges/featured/default.webp",
   //   alt: "Pippin  - Featured on Startup Fame",
   // },
-  // {
-  //   href: "https://twelve.tools",
-  //   src: "https://twelve.tools/badge1-white.svg",
-  //   alt: "Featured on Twelve Tools",
-  // },
+  {
+    href: "https://twelve.tools",
+    src: "https://twelve.tools/badge1-white.svg",
+    alt: "Featured on Twelve Tools",
+  },
   // {
   //   href: "https://saasfame.com/item/pippin",
   //   src: "https://saasfame.com/badge-light.svg",
@@ -62,11 +62,11 @@ const badges = [
   //   src: "https://auraplusplus.com/images/badges/featured-on-light.svg",
   //   alt: "Featured on Aura++",
   // },
-  // {
-  //   href: "https://wired.business",
-  //   src: "https://wired.business/badge1-white.svg",
-  //   alt: "Featured on Wired Business",
-  // },
+  {
+    href: "https://wired.business",
+    src: "https://wired.business/badge1-white.svg",
+    alt: "Featured on Wired Business",
+  },
   // {
   //   href: "https://dofollow.tools",
   //   src: "https://dofollow.tools/badge/badge_light.svg",
