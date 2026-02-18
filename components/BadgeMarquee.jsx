@@ -57,11 +57,11 @@ const badges = [
   //   src: "https://saasfame.com/badge-light.svg",
   //   alt: "Featured on saasfame.com",
   // },
-  // {
-  //   href: "https://auraplusplus.com/projects/pippin-overthinking-journal",
-  //   src: "https://auraplusplus.com/images/badges/featured-on-light.svg",
-  //   alt: "Featured on Aura++",
-  // },
+  {
+    href: "https://auraplusplus.com/projects/matcharge-subscription-tracker-visualizer",
+    src: "https://auraplusplus.com/images/badges/featured-on-light.svg",
+    alt: "Featured on Aura++",
+  },
   {
     href: "https://wired.business",
     src: "https://wired.business/badge1-white.svg",
