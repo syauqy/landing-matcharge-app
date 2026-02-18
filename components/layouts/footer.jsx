@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { Lora } from "next/font/google";
 import clsx from "clsx";
+import { BadgeMarquee } from "../BadgeMarquee";
 // import { AppStore } from "@/components/icons";
 
 const lora = Lora({
@@ -20,7 +21,7 @@ export function Footer({ bg }) {
               href="/"
               className={clsx(
                 "text-4xl font-bold text-base-content flex items-center gap-2 justify-center md:justify-start",
-                lora.className
+                lora.className,
               )}
               aria-label="Pippin Home"
             >
@@ -68,7 +69,7 @@ export function Footer({ bg }) {
               <Link
                 href="https://www.getpippin.app"
                 className={clsx(
-                  "text-lg font-bold text-base-content flex items-center gap-2 justify-center md:justify-start py-2"
+                  "text-lg font-bold text-base-content flex items-center gap-2 justify-center md:justify-start py-2",
                 )}
                 aria-label="Pippin Home"
               >
@@ -89,7 +90,7 @@ export function Footer({ bg }) {
             </a> */}
           </div>
         </div>
-        <div className="mt-5 flex justify-center items-center md:justify-start gap-2">
+        {/* <div className="mt-5 flex justify-center items-center md:justify-start gap-2">
           <a href="https://fazier.com/launches/matcharge.app" target="_blank">
             <img
               src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=light"
@@ -118,7 +119,8 @@ export function Footer({ bg }) {
               width="150"
             />
           </a>
-        </div>
+        </div> */}
+        <BadgeMarquee />
       </div>
     </footer>
   );
