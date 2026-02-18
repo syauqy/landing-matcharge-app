@@ -27,11 +27,11 @@ const badges = [
     src: "https://launchigniter.com/api/badge/matcharge-subscription-manager?theme=light",
     alt: "Featured on LaunchIgniter",
   },
-  // {
-  //   href: "https://toolfame.com/item/pippin-overthinking-journal",
-  //   src: "https://toolfame.com/badge-light.svg",
-  //   alt: "Featured on toolfame.com",
-  // },
+  {
+    href: "https://toolfame.com/item/matcharge-subscription-manager",
+    src: "https://toolfame.com/badge-light.svg",
+    alt: "Featured on toolfame.com",
+  },
   // {
   //   href: "https://earlyhunt.com",
   //   src: "https://earlyhunt.com/badges/earlyhunt-badge-light.svg",
