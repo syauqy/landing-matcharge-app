@@ -8,14 +8,8 @@ const MAX_ARTICLES = 40;
 const DAILY_LIMIT = IS_MANUAL_TEST ? 0 : 1;
 const SEED = "tracking subscriptions on iphone";
 
-const AUTH_HEADER = req.headers.authorization;
-
-if (AUTH_HEADER !== `Bearer ${process.env.CRON_SECRET}`) {
-  return res.status(401).json({ error: "Unauthorized" });
-}
-
 export default async function handler(req, res) {
-  if (req.headers["x-vercel-cron"] !== "1") {
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
