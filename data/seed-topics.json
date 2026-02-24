@@ -1,0 +1,10 @@
+[
+  {
+    "cluster": "subscription-tracking",
+    "seed": "tracking subscriptions on iphone"
+  },
+  {
+    "cluster": "recurring-bills",
+    "seed": "tracking recurring bills and payments"
+  }
+]

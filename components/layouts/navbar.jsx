@@ -26,20 +26,33 @@ export function Navbar({ bg, page }) {
     <nav
       className={clsx(
         "sticky top-0 z-40 transition-colors duration-200",
-        hasScrolled ? "bg-white/80 backdrop-blur-md shadow-sm" : bg
+        hasScrolled ? "bg-white/80 backdrop-blur-md shadow-sm" : bg,
       )}
     >
       <div className="container mx-auto px-4">
-        <div className="flex justify-center items-center h-16">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link
             href="/"
             className={clsx(
               "text-3xl md:text-4xl font-bold text-batik-black",
-              lora.className
+              lora.className,
             )}
           >
             Matcharge
+          </Link>
+
+          {/* Blog Link */}
+          <Link
+            href="/blog"
+            className={clsx(
+              page === "blog"
+                ? "text-primary font-semibold"
+                : "text-gray-700 hover:text-primary",
+              "transition-colors font-medium",
+            )}
+          >
+            Blog
           </Link>
 
           {/* Desktop Menu */}

@@ -64,6 +64,12 @@ export function Footer({ bg }) {
             >
               Terms of Service
             </Link>
+            <Link
+              href="/blog"
+              className="font-semibold text-lg text-gray-600 hover:text-batik-text"
+            >
+              Blog
+            </Link>
             <div className="mt-3 text-sm flex flex-col items-center md:items-start md:gap-2">
               From the maker of{" "}
               <Link
