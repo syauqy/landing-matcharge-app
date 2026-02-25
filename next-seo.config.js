@@ -5,9 +5,9 @@
 
 const config = {
   titleTemplate: "%s - Matcharge",
-  defaultTitle: "Matcharge - EV Charging Optimization",
+  defaultTitle: "Matcharge - Track Your Subscriptions & Bills",
   description:
-    "Monitor and optimize your electric vehicle charging patterns with Matcharge.",
+    "Track recurring bills, catch forgotten subscription trials, and visualize your spending with Matcharge. Find your financial calm.",
   canonical: "https://matcharge.app",
   mobileAlternate: {
     media: "only screen and (max-width: 640px)",
@@ -33,7 +33,7 @@ const config = {
         url: "https://matcharge.app/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Matcharge - EV Charging Optimization",
+        alt: "Matcharge - Track Your Subscriptions & Bills",
         type: "image/jpeg",
       },
     ],

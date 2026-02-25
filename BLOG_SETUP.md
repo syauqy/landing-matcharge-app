@@ -149,8 +149,8 @@ The blog uses:
 Three sample blog posts are included:
 
 1. **Getting Started with Matcharge** - Tutorial/Getting Started
-2. **Maximizing Your EV Battery Life** - Maintenance/Tips
-3. **The Future of Fast Charging Infrastructure** - Industry News
+2. **Managing Subscriptions Effectively** - Best Practices/Tips
+3. **Catching Forgotten Subscription Trials** - How-To Guide
 
 You can use these as templates for creating new posts.
 

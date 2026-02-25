@@ -29,14 +29,14 @@ export default function BlogPage({ initialPosts, totalPages }) {
     <>
       <NextSeo
         title={currentPage > 1 ? `Blog - Page ${currentPage}` : "Blog "}
-        description="Discover articles about electric vehicle charging, optimization tips, and industry insights."
+        description="Discover practical guides to track subscriptions, manage recurring bills, catch forgotten trials, and visualize your spending with Matcharge."
         canonical={canonicalUrl}
         openGraph={{
           type: "website",
           url: canonicalUrl,
           title: "Blog ",
           description:
-            "Discover articles about electric vehicle charging, optimization tips, and industry insights.",
+            "Discover practical guides to track subscriptions, manage recurring bills, catch forgotten trials, and visualize your spending with Matcharge.",
           images: [
             {
               url: "https://matcharge.app/og-blog.jpg",
@@ -59,8 +59,7 @@ export default function BlogPage({ initialPosts, totalPages }) {
                 Matcharge Blog
               </h1>
               <p className="text-lg text-base-content/70 mb-8">
-                Stay updated with the latest insights on EV charging
-                optimization, best practices, and industry trends.
+                Learn how to track subscriptions, catch forgotten trials, manage recurring bills, and take control of your spending.
               </p>
 
               {/* Search */}
