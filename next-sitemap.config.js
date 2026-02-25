@@ -30,6 +30,9 @@ module.exports = {
     } else if (urlPath === "/blog") {
       priority = 0.9; // Blog listing page
       changefreq = "daily";
+    } else if (urlPath === "/blog/subscription-tracking-guide") {
+      priority = 0.95; // Pillar page — second only to homepage
+      changefreq = "weekly";
     } else if (urlPath.startsWith("/blog/")) {
       priority = 0.85; // Individual blog posts
       changefreq = "monthly";
@@ -50,7 +53,10 @@ module.exports = {
     if (urlPath.startsWith("/blog/") && urlPath.length > "/blog/".length) {
       const slug = urlPath.split("/blog/")[1];
       try {
-        const blogDir = path.join(process.cwd(), "contents/blog/subscription-tracking");
+        const blogDir = path.join(
+          process.cwd(),
+          "contents/blog/subscription-tracking",
+        );
         const filePath = path.join(blogDir, `${slug}.mdx`);
         const content = fs.readFileSync(filePath, "utf8");
         const { data } = matter(content);

@@ -112,34 +112,34 @@ export function getBlogPostSlugs() {
 }
 
 /**
- * Get related posts based on tags/categories
+ * Get related posts — cluster-aware, sorted newest first.
+ * Picks from the same category cluster as the current post.
+ * If more than 6 candidates exist, randomizes among the top 6 to keep suggestions fresh.
  */
 export function getRelatedPosts(currentSlug, limit = 3) {
-  const allPosts = getAllBlogPosts();
+  const allPosts = getAllBlogPosts(); // already sorted newest-first
   const currentPost = allPosts.find((post) => post.slug === currentSlug);
 
   if (!currentPost) return [];
 
-  const related = allPosts
-    .filter((post) => post.slug !== currentSlug)
-    .map((post) => {
-      const tagMatches =
-        post.tags?.filter((tag) => currentPost.tags?.includes(tag)).length || 0;
-      const categoryMatches =
-        post.categories?.filter((cat) => currentPost.categories?.includes(cat))
-          .length || 0;
+  const cluster = currentPost.categories?.[0]; // primary cluster e.g. "subscription-tracking"
 
-      return {
-        ...post,
-        relevance: tagMatches + categoryMatches * 2,
-      };
-    })
-    .filter((post) => post.relevance > 0)
-    .sort((a, b) => b.relevance - a.relevance)
-    .slice(0, limit)
-    .map(({ relevance, ...post }) => post);
+  // Filter to same cluster, excluding current post
+  let candidates = allPosts.filter(
+    (post) => post.slug !== currentSlug && post.categories?.includes(cluster),
+  );
 
-  return related;
+  // If >6, randomize among the top 6 (newest) to keep the widget dynamic
+  if (candidates.length > 6) {
+    const top6 = candidates.slice(0, 6);
+    for (let i = top6.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [top6[i], top6[j]] = [top6[j], top6[i]];
+    }
+    candidates = top6;
+  }
+
+  return candidates.slice(0, limit);
 }
 
 /**

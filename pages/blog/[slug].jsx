@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { MDXRemote } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
-import { NextSeo, ArticleJsonLd } from "next-seo";
+import { NextSeo, ArticleJsonLd, BreadcrumbJsonLd } from "next-seo";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
@@ -22,11 +22,49 @@ import TableOfContents from "@/components/blog/TableOfContents";
 import RelatedArticles from "@/components/blog/RelatedArticles";
 import { format } from "date-fns";
 
+/**
+ * Extract FAQ Q&A pairs from MDX content.
+ * Looks for a `## FAQ` section, then `### Question` / paragraph Answer patterns.
+ */
+function extractFaqFromContent(content) {
+  const faqStart = content.search(/^## FAQ/im);
+  if (faqStart === -1) return null;
+
+  const faqSection = content.slice(faqStart);
+  const questionRe = /^### (.+)\n+([^#]+)/gm;
+  const questions = [];
+  let match;
+
+  while ((match = questionRe.exec(faqSection)) !== null) {
+    const question = match[1].trim();
+    const answer = match[2].replace(/\n+/g, " ").trim();
+    if (question && answer) {
+      questions.push({ question, answer });
+    }
+  }
+
+  if (questions.length === 0) return null;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: questions.map(({ question, answer }) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: answer,
+      },
+    })),
+  };
+}
+
 export default function BlogDetailPage({
   post,
   mdxSource,
   relatedPosts,
   headingTree,
+  faqSchema,
 }) {
   const [activeHeading, setActiveHeading] = useState(null);
 
@@ -77,7 +115,7 @@ export default function BlogDetailPage({
           ],
           article: {
             publishedTime: post.date,
-            authors: [post.author || "Matcharge Team"],
+            authors: [post.author || "Matcharge"],
             tags: post.tags || [],
           },
         }}
@@ -93,9 +131,27 @@ export default function BlogDetailPage({
         images={[imageUrl]}
         datePublished={post.date}
         dateModified={post.date}
-        authorName={[post.author || "Matcharge Team"]}
+        authorName={[post.author || "Matcharge"]}
         description={post.description}
+        wordCount={post.content ? post.content.split(/\s+/).length : undefined}
       />
+
+      <BreadcrumbJsonLd
+        itemListElements={[
+          { position: 1, name: "Home", item: "https://matcharge.app" },
+          { position: 2, name: "Blog", item: "https://matcharge.app/blog" },
+          { position: 3, name: post.title, item: canonicalUrl },
+        ]}
+      />
+
+      {faqSchema && (
+        <Head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          />
+        </Head>
+      )}
 
       <Navbar bg="bg-white" page="blog" />
 
@@ -228,12 +284,16 @@ export async function getStaticProps({ params }) {
   // Get related posts
   const relatedPosts = getRelatedPosts(post.slug, 3);
 
+  // Extract FAQ schema from content
+  const faqSchema = extractFaqFromContent(post.content);
+
   return {
     props: {
       post,
       mdxSource,
       relatedPosts,
       headingTree,
+      faqSchema: faqSchema ?? null,
     },
     revalidate: 3600, // Revalidate every hour
   };
