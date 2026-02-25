@@ -145,18 +145,18 @@ export default function BlogDetailPage({
 
         {/* Main Content + TOC */}
         <div className="bg-[#fafafa] py-12 md:py-16">
-          <div className="max-w-6xl mx-auto px-6">
+          <div className="max-w-6xl mx-auto px-4 md:px-6">
             <div className="flex gap-14 items-start">
               {/* Article */}
               <article className="flex-1 min-w-0 max-w-[820px]">
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_1px_4px_rgba(0,0,0,0.05)] px-8 py-10 md:px-12 md:py-12">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_1px_4px_rgba(0,0,0,0.05)] px-5 py-8 md:px-12 md:py-12">
                   <MDXRemote {...mdxSource} components={MDXComponents} />
                 </div>
 
                 {/* Author bio */}
-                {post.author && (
+                {/* {post.author && (
                   <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-[0_1px_4px_rgba(0,0,0,0.05)] px-8 py-6 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                       <span className="font-bold text-base text-primary">
                         {post.author.charAt(0)}
                       </span>
@@ -170,12 +170,12 @@ export default function BlogDetailPage({
                       </p>
                     </div>
                   </div>
-                )}
+                )} */}
               </article>
 
               {/* Sticky TOC — desktop only */}
               {headingTree && headingTree.length > 0 && (
-                <aside className="hidden lg:block w-56 flex-shrink-0 sticky top-[100px] self-start">
+                <aside className="hidden lg:block w-56 shrink-0 sticky top-[100px] self-start">
                   <TableOfContents
                     headings={headingTree}
                     active={activeHeading}

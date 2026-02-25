@@ -43,7 +43,7 @@ const Highlight = ({ children }) => (
 // Callout — general purpose pull-quote style break
 const Callout = ({ children, icon }) => (
   <div className="my-8 flex gap-4 bg-gray-50 border border-gray-100 rounded-2xl px-6 py-5">
-    {icon && <span className="text-2xl flex-shrink-0 mt-0.5">{icon}</span>}
+    {icon && <span className="text-2xl shrink-0 mt-0.5">{icon}</span>}
     <div className="text-[1.0625rem] text-[#374151] leading-[1.75]">
       {children}
     </div>
@@ -60,14 +60,14 @@ export const MDXComponents = {
 
   // Headings
   h1: ({ children }) => (
-    <h1 className="text-[2rem] md:text-[2.375rem] font-bold mb-5 mt-0 text-[#111] leading-tight tracking-tight">
+    <h1 className="group text-[2rem] md:text-[2.375rem] font-bold mb-5 mt-0 text-[#111] leading-tight tracking-tight [&>a]:no-underline [&>a]:text-primary [&>a]:hover:opacity-80 [&>a]:transition-opacity">
       {children}
     </h1>
   ),
   h2: ({ children, id }) => (
     <h2
       id={id}
-      className="text-[1.5rem] md:text-[1.625rem] font-bold mb-4 mt-12 pb-3 border-b border-gray-100 text-[#111] leading-snug tracking-tight"
+      className="group text-[1.5rem] md:text-[1.625rem] font-bold mb-4 mt-12 pb-3 border-b border-gray-100 text-[#111] leading-snug tracking-tight scroll-m-20 [&>a]:no-underline [&>a]:text-primary [&>a]:hover:opacity-80 [&>a]:transition-opacity"
     >
       {children}
     </h2>
@@ -75,7 +75,7 @@ export const MDXComponents = {
   h3: ({ children, id }) => (
     <h3
       id={id}
-      className="text-[1.1875rem] md:text-[1.25rem] font-semibold mb-3 mt-9 text-[#111] leading-snug"
+      className="group text-[1.1875rem] md:text-[1.25rem] font-semibold mb-3 mt-9 text-[#111] leading-snug [&>a]:no-underline [&>a]:text-primary [&>a]:hover:opacity-80 [&>a]:transition-opacity"
     >
       {children}
     </h3>
@@ -83,18 +83,18 @@ export const MDXComponents = {
   h4: ({ children, id }) => (
     <h4
       id={id}
-      className="text-[1.0625rem] font-semibold mb-2 mt-6 text-[#111]"
+      className="group text-[1.0625rem] font-semibold mb-2 mt-6 text-[#111] [&>a]:no-underline [&>a]:text-primary [&>a]:hover:opacity-80 [&>a]:transition-opacity"
     >
       {children}
     </h4>
   ),
   h5: ({ children }) => (
-    <h5 className="text-base font-semibold mb-2 mt-5 text-[#111]">
+    <h5 className="group text-base font-semibold mb-2 mt-5 text-[#111] [&>a]:no-underline [&>a]:text-primary [&>a]:hover:opacity-80 [&>a]:transition-opacity">
       {children}
     </h5>
   ),
   h6: ({ children }) => (
-    <h6 className="text-sm font-semibold mb-2 mt-4 text-[#444] uppercase tracking-wide">
+    <h6 className="group text-sm font-semibold mb-2 mt-4 text-[#444] uppercase tracking-wide [&>a]:no-underline [&>a]:text-primary [&>a]:hover:opacity-80 [&>a]:transition-opacity">
       {children}
     </h6>
   ),

@@ -14,17 +14,34 @@ module.exports = {
       },
     ],
   },
-  exclude: ["/server-sitemap.xml", "/test", "/blog", "/contact"], // Exclude server-side generated pages if any
+  exclude: ["/server-sitemap.xml", "/test", "/404", "/api"], // Exclude server routes and error pages
   generateIndexSitemap: false,
   changefreq: "weekly",
-  priority: 0.7,
+  priority: 0.8,
   sitemapSize: 7000,
   transform: async (config, urlPath) => {
-    // Default transformations for all pages
+    // Determine priority based on page type
+    let priority = 0.8; // Default priority
+    let changefreq = "weekly";
+
+    if (urlPath === "/") {
+      priority = 1.0; // Homepage highest priority
+      changefreq = "daily";
+    } else if (urlPath === "/blog") {
+      priority = 0.9; // Blog listing page
+      changefreq = "daily";
+    } else if (urlPath.startsWith("/blog/")) {
+      priority = 0.85; // Individual blog posts
+      changefreq = "monthly";
+    } else if (["privacy", "terms"].some(p => urlPath.includes(p))) {
+      priority = 0.5; // Legal pages lower priority
+      changefreq = "yearly";
+    }
+
     const entry = {
       loc: urlPath,
-      changefreq: config.changefreq,
-      priority: config.priority,
+      changefreq: changefreq,
+      priority: priority,
       lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
     };
 

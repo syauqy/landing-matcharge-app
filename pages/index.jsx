@@ -1,7 +1,8 @@
 import React from "react";
 // import Head from "next/head";
 import { Inter } from "next/font/google";
-import { NextSeo } from "next-seo";
+import Head from "next/head";
+import { NextSeo, OrganizationJsonLd } from "next-seo";
 // import { SoupIcon, ChartNoAxesColumn, Bell } from "lucide-react";
 import { Navbar } from "@/components/layouts/navbar";
 import { Footer } from "@/components/layouts/footer";
@@ -17,6 +18,7 @@ export default function MatchargeHomePage() {
       <NextSeo
         title="Matcharge - Find Your Financial Calm"
         description="Matcharge is a beautiful and insightful way to track your recurring bills, visualize your spending, and end the stress of surprise charges."
+        canonical="https://matcharge.app/"
         openGraph={{
           type: "website",
           locale: "en_US",
@@ -27,7 +29,7 @@ export default function MatchargeHomePage() {
             "Track recurring bills, visualize spending, and end surprise charges.",
           images: [
             {
-              url: "/matcharge-og-image.png",
+              url: "https://matcharge.app/matcharge-og-image.png",
               width: 1200,
               height: 630,
               alt: "Matcharge App Preview",
@@ -46,6 +48,20 @@ export default function MatchargeHomePage() {
           },
         ]}
       />
+
+      <OrganizationJsonLd
+        type="SoftwareApplication"
+        name="Matcharge"
+        url="https://matcharge.app"
+        logo="https://matcharge.app/matcharge-icon.jpg"
+        description="Track recurring bills, catch forgotten subscription trials, and visualize your spending with Matcharge."
+        sameAs={["https://twitter.com/matcharge"]}
+        applicationCategory="FinanceApplication"
+      />
+
+      <Head>
+        <link rel="canonical" href="https://matcharge.app/" />
+      </Head>
 
       <Navbar bg={""} />
 

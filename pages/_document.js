@@ -6,7 +6,13 @@ export default function Document() {
       <Head>
         {/* Primary Meta Tags */}
         <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+        />
         <meta name="theme-color" content="#70b78f" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
         {/* Preconnect to external services */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,10 +22,6 @@ export default function Document() {
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://api.posthog.com" />
       </Head>
-      <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-      />
       <body className="antialiased">
         <Main />
         <NextScript />

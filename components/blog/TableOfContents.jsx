@@ -2,49 +2,64 @@ import React from "react";
 import clsx from "clsx";
 
 /**
- * Table of Contents Component
+ * Table of Contents Component — minimal editorial sidebar
  */
 export function TableOfContents({ headings, active = null }) {
   if (!headings || headings.length === 0) {
     return null;
   }
 
-  const renderHeadings = (items, baseLevel = 1) => {
-    return (
-      <ul className="space-y-2">
-        {items.map((heading) => (
+  return (
+    <nav className="bg-white rounded-2xl border border-gray-100 shadow-[0_1px_4px_rgba(0,0,0,0.05)] px-5 py-5">
+      <p className="text-[0.6875rem] font-semibold uppercase tracking-widest text-gray-400 mb-4">
+        On this page
+      </p>
+
+      <ol className="space-y-0.5">
+        {headings.map((heading) => (
           <li key={heading.id}>
             <a
               href={`#${heading.id}`}
               className={clsx(
-                "text-sm transition-colors duration-200 hover:text-primary",
+                "group flex items-start gap-2 py-1.5 pl-3 rounded-md text-[0.8125rem] leading-snug transition-colors duration-150",
                 active === heading.id
-                  ? "text-primary font-semibold"
-                  : "text-base-content/70",
+                  ? "text-primary font-medium bg-primary/5"
+                  : "text-gray-500 hover:text-[#111] hover:bg-gray-50",
               )}
-              style={{
-                paddingLeft: `${(heading.level - 1) * 0.75}rem`,
-              }}
             >
-              {heading.text}
+              {/* <span
+                className={clsx(
+                  "mt-[0.35rem] w-1 h-1 rounded-full shrink-0 transition-colors duration-150",
+                  active === heading.id
+                    ? "bg-primary"
+                    : "bg-gray-300 group-hover:bg-gray-400",
+                )}
+              /> */}
+              <span className="line-clamp-2">{heading.text}</span>
             </a>
+
             {heading.children && heading.children.length > 0 && (
-              <ul className="mt-1">
+              <ul className="ml-4 mt-0.5 space-y-0.5">
                 {heading.children.map((child) => (
                   <li key={child.id}>
                     <a
                       href={`#${child.id}`}
                       className={clsx(
-                        "text-xs transition-colors duration-200 hover:text-primary block",
+                        "group flex items-start gap-2 py-1.5 pl-3 rounded-md text-[0.75rem] leading-snug transition-colors duration-150",
                         active === child.id
-                          ? "text-primary font-semibold"
-                          : "text-base-content/60",
+                          ? "text-primary font-medium bg-primary/5"
+                          : "text-gray-400 hover:text-[#111] hover:bg-gray-50",
                       )}
-                      style={{
-                        paddingLeft: `${(child.level - 1) * 0.75}rem`,
-                      }}
                     >
-                      {child.text}
+                      {/* <span
+                        className={clsx(
+                          "mt-[0.35rem] w-1 h-1 rounded-full shrink-0 transition-colors duration-150",
+                          active === child.id
+                            ? "bg-primary"
+                            : "bg-gray-200 group-hover:bg-gray-400",
+                        )}
+                      /> */}
+                      <span className="line-clamp-2">{child.text}</span>
                     </a>
                   </li>
                 ))}
@@ -52,17 +67,8 @@ export function TableOfContents({ headings, active = null }) {
             )}
           </li>
         ))}
-      </ul>
-    );
-  };
-
-  return (
-    <div className="bg-base-100 border border-base-300 rounded-lg p-4 sticky top-24">
-      <h3 className="font-bold text-sm uppercase text-base-content/70 mb-4 tracking-wide">
-        Table of Contents
-      </h3>
-      {renderHeadings(headings)}
-    </div>
+      </ol>
+    </nav>
   );
 }
 
