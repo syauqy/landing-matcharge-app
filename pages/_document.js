@@ -6,13 +6,13 @@ export default function Document() {
       <Head>
         {/* Primary Meta Tags */}
         <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="theme-color" content="#70b78f" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
 
         {/* Preconnect to external services */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />

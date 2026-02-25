@@ -33,31 +33,32 @@ module.exports = {
     } else if (urlPath.startsWith("/blog/")) {
       priority = 0.85; // Individual blog posts
       changefreq = "monthly";
-    } else if (["privacy", "terms"].some(p => urlPath.includes(p))) {
+    } else if (["privacy", "terms"].some((p) => urlPath.includes(p))) {
       priority = 0.5; // Legal pages lower priority
       changefreq = "yearly";
     }
 
+    // Build sitemap entry
     const entry = {
       loc: urlPath,
-      changefreq: changefreq,
-      priority: priority,
+      changefreq,
+      priority,
       lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
     };
 
-    // Custom transformation for blog posts to get lastmod from frontmatter
+    // For blog posts, try to get lastmod from frontmatter
     if (urlPath.startsWith("/blog/") && urlPath.length > "/blog/".length) {
       const slug = urlPath.split("/blog/")[1];
       try {
-        const blogDir = path.join(process.cwd(), "public/content/blog");
-        const filePath = path.join(blogDir, `${slug}.md`);
+        const blogDir = path.join(process.cwd(), "contents/blog/subscription-tracking");
+        const filePath = path.join(blogDir, `${slug}.mdx`);
         const content = fs.readFileSync(filePath, "utf8");
         const { data } = matter(content);
         if (data.date) {
           entry.lastmod = new Date(data.date).toISOString();
         }
       } catch (e) {
-        console.warn(`Could not read frontmatter for ${urlPath} to get date.`);
+        // Silently skip if file not found
       }
     }
 
