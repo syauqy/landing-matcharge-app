@@ -11,7 +11,7 @@ const lora = Lora({
   subsets: ["latin"],
 });
 
-export function Footer({ bg }) {
+export function Footer({ bg, hideBadges = false }) {
   return (
     <footer className={clsx(bg, "py-12")}>
       <div className="container mx-auto px-4 xl:px-0">
@@ -126,7 +126,7 @@ export function Footer({ bg }) {
             />
           </a>
         </div> */}
-        <BadgeMarquee />
+        {!hideBadges && <BadgeMarquee />}
       </div>
     </footer>
   );

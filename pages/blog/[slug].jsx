@@ -128,7 +128,7 @@ export default function BlogDetailPage({
         {/* Blog Header */}
         <div className="border-b border-gray-100 py-12 md:py-16 bg-white">
           <div className="max-w-6xl mx-auto px-6">
-            <div className="max-w-[760px]">
+            <div className="max-w-[820px]">
               <BlogHeader
                 title={post.title}
                 description={post.description}
@@ -148,7 +148,7 @@ export default function BlogDetailPage({
           <div className="max-w-6xl mx-auto px-6">
             <div className="flex gap-14 items-start">
               {/* Article */}
-              <article className="flex-1 min-w-0 max-w-[760px]">
+              <article className="flex-1 min-w-0 max-w-[820px]">
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_1px_4px_rgba(0,0,0,0.05)] px-8 py-10 md:px-12 md:py-12">
                   <MDXRemote {...mdxSource} components={MDXComponents} />
                 </div>
@@ -162,8 +162,12 @@ export default function BlogDetailPage({
                       </span>
                     </div>
                     <div>
-                      <p className="font-semibold text-[#111] text-sm">{post.author}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">Matcharge contributor</p>
+                      <p className="font-semibold text-[#111] text-sm">
+                        {post.author}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        Matcharge contributor
+                      </p>
                     </div>
                   </div>
                 )}
@@ -171,13 +175,11 @@ export default function BlogDetailPage({
 
               {/* Sticky TOC — desktop only */}
               {headingTree && headingTree.length > 0 && (
-                <aside className="hidden lg:block w-56 flex-shrink-0">
-                  <div className="sticky top-24">
-                    <TableOfContents
-                      headings={headingTree}
-                      active={activeHeading}
-                    />
-                  </div>
+                <aside className="hidden lg:block w-56 flex-shrink-0 sticky top-[100px] self-start">
+                  <TableOfContents
+                    headings={headingTree}
+                    active={activeHeading}
+                  />
                 </aside>
               )}
             </div>
@@ -194,7 +196,7 @@ export default function BlogDetailPage({
         )}
       </main>
 
-      <Footer bg="bg-white" />
+      <Footer bg="bg-white" hideBadges />
     </>
   );
 }

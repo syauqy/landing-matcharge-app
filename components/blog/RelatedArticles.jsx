@@ -26,4 +26,3 @@ export function RelatedArticles({ posts = [], title = "Related Articles" }) {
 }
 
 export default RelatedArticles;
-

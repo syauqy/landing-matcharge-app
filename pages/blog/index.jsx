@@ -211,7 +211,7 @@ export default function BlogPage({ initialPosts, totalPages }) {
         </section>
       </main>
 
-      <Footer bg="bg-white" />
+      <Footer bg="bg-white" hideBadges />
     </>
   );
 }

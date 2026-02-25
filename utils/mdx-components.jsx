@@ -8,22 +8,45 @@ import React from "react";
 
 const Note = ({ children }) => (
   <div className="border-l-4 border-primary bg-primary/5 rounded-r-lg px-5 py-4 mb-6 text-[0.9375rem] text-[#1a1a1a] leading-[1.7]">
-    <p className="font-semibold text-primary text-xs uppercase tracking-widest mb-1.5">Note</p>
+    <p className="font-semibold text-primary text-xs uppercase tracking-widest mb-1.5">
+      Note
+    </p>
     {children}
   </div>
 );
 
 const Tip = ({ children }) => (
   <div className="border-l-4 border-emerald-400 bg-emerald-50 rounded-r-lg px-5 py-4 mb-6 text-[0.9375rem] text-[#1a1a1a] leading-[1.7]">
-    <p className="font-semibold text-emerald-600 text-xs uppercase tracking-widest mb-1.5">Tip</p>
+    <p className="font-semibold text-emerald-600 text-xs uppercase tracking-widest mb-1.5">
+      Tip
+    </p>
     {children}
   </div>
 );
 
 const Warning = ({ children }) => (
   <div className="border-l-4 border-amber-400 bg-amber-50 rounded-r-lg px-5 py-4 mb-6 text-[0.9375rem] text-[#1a1a1a] leading-[1.7]">
-    <p className="font-semibold text-amber-600 text-xs uppercase tracking-widest mb-1.5">Warning</p>
+    <p className="font-semibold text-amber-600 text-xs uppercase tracking-widest mb-1.5">
+      Warning
+    </p>
     {children}
+  </div>
+);
+
+// Highlight — for a key insight/stat that breaks visual monotony
+const Highlight = ({ children }) => (
+  <div className="my-10 py-8 px-8 bg-[#111] rounded-2xl text-white text-[1.25rem] md:text-[1.375rem] font-semibold leading-snug tracking-tight text-center">
+    {children}
+  </div>
+);
+
+// Callout — general purpose pull-quote style break
+const Callout = ({ children, icon }) => (
+  <div className="my-8 flex gap-4 bg-gray-50 border border-gray-100 rounded-2xl px-6 py-5">
+    {icon && <span className="text-2xl flex-shrink-0 mt-0.5">{icon}</span>}
+    <div className="text-[1.0625rem] text-[#374151] leading-[1.75]">
+      {children}
+    </div>
   </div>
 );
 
@@ -32,6 +55,8 @@ export const MDXComponents = {
   Note,
   Tip,
   Warning,
+  Highlight,
+  Callout,
 
   // Headings
   h1: ({ children }) => (
@@ -118,9 +143,7 @@ export const MDXComponents = {
         </code>
       );
     }
-    return (
-      <code className="font-mono text-sm text-[#333]">{children}</code>
-    );
+    return <code className="font-mono text-sm text-[#333]">{children}</code>;
   },
 
   // Blockquote

@@ -31,11 +31,13 @@ export function BlogHeader({
         {title}
       </h1>
 
-      {/* Description */}
+      {/* Description — tinted summary box */}
       {description && (
-        <p className="text-lg text-gray-500 leading-relaxed mb-7">
-          {description}
-        </p>
+        <div className="bg-gray-50 border border-gray-100 rounded-xl px-6 py-5 mb-7">
+          <p className="text-[1.0625rem] text-gray-600 leading-[1.75] m-0">
+            {description}
+          </p>
+        </div>
       )}
 
       {/* Meta row */}
@@ -75,7 +77,9 @@ export function BlogHeader({
         {readingTime && (
           <>
             <span className="text-gray-200 select-none">·</span>
-            <span className="text-sm text-gray-400">{readingTime} min read</span>
+            <span className="text-sm text-gray-400">
+              {readingTime} min read
+            </span>
           </>
         )}
       </div>
