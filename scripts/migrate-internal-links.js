@@ -17,7 +17,10 @@
 const fs = require("fs");
 const path = require("path");
 
-const BLOG_DIR = path.join(process.cwd(), "contents/blog/subscription-tracking");
+const BLOG_DIR = path.join(
+  process.cwd(),
+  "contents/blog/subscription-tracking",
+);
 const PILLAR_SLUG = "subscription-tracking-guide";
 const DRY_RUN = process.argv.includes("--dry");
 
@@ -42,7 +45,10 @@ function parseMDX(content) {
   frontmatterStr.split("\n").forEach((line) => {
     const [key, ...valueParts] = line.split(":");
     if (key && valueParts.length > 0) {
-      const value = valueParts.join(":").trim().replace(/^["']|["']$/g, "");
+      const value = valueParts
+        .join(":")
+        .trim()
+        .replace(/^["']|["']$/g, "");
       frontmatter[key.trim()] = value;
     }
   });
@@ -86,7 +92,9 @@ function selectRandom(items, count, excludeSlugs) {
  */
 function injectPillarLink(content) {
   // Find the first paragraph (non-heading, non-empty)
-  const paragraphs = content.split("\n\n").filter((p) => p.trim() && !p.trim().startsWith("#"));
+  const paragraphs = content
+    .split("\n\n")
+    .filter((p) => p.trim() && !p.trim().startsWith("#"));
 
   if (paragraphs.length === 0) {
     return content;
@@ -114,13 +122,19 @@ ${siblings.map((s) => `- [${s.title}](/blog/${s.slug})`).join("\n")}
   // Try to inject before CTA block if it exists
   const ctaMatch = content.match(/\n## Take Control of Your Subscriptions/);
   if (ctaMatch) {
-    return content.replace(/\n## Take Control of Your Subscriptions/, siblingLinksSection + "\n\n## Take Control of Your Subscriptions");
+    return content.replace(
+      /\n## Take Control of Your Subscriptions/,
+      siblingLinksSection + "\n\n## Take Control of Your Subscriptions",
+    );
   }
 
   // Otherwise, inject before FAQ if exists
   const faqMatch = content.match(/\n## Frequently Asked Questions/);
   if (faqMatch) {
-    return content.replace(/\n## Frequently Asked Questions/, siblingLinksSection + "\n\n## Frequently Asked Questions");
+    return content.replace(
+      /\n## Frequently Asked Questions/,
+      siblingLinksSection + "\n\n## Frequently Asked Questions",
+    );
   }
 
   // Default: append before any final CTA or at the end
@@ -205,7 +219,9 @@ function main() {
       const siblings = selectRandom(posts, 2, [post.slug, PILLAR_SLUG]);
 
       if (siblings.length > 0) {
-        console.log(`  ✓ Adding ${siblings.length} sibling links: ${post.slug}`);
+        console.log(
+          `  ✓ Adding ${siblings.length} sibling links: ${post.slug}`,
+        );
         newContent = injectSiblingLinks(newContent, siblings);
         modified = true;
       }
