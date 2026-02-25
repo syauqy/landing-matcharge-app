@@ -97,18 +97,18 @@ export default function BlogDetailPage({
         description={post.description}
       />
 
-      <Navbar bg="bg-base-100" page="blog" />
+      <Navbar bg="bg-white" page="blog" />
 
-      <main className="bg-base-100">
+      <main className="bg-white">
         {/* Back Button */}
-        <div className="border-b border-base-300 bg-base-100">
-          <div className="container mx-auto px-4 py-4">
+        <div className="border-b border-gray-100">
+          <div className="max-w-6xl mx-auto px-6 py-4">
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 text-primary hover:text-primary-dark transition-colors font-medium"
+              className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-primary transition-colors duration-200"
             >
               <svg
-                className="w-5 h-5"
+                className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -126,80 +126,75 @@ export default function BlogDetailPage({
         </div>
 
         {/* Blog Header */}
-        <div className="border-b border-base-300 py-12 md:py-16">
-          <div className="container mx-auto px-4">
-            <BlogHeader
-              title={post.title}
-              description={post.description}
-              date={post.date}
-              author={post.author}
-              readingTime={post.readingTime}
-              image={post.image}
-              tags={post.tags}
-              categories={post.categories}
-            />
+        <div className="border-b border-gray-100 py-12 md:py-16 bg-white">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="max-w-[760px]">
+              <BlogHeader
+                title={post.title}
+                description={post.description}
+                date={post.date}
+                author={post.author}
+                readingTime={post.readingTime}
+                image={post.image}
+                tags={post.tags}
+                categories={post.categories}
+              />
+            </div>
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="py-12 md:py-16">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              {/* Article Content */}
-              <div className="lg:col-span-3">
-                <article className="prose prose-sm md:prose-base max-w-none text-base-content">
+        {/* Main Content + TOC */}
+        <div className="bg-[#fafafa] py-12 md:py-16">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="flex gap-14 items-start">
+              {/* Article */}
+              <article className="flex-1 min-w-0 max-w-[760px]">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_1px_4px_rgba(0,0,0,0.05)] px-8 py-10 md:px-12 md:py-12">
                   <MDXRemote {...mdxSource} components={MDXComponents} />
-                </article>
+                </div>
 
                 {/* Author bio */}
                 {post.author && (
-                  <div className="mt-12 pt-8 border-t border-base-300">
-                    <div className="flex gap-4">
-                      <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                        <span className="font-bold text-lg text-primary">
-                          {post.author.charAt(0)}
-                        </span>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-base-content mb-1">
-                          {post.author}
-                        </h4>
-                        <p className="text-sm text-base-content/70">
-                          Matcharge contributor
-                        </p>
-                      </div>
+                  <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-[0_1px_4px_rgba(0,0,0,0.05)] px-8 py-6 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <span className="font-bold text-base text-primary">
+                        {post.author.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-[#111] text-sm">{post.author}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">Matcharge contributor</p>
                     </div>
                   </div>
                 )}
-              </div>
+              </article>
 
-              {/* Sidebar */}
-              <div className="lg:col-span-1">
-                {/* Table of Contents */}
-                {headingTree && headingTree.length > 0 && (
-                  <div className="lg:sticky lg:top-24">
+              {/* Sticky TOC — desktop only */}
+              {headingTree && headingTree.length > 0 && (
+                <aside className="hidden lg:block w-56 flex-shrink-0">
+                  <div className="sticky top-24">
                     <TableOfContents
                       headings={headingTree}
                       active={activeHeading}
                     />
                   </div>
-                )}
-              </div>
+                </aside>
+              )}
             </div>
           </div>
         </div>
 
         {/* Related Articles */}
         {relatedPosts && relatedPosts.length > 0 && (
-          <div className="bg-base-200/30 border-t border-base-300">
-            <div className="container mx-auto px-4 py-12 md:py-16">
+          <div className="border-t border-gray-100 bg-white">
+            <div className="max-w-6xl mx-auto px-6 py-14 md:py-20">
               <RelatedArticles posts={relatedPosts} />
             </div>
           </div>
         )}
       </main>
 
-      <Footer bg="bg-base-200" />
+      <Footer bg="bg-white" />
     </>
   );
 }

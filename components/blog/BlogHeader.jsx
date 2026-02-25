@@ -18,91 +18,75 @@ export function BlogHeader({
   const publishDate = new Date(date);
 
   return (
-    <article className="mb-8">
-      {/* Featured Image */}
-      {/* {image && (
-        <div className="relative w-full h-96 rounded-lg overflow-hidden mb-8 bg-base-200">
-          <Image
-            src={image}
-            alt={title}
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-      )} */}
+    <article className="mb-0">
+      {/* Category label */}
+      {categories.length > 0 && (
+        <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-4">
+          {categories[0]}
+        </p>
+      )}
 
       {/* Title */}
-      <h1 className="text-4xl md:text-5xl font-bold mb-4 text-base-content capitalize">
+      <h1 className="text-[2rem] md:text-[2.625rem] font-bold mb-4 text-[#111] leading-tight tracking-tight">
         {title}
       </h1>
 
       {/* Description */}
       {description && (
-        <p className="text-lg text-base-content/70 mb-6">{description}</p>
+        <p className="text-lg text-gray-500 leading-relaxed mb-7">
+          {description}
+        </p>
       )}
 
-      {/* Meta Information */}
-      <div className="flex flex-wrap items-center gap-6 py-6 border-y border-base-300">
+      {/* Meta row */}
+      <div className="flex flex-wrap items-center gap-5 pt-6 border-t border-gray-100">
         {/* Author */}
         {author && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {author === "Matcharge Team" ? (
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-base-200 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0">
                 <Image
                   src="/matcharge-icon.jpg"
                   alt={author}
-                  width={40}
-                  height={40}
+                  width={32}
+                  height={32}
                   className="object-cover w-full h-full"
                 />
               </div>
             ) : (
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="font-bold text-primary text-sm">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <span className="font-semibold text-primary text-xs">
                   {author.charAt(0)}
                 </span>
               </div>
             )}
-            <div>
-              <p className="text-sm font-medium text-base-content">{author}</p>
-              <p className="text-xs text-base-content/60">Author</p>
-            </div>
+            <span className="text-sm font-medium text-[#333]">{author}</span>
           </div>
         )}
 
-        {/* Date */}
-        <div className="text-sm">
-          <p className="font-medium text-base-content">
-            {format(publishDate, "MMMM dd, yyyy")}
-          </p>
-          <p className="text-xs text-base-content/60">Published</p>
-        </div>
+        <span className="text-gray-200 select-none">|</span>
 
-        {/* Reading Time */}
+        {/* Date */}
+        <span className="text-sm text-gray-400">
+          {format(publishDate, "MMMM d, yyyy")}
+        </span>
+
+        {/* Reading time */}
         {readingTime && (
-          <div className="text-sm">
-            <p className="font-medium text-base-content">{readingTime} min</p>
-            <p className="text-xs text-base-content/60">Read Time</p>
-          </div>
+          <>
+            <span className="text-gray-200 select-none">·</span>
+            <span className="text-sm text-gray-400">{readingTime} min read</span>
+          </>
         )}
       </div>
 
-      {/* Tags and Categories */}
-      {(tags.length > 0 || categories.length > 0) && (
-        <div className="mt-6 flex flex-wrap gap-2">
-          {categories.map((category) => (
-            <span
-              key={category}
-              className="inline-block px-4 py-2 text-sm font-medium rounded-full bg-primary/10 text-primary"
-            >
-              {category}
-            </span>
-          ))}
+      {/* Tags */}
+      {tags.length > 0 && (
+        <div className="mt-5 flex flex-wrap gap-2">
           {tags.map((tag) => (
             <span
               key={tag}
-              className="inline-block px-4 py-2 text-sm rounded-full bg-base-200 text-base-content/70 hover:bg-base-300 transition-colors"
+              className="inline-block text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-500 font-medium"
             >
               #{tag}
             </span>
