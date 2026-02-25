@@ -9,7 +9,7 @@ import RelatedArticles from "@/components/blog/RelatedArticles";
 
 const CANONICAL = "https://matcharge.app/blog/subscription-tracking-guide";
 
-export default function SubscriptionTrackingGuidePage({ clusterPosts }) {
+export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
   const [activeHeading, setActiveHeading] = useState(null);
 
   useEffect(() => {
@@ -502,7 +502,7 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts }) {
         </div>
 
         {/* Related Articles */}
-        {clusterPosts.length > 0 && (
+        {clusterPosts && clusterPosts.length > 0 && (
           <div className="border-t border-gray-100 bg-white">
             <div className="max-w-6xl mx-auto px-6 py-14 md:py-20">
               <RelatedArticles
@@ -591,17 +591,36 @@ function Faq({ q, a }) {
 }
 
 export async function getStaticProps() {
-  const { getAllBlogPosts } = await import("@/utils/blog");
-  const allPosts = getAllBlogPosts();
-  const clusterPosts = allPosts
-    .filter((p) =>
-      p.categories?.some((c) => c.toLowerCase().includes("subscription")),
-    )
-    .slice(0, 6)
-    .map(({ content, ...rest }) => rest); // strip content to keep props lean
+  try {
+    const { getAllBlogPosts } = await import("@/utils/blog");
+    const allPosts = getAllBlogPosts() || [];
+    const clusterPosts = (allPosts || [])
+      .filter((p) => {
+        if (!p || !p.categories) return false;
+        // Handle both array and empty string cases
+        if (Array.isArray(p.categories)) {
+          return p.categories.some((c) =>
+            c.toLowerCase().includes("subscription"),
+          );
+        }
+        return false;
+      })
+      .slice(0, 6)
+      .map(({ content, ...rest }) => rest) // strip content to keep props lean
+      .filter(Boolean); // Remove any null/undefined entries
 
-  return {
-    props: { clusterPosts },
-    revalidate: 3600,
-  };
+    return {
+      props: { clusterPosts: clusterPosts || [] },
+      revalidate: 3600,
+    };
+  } catch (error) {
+    console.error(
+      "Error in subscription-tracking-guide getStaticProps:",
+      error,
+    );
+    return {
+      props: { clusterPosts: [] },
+      revalidate: 3600,
+    };
+  }
 }

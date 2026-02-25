@@ -60,6 +60,9 @@ export function getAllBlogPosts() {
         ...data,
         slug: data.slug || fileName.replace(".mdx", ""),
         content,
+        // Normalize tags and categories to always be arrays
+        tags: Array.isArray(data.tags) ? data.tags : [],
+        categories: Array.isArray(data.categories) ? data.categories : [],
         readingTime: data.readingTime || calculateReadingTime(content),
         date:
           typeof data.date === "string"
@@ -90,6 +93,9 @@ export function getBlogPostBySlug(slug) {
         ...data,
         slug: data.slug || file.replace(".mdx", ""),
         content,
+        // Normalize tags and categories to always be arrays
+        tags: Array.isArray(data.tags) ? data.tags : [],
+        categories: Array.isArray(data.categories) ? data.categories : [],
         readingTime: data.readingTime || calculateReadingTime(content),
         date:
           typeof data.date === "string"
@@ -122,11 +128,18 @@ export function getRelatedPosts(currentSlug, limit = 3) {
 
   if (!currentPost) return [];
 
-  const cluster = currentPost.categories?.[0]; // primary cluster e.g. "subscription-tracking"
+  // Get cluster from categories array (handle both array and string cases)
+  const cluster = Array.isArray(currentPost.categories)
+    ? currentPost.categories[0]
+    : null;
+  if (!cluster) return []; // No cluster, can't find related posts
 
   // Filter to same cluster, excluding current post
   let candidates = allPosts.filter(
-    (post) => post.slug !== currentSlug && post.categories?.includes(cluster),
+    (post) =>
+      post.slug !== currentSlug &&
+      Array.isArray(post.categories) &&
+      post.categories.includes(cluster),
   );
 
   // If >6, randomize among the top 6 (newest) to keep the widget dynamic
@@ -183,8 +196,8 @@ export function searchBlogPosts(query) {
     const searchableText = `
       ${post.title} 
       ${post.description} 
-      ${post.tags?.join(" ")} 
-      ${post.categories?.join(" ")}
+      ${Array.isArray(post.tags) ? post.tags.join(" ") : ""} 
+      ${Array.isArray(post.categories) ? post.categories.join(" ") : ""}
     `.toLowerCase();
 
     return searchableText.includes(lowerQuery);

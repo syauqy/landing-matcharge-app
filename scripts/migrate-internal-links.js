@@ -30,45 +30,36 @@ const DRY_RUN = process.argv.includes("--dry");
 
 /**
  * Parse frontmatter from MDX content
- * Returns { frontmatter: object, content: string }
+ * Returns { frontmatterRaw: string, content: string, frontmatter: object }
  */
 function parseMDX(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
   if (!match) {
-    return { frontmatter: {}, content };
+    return { frontmatterRaw: "", content, frontmatter: {} };
   }
 
-  const frontmatterStr = match[1];
+  const frontmatterRaw = match[1];
   const bodyContent = match[2];
 
-  const frontmatter = {};
-  frontmatterStr.split("\n").forEach((line) => {
-    const [key, ...valueParts] = line.split(":");
-    if (key && valueParts.length > 0) {
-      const value = valueParts
-        .join(":")
-        .trim()
-        .replace(/^["']|["']$/g, "");
-      frontmatter[key.trim()] = value;
+  // Parse frontmatter for accessing title/slug
+  const frontmatterObj = {};
+  frontmatterRaw.split("\n").forEach((line) => {
+    const colonIdx = line.indexOf(":");
+    if (colonIdx > 0) {
+      const key = line.substring(0, colonIdx).trim();
+      const value = line.substring(colonIdx + 1).trim();
+      frontmatterObj[key] = value;
     }
   });
 
-  return { frontmatter, content: bodyContent };
+  return { frontmatterRaw, content: bodyContent, frontmatter: frontmatterObj };
 }
 
 /**
- * Rebuild MDX with updated frontmatter and content
+ * Rebuild MDX with original frontmatter and updated content
  */
-function rebuildMDX(frontmatter, content) {
-  const lines = [];
-  lines.push("---");
-  Object.entries(frontmatter).forEach(([key, value]) => {
-    lines.push(`${key}: ${value}`);
-  });
-  lines.push("---");
-  lines.push("");
-  lines.push(content);
-  return lines.join("\n");
+function rebuildMDX(frontmatterRaw, content) {
+  return `---\n${frontmatterRaw}\n---\n\n${content}`;
 }
 
 /**
@@ -180,12 +171,13 @@ function main() {
   files.forEach((slug) => {
     const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
     const raw = fs.readFileSync(filePath, "utf-8");
-    const { frontmatter, content } = parseMDX(raw);
+    const { frontmatterRaw, frontmatter, content } = parseMDX(raw);
     posts.push({
       slug,
       title: frontmatter.title || slug,
       filePath,
       raw,
+      frontmatterRaw,
       frontmatter,
       content,
     });
@@ -229,7 +221,7 @@ function main() {
 
     if (modified) {
       if (!DRY_RUN) {
-        const updated_mdx = rebuildMDX(post.frontmatter, newContent);
+        const updated_mdx = rebuildMDX(post.frontmatterRaw, newContent);
         fs.writeFileSync(post.filePath, updated_mdx, "utf-8");
       }
       console.log(`📝 Updated: ${post.slug}`);

@@ -279,10 +279,10 @@ export async function getStaticProps({ params }) {
 
   // Extract headings for TOC
   const headings = extractHeadingsFromContent(post.content);
-  const headingTree = buildTocTree(headings);
+  const headingTree = buildTocTree(headings) || [];
 
   // Get related posts
-  const relatedPosts = getRelatedPosts(post.slug, 3);
+  const relatedPosts = getRelatedPosts(post.slug, 3) || [];
 
   // Extract FAQ schema from content
   const faqSchema = extractFaqFromContent(post.content);
@@ -291,8 +291,8 @@ export async function getStaticProps({ params }) {
     props: {
       post,
       mdxSource,
-      relatedPosts,
-      headingTree,
+      relatedPosts: relatedPosts || [],
+      headingTree: headingTree || [],
       faqSchema: faqSchema ?? null,
     },
     revalidate: 3600, // Revalidate every hour
