@@ -3,10 +3,11 @@ import { buildMDX } from "@/lib/blog";
 import { commitFile, getExistingFiles, getFileContent } from "@/lib/github";
 import matter from "gray-matter";
 
-const IS_MANUAL_TEST = process.env.NODE_ENV === "development";
+// const IS_MANUAL_TEST = process.env.NODE_ENV === "development";
 const CLUSTER = "subscription-tracking";
 const MAX_ARTICLES = 40;
-const DAILY_LIMIT = IS_MANUAL_TEST ? 0 : 1;
+const DAILY_LIMIT = 1;
+// const DAILY_LIMIT = IS_MANUAL_TEST ? 0 : 1;
 const SEED = "tracking subscriptions on iphone";
 
 /**
