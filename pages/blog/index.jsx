@@ -59,7 +59,8 @@ export default function BlogPage({ initialPosts, totalPages }) {
                 Matcharge Blog
               </h1>
               <p className="text-lg text-base-content/70 mb-8">
-                Learn how to track subscriptions, catch forgotten trials, manage recurring bills, and take control of your spending.
+                Learn how to track subscriptions, catch forgotten trials, manage
+                recurring bills, and take control of your spending.
               </p>
 
               {/* Search */}
