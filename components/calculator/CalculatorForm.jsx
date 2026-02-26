@@ -14,7 +14,12 @@ import {
  * @param {{ inputs: import('@/utils/leakage-calculator').CalculatorInputs, onChange: (updates: Partial<import('@/utils/leakage-calculator').CalculatorInputs>) => void, onCalculate: () => void }} props
  */
 export default function CalculatorForm({ inputs, onChange, onCalculate }) {
-  const { subscriptionCount, averageCost, reviewFrequency, unusedSubscriptions } = inputs;
+  const {
+    subscriptionCount,
+    averageCost,
+    reviewFrequency,
+    unusedSubscriptions,
+  } = inputs;
 
   const handleCustomCost = (e) => {
     const val = parseFloat(e.target.value);
@@ -35,7 +40,8 @@ export default function CalculatorForm({ inputs, onChange, onCalculate }) {
           Number of subscriptions
         </label>
         <p className="text-xs text-gray-400 mb-3">
-          Include all recurring payments — streaming, software, fitness, news, etc.
+          Include all recurring payments — streaming, software, fitness, news,
+          etc.
         </p>
         <div className="flex items-center gap-4">
           <input
@@ -43,7 +49,9 @@ export default function CalculatorForm({ inputs, onChange, onCalculate }) {
             min={1}
             max={20}
             value={subscriptionCount}
-            onChange={(e) => onChange({ subscriptionCount: parseInt(e.target.value, 10) })}
+            onChange={(e) =>
+              onChange({ subscriptionCount: parseInt(e.target.value, 10) })
+            }
             className="range range-primary flex-1"
             step={1}
           />

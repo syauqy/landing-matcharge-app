@@ -6,13 +6,14 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/layouts/navbar";
 import { Footer } from "@/components/layouts/footer";
 import CalculatorForm from "@/components/calculator/CalculatorForm";
-import ResultsPanel from "@/components/calculator/ResultsPanel";
+import ResultsReveal from "@/components/calculator/ResultsPanel";
+import BehavioralInsights from "@/components/calculator/BehavioralInsights";
+import ProjectionSection from "@/components/calculator/ProjectionSection";
+import ComparisonSection from "@/components/calculator/ComparisonSection";
 import ShareSection from "@/components/calculator/ShareSection";
+import EducationSection from "@/components/calculator/EducationSection";
 import FAQSection, { FAQ_ITEMS } from "@/components/calculator/FAQSection";
-import {
-  calculateLeakage,
-  parseShareParams,
-} from "@/utils/leakage-calculator";
+import { calculateLeakage, parseShareParams } from "@/utils/leakage-calculator";
 
 const CANONICAL_URL = "https://matcharge.app/subscription-leakage-calculator";
 
@@ -26,9 +27,9 @@ const DEFAULT_INPUTS = {
 const WEB_APPLICATION_SCHEMA = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "Subscription Leakage Calculator",
+  name: "Subscription Leakage Index & Calculator",
   description:
-    "Estimate how much money you may be losing to unmanaged subscriptions. Free anonymous subscription cost calculator by Matcharge.",
+    "Estimate how much money may be silently leaking from your subscriptions. Free behavioral finance tool by Matcharge.",
   url: CANONICAL_URL,
   applicationCategory: "FinanceApplication",
   operatingSystem: "All",
@@ -50,10 +51,7 @@ const FAQ_SCHEMA = {
   mainEntity: FAQ_ITEMS.map(({ q, a }) => ({
     "@type": "Question",
     name: q,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: a,
-    },
+    acceptedAnswer: { "@type": "Answer", text: a },
   })),
 };
 
@@ -62,7 +60,7 @@ export default function SubscriptionLeakageCalculatorPage() {
   const [result, setResult] = useState(null);
   const [hasCalculated, setHasCalculated] = useState(false);
 
-  // Hydrate from URL params on mount
+  // Hydrate from URL params on mount — auto-calculate if params present
   useEffect(() => {
     const params = Object.fromEntries(
       new URLSearchParams(window.location.search).entries(),
@@ -73,13 +71,16 @@ export default function SubscriptionLeakageCalculatorPage() {
         setInputs(parsed);
         setResult(calculateLeakage(parsed));
         setHasCalculated(true);
+        setTimeout(() => {
+          const el = document.getElementById("results-section");
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 400);
       }
     }
   }, []);
 
   const handleChange = (updates) => {
     setInputs((prev) => ({ ...prev, ...updates }));
-    // Reset results on input change so user needs to recalculate
     setHasCalculated(false);
     setResult(null);
   };
@@ -88,8 +89,6 @@ export default function SubscriptionLeakageCalculatorPage() {
     const calculated = calculateLeakage(inputs);
     setResult(calculated);
     setHasCalculated(true);
-
-    // Smooth scroll to results on mobile
     setTimeout(() => {
       const el = document.getElementById("results-section");
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -99,21 +98,21 @@ export default function SubscriptionLeakageCalculatorPage() {
   return (
     <div className="min-h-screen bg-white">
       <NextSeo
-        title="Subscription Leakage Calculator | Matcharge"
-        description="Estimate how much money you may be losing to unmanaged subscriptions. Free anonymous subscription cost calculator by Matcharge."
+        title="Subscription Leakage Index & Calculator | Matcharge"
+        description="Estimate how much money may be silently leaking from your subscriptions. Free behavioral finance tool by Matcharge."
         canonical={CANONICAL_URL}
         openGraph={{
           type: "website",
           url: CANONICAL_URL,
-          title: "Subscription Leakage Calculator | Matcharge",
+          title: "Subscription Leakage Index & Calculator | Matcharge",
           description:
-            "Estimate how much money you may be losing to unmanaged subscriptions. Free anonymous subscription cost calculator by Matcharge.",
+            "Estimate how much money may be silently leaking from your subscriptions. Free behavioral finance tool by Matcharge.",
           images: [
             {
               url: "https://matcharge.app/matcharge-og-image.png",
               width: 1200,
               height: 630,
-              alt: "Subscription Leakage Calculator by Matcharge",
+              alt: "Subscription Leakage Index by Matcharge",
             },
           ],
         }}
@@ -122,7 +121,9 @@ export default function SubscriptionLeakageCalculatorPage() {
       <Head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(WEB_APPLICATION_SCHEMA) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(WEB_APPLICATION_SCHEMA),
+          }}
         />
         <script
           type="application/ld+json"
@@ -133,7 +134,7 @@ export default function SubscriptionLeakageCalculatorPage() {
       <Navbar bg="bg-white" page="calculator" />
 
       <main>
-        {/* Hero */}
+        {/* ── Hero ─────────────────────────────────────────────────────── */}
         <section className="border-b border-gray-100 pt-16 pb-14 bg-white">
           <div className="max-w-4xl mx-auto px-6">
             <motion.div
@@ -142,21 +143,24 @@ export default function SubscriptionLeakageCalculatorPage() {
               transition={{ duration: 0.45, ease: "easeOut" }}
             >
               <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-4">
-                Free tool
+                Subscription Leakage Index™ by Matcharge
               </p>
-              <h1 className="text-[2.25rem] md:text-[3rem] font-bold text-[#111] leading-tight tracking-tight mb-5">
-                Subscription Leakage Calculator
+              <h1 className="text-[2.25rem] md:text-[3rem] font-bold text-[#111] leading-tight tracking-tight mb-5 max-w-2xl">
+                Your subscriptions may be costing more than you think.
               </h1>
-              <p className="text-[1.0625rem] text-gray-500 leading-[1.75] max-w-xl">
-                Estimate the hidden cost of unmanaged recurring payments. No
-                login required — fully private, runs in your browser.
+              <p className="text-[1.0625rem] text-gray-500 leading-[1.75] max-w-xl mb-3">
+                This free tool estimates how much money may be leaking from your
+                recurring payments — without you noticing.
+              </p>
+              <p className="text-xs text-gray-400">
+                Anonymous. No login. Runs entirely in your browser.
               </p>
             </motion.div>
           </div>
         </section>
 
-        {/* Calculator + Results */}
-        <section className="bg-[#fafafa] py-14">
+        {/* ── Calculator + Results ─────────────────────────────────────── */}
+        <section className="bg-[#f7f7f7] py-14">
           <div className="max-w-4xl mx-auto px-6">
             <div className="max-w-2xl mx-auto">
               <motion.div
@@ -171,88 +175,62 @@ export default function SubscriptionLeakageCalculatorPage() {
                 />
               </motion.div>
 
-              {/* Results (conditionally rendered) */}
               {hasCalculated && result && (
                 <div id="results-section">
-                  <ResultsPanel result={result} />
-                  <ShareSection inputs={inputs} />
-                  <CTASection />
+                  <ResultsReveal result={result} />
+                  <BehavioralInsights inputs={inputs} />
+                  <ComparisonSection leakageAvg={result.leakageAvg} />
+                  <ProjectionSection result={result} />
+                  <blockquote className="mt-8 mb-8 px-6 py-5 border-l-2 border-gray-200">
+                    <p className="text-base italic text-gray-600 leading-relaxed">
+                      Most subscription waste isn&apos;t visible — until you
+                      measure it.
+                    </p>
+                  </blockquote>
+                  <ShareSection inputs={inputs} result={result} />
+                  <AuthorityCTA result={result} />
                 </div>
               )}
             </div>
           </div>
         </section>
 
-        {/* Educational explanation */}
+        {/* ── Education ────────────────────────────────────────────────── */}
         <section className="bg-white py-16 border-t border-gray-100">
           <div className="max-w-4xl mx-auto px-6">
             <div className="max-w-2xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-              >
-                <h2 className="text-2xl font-bold text-[#111] mb-4">
-                  What is subscription leakage?
-                </h2>
-                <div className="space-y-4 text-[1.0125rem] text-gray-500 leading-[1.75]">
-                  <p>
-                    Subscription leakage refers to recurring charges that continue
-                    after you no longer need — or remember — the service. Free
-                    trials that auto-renew, price increases on long-standing plans,
-                    and duplicate services across household members are the most
-                    common sources.
-                  </p>
-                  <p>
-                    Unlike one-time purchases, subscriptions are designed to blend
-                    into your spending. Their size makes them easy to overlook on
-                    bank statements, but their recurring nature means even small
-                    amounts compound significantly over a year.
-                  </p>
-                  <p>
-                    Consistent tracking is the most effective countermeasure. People
-                    who review their subscriptions monthly typically leak 3–5% of
-                    their annual subscription spend. Those who review yearly or
-                    never can leak 15–20% or more.
-                  </p>
-                  <p>
-                    <Link
-                      href="/blog/subscription-tracking-guide"
-                      className="text-primary underline hover:text-primary/80 font-medium"
-                    >
-                      Read our complete guide to subscription tracking →
-                    </Link>
-                  </p>
-                </div>
-              </motion.div>
+              <EducationSection />
             </div>
           </div>
         </section>
 
-        {/* FAQ */}
-        <section className="bg-[#fafafa] py-16 border-t border-gray-100">
+        {/* ── FAQ ──────────────────────────────────────────────────────── */}
+        <section className="bg-[#f7f7f7] py-16 border-t border-gray-100">
           <div className="max-w-4xl mx-auto px-6">
             <FAQSection />
           </div>
         </section>
 
-        {/* Bottom CTA (always visible) */}
+        {/* ── Bottom CTA ───────────────────────────────────────────────── */}
         <section className="bg-white py-16 border-t border-gray-100">
           <div className="max-w-4xl mx-auto px-6">
             <div className="max-w-2xl mx-auto">
-              <CTASection />
+              <AuthorityCTA />
             </div>
           </div>
         </section>
       </main>
 
-      <Footer bg="bg-[#fafafa]" />
+      <Footer bg="bg-[#f7f7f7]" />
     </div>
   );
 }
 
-function CTASection() {
+function AuthorityCTA({ result = null }) {
+  const headline = result
+    ? `$${result.leakageHigh} per year doesn't need to stay invisible.`
+    : "This leakage isn't permanent.";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -264,45 +242,61 @@ function CTASection() {
       <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-4">
         Matcharge
       </p>
-      <h3 className="text-xl font-bold text-[#111] mb-3 leading-snug">
-        Tracking recurring payments consistently eliminates most subscription leakage.
+      <h3 className="text-xl font-bold text-[#111] mb-3 leading-snug max-w-md">
+        {headline}
       </h3>
-      <ul className="space-y-2 mb-8">
+      <p className="text-sm text-gray-500 leading-[1.75] mb-5 max-w-md">
+        Most subscription waste isn&apos;t caused by reckless spending. It
+        accumulates through inattention. Visibility is the structural fix —
+        knowing what you pay, when it renews, and whether it still belongs.
+      </p>
+      <ul className="space-y-2.5 mb-8">
         {[
           "Track every recurring payment",
           "See upcoming charges before they hit",
           "Calendar view of all renewals",
           "Get reminders before billing dates",
         ].map((item) => (
-          <li key={item} className="flex items-start gap-2.5 text-sm text-gray-600">
+          <li
+            key={item}
+            className="flex items-start gap-2.5 text-sm text-gray-600"
+          >
             <svg
-              className="w-4 h-4 text-primary mt-0.5 flex-shrink-0"
+              className="w-4 h-4 text-primary mt-0.5 shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2.5}
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
             {item}
           </li>
         ))}
       </ul>
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col gap-3">
         <a
-          href="https://apps.apple.com/app/matcharge/id6741440985"
+          href="https://apps.apple.com/us/app/bill-organizer-matcharge/id6752604627?itscg=30200&itsct=apps_box_badge&mttnsubad=6752604627"
+          className="mt-2 inline-block"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors shadow-sm"
         >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-          </svg>
-          Download on the App Store
+          <img
+            src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/en-us?releaseDate=1761091200"
+            alt="Download on the App Store"
+            className="w-fit h-15 align-vertical-middle object-contain"
+          />
+          <span className="text-sm font-normal opacity-80">
+            Free. No account required to start.
+          </span>
         </a>
         <Link
           href="/blog/subscription-tracking-guide"
-          className="inline-flex items-center justify-center px-6 py-3 border border-gray-200 rounded-xl font-semibold text-sm text-gray-600 hover:border-primary hover:text-primary transition-colors"
+          className="inline-flex items-center justify-center px-6 py-3 border border-gray-200 text-primary rounded-xl font-semibold text-sm  hover:border-primary hover:text-primary transition-colors"
         >
           Learn how subscription leakage happens
         </Link>
@@ -312,7 +306,5 @@ function CTASection() {
 }
 
 export async function getStaticProps() {
-  return {
-    props: {},
-  };
+  return { props: {} };
 }

@@ -42,18 +42,31 @@ export function Navbar({ bg, page }) {
             Matcharge
           </Link>
 
-          {/* Blog Link */}
-          <Link
-            href="/blog"
-            className={clsx(
-              page === "blog"
-                ? "text-primary font-semibold"
-                : "text-gray-700 hover:text-primary",
-              "transition-colors font-medium",
-            )}
-          >
-            Blog
-          </Link>
+          {/* Nav Links */}
+          <div className="flex items-center gap-6">
+            <Link
+              href="/blog"
+              className={clsx(
+                page === "blog"
+                  ? "text-primary font-semibold"
+                  : "text-gray-700 hover:text-primary",
+                "transition-colors font-medium",
+              )}
+            >
+              Blog
+            </Link>
+            <Link
+              href="/subscription-leakage-calculator"
+              className={clsx(
+                page === "calculator"
+                  ? "text-primary font-semibold"
+                  : "text-gray-700 hover:text-primary",
+                "transition-colors font-medium",
+              )}
+            >
+              Calculator
+            </Link>
+          </div>
 
           {/* Desktop Menu */}
           {/* <div className="hidden md:flex items-center space-x-8">

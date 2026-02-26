@@ -40,8 +40,18 @@ function FAQItem({ q, a, isOpen, onToggle }) {
             isOpen ? "rotate-45" : ""
           }`}
         >
-          <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+          <svg
+            className="w-3 h-3 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4v16m8-8H4"
+            />
           </svg>
         </span>
       </button>
@@ -75,7 +85,9 @@ export default function FAQSection() {
 
   return (
     <section className="mt-20 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold text-[#111] mb-2">Frequently asked questions</h2>
+      <h2 className="text-2xl font-bold text-[#111] mb-2">
+        Frequently asked questions
+      </h2>
       <p className="text-sm text-gray-400 mb-8">
         About how this calculator works and subscription leakage in general.
       </p>
