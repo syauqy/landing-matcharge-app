@@ -1,10 +1,10 @@
 ---
-title: "*   Streamlining subscription management on iPhone with automation shortcuts"
-slug: "-streamlining-subscription-management-on-iphone-with-automation-shortcuts"
-description: "Learn *   Streamlining subscription management on iPhone with automation shortcuts with step-by-step guidance."
+title: "Streamlining Subscription Management on iPhone with Automation Shortcuts"
+slug: "streamlining-subscription-management-on-iphone-with-automation-shortcuts"
+description: "Learn streamlining subscription management on iPhone with automation shortcuts with step-by-step guidance."
 date: "2026-02-26"
 author: "Matcharge Team"
-image: "/content/blog/images/-streamlining-subscription-management-on-iphone-with-automation-shortcuts.jpg"
+image: "/content/blog/images/streamlining-subscription-management-on-iphone-with-automation-shortcuts.jpg"
 status: "published"
 tags:
   - subscription
@@ -43,8 +43,9 @@ The Shortcuts app allows you to create personalized workflows that perform multi
 ### Key Concepts: Triggers and Actions
 
 Every automation and shortcut is built upon two fundamental concepts:
-*   **Triggers:** These are the events that initiate a shortcut or automation. For our purposes, common triggers will include "Time of Day" (e.g., 9 AM every day or on the first of the month) or "Date" (e.g., on a specific calendar event).
-*   **Actions:** These are the individual steps that the shortcut performs when triggered. Actions can range from displaying notifications, adding items to a reminder list, opening URLs, or even manipulating text. By chaining multiple actions together, you can create sophisticated workflows tailored to your needs.
+
+- **Triggers:** These are the events that initiate a shortcut or automation. For our purposes, common triggers will include "Time of Day" (e.g., 9 AM every day or on the first of the month) or "Date" (e.g., on a specific calendar event).
+- **Actions:** These are the individual steps that the shortcut performs when triggered. Actions can range from displaying notifications, adding items to a reminder list, opening URLs, or even manipulating text. By chaining multiple actions together, you can create sophisticated workflows tailored to your needs.
 
 ## Foundational Steps: Setting Up for Success
 
@@ -53,21 +54,23 @@ Before diving into creating complex shortcuts, a little preparation will go a lo
 ### Consolidate Your Subscription Information
 
 The first and most crucial step is to gather all your subscription data in one accessible place. This includes:
-*   **Service Name:** (e.g., Netflix, Adobe Creative Cloud, iCloud+)
-*   **Monthly/Annual Cost:**
-*   **Renewal Date:** (Crucial for reminders!)
-*   **Payment Method:** (e.g., Apple ID, specific credit card, PayPal)
-*   **Management URL/Method:** (e.g., "Settings > Apple ID > Subscriptions," "netflix.com/account," or the specific app's settings)
+
+- **Service Name:** (e.g., Netflix, Adobe Creative Cloud, iCloud+)
+- **Monthly/Annual Cost:**
+- **Renewal Date:** (Crucial for reminders!)
+- **Payment Method:** (e.g., Apple ID, specific credit card, PayPal)
+- **Management URL/Method:** (e.g., "Settings > Apple ID > Subscriptions," "netflix.com/account," or the specific app's settings)
 
 You can use a simple spreadsheet (Google Sheets, Numbers), a dedicated subscription tracking app like Bobby or Subby (though we're aiming to use Shortcuts instead), or even a well-organized note in Apple Notes. The goal is to have a single, definitive source of truth for all your recurring payments.
 
 ### Enable "Allow Untrusted Shortcuts" (if necessary)
 
 If you plan to download shortcuts created by others or want to ensure full flexibility, you might need to enable "Allow Untrusted Shortcuts."
+
 1.  Go to **Settings > Shortcuts**.
 2.  Toggle on **"Allow Untrusted Shortcuts."**
 3.  You might need to run a simple shortcut first (e.g., "Take a Photo") before this option appears.
-**Important Security Note:** Only download and enable shortcuts from sources you trust, as they can potentially access your data or perform actions on your device. For the shortcuts described here, you'll be building them yourself, minimizing this risk.
+    **Important Security Note:** Only download and enable shortcuts from sources you trust, as they can potentially access your data or perform actions on your device. For the shortcuts described here, you'll be building them yourself, minimizing this risk.
 
 ## Practical Automation Shortcuts for Subscription Management
 
@@ -84,43 +87,43 @@ This automation will proactively notify you a set number of days before a subscr
 1.  **Preparation:** In the Reminders app, create a dedicated list named "Subscriptions." For each subscription, add an item to this list with its renewal date as the reminder's due date. For example: "Netflix renewal" due on [Date], "iCloud+ annual" due on [Date]. Add a note to the reminder if you want to include cost or management URL.
 
 2.  **Create Personal Automation:**
-    *   Open the **Shortcuts** app.
-    *   Tap the **"Automation"** tab at the bottom.
-    *   Tap the **"+"** icon in the top right, then select **"Create Personal Automation."**
+    - Open the **Shortcuts** app.
+    - Tap the **"Automation"** tab at the bottom.
+    - Tap the **"+"** icon in the top right, then select **"Create Personal Automation."**
 
 3.  **Set Trigger:**
-    *   Scroll down and select **"Time of Day."**
-    *   Choose a time (e.g., **9:00 AM**). This automation will run daily at this time.
-    *   Select **"Daily"** for Repeat.
-    *   Tap **"Next."**
+    - Scroll down and select **"Time of Day."**
+    - Choose a time (e.g., **9:00 AM**). This automation will run daily at this time.
+    - Select **"Daily"** for Repeat.
+    - Tap **"Next."**
 
 4.  **Add Actions:**
-    *   Tap **"Add Action."**
-    *   Search for **"Find Reminders."**
-    *   Tap on **"Find Reminders where:"**
-        *   Tap "List" and select your **"Subscriptions"** list.
-        *   Tap the "+" next to "List" to add another filter.
-        *   Tap "Due Date" is "today." Change "today" to **"is in the next"** and set the value to **"7 Days."** (You can adjust "7 Days" to 3, 5, or 10 days based on your preference for advance warning).
-    *   Tap the "+" button to add another action.
-    *   Search for **"If."**
-    *   Tap **"If"** and set the condition: **"If Reminders has any value."** (This checks if any subscriptions are found within the next 7 days).
-    *   Inside the "If" block, tap **"Add Action."**
-    *   Search for **"Text."** Add a "Text" action and type a custom message, e.g., "Upcoming Subscriptions:" followed by a new line.
-    *   Tap the "+" button to add another action (still inside the "If" block).
-    *   Search for **"Repeat with Each."** Drag the "Repeat with Each" action *after* your "Text" action and ensure it processes the "Reminders" magic variable from the "Find Reminders" action.
-    *   Inside the "Repeat with Each" loop, add an action: **"Append to Variable."**
-        *   For "Variable," tap "Variable" and create a new variable named "NotificationText."
-        *   For "Value," tap "Magic Variable" and select "Repeat Item" (which represents each individual upcoming reminder). Then, tap "Repeat Item" again and choose "Title" (to get the subscription name) and add " - Due: " followed by "Repeat Item" and choose "Due Date."
-        *   Add a new line after this, so each subscription is on its own line in the notification.
-    *   After the "Repeat with Each" loop (but still inside the "If" block), tap the "+" button to add an action.
-    *   Search for **"Show Notification."**
-        *   For the "Notification" body, tap "Magic Variable" and select your "NotificationText" variable.
-        *   Set the title (e.g., "Subscription Alert!").
-        *   You can toggle off "Play Sound" if you prefer a silent notification.
-    *   Move the "End If" action to be after the "Show Notification" action.
-    *   Tap **"Next."**
-    *   Toggle **"Ask Before Running"** off, then confirm **"Don't Ask."**
-    *   Tap **"Done."**
+    - Tap **"Add Action."**
+    - Search for **"Find Reminders."**
+    - Tap on **"Find Reminders where:"**
+      - Tap "List" and select your **"Subscriptions"** list.
+      - Tap the "+" next to "List" to add another filter.
+      - Tap "Due Date" is "today." Change "today" to **"is in the next"** and set the value to **"7 Days."** (You can adjust "7 Days" to 3, 5, or 10 days based on your preference for advance warning).
+    - Tap the "+" button to add another action.
+    - Search for **"If."**
+    - Tap **"If"** and set the condition: **"If Reminders has any value."** (This checks if any subscriptions are found within the next 7 days).
+    - Inside the "If" block, tap **"Add Action."**
+    - Search for **"Text."** Add a "Text" action and type a custom message, e.g., "Upcoming Subscriptions:" followed by a new line.
+    - Tap the "+" button to add another action (still inside the "If" block).
+    - Search for **"Repeat with Each."** Drag the "Repeat with Each" action _after_ your "Text" action and ensure it processes the "Reminders" magic variable from the "Find Reminders" action.
+    - Inside the "Repeat with Each" loop, add an action: **"Append to Variable."**
+      - For "Variable," tap "Variable" and create a new variable named "NotificationText."
+      - For "Value," tap "Magic Variable" and select "Repeat Item" (which represents each individual upcoming reminder). Then, tap "Repeat Item" again and choose "Title" (to get the subscription name) and add " - Due: " followed by "Repeat Item" and choose "Due Date."
+      - Add a new line after this, so each subscription is on its own line in the notification.
+    - After the "Repeat with Each" loop (but still inside the "If" block), tap the "+" button to add an action.
+    - Search for **"Show Notification."**
+      - For the "Notification" body, tap "Magic Variable" and select your "NotificationText" variable.
+      - Set the title (e.g., "Subscription Alert!").
+      - You can toggle off "Play Sound" if you prefer a silent notification.
+    - Move the "End If" action to be after the "Show Notification" action.
+    - Tap **"Next."**
+    - Toggle **"Ask Before Running"** off, then confirm **"Don't Ask."**
+    - Tap **"Done."**
 
 Now, daily at 9 AM, your iPhone will check for subscriptions due in the next 7 days from your "Subscriptions" reminder list and notify you with a summary if any are found.
 
@@ -135,47 +138,50 @@ This automation provides a consolidated view of your subscriptions and offers a 
 1.  **Preparation:** Have your consolidated subscription list (from the foundational steps) easily accessible, perhaps in an Apple Note or a simple text file in the Files app. For this shortcut, we'll keep it simple by directly listing them in the shortcut, but you can get more advanced by pulling from a note.
 
 2.  **Create Personal Automation:**
-    *   Open **Shortcuts > Automation**.
-    *   Tap **"+" > "Create Personal Automation."**
+    - Open **Shortcuts > Automation**.
+    - Tap **"+" > "Create Personal Automation."**
 
 3.  **Set Trigger:**
-    *   Select **"Time of Day."**
-    *   Choose a time (e.g., **9:00 AM**).
-    *   Select **"Monthly."**
-    *   For "Day," choose **"1st."**
-    *   Tap **"Next."**
+    - Select **"Time of Day."**
+    - Choose a time (e.g., **9:00 AM**).
+    - Select **"Monthly."**
+    - For "Day," choose **"1st."**
+    - Tap **"Next."**
 
 4.  **Add Actions:**
-    *   Tap **"Add Action."**
-    *   Search for **"Text."**
-    *   In the text field, create a monthly summary. For example:
-        ```
-        Monthly Subscription Audit:
+    - Tap **"Add Action."**
+    - Search for **"Text."**
+    - In the text field, create a monthly summary. For example:
 
-        Netflix: $15.99 (Due: [Date])
-        Spotify: $10.99 (Due: [Date])
-        iCloud+: $2.99 (Due: [Date])
-        Adobe CC: $52.99 (Due: [Date])
+      ```
+      Monthly Subscription Audit:
 
-        Total Estimated Monthly: $82.96
+      Netflix: $15.99 (Due: [Date])
+      Spotify: $10.99 (Due: [Date])
+      iCloud+: $2.99 (Due: [Date])
+      Adobe CC: $52.99 (Due: [Date])
 
-        Review your subscriptions?
-        ```
-        (You'll manually update this text action if your subscriptions change, or you can get advanced by pulling from a note using "Get Text From Input" and parsing it).
-    *   Tap the "+" button to add another action.
-    *   Search for **"Ask for Input."**
-        *   Set "Prompt" to: **"Would you like to review your subscriptions now?"**
-        *   Set "Input Type" to **"Boolean"** (Yes/No).
-    *   Tap the "+" button to add another action.
-    *   Search for **"If."**
-    *   Set the condition: **"If Provided Input is True."** (This means if the user tapped "Yes").
-    *   Inside the "If" block, tap **"Add Action."**
-    *   Search for **"Open URL."**
-        *   For the "URL" field, enter the direct link to your App Store subscriptions: `https://apps.apple.com/account/subscriptions`
-    *   Move the "End If" action to be after the "Open URL" action.
-    *   Tap **"Next."**
-    *   Toggle **"Ask Before Running"** off, then confirm **"Don't Ask."**
-    *   Tap **"Done."**
+      Total Estimated Monthly: $82.96
+
+      Review your subscriptions?
+      ```
+
+      (You'll manually update this text action if your subscriptions change, or you can get advanced by pulling from a note using "Get Text From Input" and parsing it).
+
+    - Tap the "+" button to add another action.
+    - Search for **"Ask for Input."**
+      - Set "Prompt" to: **"Would you like to review your subscriptions now?"**
+      - Set "Input Type" to **"Boolean"** (Yes/No).
+    - Tap the "+" button to add another action.
+    - Search for **"If."**
+    - Set the condition: **"If Provided Input is True."** (This means if the user tapped "Yes").
+    - Inside the "If" block, tap **"Add Action."**
+    - Search for **"Open URL."**
+      - For the "URL" field, enter the direct link to your App Store subscriptions: `https://apps.apple.com/account/subscriptions`
+    - Move the "End If" action to be after the "Open URL" action.
+    - Tap **"Next."**
+    - Toggle **"Ask Before Running"** off, then confirm **"Don't Ask."**
+    - Tap **"Done."**
 
 On the first of every month, you'll receive a notification summarizing your subscriptions and a prompt to review them, with a quick link to your App Store subscriptions if you choose to.
 
@@ -190,24 +196,24 @@ When you decide to cancel a service, finding the right page can sometimes be a m
 1.  **Preparation:** Collect the direct management URLs for your most common subscriptions. For example, Netflix account settings, Spotify account, etc. Note that App Store subscriptions are all managed via the single App Store link from Shortcut 2.
 
 2.  **Create a New Shortcut (not an automation):**
-    *   Open **Shortcuts** app.
-    *   Tap the **"My Shortcuts"** tab.
-    *   Tap the **"+"** icon in the top right.
+    - Open **Shortcuts** app.
+    - Tap the **"My Shortcuts"** tab.
+    - Tap the **"+"** icon in the top right.
 
 3.  **Add Actions:**
-    *   Tap **"Add Action."**
-    *   Search for **"Menu."**
-    *   Tap **"Menu"** action.
-        *   For "Prompt," enter: **"Which subscription do you want to manage?"**
-        *   Rename "Menu Item 1" to a subscription name (e.g., "Netflix").
-        *   Rename "Menu Item 2" to another subscription name (e.g., "Spotify").
-        *   Add more menu items as needed by tapping the "+" icon.
-    *   **Under each menu item, add an "Open URL" action:**
-        *   For "Netflix," add **"Open URL"** and paste the Netflix account URL (e.g., `https://www.netflix.com/youraccount`).
-        *   For "Spotify," add **"Open URL"** and paste the Spotify account URL (e.g., `https://www.spotify.com/us/account/overview/`).
-    *   For App Store subscriptions, you can add a menu item called "Apple Subscriptions" and use the URL `https://apps.apple.com/account/subscriptions`.
-    *   Give your shortcut a name (e.g., "Manage Subscriptions") and choose an icon.
-    *   Tap **"Done."**
+    - Tap **"Add Action."**
+    - Search for **"Menu."**
+    - Tap **"Menu"** action.
+      - For "Prompt," enter: **"Which subscription do you want to manage?"**
+      - Rename "Menu Item 1" to a subscription name (e.g., "Netflix").
+      - Rename "Menu Item 2" to another subscription name (e.g., "Spotify").
+      - Add more menu items as needed by tapping the "+" icon.
+    - **Under each menu item, add an "Open URL" action:**
+      - For "Netflix," add **"Open URL"** and paste the Netflix account URL (e.g., `https://www.netflix.com/youraccount`).
+      - For "Spotify," add **"Open URL"** and paste the Spotify account URL (e.g., `https://www.spotify.com/us/account/overview/`).
+    - For App Store subscriptions, you can add a menu item called "Apple Subscriptions" and use the URL `https://apps.apple.com/account/subscriptions`.
+    - Give your shortcut a name (e.g., "Manage Subscriptions") and choose an icon.
+    - Tap **"Done."**
 
 Now, whenever you want to manage a subscription, you can simply tap this shortcut on your home screen or widget, select the service from the menu, and be taken directly to its management page.
 
@@ -220,34 +226,34 @@ While advanced financial tracking often involves third-party apps, you can use S
 **Steps:**
 
 1.  **Create a New Shortcut:**
-    *   Open **Shortcuts > My Shortcuts**.
-    *   Tap **"+"**.
+    - Open **Shortcuts > My Shortcuts**.
+    - Tap **"+"**.
 
 2.  **Add Actions:**
-    *   Tap **"Add Action."**
-    *   Search for **"Ask for Input."**
-        *   Set "Prompt" to: **"Subscription Name?"**
-        *   Change "Input Type" to "Text."
-    *   Tap the "+" button to add another action.
-    *   Search for **"Ask for Input."**
-        *   Set "Prompt" to: **"Monthly Cost?"**
-        *   Change "Input Type" to "Number."
-    *   Tap the "+" button to add another action.
-    *   Search for **"Ask for Input."**
-        *   Set "Prompt" to: **"Next Due Date?"**
-        *   Change "Input Type" to "Date."
-    *   Tap the "+" button to add another action.
-    *   Search for **"Text."** Construct the entry string:
-        *   `Subscription: ` then select the **"Provided Input"** magic variable from "Subscription Name?"
-        *   `Cost: $` then select the **"Provided Input"** magic variable from "Monthly Cost?"
-        *   `Due: ` then select the **"Provided Input"** magic variable from "Next Due Date?"
-        *   Add a new line after the last item to keep entries separate.
-    *   Tap the "+" button to add another action.
-    *   Search for **"Append to Note."**
-        *   Set the "Note" to your desired note (e.g., "Subscription Log"). If you don't have one, create it in Notes first.
-        *   For "Body," tap "Magic Variable" and select the **"Text"** variable from the previous action.
-    *   Give your shortcut a name (e.g., "Log Subscription") and choose an icon.
-    *   Tap **"Done."**
+    - Tap **"Add Action."**
+    - Search for **"Ask for Input."**
+      - Set "Prompt" to: **"Subscription Name?"**
+      - Change "Input Type" to "Text."
+    - Tap the "+" button to add another action.
+    - Search for **"Ask for Input."**
+      - Set "Prompt" to: **"Monthly Cost?"**
+      - Change "Input Type" to "Number."
+    - Tap the "+" button to add another action.
+    - Search for **"Ask for Input."**
+      - Set "Prompt" to: **"Next Due Date?"**
+      - Change "Input Type" to "Date."
+    - Tap the "+" button to add another action.
+    - Search for **"Text."** Construct the entry string:
+      - `Subscription: ` then select the **"Provided Input"** magic variable from "Subscription Name?"
+      - `Cost: $` then select the **"Provided Input"** magic variable from "Monthly Cost?"
+      - `Due: ` then select the **"Provided Input"** magic variable from "Next Due Date?"
+      - Add a new line after the last item to keep entries separate.
+    - Tap the "+" button to add another action.
+    - Search for **"Append to Note."**
+      - Set the "Note" to your desired note (e.g., "Subscription Log"). If you don't have one, create it in Notes first.
+      - For "Body," tap "Magic Variable" and select the **"Text"** variable from the previous action.
+    - Give your shortcut a name (e.g., "Log Subscription") and choose an icon.
+    - Tap **"Done."**
 
 Whenever you sign up for a new service or want to update existing details, run this shortcut, fill in the prompts, and it will automatically append the information to your designated log note.
 
@@ -287,10 +293,8 @@ A4: Many subscriptions (e.g., Netflix, Amazon Prime, specific software licenses)
 
 By integrating these automation shortcuts into your iPhone workflow, you're not just organizing your subscriptions; you're reclaiming control over your finances and mental clarity. It's a testament to the power of smart tools making everyday tasks effortlessly manageable.
 
-
 ## Take Control of Your Subscriptions
 
 Matcharge helps you track recurring payments in one clean calendar view.
 
 [Download Matcharge →](https://matcharge.app)
-
