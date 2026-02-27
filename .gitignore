@@ -2,6 +2,12 @@
 
 # dependencies
 /node_modules
+
+# Ignore specific markdown files in root
+BLOG_SETUP.md
+subscription-leak-calculator-brief.md
+subscription-leak-calculator-upgrade.md
+
 /.pnp
 .pnp.*
 .yarn/*
