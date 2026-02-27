@@ -35,6 +35,17 @@ export function Footer({ bg, hideBadges = false }) {
             <p className="mt-2 mb-4 text-gray-700 font-semibold max-w-sm">
               Track your bills, find your calm.
             </p>
+            <p>
+              Made with ❤️ by{" "}
+              <a
+                className="font-semibold text-slate-500 hover:text-blue-500 transition-colors"
+                href="https://www.syauqy.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Syauqy
+              </a>
+            </p>
             <p className="text-gray-800">
               © 2025 Matcharge. All rights reserved.
             </p>
@@ -90,11 +101,13 @@ export function Footer({ bg, hideBadges = false }) {
                   alt="Pippin Mascot"
                   className="w-8 h-8 md:w-12 md:h-12 inline-block align-middle rounded-xl md:rounded-2xl overflow-clip object-cover"
                 />
-                Pippin
+                <div className="flex flex-col">
+                  <p className="leading-5">Pippin</p>
+                  <p className=" text-xs max-w-sm font-light text-center">
+                    Minimalist journal for overthinkers.
+                  </p>
+                </div>
               </Link>
-              <p className="mb-4 text-sm max-w-sm font-light text-center">
-                Minimalist journal for overthinkers.
-              </p>
             </div>
 
             {/* <a href="/faq" className="text-gray-600 hover:text-batik-text">
