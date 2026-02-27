@@ -94,7 +94,7 @@ const badges = [
   },
   {
     href: "https://domainrank.app",
-    src: "https://domainrank.app/api/badge/matcharge.app?style=small",
+    src: "https://domainrank.app/api/badge/matcharge.app",
     alt: "matcharge.app Domain Rating",
   },
   {
@@ -136,6 +136,16 @@ const badges = [
     href: "https://saastool.site/item/matcharge",
     src: "https://saastool.site/badges/saastool-light.svg",
     alt: "Featured on SaaSTool.site",
+  },
+  {
+    href: "https://open-launch.com/projects/matcharge-subscription-manager",
+    src: "https://open-launch.com/api/badge/166126b4-da55-4a0b-bef9-d6b33e1c93fd/featured-light.svg",
+    alt: "Featured on Open-Launch",
+  },
+  {
+    href: "https://launch-list.org/product/matcharge",
+    src: "https://launch-list.org/badges/svg/launch_list_badge_live.svg",
+    alt: "Launch List Badge",
   },
 ];
 
