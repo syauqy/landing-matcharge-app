@@ -92,6 +92,51 @@ const badges = [
     src: "https://goodaitools.com/assets/images/badge.png",
     alt: "Featured on goodaitools.com",
   },
+  {
+    href: "https://domainrank.app",
+    src: "https://domainrank.app/api/badge/matcharge.app?style=small",
+    alt: "matcharge.app Domain Rating",
+  },
+  {
+    href: "https://verifieddr.com/website/matcharge-app",
+    src: "https://verifieddr.com/badge/matcharge-app.svg",
+    alt: "Verified DR - Verified Domain Rating for matcharge.app",
+  },
+  {
+    href: "https://showmebest.ai",
+    src: "https://showmebest.ai/badge/feature-badge-white.webp",
+    alt: "Featured on ShowMeBestAI",
+  },
+  {
+    href: "https://www.justsimple.tools",
+    src: "https://www.justsimple.tools/badge.svg",
+    alt: "Listed on JustSimple Tools",
+  },
+  {
+    href: "https://toolrain.com/item/matcharge",
+    src: "https://toolrain.com/badges/badge-listed-light.svg",
+    alt: "Listed on ToolRain",
+  },
+  {
+    href: "https://startupslab.site",
+    src: "https://cdn.startupslab.site/site-images/badge-light.png",
+    alt: "Featured on StartupSlab",
+  },
+  {
+    href: "https://productfame.com",
+    src: "https://productfame.com/badges/featured-light.svg",
+    alt: "Featured on ProductFame",
+  },
+  {
+    href: "https://newtool.site/item/matcharge",
+    src: "https://newtool.site/badges/newtool-light.svg",
+    alt: "Featured on NewTool.site",
+  },
+  {
+    href: "https://saastool.site/item/matcharge",
+    src: "https://saastool.site/badges/saastool-light.svg",
+    alt: "Featured on SaaSTool.site",
+  },
 ];
 
 export function BadgeMarquee() {
