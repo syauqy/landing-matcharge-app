@@ -279,7 +279,18 @@ export async function getStaticProps({ params }) {
 
   // Extract headings for TOC
   const headings = extractHeadingsFromContent(post.content);
-  const headingTree = buildTocTree(headings) || [];
+  
+  // Prepend post title as H1 to TOC
+  const allHeadings = [
+    {
+      level: 1,
+      text: post.title,
+      id: "article-title",
+    },
+    ...headings,
+  ];
+  
+  const headingTree = buildTocTree(allHeadings) || [];
 
   // Get related posts
   const relatedPosts = getRelatedPosts(post.slug, 3) || [];

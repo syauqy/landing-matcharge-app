@@ -1,6 +1,6 @@
 /**
  * Extract headings from MDX content for table of contents
- * Includes H2 and H3 (since H1 is reserved for BlogHeader component)
+ * Extracts H2 and H3 from the article content (H1 is the post title, added separately)
  */
 export function extractHeadingsFromContent(content) {
   const headingRegex = /^(#{1,6})\s+(.+)$/gm;
@@ -12,8 +12,8 @@ export function extractHeadingsFromContent(content) {
     const text = match[2];
     const id = generateId(text);
 
-    // Include H1-H3, but H1 is legacy support
-    if (level >= 1 && level <= 3) {
+    // Include H2 and H3 from content (H1 is the post title)
+    if (level >= 2 && level <= 3) {
       headings.push({
         level,
         text,
@@ -39,7 +39,7 @@ function generateId(text) {
 
 /**
  * Build table of contents tree structure
- * Handles articles where main heading is H2 (since H1 is reserved for BlogHeader)
+ * Handles articles where H1 is the post title and H2/H3 are content sections
  */
 export function buildTocTree(headings) {
   const tree = [];
@@ -51,22 +51,23 @@ export function buildTocTree(headings) {
       children: [],
     };
 
-    if (heading.level === 2) {
-      // H2 is now the root level for blog articles
+    if (heading.level === 1) {
+      // H1 is the main title (post title)
       tree.push(item);
       stack = [item];
-    } else if (heading.level === 3) {
-      // H3 becomes first child level
+    } else if (heading.level === 2) {
+      // H2 becomes first child level under H1
       if (stack[0]) {
         stack[0].children.push(item);
         stack[1] = item;
-      } else {
-        tree.push(item); // Fallback if no H2 parent
       }
-    } else if (heading.level === 1) {
-      // Legacy support for articles with H1
-      tree.push(item);
-      stack = [item];
+    } else if (heading.level === 3) {
+      // H3 becomes child of H2
+      if (stack[1]) {
+        stack[1].children.push(item);
+      } else if (stack[0]) {
+        stack[0].children.push(item);
+      }
     }
   });
 
