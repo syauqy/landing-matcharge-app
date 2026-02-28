@@ -165,7 +165,7 @@ export function buildShareUrl(inputs) {
   const origin =
     typeof window !== "undefined"
       ? window.location.origin
-      : "https://matcharge.app";
+      : "https://www.matcharge.app";
   return `${origin}/subscription-leakage-calculator?${params.toString()}`;
 }
 

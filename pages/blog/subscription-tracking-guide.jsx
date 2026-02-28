@@ -7,7 +7,7 @@ import BlogHeader from "@/components/blog/BlogHeader";
 import TableOfContents from "@/components/blog/TableOfContents";
 import RelatedArticles from "@/components/blog/RelatedArticles";
 
-const CANONICAL = "https://matcharge.app/blog/subscription-tracking-guide";
+const CANONICAL = "https://www.matcharge.app/blog/subscription-tracking-guide";
 
 export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
   const [activeHeading, setActiveHeading] = useState(null);
@@ -82,7 +82,7 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
             "The definitive resource for tracking subscriptions, managing recurring bills, catching forgotten trials, and mastering your finances on iPhone.",
           images: [
             {
-              url: "https://matcharge.app/og-default.jpg",
+              url: "https://www.matcharge.app/og-default.jpg",
               width: 1200,
               height: 630,
               alt: "Subscription Tracking Guide – Matcharge",
@@ -101,7 +101,7 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
       <ArticleJsonLd
         url={CANONICAL}
         title="The Complete Guide to Tracking Subscriptions on iPhone"
-        images={["https://matcharge.app/og-default.jpg"]}
+        images={["https://www.matcharge.app/og-default.jpg"]}
         datePublished="2026-01-01T00:00:00Z"
         dateModified={new Date().toISOString()}
         authorName={["Matcharge Team"]}
@@ -110,8 +110,8 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
 
       <BreadcrumbJsonLd
         itemListElements={[
-          { position: 1, name: "Home", item: "https://matcharge.app" },
-          { position: 2, name: "Blog", item: "https://matcharge.app/blog" },
+          { position: 1, name: "Home", item: "https://www.matcharge.app" },
+          { position: 2, name: "Blog", item: "https://www.matcharge.app/blog" },
           {
             position: 3,
             name: "Subscription Tracking Guide",
@@ -383,7 +383,7 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
                     <H3>Matcharge</H3>
                     <P>
                       <a
-                        href="https://matcharge.app"
+                        href="https://www.matcharge.app"
                         className="text-primary underline underline-offset-2 hover:opacity-80"
                       >
                         Matcharge

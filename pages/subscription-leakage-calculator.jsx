@@ -15,7 +15,8 @@ import EducationSection from "@/components/calculator/EducationSection";
 import FAQSection, { FAQ_ITEMS } from "@/components/calculator/FAQSection";
 import { calculateLeakage, parseShareParams } from "@/utils/leakage-calculator";
 
-const CANONICAL_URL = "https://matcharge.app/subscription-leakage-calculator";
+const CANONICAL_URL =
+  "https://www.matcharge.app/subscription-leakage-calculator";
 
 const DEFAULT_INPUTS = {
   subscriptionCount: 8,
@@ -41,7 +42,7 @@ const WEB_APPLICATION_SCHEMA = {
   publisher: {
     "@type": "Organization",
     name: "Matcharge",
-    url: "https://matcharge.app",
+    url: "https://www.matcharge.app",
   },
 };
 
@@ -109,7 +110,7 @@ export default function SubscriptionLeakageCalculatorPage() {
             "Estimate how much money may be silently leaking from your subscriptions. Free behavioral finance tool by Matcharge.",
           images: [
             {
-              url: "https://matcharge.app/matcharge-og-image.png",
+              url: "https://www.matcharge.app/matcharge-og-image.png",
               width: 1200,
               height: 630,
               alt: "Subscription Leakage Index by Matcharge",

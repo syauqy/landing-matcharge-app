@@ -59,10 +59,15 @@ export const MDXComponents = {
   Callout,
 
   // Headings
-  h1: ({ children }) => (
-    <h1 className="group text-[2rem] md:text-[2.375rem] font-bold mb-5 mt-0 text-[#111] leading-tight tracking-tight [&>a]:no-underline [&>a]:text-primary [&>a]:hover:opacity-80 [&>a]:transition-opacity">
+  // H1 should NEVER appear in MDX content - title is rendered by BlogHeader
+  // Convert any H1 in content to H2 to prevent duplicate H1 tags
+  h1: ({ children, id }) => (
+    <h2
+      id={id}
+      className="group text-[1.5rem] md:text-[1.625rem] font-bold mb-4 mt-12 pb-3 border-b border-gray-100 text-[#111] leading-snug tracking-tight scroll-m-20 [&>a]:no-underline [&>a]:text-primary [&>a]:hover:opacity-80 [&>a]:transition-opacity"
+    >
       {children}
-    </h1>
+    </h2>
   ),
   h2: ({ children, id }) => (
     <h2

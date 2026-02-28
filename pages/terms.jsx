@@ -25,10 +25,11 @@ export default function Terms() {
       <NextSeo
         title="Terms of Service - Matcharge"
         description="Terms of Service for the Matcharge mobile app. Your access to and use of the Service is conditioned upon your acceptance of and compliance with these Terms."
+        canonical="https://www.matcharge.app/terms"
         openGraph={{
           type: "website",
           locale: "en_US",
-          url: "https://matcharge.app/terms",
+          url: "https://www.matcharge.app/terms",
           siteName: "Matcharge",
           title: "Terms of Service - Matcharge",
           description:

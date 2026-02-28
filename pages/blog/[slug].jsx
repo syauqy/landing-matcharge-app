@@ -91,8 +91,8 @@ export default function BlogDetailPage({
   }, []);
 
   const publishDate = new Date(post.date);
-  const canonicalUrl = `https://matcharge.app/blog/${post.slug}`;
-  const imageUrl = post.image || "https://matcharge.app/og-default.jpg";
+  const canonicalUrl = `https://www.matcharge.app/blog/${post.slug}`;
+  const imageUrl = post.image || "https://www.matcharge.app/og-default.jpg";
 
   return (
     <>
@@ -138,8 +138,8 @@ export default function BlogDetailPage({
 
       <BreadcrumbJsonLd
         itemListElements={[
-          { position: 1, name: "Home", item: "https://matcharge.app" },
-          { position: 2, name: "Blog", item: "https://matcharge.app/blog" },
+          { position: 1, name: "Home", item: "https://www.matcharge.app" },
+          { position: 2, name: "Blog", item: "https://www.matcharge.app/blog" },
           { position: 3, name: post.title, item: canonicalUrl },
         ]}
       />

@@ -103,7 +103,7 @@ export function Footer({ bg, hideBadges = false }) {
                 />
                 <div className="flex flex-col">
                   <p className="leading-5">Pippin</p>
-                  <p className=" text-xs max-w-sm font-light text-center">
+                  <p className=" text-xs max-w-sm font-light text-center hidden md:block">
                     Minimalist journal for overthinkers.
                   </p>
                 </div>

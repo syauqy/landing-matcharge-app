@@ -8,7 +8,7 @@ const config = {
   defaultTitle: "Matcharge - Track Your Subscriptions & Bills",
   description:
     "Track recurring bills, catch forgotten subscription trials, and visualize your spending with Matcharge. Find your financial calm.",
-  canonical: "https://matcharge.app",
+  canonical: "https://www.matcharge.app",
   mobileAlternate: {
     media: "only screen and (max-width: 640px)",
     href: "https://m.matcharge.app",
@@ -16,21 +16,21 @@ const config = {
   languageAlternates: [
     {
       hrefLang: "en-US",
-      href: "https://matcharge.app",
+      href: "https://www.matcharge.app",
     },
     {
       hrefLang: "x-default",
-      href: "https://matcharge.app",
+      href: "https://www.matcharge.app",
     },
   ],
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://matcharge.app",
+    url: "https://www.matcharge.app",
     siteName: "Matcharge",
     images: [
       {
-        url: "https://matcharge.app/og-image.jpg",
+        url: "https://www.matcharge.app/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Matcharge - Track Your Subscriptions & Bills",

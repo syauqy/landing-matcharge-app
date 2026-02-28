@@ -7,6 +7,8 @@
 BLOG_SETUP.md
 subscription-leak-calculator-brief.md
 subscription-leak-calculator-upgrade.md
+/subscription-leak-calculator-brief.md
+/BLOG_SETUP.md
 
 /.pnp
 .pnp.*

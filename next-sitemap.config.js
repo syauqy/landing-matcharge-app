@@ -4,13 +4,21 @@ const path = require("path");
 const matter = require("gray-matter");
 
 module.exports = {
-  siteUrl: process.env.SITE_URL || "https://matcharge.app",
+  siteUrl: process.env.SITE_URL || "https://www.matcharge.app",
   generateRobotsTxt: true,
   robotsTxtOptions: {
     policies: [
       {
         userAgent: "*",
         allow: "/",
+      },
+    ],
+    additionalSitemaps: ["https://www.matcharge.app/sitemap.xml"],
+    additionalPaths: async (config) => [
+      {
+        loc: "/",
+        priority: 1.0,
+        changefreq: "daily",
       },
     ],
   },

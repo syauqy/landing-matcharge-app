@@ -25,8 +25,7 @@ export default function BlogPage({ initialPosts, totalPages }) {
     });
   }, [initialPosts, searchQuery]);
 
-  const canonicalUrl = `https://matcharge.app/blog${currentPage > 1 ? `?page=${currentPage}` : ""}`;
-
+  const canonicalUrl = `https://www.matcharge.app/blog${currentPage > 1 ? `?page=${currentPage}` : ""}`;
   const featuredPost =
     !searchQuery && currentPage === 1 && filteredPosts.length > 0
       ? filteredPosts[0]
@@ -47,7 +46,7 @@ export default function BlogPage({ initialPosts, totalPages }) {
             "Discover practical guides to track subscriptions, manage recurring bills, catch forgotten trials, and visualize your spending with Matcharge.",
           images: [
             {
-              url: "https://matcharge.app/og-blog.jpg",
+              url: "https://www.matcharge.app/og-blog.jpg",
               width: 1200,
               height: 630,
               alt: "Matcharge Blog",

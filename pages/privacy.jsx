@@ -24,10 +24,11 @@ export default function Privacy() {
       <NextSeo
         title="Privacy Policy - Matcharge"
         description="Privacy Policy for the Matcharge mobile app. We are committed to protecting your personal information and your right to privacy."
+        canonical="https://www.matcharge.app/privacy"
         openGraph={{
           type: "website",
           locale: "en_US",
-          url: "https://matcharge.app/privacy",
+          url: "https://www.matcharge.app/privacy",
           siteName: "Matcharge",
           title: "Privacy Policy - Matcharge",
           description:
