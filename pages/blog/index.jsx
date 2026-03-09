@@ -7,15 +7,33 @@ import { Navbar } from "@/components/layouts/navbar";
 import { Footer } from "@/components/layouts/footer";
 import BlogCard from "@/components/blog/BlogCard";
 import Pagination from "@/components/blog/Pagination";
-import { getPaginatedPosts } from "@/utils/blog";
+import { getAllBlogPosts } from "@/utils/blog";
 
-export default function BlogPage({ initialPosts, totalPages }) {
+const POSTS_PER_PAGE = 10;
+const PILLAR_SLUG = "subscription-tracking-guide";
+
+// Pillar guide manual entry (since it's a JSX page, not MDX)
+const PILLAR_GUIDE = {
+  slug: PILLAR_SLUG,
+  title: "The Complete Guide to Tracking Subscriptions on iPhone",
+  description:
+    "The definitive resource for tracking subscriptions, managing recurring bills, catching forgotten trials, and mastering your finances on iPhone.",
+  date: "2025-01-01T00:00:00.000Z",
+  readingTime: 15,
+  categories: ["subscription-tracking"],
+};
+
+export default function BlogPage({ allPosts }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const currentPage = router.query.page ? parseInt(router.query.page) : 1;
 
+  // Pillar guide (hardcoded since it's a JSX page)
+  const pillarGuide = PILLAR_GUIDE;
+
+  // Filter posts based on search query
   const filteredPosts = useMemo(() => {
-    return initialPosts.filter((post) => {
+    return allPosts.filter((post) => {
       const query = searchQuery.toLowerCase();
       return (
         post.title.toLowerCase().includes(query) ||
@@ -23,14 +41,20 @@ export default function BlogPage({ initialPosts, totalPages }) {
         post.tags?.some((tag) => tag.toLowerCase().includes(query))
       );
     });
-  }, [initialPosts, searchQuery]);
+  }, [allPosts, searchQuery]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+  const endIndex = startIndex + POSTS_PER_PAGE;
+  const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
 
   const canonicalUrl = `https://www.matcharge.app/blog${currentPage > 1 ? `?page=${currentPage}` : ""}`;
   const featuredPost =
-    !searchQuery && currentPage === 1 && filteredPosts.length > 0
-      ? filteredPosts[0]
+    !searchQuery && currentPage === 1 && paginatedPosts.length > 0
+      ? paginatedPosts[0]
       : null;
-  const gridPosts = featuredPost ? filteredPosts.slice(1) : filteredPosts;
+  const gridPosts = featuredPost ? paginatedPosts.slice(1) : paginatedPosts;
 
   return (
     <>
@@ -112,6 +136,80 @@ export default function BlogPage({ initialPosts, totalPages }) {
         <section className="max-w-5xl mx-auto px-6 py-14 md:py-20">
           {filteredPosts.length > 0 ? (
             <>
+              {/* Pillar Guide Section */}
+              {!searchQuery && currentPage === 1 && pillarGuide && (
+                <div className="mb-14">
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="flex-1 h-px bg-gradient-to-r from-primary/20 to-transparent"></div>
+                    <span className="text-xs font-semibold text-primary uppercase tracking-widest whitespace-nowrap px-3">
+                      Essential Reading
+                    </span>
+                    <div className="flex-1 h-px bg-gradient-to-l from-primary/20 to-transparent"></div>
+                  </div>
+                  <Link href={`/blog/${pillarGuide.slug}`}>
+                    <article className="group bg-gradient-to-br from-primary/5 to-primary/2 rounded-2xl border border-primary/20 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-all duration-300 overflow-hidden cursor-pointer">
+                      <div className="p-8 md:p-10 md:grid md:grid-cols-5 md:gap-10 md:items-center">
+                        {/* Left: badge + title + excerpt */}
+                        <div className="md:col-span-3 flex flex-col gap-4">
+                          <div className="flex items-center gap-3">
+                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full uppercase tracking-wider">
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
+                              Pillar Guide
+                            </span>
+                            {pillarGuide.categories &&
+                              pillarGuide.categories.length > 0 && (
+                                <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                                  {pillarGuide.categories[0]}
+                                </span>
+                              )}
+                          </div>
+                          <h2 className="text-2xl md:text-3xl font-bold text-[#111] leading-snug group-hover:text-primary transition-colors duration-200">
+                            {pillarGuide.title}
+                          </h2>
+                          <p className="text-gray-500 text-base leading-relaxed line-clamp-3">
+                            {pillarGuide.description}
+                          </p>
+                          <div className="flex items-center gap-2 text-xs text-gray-400 mt-1">
+                            <time dateTime={pillarGuide.date}>
+                              {format(
+                                new Date(pillarGuide.date),
+                                "MMMM dd, yyyy",
+                              )}
+                            </time>
+                            {pillarGuide.readingTime && (
+                              <>
+                                <span>·</span>
+                                <span>{pillarGuide.readingTime} min read</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Right: CTA */}
+                        <div className="md:col-span-2 mt-6 md:mt-0 flex md:justify-end">
+                          <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:gap-3 transition-all duration-200">
+                            Read guide
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </article>
+                  </Link>
+                </div>
+              )}
+
               {/* Featured Article */}
               {featuredPost && (
                 <div className="mb-14">
@@ -222,14 +320,12 @@ export default function BlogPage({ initialPosts, totalPages }) {
 }
 
 export async function getStaticProps() {
-  const postsPerPage = 6;
-  const paginatedData = getPaginatedPosts(1, postsPerPage);
+  const allPosts = getAllBlogPosts();
 
   return {
     props: {
-      initialPosts: paginatedData.posts,
-      totalPages: paginatedData.totalPages,
+      allPosts,
     },
-    revalidate: 3600, // Revalidate every hour
+    revalidate: false, // Static - use on-demand ISR only
   };
 }

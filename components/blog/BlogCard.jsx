@@ -20,6 +20,17 @@ export function BlogCard({ post, featured = false }) {
         )}
       >
         <div className="p-6 md:p-7 flex flex-col gap-4">
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            <time dateTime={post.date}>
+              {format(publishDate, "MMM dd, yyyy")}
+            </time>
+            {post.readingTime && (
+              <>
+                <span>·</span>
+                <span>{post.readingTime} min read</span>
+              </>
+            )}
+          </div>
           {/* Category tag */}
           {post.categories && post.categories.length > 0 && (
             <span className="text-xs font-semibold text-primary uppercase tracking-widest">
@@ -44,18 +55,6 @@ export function BlogCard({ post, featured = false }) {
 
           {/* Footer: meta + tag */}
           <div className="flex items-center justify-between pt-2 mt-auto border-t border-gray-100">
-            <div className="flex items-center gap-2 text-xs text-gray-400">
-              <time dateTime={post.date}>
-                {format(publishDate, "MMM dd, yyyy")}
-              </time>
-              {post.readingTime && (
-                <>
-                  <span>·</span>
-                  <span>{post.readingTime} min read</span>
-                </>
-              )}
-            </div>
-
             {post.tags && post.tags.length > 0 && (
               <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-primary/8 text-primary">
                 #{post.tags[0]}
