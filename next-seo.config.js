@@ -13,16 +13,6 @@ const config = {
     media: "only screen and (max-width: 640px)",
     href: "https://m.matcharge.app",
   },
-  languageAlternates: [
-    {
-      hrefLang: "en-US",
-      href: "https://www.matcharge.app",
-    },
-    {
-      hrefLang: "x-default",
-      href: "https://www.matcharge.app",
-    },
-  ],
   openGraph: {
     type: "website",
     locale: "en_US",
