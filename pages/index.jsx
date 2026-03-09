@@ -19,6 +19,12 @@ export default function MatchargeHomePage() {
         title="Matcharge - Find Your Financial Calm"
         description="Matcharge is a beautiful and insightful way to track your recurring bills, visualize your spending, and end the stress of surprise charges."
         canonical="https://www.matcharge.app/"
+        languageAlternates={[
+          {
+            hrefLang: "en-US",
+            href: "https://www.matcharge.app/",
+          },
+        ]}
         openGraph={{
           type: "website",
           locale: "en_US",

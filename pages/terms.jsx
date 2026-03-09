@@ -26,6 +26,12 @@ export default function Terms() {
         title="Terms of Service - Matcharge"
         description="Terms of Service for the Matcharge mobile app. Your access to and use of the Service is conditioned upon your acceptance of and compliance with these Terms."
         canonical="https://www.matcharge.app/terms"
+        languageAlternates={[
+          {
+            hrefLang: "en-US",
+            href: "https://www.matcharge.app/terms",
+          },
+        ]}
         openGraph={{
           type: "website",
           locale: "en_US",

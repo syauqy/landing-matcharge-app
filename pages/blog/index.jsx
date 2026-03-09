@@ -38,6 +38,12 @@ export default function BlogPage({ initialPosts, totalPages }) {
         title={currentPage > 1 ? `Blog - Page ${currentPage}` : "Blog"}
         description="Discover practical guides to track subscriptions, manage recurring bills, catch forgotten trials, and visualize your spending with Matcharge."
         canonical={canonicalUrl}
+        languageAlternates={[
+          {
+            hrefLang: "en-US",
+            href: canonicalUrl,
+          },
+        ]}
         openGraph={{
           type: "website",
           url: canonicalUrl,

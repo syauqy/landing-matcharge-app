@@ -25,6 +25,12 @@ export default function Privacy() {
         title="Privacy Policy - Matcharge"
         description="Privacy Policy for the Matcharge mobile app. We are committed to protecting your personal information and your right to privacy."
         canonical="https://www.matcharge.app/privacy"
+        languageAlternates={[
+          {
+            hrefLang: "en-US",
+            href: "https://www.matcharge.app/privacy",
+          },
+        ]}
         openGraph={{
           type: "website",
           locale: "en_US",

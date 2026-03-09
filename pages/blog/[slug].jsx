@@ -100,6 +100,12 @@ export default function BlogDetailPage({
         title={`${post.title}`}
         description={post.description}
         canonical={canonicalUrl}
+        languageAlternates={[
+          {
+            hrefLang: "en-US",
+            href: canonicalUrl,
+          },
+        ]}
         openGraph={{
           type: "article",
           url: canonicalUrl,
@@ -279,7 +285,7 @@ export async function getStaticProps({ params }) {
 
   // Extract headings for TOC
   const headings = extractHeadingsFromContent(post.content);
-  
+
   // Prepend post title as H1 to TOC
   const allHeadings = [
     {
@@ -289,7 +295,7 @@ export async function getStaticProps({ params }) {
     },
     ...headings,
   ];
-  
+
   const headingTree = buildTocTree(allHeadings) || [];
 
   // Get related posts

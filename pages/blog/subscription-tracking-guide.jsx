@@ -74,6 +74,12 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
         title="The Complete Guide to Tracking Subscriptions on iPhone"
         description="The definitive resource for tracking subscriptions, managing recurring bills, catching forgotten trials, and mastering your finances on iPhone."
         canonical={CANONICAL}
+        languageAlternates={[
+          {
+            hrefLang: "en-US",
+            href: CANONICAL,
+          },
+        ]}
         openGraph={{
           type: "article",
           url: CANONICAL,
@@ -289,12 +295,42 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
                       needed. Simple but effective for people with fewer than 10
                       subscriptions.
                     </P>
+                    <P>
+                      Learn the detailed process in our guide on{" "}
+                      <Link
+                        href="/blog/track-trial-subscriptions-expiring-on-iphone-calendar"
+                        className="text-primary underline underline-offset-2 hover:opacity-80"
+                      >
+                        how to track trial subscriptions expiring on your iPhone
+                        calendar
+                      </Link>
+                      .
+                    </P>
                     <H3>Email Inbox Auditing</H3>
                     <P>
                       Search your email for "receipt", "invoice",
                       "subscription", "billing". Sort by sender to identify
                       every service you've ever subscribed to. This one-time
                       audit is often eye-opening.
+                    </P>
+                    <H3>iOS Shortcuts & Automation</H3>
+                    <P>
+                      For tech-savvy users, iOS Shortcuts can automate much of
+                      the subscription management process. Set up reminders,
+                      calendar events, and alerts through automated workflows.
+                      This is more advanced but powerful for keeping everything
+                      in sync across your devices.
+                    </P>
+                    <P>
+                      Explore automation options in our guide on{" "}
+                      <Link
+                        href="/blog/streamlining-subscription-management-on-iphone-with-automation-shortcuts"
+                        className="text-primary underline underline-offset-2 hover:opacity-80"
+                      >
+                        streamlining subscription management with iOS automation
+                        shortcuts
+                      </Link>
+                      .
                     </P>
                     <P>
                       For non-App Store services (like Netflix, Spotify,

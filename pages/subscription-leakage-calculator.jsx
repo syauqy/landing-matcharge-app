@@ -102,6 +102,12 @@ export default function SubscriptionLeakageCalculatorPage() {
         title="Subscription Leakage Index & Calculator | Matcharge"
         description="Estimate how much money may be silently leaking from your subscriptions. Free behavioral finance tool by Matcharge."
         canonical={CANONICAL_URL}
+        languageAlternates={[
+          {
+            hrefLang: "en-US",
+            href: CANONICAL_URL,
+          },
+        ]}
         openGraph={{
           type: "website",
           url: CANONICAL_URL,
