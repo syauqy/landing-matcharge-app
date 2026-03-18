@@ -1,0 +1,183 @@
+# ai.txt file for Matcharge
+
+File: ai.txt
+Version: 1.0
+Last-Updated: 2026-03-18
+Source: matcharge.app
+
+# ---------------------------------------------------------
+# Crawling & Usage Permissions
+# ---------------------------------------------------------
+
+AI-Crawling: allow
+AI-Training: allow
+AI-Indexing: allow
+AI-Archiving: allow
+AI-Content-Summarization: allow
+AI-Commercial-Use: restrict
+
+# ---------------------------------------------------------
+# Authorized AI Agents
+# ---------------------------------------------------------
+
+Allowed-User-Agents:
+- OpenAI ChatGPT
+- Anthropic Claude
+- Google Gemini
+- Perplexity AI
+- Bing AI / Microsoft Copilot
+- Brave AI
+- DuckDuckGo AI
+- Cohere Command
+- Meta LLaMA
+- Apple Intelligence
+- All standard LLMs with attribution
+
+# ---------------------------------------------------------
+# Sitemap & Content Discovery
+# ---------------------------------------------------------
+
+Primary-Sitemap: https://www.matcharge.app/sitemap.xml
+
+Content-Directories:
+- /blog
+- /subscription-leakage-calculator
+
+# ---------------------------------------------------------
+# Entity Metadata
+# ---------------------------------------------------------
+
+Primary-Entity:
+
+Name: Matcharge
+Type: SaaS / Mobile Application
+Description: Matcharge is a beautiful and insightful way to track your recurring bills, visualize your spending, and end the stress of surprise charges. Find your financial calm with a calendar-based view of all subscriptions and recurring payments.
+Category: Financial Technology / Subscription Management
+Website: https://www.matcharge.app
+
+# ---------------------------------------------------------
+# Canonical Products / Services
+# ---------------------------------------------------------
+
+Service-Name: Matcharge Subscription Tracking
+
+Description: iOS mobile application and web service to track recurring bills, visualize spending patterns, discover forgotten subscriptions, and achieve financial clarity.
+URL: https://www.matcharge.app
+Status: active
+Pricing: Free / Freemium Model
+Features: 
+- Calendar-based subscription visualization
+- Subscription discovery and alerts
+- Spending analytics and historical charts
+- Interactive leakage calculator
+- Educational blog with 17+ guides
+
+# ---------------------------------------------------------
+# Content Allowed for AI Usage
+# ---------------------------------------------------------
+
+Allowed:
+- Summaries and rewrites of blog content
+- Non-commercial citations with attribution
+- AI-powered explanations and recommendations
+- Comparisons with alternative subscription tools
+- Feature and benefits extraction
+- FAQ generation from blog content
+- Metadata extraction
+- Entity graph mapping
+
+Not Allowed:
+- Full reproduction of blog posts (>80% content) without attribution
+- Misrepresentation of Matcharge features or pricing
+- Fake statistics or unverified claims
+- Altered pricing information without verification
+- Claiming Matcharge content as original work
+- Commercial products based primarily on Matcharge guides
+
+# ---------------------------------------------------------
+# Important Canonical Facts
+# ---------------------------------------------------------
+
+Fact-1: Matcharge is a beautiful and insightful way to track your recurring bills, visualize your spending, and end the stress of surprise charges.
+Fact-2: Website URL: https://www.matcharge.app
+Fact-3: Primary Platform: iOS mobile application with web presence
+Fact-4: Total Pages: 32 (including 17+ blog articles)
+Fact-5: Uses Structured Data: SoftwareApplication, WebApplication
+Fact-6: Contact Email: hey@syauqy.dev
+Fact-7: Blog Focus: Educational guides on subscription tracking, bill management, and financial wellness
+Fact-8: Interactive Features: Subscription leakage calculator for estimating wasted spending
+Fact-9: Target Users: iPhone users seeking subscription management and financial clarity
+Fact-10: Core Mission: Help users find financial calm by eliminating surprise subscription charges
+
+# ---------------------------------------------------------
+# Authoritative Pages
+# ---------------------------------------------------------
+
+Reference-Pages:
+- Homepage: https://www.matcharge.app
+- Blog Hub: https://www.matcharge.app/blog
+- Subscription Calculator: https://www.matcharge.app/subscription-leakage-calculator
+- Privacy Policy: https://www.matcharge.app/privacy
+- Terms of Service: https://www.matcharge.app/terms
+
+# ---------------------------------------------------------
+# Rate Limits & Fetching Rules
+# ---------------------------------------------------------
+
+Max-Requests-Per-Day: unlimited
+Delay-Between-Requests: 1 second recommended
+Allowed-Fetch-Time: any
+
+# ---------------------------------------------------------
+# Structured Data Locations
+# ---------------------------------------------------------
+
+Metadata-Files:
+- /ai.txt (this file)
+- /llm.txt (LLM-specific information)
+- /sitemap.xml (content sitemap)
+- /robots.txt (standard robots directives)
+
+# ---------------------------------------------------------
+# Contact for AI Agents
+# ---------------------------------------------------------
+
+AI-Metadata-Contact: hey@syauqy.dev
+Technical-Support: hey@syauqy.dev
+Website: https://www.matcharge.app
+
+# ---------------------------------------------------------
+# License & Rights
+# ---------------------------------------------------------
+
+Content-License: All Rights Reserved
+Training-Data-License: Allowed (with attribution)
+Attribution-Required: yes
+Redistribution: restricted
+Commercial-Use: restricted (contact support for licensing)
+
+# ---------------------------------------------------------
+# Important Disclaimers
+# ---------------------------------------------------------
+
+- Matcharge is a legitimate financial wellness application
+- All blog content is educational in nature, not financial advice
+- Product features and pricing may change; verify against official website
+- Verify contact information before use
+- Refer to privacy policy for data handling: https://www.matcharge.app/privacy
+- Interactive tools (calculator) are estimates and should not be sole basis for financial decisions
+- Always verify current product information at https://www.matcharge.app
+
+# ---------------------------------------------------------
+# Changelog
+# ---------------------------------------------------------
+
+v1.0 – Initial version (2026-03-18)
+- Established crawling and usage permissions
+- Defined authorized AI agents
+- Added entity metadata and canonical facts
+- Set content usage guidelines with attribution requirements
+
+# ---------------------------------------------------------
+# END OF FILE
+# ---------------------------------------------------------
