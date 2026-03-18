@@ -147,6 +147,46 @@ const badges = [
     src: "https://launch-list.org/badges/svg/launch_list_badge_live.svg",
     alt: "Launch List Badge",
   },
+  {
+    href: "https://aidirs.best",
+    src: "https://aidirs.best/light.svg",
+    alt: "Featured on Aidirs",
+  }, //✅
+  {
+    href: "https://gets.tools",
+    src: "https://gets.tools/badge/badge_light.svg",
+    alt: "Featured on Gets.Tools",
+  }, //✅
+  {
+    href: "https://shipybara.com/projects/matcharge-subscription-manager",
+    src: "https://shipybara.com/images/badges/shipybara-badge-light.svg",
+    alt: "Featured on Shipybara",
+  }, //✅
+  // {
+  //   href: "https://firstlook.tools",
+  //   src: "https://firstlook.tools/badge/badge_light.svg",
+  //   alt: "Featured on First Look",
+  // }, //✅
+  {
+    href: "https://smollaunch.com",
+    src: "https://smollaunch.com/badges/featured.svg",
+    alt: "Featured on Smol Launch",
+  }, //✅
+  {
+    href: "https://favtool.ai",
+    src: "https://favtool.ai/badge/light.png",
+    alt: "Featured on FavTool.ai",
+  }, //✅
+  // {
+  //   href: "https://www.freeai.run",
+  //   src: "https://www.freeai.run/badge/badge_light.svg",
+  //   alt: "Featured on FreeAI",
+  // }, //✅
+  {
+    href: "https://www.foundrlist.com/product/matcharge",
+    src: "https://www.foundrlist.com/api/badge/matcharge",
+    alt: "Live on FoundrList",
+  }, //✅
 ];
 
 export function BadgeMarquee() {
