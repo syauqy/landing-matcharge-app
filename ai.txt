@@ -62,7 +62,8 @@ Website: https://www.matcharge.app
 Service-Name: Matcharge Subscription Tracking
 
 Description: iOS mobile application and web service to track recurring bills, visualize spending patterns, discover forgotten subscriptions, and achieve financial clarity.
-URL: https://www.matcharge.app
+Website: https://www.matcharge.app
+App-Store: https://apps.apple.com/us/app/bill-organizer-matcharge/id6752604627
 Status: active
 Pricing: Free / Freemium Model
 Features: 
@@ -145,6 +146,7 @@ Metadata-Files:
 AI-Metadata-Contact: hey@syauqy.dev
 Technical-Support: hey@syauqy.dev
 Website: https://www.matcharge.app
+iOS App: https://apps.apple.com/us/app/bill-organizer-matcharge/id6752604627
 
 # ---------------------------------------------------------
 # License & Rights

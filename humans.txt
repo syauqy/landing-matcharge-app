@@ -1,0 +1,244 @@
+# humans.txt
+# The humans behind Matcharge
+# https://www.matcharge.app
+# Last Updated: 2026-03-18
+
+---
+
+# TEAM
+
+Name: Syauqy
+Title: Founder & Developer
+Role: Product Development, Design, Engineering
+Contact: hey@syauqy.dev
+Website: https://www.matcharge.app
+
+---
+
+# COMPANY
+
+Name: Matcharge
+Tagline: Find Your Financial Calm
+Description: Matcharge is a beautiful and insightful way to track your recurring bills, visualize your spending, and end the stress of surprise charges.
+Website: https://www.matcharge.app
+Location: Global (Remote)
+Founded: 2026
+Type: Indie SaaS / Mobile App
+
+---
+
+# MISSION
+
+We believe everyone deserves financial clarity and peace of mind. Matcharge eliminates subscription fatigue by providing a simple, beautiful way to track recurring bills, discover forgotten subscriptions, and take control of your spending.
+
+Our mission: Help users find their financial calm by visualizing and managing their subscription spending.
+
+---
+
+# SERVICES & PRODUCTS
+
+1. Matcharge iOS App
+   - Beautiful calendar-based subscription tracking
+   - Subscription discovery and alerts
+   - Spending visualization and analytics
+   - Platform: iOS / App Store
+   - App Store Link: https://apps.apple.com/us/app/bill-organizer-matcharge/id6752604627
+   - Website: https://www.matcharge.app
+
+2. Matcharge Web Service
+   - Companion web dashboard
+   - Educational blog and guides
+   - Interactive leakage calculator
+   - URL: https://www.matcharge.app
+
+3. Educational Content
+   - 17+ comprehensive blog articles
+   - Subscription tracking guides
+   - Financial wellness resources
+   - URL: https://www.matcharge.app/blog
+
+---
+
+# TECHNOLOGY STACK
+
+## Frontend
+- Next.js 15.2.4
+- React 19.1.0
+- Tailwind CSS 4.0.17
+- TypeScript/JavaScript
+- Framer Motion (animations)
+- DaisyUI (components)
+
+## Backend & Infrastructure
+- Next.js API Routes
+- Supabase (PostgreSQL database)
+- Vercel (hosting & deployment)
+
+## Content & Tools
+- MDX (dynamic content)
+- Markdown for blog posts
+- Gray-matter (frontmatter parsing)
+- Next SEO (metadata management)
+- Next-sitemap (automatic sitemap generation)
+
+## AI & Analytics
+- PostHog (telemetry & analytics)
+- Google Generative AI (for AI features)
+- Anthropic Claude (optional integration)
+
+## Styling & Design
+- Tailwind CSS
+- DaisyUI
+- Framer Motion
+- Lucide Icons
+
+## Development Tools
+- ESLint (code quality)
+- Git (version control)
+- npm (package management)
+
+---
+
+# RESOURCES & CREDITS
+
+## Open Source Libraries
+We are grateful to the open source community for these amazing projects:
+
+- **Next.js** - React framework for production
+- **React** - UI library
+- **Tailwind CSS** - Utility-first CSS framework
+- **DaisyUI** - Tailwind CSS component library
+- **Framer Motion** - Animation library
+- **MDX** - Content format combining Markdown and JSX
+- **Gray-matter** - Front-matter parser
+- **Lucide Icons** - Beautiful SVG icons
+- **PostHog** - Open source product analytics
+- **Supabase** - Open source Firebase alternative
+- **Vercel** - Platform for Next.js applications
+
+## Design Inspiration
+- Zen design principles
+- Calm technology movement
+- Financial wellness best practices
+- User-centered design philosophy
+
+## Community & Support
+Thanks to:
+- Open source community developers
+- Next.js community
+- React ecosystem contributors
+- Our users who provide feedback
+
+---
+
+# STANDARDS & PRACTICES
+
+## Accessibility
+- WCAG 2.1 Level AA compliance where applicable
+- Semantic HTML
+- Keyboard navigation support
+- Screen reader testing
+
+## Performance
+- Next.js image optimization
+- Code splitting and lazy loading
+- CSS optimization
+- Core Web Vitals compliance
+
+## Security
+- HTTPS encryption
+- Content Security Policy
+- Secure authentication
+- Privacy-first design
+- GDPR compliance
+
+## SEO
+- Dynamic sitemap generation
+- Open Graph metadata
+- Schema.org structured data
+- Next SEO best practices
+- Blog SEO optimization
+
+## AI Engine Optimization (AEO)
+- ai.txt and llm.txt for AI systems
+- Clear content policies
+- Attribution requirements
+- Structured metadata
+
+---
+
+# PRIVACY & ETHICS
+
+Privacy Policy: https://www.matcharge.app/privacy
+Terms of Service: https://www.matcharge.app/terms
+
+Our Principles:
+- User privacy is paramount
+- Transparent data practices
+- No selling user data
+- Educational content focused on user empowerment
+- Honest product claims
+- Continuous improvement based on feedback
+
+---
+
+# CONTACT & SUPPORT
+
+Support Email: hey@syauqy.dev
+Website: https://www.matcharge.app
+Blog: https://www.matcharge.app/blog
+Sitemap: https://www.matcharge.app/sitemap.xml
+
+---
+
+# SOCIAL & VERIFICATION
+
+Website: https://www.matcharge.app
+📱 iOS App: https://apps.apple.com/us/app/bill-organizer-matcharge/id6752604627
+
+---
+
+# CHANGELOG & HISTORY
+
+## 2026-03-18
+- Initial humans.txt created
+- Core team information documented
+- Technology stack listed
+- Mission and values documented
+
+## Current Version
+- **humans.txt** version 1.0
+- Last Updated: 2026-03-18
+- Next Review: 2026-06-18
+
+---
+
+# INTERESTING FACTS
+
+- Built with a focus on design elegance and user calm
+- Zen Garden inspired UI for peaceful interactions
+- Solves real problem: subscription fatigue
+- All content created with AI Engine Optimization in mind
+- Educational blog helps users make smarter financial decisions
+- Small but mighty indie team
+
+---
+
+# THANK YOU
+
+Thank you for visiting Matcharge!
+
+We hope our app helps you find financial calm and take control of your subscription spending.
+
+Questions? Feedback? We'd love to hear from you!
+Contact: hey@syauqy.dev
+
+---
+
+# THE END
+
+Made with ❤️ by the Matcharge team
+
+Find your financial calm.
+
+---

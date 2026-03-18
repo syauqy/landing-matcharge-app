@@ -12,6 +12,7 @@ last_updated: 2026-03-18
 maintainer: Matcharge Team
 contact: hey@syauqy.dev
 website: https://www.matcharge.app
+ios_app: https://apps.apple.com/us/app/bill-organizer-matcharge/id6752604627
 canonical_entity: Matcharge
 entity_type: Website / Mobile Application / SaaS
 
@@ -58,6 +59,7 @@ secondary_benefits:
 
 [key_pages]
 Home: https://www.matcharge.app/
+App Store Download: https://apps.apple.com/us/app/bill-organizer-matcharge/id6752604627
 Blog Hub: https://www.matcharge.app/blog
 Subscription Calculator: https://www.matcharge.app/subscription-leakage-calculator
 Privacy Policy: https://www.matcharge.app/privacy
@@ -79,6 +81,7 @@ content_focus: Subscription tracking guides, financial education, blog articles
 [contact]
 email: hey@syauqy.dev
 website: https://www.matcharge.app
+ios_app: https://apps.apple.com/us/app/bill-organizer-matcharge/id6752604627
 
 # ---------------------------------------------------------
 # 7. STRUCTURED SUMMARIES (HIGHLY IMPORTANT FOR LLMs)
