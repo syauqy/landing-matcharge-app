@@ -11,6 +11,7 @@ import { getAllBlogPosts } from "@/utils/blog";
 
 const POSTS_PER_PAGE = 10;
 const PILLAR_SLUG = "subscription-tracking-guide";
+const GLOSSARY_SLUG = "subscription-glossary";
 
 // Pillar guide manual entry (since it's a JSX page, not MDX)
 const PILLAR_GUIDE = {
@@ -23,13 +24,25 @@ const PILLAR_GUIDE = {
   categories: ["subscription-tracking"],
 };
 
+// Glossary entry
+const GLOSSARY = {
+  slug: GLOSSARY_SLUG,
+  title: "Subscription Management Glossary",
+  description:
+    "A comprehensive guide to subscription terms, concepts, and definitions. Learn the language of recurring billing, subscription management, and financial clarity.",
+  date: "2025-01-15T00:00:00.000Z",
+  readingTime: 8,
+  categories: ["subscription-tracking"],
+};
+
 export default function BlogPage({ allPosts }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const currentPage = router.query.page ? parseInt(router.query.page) : 1;
 
-  // Pillar guide (hardcoded since it's a JSX page)
+  // Pillar guide and glossary (hardcoded since they're JSX pages)
   const pillarGuide = PILLAR_GUIDE;
+  const glossary = GLOSSARY;
 
   // Filter posts based on search query
   const filteredPosts = useMemo(() => {
@@ -189,6 +202,80 @@ export default function BlogPage({ allPosts }) {
                         <div className="md:col-span-2 mt-6 md:mt-0 flex md:justify-end">
                           <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:gap-3 transition-all duration-200">
                             Read guide
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </article>
+                  </Link>
+                </div>
+              )}
+
+              {/* Glossary Section */}
+              {!searchQuery && currentPage === 1 && glossary && (
+                <div className="mb-14">
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="flex-1 h-px bg-gradient-to-r from-primary/20 to-transparent"></div>
+                    <span className="text-xs font-semibold text-primary uppercase tracking-widest whitespace-nowrap px-3">
+                      Learning Resources
+                    </span>
+                    <div className="flex-1 h-px bg-gradient-to-l from-primary/20 to-transparent"></div>
+                  </div>
+                  <Link href={`/blog/${glossary.slug}`}>
+                    <article className="group bg-gradient-to-br from-orange-50 to-orange-25 rounded-2xl border border-orange-200 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-all duration-300 overflow-hidden cursor-pointer">
+                      <div className="p-8 md:p-10 md:grid md:grid-cols-5 md:gap-10 md:items-center">
+                        {/* Left: badge + title + excerpt */}
+                        <div className="md:col-span-3 flex flex-col gap-4">
+                          <div className="flex items-center gap-3">
+                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-orange-700 bg-orange-100 px-3 py-1 rounded-full uppercase tracking-wider">
+                              <span className="w-1.5 h-1.5 rounded-full bg-orange-700 inline-block"></span>
+                              Glossary
+                            </span>
+                            {glossary.categories &&
+                              glossary.categories.length > 0 && (
+                                <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                                  {glossary.categories[0]}
+                                </span>
+                              )}
+                          </div>
+                          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 leading-snug group-hover:text-orange-700 transition-colors duration-200">
+                            {glossary.title}
+                          </h2>
+                          <p className="text-gray-600 text-base leading-relaxed line-clamp-3">
+                            {glossary.description}
+                          </p>
+                          <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                            <time dateTime={glossary.date}>
+                              {format(
+                                new Date(glossary.date),
+                                "MMMM dd, yyyy",
+                              )}
+                            </time>
+                            {glossary.readingTime && (
+                              <>
+                                <span>·</span>
+                                <span>{glossary.readingTime} min read</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Right: CTA */}
+                        <div className="md:col-span-2 mt-6 md:mt-0 flex md:justify-end">
+                          <span className="inline-flex items-center gap-2 text-sm font-semibold text-orange-700 group-hover:gap-3 transition-all duration-200">
+                            View glossary
                             <svg
                               className="w-4 h-4"
                               fill="none"

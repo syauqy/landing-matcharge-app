@@ -309,6 +309,92 @@ export default function MatchargeHomePage() {
           </div>
         </section>
 
+        {/* Learning Resources Section */}
+        <section className="bg-orange-50 py-20 md:py-24 px-4">
+          <div className="container mx-auto max-w-5xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-2">
+                Learning Resources
+              </h2>
+              <p className="text-[#5A785A] text-lg">
+                Explore our guides, glossary, and practical resources to master subscription management.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Glossary Card */}
+              <a
+                href="/blog/subscription-glossary"
+                className="bg-white rounded-2xl border border-orange-200 p-8 hover:shadow-lg transition-shadow duration-300"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-orange-700 bg-orange-100 px-3 py-1 rounded-full uppercase tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-700 inline-block"></span>
+                    Glossary
+                  </span>
+                </div>
+                <h3 className="text-2xl font-bold mb-3 text-[#111]">
+                  Subscription Management Glossary
+                </h3>
+                <p className="text-[#5A785A] mb-4">
+                  Learn the essential terms and concepts behind subscription management, billing, and financial wellness.
+                </p>
+                <span className="inline-flex items-center gap-2 text-sm font-semibold text-orange-700 hover:gap-3 transition-all duration-200">
+                  Explore glossary
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </span>
+              </a>
+
+              {/* Blog Hub Card */}
+              <a
+                href="/blog"
+                className="bg-white rounded-2xl border border-primary/20 p-8 hover:shadow-lg transition-shadow duration-300"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full uppercase tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
+                    Blog
+                  </span>
+                </div>
+                <h3 className="text-2xl font-bold mb-3 text-[#111]">
+                  Guides & Articles
+                </h3>
+                <p className="text-[#5A785A] mb-4">
+                  Read comprehensive guides on tracking subscriptions, catching forgotten trials, and taking control of recurring spending.
+                </p>
+                <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all duration-200">
+                  Read blog
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </section>
+
         {/* FAQ Section */}
         <section className="py-20 px-4">
           <div className="container mx-auto max-w-5xl text-center mb-8">
