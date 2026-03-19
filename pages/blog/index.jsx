@@ -258,10 +258,7 @@ export default function BlogPage({ allPosts }) {
                           </p>
                           <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
                             <time dateTime={glossary.date}>
-                              {format(
-                                new Date(glossary.date),
-                                "MMMM dd, yyyy",
-                              )}
+                              {format(new Date(glossary.date), "MMMM dd, yyyy")}
                             </time>
                             {glossary.readingTime && (
                               <>

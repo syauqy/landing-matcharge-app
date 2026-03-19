@@ -317,7 +317,8 @@ export default function MatchargeHomePage() {
                 Learning Resources
               </h2>
               <p className="text-[#5A785A] text-lg">
-                Explore our guides, glossary, and practical resources to master subscription management.
+                Explore our guides, glossary, and practical resources to master
+                subscription management.
               </p>
             </div>
 
@@ -337,7 +338,8 @@ export default function MatchargeHomePage() {
                   Subscription Management Glossary
                 </h3>
                 <p className="text-[#5A785A] mb-4">
-                  Learn the essential terms and concepts behind subscription management, billing, and financial wellness.
+                  Learn the essential terms and concepts behind subscription
+                  management, billing, and financial wellness.
                 </p>
                 <span className="inline-flex items-center gap-2 text-sm font-semibold text-orange-700 hover:gap-3 transition-all duration-200">
                   Explore glossary
@@ -372,7 +374,8 @@ export default function MatchargeHomePage() {
                   Guides & Articles
                 </h3>
                 <p className="text-[#5A785A] mb-4">
-                  Read comprehensive guides on tracking subscriptions, catching forgotten trials, and taking control of recurring spending.
+                  Read comprehensive guides on tracking subscriptions, catching
+                  forgotten trials, and taking control of recurring spending.
                 </p>
                 <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all duration-200">
                   Read blog
