@@ -2,6 +2,7 @@ import { generateKeywords, generateArticle } from "@/lib/ai";
 import { buildMDX } from "@/lib/blog";
 import { commitFile, getExistingFiles, getFileContent } from "@/lib/github";
 import matter from "gray-matter";
+import { attemptBidirectionalLinking } from "@/lib/link-sync";
 
 // const IS_MANUAL_TEST = process.env.NODE_ENV === "development";
 const CLUSTER = "subscription-tracking";
@@ -62,6 +63,17 @@ export default async function handler(req, res) {
       if (existingSlugs.includes(slug)) continue;
       console.log("Generated article for:", keyword);
       await commitFile(`contents/blog/${CLUSTER}/${slug}.mdx`, content);
+
+      // NOTE: Bidirectional linking is best handled post-generation via:
+      // 1. GitHub Actions workflow that runs after commit
+      // 2. Local postprocessing script (scripts/sync-bidirectional-links.js)
+      //
+      // Attempted local injection here can cause conflicts due to async GitHub operations.
+      // The link-sync module is available for manual use or CI/CD integration.
+
+      console.log(
+        `[Link Sync] Generated article: ${slug}. Run 'npm run sync-links' to add bidirectional links.`,
+      );
     }
 
     res.status(200).json({ success: true });

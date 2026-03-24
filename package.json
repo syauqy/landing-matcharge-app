@@ -8,7 +8,10 @@
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
-    "generate:blog": "node scripts/generate-blog.js"
+    "generate:blog": "node scripts/generate-blog.js",
+    "audit-links": "node scripts/audit-bidirectional-links.js",
+    "sync-links": "node scripts/sync-bidirectional-links.js",
+    "sync-links:dry": "node scripts/sync-bidirectional-links.js --dry-run --verbose"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
