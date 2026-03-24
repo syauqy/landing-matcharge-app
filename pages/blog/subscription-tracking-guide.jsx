@@ -71,8 +71,8 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
   return (
     <>
       <NextSeo
-        title="The Complete Guide to Tracking Subscriptions on iPhone"
-        description="The definitive resource for tracking subscriptions, managing recurring bills, catching forgotten trials, and mastering your finances on iPhone."
+        title="How to Track All Your iPhone Subscriptions (And Spot Ones You Don't Use)"
+        description="Complete guide to viewing all your iPhone subscriptions—both App Store and third-party services—in one place. Cancel what you don't need."
         canonical={CANONICAL}
         languageAlternates={[
           {
@@ -159,8 +159,8 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
           <div className="max-w-6xl mx-auto px-6">
             <div className="max-w-[820px]">
               <BlogHeader
-                title="The Complete Guide to Tracking Subscriptions on iPhone"
-                description="Subscriptions are the new silent budget killers. This guide covers every method, tool, and habit to stay in full control of your recurring charges — from built-in iPhone tools to dedicated apps like Matcharge. Updated regularly."
+                title="How to Track All Your iPhone Subscriptions (And Spot Ones You Don't Use)"
+                description="Master subscription tracking on iPhone. Learn where to find every subscription—App Store, third-party services, and automatic renewals—plus how to cancel what you don't use."
                 date="2026-01-01"
                 author="Matcharge Team"
                 readingTime={18}
