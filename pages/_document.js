@@ -21,6 +21,14 @@ export default function Document() {
         {/* DNS Prefetch for external services */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://api.posthog.com" />
+        <link rel="dns-prefetch" href="https://analytics.ahrefs.com" />
+
+        {/* Ahrefs Web Analytics */}
+        <script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="EYadli88YrdEr53GNtlcMg"
+          async
+        ></script>
       </Head>
       <body className="antialiased">
         <Main />
