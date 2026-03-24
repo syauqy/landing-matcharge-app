@@ -32,6 +32,9 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
 
   const tocHeadings = [
     { id: "why-track", text: "Why It Matters", children: [] },
+    { id: "reality-gap", text: "Why People Miss Subscriptions", children: [] },
+    { id: "simple-system", text: "3-Step System", children: [] },
+    { id: "quick-win", text: "Quick Win: 30 Seconds", children: [] },
     {
       id: "iphone-built-in",
       text: "iPhone Built-in Tools",
@@ -71,8 +74,8 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
   return (
     <>
       <NextSeo
-        title="How to Track All Your iPhone Subscriptions (And Spot Ones You Don't Use)"
-        description="Complete guide to viewing all your iPhone subscriptions—both App Store and third-party services—in one place. Cancel what you don't need."
+        title="How to Track All Your iPhone Subscriptions (And Find Ones You Can Cancel Today)"
+        description="Complete guide to finding every subscription—App Store, third-party services, hidden charges—and the system to track them all in one place."
         canonical={CANONICAL}
         languageAlternates={[
           {
@@ -83,9 +86,10 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
         openGraph={{
           type: "article",
           url: CANONICAL,
-          title: "The Complete Guide to Tracking Subscriptions on iPhone",
+          title:
+            "How to Track All Your iPhone Subscriptions (And Find Ones You Can Cancel Today)",
           description:
-            "The definitive resource for tracking subscriptions, managing recurring bills, catching forgotten trials, and mastering your finances on iPhone.",
+            "Complete guide to finding every subscription—App Store, third-party services, hidden charges—and the system to track them all in one place.",
           images: [
             {
               url: "https://www.matcharge.app/og-default.jpg",
@@ -106,12 +110,12 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
 
       <ArticleJsonLd
         url={CANONICAL}
-        title="The Complete Guide to Tracking Subscriptions on iPhone"
+        title="How to Track All Your iPhone Subscriptions (And Find Ones You Can Cancel Today)"
         images={["https://www.matcharge.app/og-default.jpg"]}
         datePublished="2026-01-01T00:00:00Z"
         dateModified={new Date().toISOString()}
         authorName={["Matcharge Team"]}
-        description="The definitive resource for tracking subscriptions, managing recurring bills, catching forgotten trials, and mastering your finances on iPhone."
+        description="Complete guide to finding every subscription—App Store, third-party services, hidden charges—and the system to track them all in one place."
       />
 
       <BreadcrumbJsonLd
@@ -159,7 +163,7 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
           <div className="max-w-6xl mx-auto px-6">
             <div className="max-w-[820px]">
               <BlogHeader
-                title="How to Track All Your iPhone Subscriptions (And Spot Ones You Don't Use)"
+                title="How to Track All Your iPhone Subscriptions (And Find Ones You Can Cancel Today)"
                 description="Master subscription tracking on iPhone. Learn where to find every subscription—App Store, third-party services, and automatic renewals—plus how to cancel what you don't use."
                 date="2026-01-01"
                 author="Matcharge Team"
@@ -185,10 +189,12 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
                       The average person pays for{" "}
                       <strong>8–12 active subscriptions</strong> at any given
                       time — but studies suggest they can only name 3–4 of them.
-                      The "subscription economy" has quietly rewired how
-                      software, media, and services are sold. Monthly charges
-                      feel trivially small ($4.99 here, $9.99 there) until you
-                      see the total: often $80–$150/month or more.
+                      Most people only check their subscriptions when they
+                      notice a charge — but by then, it's already renewed. The
+                      "subscription economy" has quietly rewired how software,
+                      media, and services are sold. Monthly charges feel
+                      trivially small ($4.99 here, $9.99 there) until you see
+                      the total: often $80–$150/month or more.
                     </P>
                     <P>The biggest risks of not tracking:</P>
                     <UL>
@@ -212,6 +218,99 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
                     <P>
                       Tracking fixes all of these. Once you have visibility, you
                       have control.
+                    </P>
+                  </Section>
+
+                  <Divider />
+
+                  {/* Section 1b: Reality Gap */}
+                  <Section id="reality-gap">
+                    <H2>Why Most People Still Miss Subscriptions</H2>
+                    <P>
+                      Even when people know where to look, they still miss
+                      subscriptions. The reason is simple:{" "}
+                      <strong>
+                        subscriptions today are fragmented across different
+                        systems
+                      </strong>
+                      .
+                    </P>
+                    <P>
+                      Apple only shows subscriptions billed through your Apple
+                      ID. But many services—like Netflix, Spotify, newsletter
+                      memberships, or direct integrations—are billed directly by
+                      the company using their own payment systems. See our
+                      detailed guide on{" "}
+                      <Link
+                        href="/blog/manual-iphone-subscription-tracking-for-non-app-store-services"
+                        className="text-primary underline underline-offset-2 hover:opacity-80"
+                      >
+                        finding subscriptions outside Apple
+                      </Link>
+                      .
+                    </P>
+                    <P>
+                      This creates a blind spot. You check Apple Settings,
+                      assume you're seeing everything, and miss charges that
+                      never appear there. Most users don't have a single place
+                      to see all subscriptions—that's where money leaks happen.
+                    </P>
+                    <P>
+                      The good news: once you understand this gap, finding them
+                      becomes straightforward. That's what this guide walks you
+                      through.
+                    </P>
+                  </Section>
+
+                  <Divider />
+
+                  {/* Section 1c: Quick System */}
+                  <Section id="simple-system">
+                    <H2>The 3-Step System to Track Every Subscription</H2>
+                    <P>
+                      Most people look in one place. That's why they miss
+                      subscriptions. Here's the complete system:
+                    </P>
+                    <OL>
+                      <li>
+                        <strong>Check Apple Subscriptions</strong> — for
+                        services billed through your Apple ID (App Store apps)
+                      </li>
+                      <li>
+                        <strong>
+                          Audit bank statements &amp; email receipts
+                        </strong>{" "}
+                        — for everything billed directly (Netflix, Spotify,
+                        memberships)
+                      </li>
+                      <li>
+                        <strong>Track everything in one place</strong> — so
+                        nothing gets missed at renewal time
+                      </li>
+                    </OL>
+                    <P>
+                      Most people stop at step 1. That's the subscription leak.
+                    </P>
+                  </Section>
+
+                  <Divider />
+
+                  {/* Quick Win */}
+                  <Section id="quick-win">
+                    <H2>Quick Win: Check This First (30 Seconds)</H2>
+                    <P>If you only do one thing, do this right now:</P>
+                    <OL>
+                      <li>
+                        Go to{" "}
+                        <strong>Settings → [Your Name] → Subscriptions</strong>
+                      </li>
+                      <li>Look for anything you don't recognize</li>
+                      <li>Check renewal dates for upcoming trials</li>
+                    </OL>
+                    <P>
+                      Most people find at least one subscription they forgot
+                      about within seconds. Many discover ones they didn't know
+                      had renewed.
                     </P>
                   </Section>
 
@@ -247,14 +346,17 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
                       website memberships.
                     </P>
                     <P>
-                      For a deeper walkthrough, see our guide on{" "}
+                      However, this only shows subscriptions billed through
+                      Apple. For a comprehensive guide on Apple subscriptions
+                      specifically, see our full resource on{" "}
                       <Link
                         href="/blog/see-apple-subscriptions"
                         className="text-primary underline underline-offset-2 hover:opacity-80"
                       >
-                        how to see all Apple subscriptions
+                        how to see all your Apple subscriptions (including ones
+                        you might have missed)
                       </Link>
-                      .
+                      . The critical point: Apple Settings is step 1 only.
                     </P>
                     <H3 id="purchase-history">App Store Purchase History</H3>
                     <P>
@@ -352,10 +454,13 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
                   <Section id="finding-forgotten">
                     <H2>How to Find Forgotten Subscriptions</H2>
                     <P>
-                      The trickiest subscriptions are the ones you've completely
-                      forgotten about. Here's a systematic process to surface
-                      them:
+                      If you feel like you're paying for something you can't
+                      identify, you're right—most forgotten subscriptions don't
+                      show up in obvious places. The fastest way to find them is
+                      not in your iPhone settings. It's in your bank statement
+                      and email receipts.
                     </P>
+                    <P>Here's the systematic process to surface them:</P>
                     <H3 id="bank-statement">Bank Statement Method</H3>
                     <P>
                       Download 3 months of bank/credit card statements. Scan for
@@ -379,14 +484,15 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
                       services.
                     </P>
                     <P>
-                      We cover this in depth in our article on{" "}
+                      See our detailed guide on{" "}
                       <Link
                         href="/blog/finding-forgotten-monthly-subscriptions-directly-on-your-iphone"
                         className="text-primary underline underline-offset-2 hover:opacity-80"
                       >
-                        finding forgotten monthly subscriptions on iPhone
+                        discovering forgotten subscriptions on your iPhone
                       </Link>
-                      .
+                      —this covers the exact search strings and platform checks
+                      that surface hidden charges most people miss.
                     </P>
                   </Section>
 
@@ -471,6 +577,15 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
                     <P>
                       These habits, combined with a good tracking system, can
                       recover hundreds of dollars per year with minimal effort.
+                      For a comprehensive walkthrough of subscription management
+                      best practices, see our full guide on{" "}
+                      <Link
+                        href="/blog/see-apple-subscriptions"
+                        className="text-primary underline underline-offset-2 hover:opacity-80"
+                      >
+                        managing your subscriptions end-to-end
+                      </Link>
+                      .
                     </P>
                   </Section>
 
@@ -497,7 +612,11 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
                     />
                     <Faq
                       q="Should I cancel subscriptions I'm not using?"
-                      a="Yes. If you haven't used a service in 30+ days, cancel it. You can always re-subscribe. The decision costs nothing; keeping an unused subscription costs money every month."
+                      a="Yes. If you haven't used a service in 30+ days, cancel it. You can always re-subscribe. The decision costs nothing; keeping an unused subscription costs money every month. Check our guide on finding subscriptions outside Apple for services that don't show in Settings."
+                    />
+                    <Faq
+                      q="Why don't all my subscriptions appear in Apple Settings?"
+                      a="Apple Settings only shows subscriptions billed through your Apple ID. Services like Netflix, Spotify, or Hulu that you signed up for directly manage their own payments. See our guide on how to find subscriptions not listed in Apple settings for the complete process."
                     />
                   </Section>
 
@@ -507,11 +626,12 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
                   <Section id="get-started">
                     <div className="bg-[#111] rounded-2xl px-8 py-10 text-center">
                       <p className="text-white text-[1.375rem] font-semibold leading-snug mb-3">
-                        Ready to take control of your subscriptions?
+                        Still missing subscriptions outside Apple?
                       </p>
                       <p className="text-gray-400 text-sm mb-6">
-                        Matcharge gives you a calm, visual view of every
-                        recurring charge. No bank connection required.
+                        Matcharge brings everything into one place—including the
+                        services Apple doesn't show. Visual calendar. Renewal
+                        alerts. Full control.
                       </p>
                       <a
                         href="https://apps.apple.com/app/matcharge/id6752604627"
