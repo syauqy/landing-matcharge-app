@@ -1,4 +1,5 @@
 import React from "react";
+import { trackAppStoreClick } from "@/utils/posthog";
 
 /**
  * Custom MDX components — Stripe-quality editorial typography
@@ -110,15 +111,25 @@ export const MDXComponents = {
       {children}
     </p>
   ),
-  a: ({ href, children }) => (
-    <a
-      href={href}
-      className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity duration-150"
-      rel="noopener noreferrer"
-    >
-      {children}
-    </a>
-  ),
+  a: ({ href, children }) => {
+    // Track clicks to App Store or Matcharge app
+    const handleClick = () => {
+      if (href?.includes("apps.apple.com") || href?.includes("matcharge.app")) {
+        trackAppStoreClick("blog_detail_cta");
+      }
+    };
+
+    return (
+      <a
+        href={href}
+        className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity duration-150"
+        rel="noopener noreferrer"
+        onClick={handleClick}
+      >
+        {children}
+      </a>
+    );
+  },
 
   // Lists
   ul: ({ children }) => (

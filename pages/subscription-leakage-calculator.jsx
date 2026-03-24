@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { NextSeo } from "next-seo";
 import { motion } from "framer-motion";
+import { trackAppStoreClick } from "@/utils/posthog";
 import { Navbar } from "@/components/layouts/navbar";
 import { Footer } from "@/components/layouts/footer";
 import CalculatorForm from "@/components/calculator/CalculatorForm";
@@ -291,6 +292,7 @@ function AuthorityCTA({ result = null }) {
           className="mt-2 inline-block"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackAppStoreClick("calculator_cta")}
         >
           <img
             src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/en-us?releaseDate=1761091200"

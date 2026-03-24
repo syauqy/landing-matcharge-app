@@ -3,6 +3,7 @@ import React from "react";
 import { Inter } from "next/font/google";
 import Head from "next/head";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
+import { trackAppStoreClick } from "@/utils/posthog";
 // import { SoupIcon, ChartNoAxesColumn, Bell } from "lucide-react";
 import { Navbar } from "@/components/layouts/navbar";
 import { Footer } from "@/components/layouts/footer";
@@ -135,6 +136,7 @@ export default function MatchargeHomePage() {
               className="mt-2 inline-block"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackAppStoreClick("homepage_hero")}
             >
               <img
                 src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/en-us?releaseDate=1761091200"

@@ -6,6 +6,7 @@ import { Footer } from "@/components/layouts/footer";
 import BlogHeader from "@/components/blog/BlogHeader";
 import TableOfContents from "@/components/blog/TableOfContents";
 import RelatedArticles from "@/components/blog/RelatedArticles";
+import { trackAppStoreClick } from "@/utils/posthog";
 
 const CANONICAL = "https://www.matcharge.app/blog/subscription-tracking-guide";
 
@@ -638,6 +639,7 @@ export default function SubscriptionTrackingGuidePage({ clusterPosts = [] }) {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-block bg-primary text-white font-semibold text-sm px-6 py-3 rounded-xl hover:opacity-90 transition-opacity"
+                        onClick={() => trackAppStoreClick("blog_guide_cta")}
                       >
                         Download Matcharge for iPhone →
                       </a>
